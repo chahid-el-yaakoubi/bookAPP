@@ -1,0 +1,124 @@
+{
+  "dir": "ltr",
+  "general": {
+    "from": "De",
+    "to": "À"
+  },
+  "header": {
+    "menu": {
+      "home": "Location de maisons",
+      "explore": "Immobilier",
+      "location": "Location de voitures",
+      "taxi": "Taxi"
+    }
+  },
+  "navbar": {
+    "search": "Rechercher",
+    "currency": "Devise",
+    "language": "Langue",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "confirmLogout": "Confirmer la déconnexion",
+    "logoutMessage": "Etes-vous sûr de vouloir vous déconnecter ?",
+    "cancel": "Annuler",
+    "count": "Compte"
+  },
+  "search": {
+    "whereTo": "Où allez-vous ?",
+    "adults": "Adultes",
+    "children": "Enfants",
+    "rooms": "Chambres",
+    "search": "Rechercher",
+    "selectDates": "Sélectionner les dates",
+    "ageText": {
+      "adults": "13 ans et plus",
+      "children": "De 2 à 12 ans"
+    },
+    "alertMessage": "Veuillez indiquer une destination pour lancer la recherche.",
+    "plural": {
+      "adult": ["adulte", "adultes"],
+      "child": ["enfant", "enfants"],
+      "room": ["chambre", "chambres"]
+    }
+  },
+  "featured": {
+    "title": "Meilleures offres",
+    "welcomeDiscount": "Remise d'accueil",
+    "weekendSpecial": "Offre de fin de semaine",
+    "nightOwlSpecial": "Offre de nuit d'insomnie",
+    "specialOffer": "Offre spéciale",
+    "endsIn": "Se termine dans",
+    "firstTimeVisitor": "Première visite !",
+    "bookNow": "Réserver maintenant"
+  },
+  "properties": {
+    "properties": "Propriétés",
+    "viewAll": "Voir tout",
+    "hotels": {
+      "title": "Hôtels",
+      "description": "Hôtels modernes à Nador au centre et près de la lagune de Marchica"
+    },
+    "apartments": {
+      "title": "Appartements",
+      "description": "Appartements meublés avec des vues méditerranéennes à Nador et dans les environs"
+    },
+    "BeachResorts": {
+      "title": "Resorts de plage",
+      "description": "Resorts de plage près des plages de Nador incluant la plage de Bocana et la plage de Kariat Arekmane"
+    },
+    "Riads": {
+      "title": "Riads",
+      "description": "Maisons traditionnelles marocaines avec jardins intérieurs à la Medina de Nador"
+    },
+    "VacationHomes": {
+      "title": "Vacation Homes",
+      "description": "Vacation homes privées à Nador"
+    }
+  },
+  "homeTitle":{
+    "DiscoverNador": "Découvrir Nador",
+    "BrowseByPropertyType": "Parcourir par type de propriété",
+    "HomesGuestsLove": "Homes invités adorent"
+  },
+  "FeaturedProperties": {
+    "perNight": "par nuit",
+    "ratings": {
+      "exceptional": "Exceptionnel",
+      "excellent": "Excellent",
+      "veryGood": "Très bon",
+      "good": "Bon"
+    },
+    "reviews": "avis {{count}}",
+    "city": "Nador",
+    "bookNow": "Réserver maintenant"
+  },
+  "footer": {
+    "contactUs": "Contactez-nous",
+    "companyName": "Services de réservation professionnels",
+    "phone": "Téléphone: {{phone}}",
+    "email": "Email: {{email}}",
+    "ourServices": "Nos services",
+    "services": {
+      "hotelBookings": "Réservations d'hôtels",
+      "vacationRentals": "Locations de vacances",
+      "carRentals": "Locations de voitures",
+      "propertySales": "Ventes de propriétés",
+      "businessTravel": "Voyages d'affaires"
+    },
+    "company": {
+      "companyName": "Services de réservation professionnels",
+      "aboutUs": "À propos de nous",
+      "terms": "Conditions d'utilisation",
+      "privacy": "Politique de confidentialité",
+      "partner": "Partenariat avec nous"
+    },
+    "social": {
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "tiktok": "TikTok"
+      },
+    "copyright": "© {{year}} Services de réservation professionnels. Tous droits réservés."
+  }
+} 

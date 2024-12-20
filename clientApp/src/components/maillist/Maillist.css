@@ -1,0 +1,24 @@
+.mail {
+    width: 100%;
+}
+.mailList {
+    width: 100%;
+    max-width: 1024px;
+}
+
+.mailInputContainer input{
+    padding: 10px 20px;
+    outline: none;
+    border: none;
+    border-radius: 4px 0 0 4px;
+}
+
+
+.mailInputContainer button{
+    padding: 10px 10px;
+    outline: none;
+    border: none;
+    border-radius:  0 4px 4px 0;
+    background-color: #EF6C33;
+    margin-left: 6px;
+}

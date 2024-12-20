@@ -1,0 +1,123 @@
+.experiencesContainer {
+    position: relative;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.moroccanExperiences {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.moroccanExperiences::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.moroccanExperiences {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.experienceItem {
+    flex: 0 0 auto;
+    width: 90%; /* Adjust for mobile */
+    scroll-snap-align: center;
+    height: 400px;
+    background-image: linear-gradient(135deg, #34b5e8 0%, #0f3443 100%);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    padding: 1px;
+}
+
+.experienceItem:hover {
+    box-shadow: 0 4px 15px rgb(255, 102, 1);
+    transform: translateY(-2px);
+}
+
+.experienceContent {
+    background-color: #ffffff;
+    height: 100%;
+    border-radius: 11px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.experienceContent:hover {
+    transform: scale(0.98);
+}
+
+.experienceItem img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.experienceTitle {
+    color: #000000;
+    padding: 15px 15px 10px;
+    font-weight: 600;
+}
+
+.experienceDesc {
+    color: #f1f1f1;
+}
+
+.experiencePrice {
+    color: #ff8800;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* Optional: Add scroll buttons */
+.scrollButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgb(255, 102, 1);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.scrollButton.left {
+    left: -20px;
+    top: 46%;
+}
+
+.scrollButton.right {
+    right: -16px;
+    top: 46%;
+}
+
+@media (max-width: 768px) {
+    .experienceItem {
+        flex: 0 0 250px;
+        height: 350px;
+    }
+    
+    .experienceItem img {
+        height: 160px;
+    }
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .experienceItem {
+        width: 270px; /* Or your desired desktop width */
+    }
+} 

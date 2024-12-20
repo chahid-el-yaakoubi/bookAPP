@@ -1,0 +1,122 @@
+.properties h2 {
+    display: none;
+}
+.featuredItem {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 250px;
+}
+
+.featuredImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featuredTitles {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+}
+
+/* Tablet */
+@media screen and (min-width: 768px) {
+    .featured {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 0 30px;
+    }
+
+    .featuredItem {
+        flex: 0 0 calc(50% - 10px);
+        height: 300px;
+    }
+}
+
+/* Desktop */
+@media screen and (min-width: 1024px) {
+    .featured {
+        flex-wrap: nowrap;
+        padding: 0;
+    }
+
+    .featuredItem {
+        flex: 1;
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+  .featured {
+    overflow: hidden;
+  }
+  
+  .featured > div {
+    scroll-behavior: smooth;
+  }
+  
+  .featuredItem {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .featuredTitle {
+  
+    padding: 20px;
+    width: 100%;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-enter {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.slide-transition {
+  transition: transform 500ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content-animation {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* For backdrop blur support */
+@supports (backdrop-filter: blur(4px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+}

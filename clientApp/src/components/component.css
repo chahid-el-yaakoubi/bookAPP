@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&family=Rubik+Wet+Paint&display=swap');
+.testfont {
+    font-family: "Rubik Wet Paint", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+button:hover {
+    scale: 0.98;
+    opacity: 0.9;
+}
+/* navbar */
+
+nav,
+.header,
+.footerContainer {
+    max-width: 1024px;
+    width: 100%;
+
+}
+footer {
+    width: 100%;
+}
+
+
+.header .headerListItem span{
+    font-size: 12px;
+    display: inline-block;
+    font-weight: 500;
+    /* font-style: italic; */
+    cursor: pointer;
+
+}
+
+.header .headerListItem span {
+    margin-left: 10px;
+}
+
+.active {
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 4px 10px;
+    background-color: #ABDFF1;
+    color: black;
+}
+
+.active .activeIcon {
+    /* color: #00a2ff; */
+    font-size: 20px
+}
+.searchItem .test input,
+.searchItem .test span {
+    /* background: red; */
+    height: 30px;
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    
+}
+
+.searchItem .searchCompenet span {
+    cursor: pointer; 
+    height: 30px;
+}
+.searchItem .searchCompenet {
+    height: 50px   ;
+    /* padding: 12px 6px; */
+    width: 100%;
+}
+.searchItem button {
+    height: 50px;
+    border-radius: 0;
+    border: none;
+    outline: none;
+}
+
+.searchItem  {
+    background-color: white;
+    border-radius: 10px;
+
+}
+.searshbar {
+   bottom:-30px;
+   max-width: 1024px;
+   width: 100%;
+
+}
+  
+DateRange .rdrDayStartOfWeek {
+    background: red
+}
+
+.date {
+    position: absolute;
+    top: 54px;
+    left: -20px;
+    border-radius: 10px;
+    z-index: 100;
+    
+}
+
+.date span {
+    font-weight: 500;
+    height: 30px;
+    padding: 0;
+}
+
+
+.optionItem button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+/* alertInput */
+.alertInput {
+    font-size:10px
+}

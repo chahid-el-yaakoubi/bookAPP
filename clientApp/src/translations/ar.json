@@ -1,0 +1,125 @@
+{
+    "dir": "rtl",
+    "general": {
+      "from": "من",
+      "to": "إلى"
+    },
+  "header": {
+    "menu": {
+      "home": "كراء المنازل",
+      "explore": " العقارات",
+      "location": "تأجير سيارات",
+      "taxi": "سيارة أجرة"
+    }
+  },
+  "navbar": {
+    "search": "بحث",
+    "currency": "العملة",
+    "language": "اللغة",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "confirmLogout": "تأكيد تسجيل الخروج",
+    "logoutMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "cancel": "إلغاء",
+    "count": "الحساب"
+  },
+    "search": {
+      "whereTo": "أين ستذهب؟",
+      "adults": "أطفال",
+      "children": "أطفال",
+      "rooms": "غرف",
+      "search": "بحث",
+      "selectDates": "تحديد التواريخ",
+      "ageText": {
+        "adults": "13 سنة وأكثر",
+        "children": "2 إلى 12 سنة"
+      },
+      "alertMessage": "يرجى تحديد مقصد لبدء البحث.",
+      "plural": {
+        "adult": ["أطفال", "أطفال"],
+        "child": ["أطفال", "أطفال"],
+        "room": ["غرفة", "غرف"]
+      }
+    },
+    "featured": {
+      "title": "أفضل العروض",
+      "welcomeDiscount": "خصم الترحيب",
+      "weekendSpecial": "عرض نهاية الأسبوع",
+      "nightOwlSpecial": "عرض السهر الليلي",
+      "specialOffer": "عرض خاص",
+      "endsIn": "ينتهي في",
+      "firstTimeVisitor": "زائر لأول مرة!",
+      "bookNow": "حجز الآن"
+    },
+    "properties": {
+      "properties": "المنازل",
+      "viewAll": "عرض الكل",
+      "hotels": {
+        "title": "فنادق",
+        "description": "فنادق مودرن في مدينة الناظور في المركز وبالقرب من البحيرة المارشيكا"
+      },
+      "apartments": {
+        "title": "شقق",
+        "description": "شقق مفروشة بأرضيات متروكة بأرضيات متروكة بأرضيات متروكة بأرضيات متروكة بأرضيات متروكة بأرضيات متروكة"
+      },
+      "BeachResorts": {
+        "title": "منازل ساحلية",
+        "description": "منازل ساحلية بالقرب من الشواطئ المارشيكية بمدينة الناظور بما في ذلك الشاطئ المارشيكي والشاطئ المارشيكي"
+      },
+      "Riads": {
+        "title": "رياد",
+        "description": "منازل مغربية تقليدية بحدائق داخلية بمدينة الناظور القديمة"
+      },
+      "VacationHomes": {
+        "title": "منازل إجازة",
+        "description": "منازل إجازة خاصة بمدينة الناظور"
+      }
+    },
+    "homeTitle":{
+      "DiscoverNador": "اكتشف الناظور",
+      "BrowseByPropertyType": "تصفح حسب نوع العقار",
+      "HomesGuestsLove": "المنازل التي يحبها الضيوف"
+    },
+    "FeaturedProperties": {
+      "perNight": "للليلة",
+      "ratings": {
+        "exceptional": "مثالي",
+        "excellent": "مثالي",
+        "veryGood": "جيد جدا",
+        "good": "جيد"
+      },
+      "reviews": "{{count}} تعليقات",
+      "city": "الناظور",
+      "bookNow": "حجز الآن"
+    },
+  "footer": {
+    "contactUs": "تواصل معنا",
+    "companyName": "خدمات الحجز المهنية",
+    "phone": "الهاتف: {{phone}}",
+    "email": "البريد الإلكتروني: {{email}}",
+    "ourServices": "خدماتنا",
+    "services": {
+      "hotelBookings": "حجز الفنادق",
+      "vacationRentals": "تأجير الإجازة",
+      "carRentals": "تأجير السيارات",
+      "propertySales": "بيع العقارات",
+      "businessTravel": "سفر الأعمال"
+    },
+    
+    "company": {
+      "companyName": "خدمات الحجز المهنية",
+      "aboutUs": "عنا",
+      "terms": "الشروط والأحكام",
+      "privacy": "سياسة الخصوصية",
+      "partner": "تعاون معنا"
+    },
+    "social": {
+        "facebook": "فيسبوك",
+        "instagram": "انستغرام",
+        "tiktok": "تيك توك"
+      },
+    "copyright": "© {{year}} خدمات الحجز المهنية. كل الحقوق محفوظة."
+  }
+}

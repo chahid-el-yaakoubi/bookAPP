@@ -1,0 +1,125 @@
+{
+    "dir": "ltr",
+    "general": {
+      "from": "ⵣⴳ",
+      "to": "ⵖⵔ"
+    },
+    "header": {
+      "menu": {
+        "home": "ⵜⴰⴷⴷⴰⵔⵜ",
+        "explore": "ⵙⵉⴳⴳⵍ",
+        "location": "ⴽⵔⴰ ⵏ ⵜⴰⵏⴰⵎⴰⵙⵜ",
+        "taxi": "ⵜⴰⴽⵙⵉ"
+      }
+    },
+    "navbar": {
+      "search": "ⵔⵣⵓ",
+      "currency": "ⴰⵣⵔⴼ",
+      "language": "ⵜⵓⵜⵍⴰⵢⵜ",
+      "login": "ⴽⵛⵎ",
+      "register": "ⵣⵎⵎⵎ",
+      "profile": "ⴰⵎⵍⵢ",
+      "logout": "ⴼⴼⵖ",
+      "confirmLogout": "ⵙⵏⵜⵎ ⵜⵓⴼⴼⵖⴰ",
+      "logoutMessage": "ⵉⵙ ⵜⵅⵙⴷ ⴰⴷ ⵜⴼⴼⵖⴷ?",
+      "cancel": "ⵙⵔ",
+      "count": "ⴰⵎⵉⴷⴰⵏ"
+    },
+    "search": {
+      "whereTo": "ⵎⴰⵏⵉ ⵜⵔⵉⴷ ⴰⴷ ⵜⴷⴷⵓⴷ?",
+      "adults": "ⵉⵎⵇⵔⴰⵏⵏ",
+      "children": "ⵉⵎⵣⵢⴰⵏⵏ",
+      "rooms": "ⵉⵅⴰⵎⵏ",
+      "search": "ⵔⵣⵓ",
+      "selectDates": "ⴼⵔⵏ ⴰⵙⴰⴽⵓⴷ",
+      "ageText": {
+        "adults": "13 ⵉⵙⴳⴳⵯⴰⵙⵏ ⴷ ⵓⴳⴳⴰⵔ",
+        "children": "2 ⴰⵔ 12 ⵉⵙⴳⴳⵯⴰⵙⵏ"
+      },
+      "alertMessage": "ⵎⴽ ⵜⵅⵙⴷ ⴰⴷ ⵜⵔⵣⵓⴷ, ⴼⵔⵏ ⴰⵏⵙⴰ.",
+      "plural": {
+        "adult": ["ⴰⵎⵇⵔⴰⵏ", "ⵉⵎⵇⵔⴰⵏⵏ"],
+        "child": ["ⴰⵎⵣⵢⴰⵏ", "ⵉⵎⵣⵢⴰⵏⵏ"],
+        "room": ["ⴰⵅⴰⵎ", "ⵉⵅⴰⵎⵏ"]
+      }
+    },
+    "featured": {
+      "title": "ⵜⵉⵎⵙⵙⵓⵎⴰⵏⵉⵏ ⵢⵓⴼⵏⵉⵏ",
+      "welcomeDiscount": "ⴰⵣⵎⵣⵍ ⵏ ⵜⴰⵔⵃⵃⴰⴱⵜ",
+      "weekendSpecial": "ⴰⵎⵢⴰⵡⴰⴷ ⵏ ⵜⴰⴳⴰⵔⴰ ⵏ ⵉⵎⴰⵍⴰⵙⵙ",
+      "nightOwlSpecial": "ⴰⵎⵢⴰⵡⴰⴷ ⵏ ⵢⵉⴷ",
+      "specialOffer": "ⴰⵎⵢⴰⵡⴰⴷ ⵓⵣⵉⴼⵏ",
+      "endsIn": "ⴰⴷ ⵉⴽⵎⵎⵍ ⴷⵉ",
+      "firstTimeVisitor": "ⴰⵎⵙⵜⴳⴳⴰ ⴰⵎⴰⵢⵏⵓ!",
+      "bookNow": "ⵃⵊⵣ ⴷⵖⵢⴰ"
+    },
+    "properties": {
+      "properties": "ⵜⵉⴳⵎⵎⴰⵢ",
+      "viewAll": "ⵣⵔ ⵎⴰⵔⵔⴰ",
+      "hotels": {
+        "title": "ⵉⵀⵓⵜⵉⵍⵏ",
+        "description": "ⵉⵀⵓⵜⵉⵍⵏ ⵉⵎⴰⵢⵏⵓⵜⵏ ⴷⵉ ⵜⵎⴷⵉⵏⵜ ⵏ ⵏⵏⴰⴷⵓⵔ ⴷ ⵜⴰⵎⴰ ⵏ ⵜⴰⴳⵓⵜ ⵏ ⵎⴰⵔⵛⵉⴽⴰ"
+      },
+      "apartments": {
+        "title": "ⵜⴰⵏⵣⵣⴰⵖⵉⵏ",
+        "description": "ⵉⵅⵅⴰⵎⵏ ⵏ ⵜⵎⵇⴱⵔⵜ ⵙ ⵜⵎⵓⵖⵍⵉ ⵏ ⵢⵉⵍⵍ ⴰⴳⵔⴰⴽⴰⵍ ⴷⴳ ⵏⴰⴷⵓⵔ"
+      },
+      "BeachResorts": {
+        "title": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⴰⴼⵜⵉⵙⵜ",
+        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⴰⴼⵜⵉⵙⵜ ⵖⵔ ⵜⴰⵎⴰ ⵏ ⵜⴰⴼⵜⵉⵙⵉⵏ ⵏ ⵏⵏⴰⴷⵓⵔ"
+      },
+      "Riads": {
+        "title": "ⵔⵔⵢⴰⴷ",
+        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵜⵉⵎⵖⵔⵉⴱⵉⵢⵉⵏ ⵜⵉⵇⴱⵓⵔⵉⵏ ⵙ ⵓⵔⵜⵉ ⴷⵉ ⵜⵎⴷⵉⵏⵜ ⵜⴰⵇⴱⵓⵔⵜ ⵏ ⵏⵏⴰⴷⵓⵔ"
+      },
+      "VacationHomes": {
+        "title": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⵙⵜⵔⵉⵜ",
+        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⵙⵜⵔⵉⵜ ⵖⵓⵙⵍⵉⴳⵉⵏ ⴷⵉ ⵏⵏⴰⴷⵓⵔ"
+      }
+    },
+    "homeTitle": {
+      "DiscoverNador": "ⵙⵏⵓⴱⴳ ⵏⵏⴰⴷⵓⵔ",
+      "BrowseByPropertyType": "ⵔⵣⵓ ⵙ ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⴳⵎⵎⴰ",
+      "HomesGuestsLove": "ⵜⵉⴳⵎⵎⴰⵢ ⵅⴼ ⵜⵜⵅⵙⵏⵜ ⵏⵊⵊⵉⵡⵏ"
+    },
+    "FeaturedProperties": {
+      "perNight": "ⵉ ⵢⵉⴷ",
+      "ratings": {
+        "exceptional": "ⵉⴼⵓⵍⴽⵉ ⴰⵜⵜⴰⵙ",
+        "excellent": "ⵉⴼⵓⵍⴽⵉ",
+        "veryGood": "ⵉⵀⵍⴰ ⴱⵣⵣⴰⴼ",
+        "good": "ⵉⵀⵍⴰ"
+      },
+      "reviews": "{{count}} ⵜⵉⵣⵎⵉⵎⵉⵏ",
+      "city": "ⵏⵏⴰⴷⵓⵔ",
+      "bookNow": "ⵃⵊⵣ ⴷⵖⵢⴰ"
+    },
+    "footer": {
+      "contactUs": "ⵜⵓⵙⵜⵓⵙⵉ",
+      "companyName": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ ⵏ ⵉⵍⵍⴰⵙⵙⵉⵜ",
+      "phone": "ⵜⴰⵙⵔⵉⵙ: {{phone}}",
+      "email": "ⵉⵙⵙⵓⵙ: {{email}}",
+      "ourServices": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ",
+      "services": {
+        "hotelBookings": "ⵜⵉⵃⵊⵓⵔⵉⵏ ⵏ ⵉⵀⵓⵜⵉⵍⵏ",
+        "vacationRentals": "ⵜⵉⴽⵔⵡⴰⵜⵉⵏ ⵏ ⵜⵙⵜⵔⵉⵜ",
+        "carRentals": "ⵜⵉⴽⵔⵡⴰⵜⵉⵏ ⵏ ⵜⴽⵉⵔⵔⵓⵙⵜ",
+        "propertySales": "ⵜⵉⵣⵏⵣⴰ ⵏ ⵜⵉⴳⵎⵎⴰⵢ",
+        "businessTravel": "ⵉⵎⵓⴷⴷⴰ ⵏ ⵜⵓⵔⵉ"
+      },
+      "company": {
+        "companyName": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ",
+        "aboutUs": "ⵅⴼ ⵏⵏⵔ",
+        "terms": "ⵜⵉⵙⵖⴰⵍ ⵏ ⵓⵙⵎⵔⵙ",
+        "privacy": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵜⵓⵙⵍⵉⴳⵜ",
+        "partner": "ⵜⴰⵎⵓⵏⵜ ⴰⴽⴷⵏⵖ"
+      },
+      "social": {
+        "facebook": "ⴼⴰⵢⵙⴱⵓⴽ",
+        "instagram": "ⵉⵏⵙⵜⴰⴳⵔⴰⵎ",
+        "tiktok": "ⵜⵉⴽⵜⵓⴽ"
+      },
+      "copyright": "© {{year}} ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ. ⵜⵉⴽⵍ ⵏ ⵜⵉⵙⵉⵍⵜ."
+    }
+
+  }

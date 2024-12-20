@@ -1,0 +1,260 @@
+{
+  "dir": "ltr",
+  "general": {
+    "from": "From",
+    "to": "To"
+  },
+  "header": {
+    "menu": {
+      "home": "House Rental",
+      "explore": "Real Estate",
+      "location": "Car Rental",
+      "taxi": "Taxi"
+    }
+  },
+  "navbar": {
+    "search": "Search",
+    "currency": "Currency",
+    "language": "Language",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "logout": "Logout",
+    "confirmLogout": "Confirm Logout",
+    "logoutMessage": "Are you sure you want to logout?",
+    "cancel": "Cancel",
+    "count": "Count"
+  },
+  "search": {
+    "whereTo": "Where are you going?",
+    "adults": "Adults",
+    "children": "Children",
+    "rooms": "Rooms",
+    "search": "Search",
+    "selectDates": "Select dates",
+    "ageText": {
+      "adults": "13 years and older",
+      "children": "Ages 2-12"
+    },
+    "alertMessage": "Please enter a destination to start searching.",
+    "plural": {
+      "adult": ["adult", "adults"],
+      "child": ["child", "children"],
+      "room": ["room", "rooms"]
+    }
+  },
+  "featured": {
+    "title": "Best Offers",
+    "welcomeDiscount": "Welcome Discount",
+    "weekendSpecial": "Weekend Special",
+    "nightOwlSpecial": "Night Owl Special",
+    "specialOffer": "Special Offer",
+    "endsIn": "Ends in",
+    "firstTimeVisitor": "First Time Visitor!",
+    "bookNow": "Book Now"
+  },
+  "properties": {
+    "properties": "Properties",
+    "viewAll": "View All",
+    "hotels": {
+      "title": "Hotels",
+      "description": "Modern hotels in Nador city center and near Marchica Lagoon"
+    },
+    "apartments": {
+      "title": "Apartments",
+      "description": "Furnished apartments with Mediterranean views in Nador and surrounding areas"
+    },
+    "BeachResorts": {
+      "title": "Beach Resorts",
+      "description": "Seaside resorts near Nador beaches including Bocana Beach and Kariat Arekmane"
+    },
+    "Riads": {
+      "title": "Riads",
+      "description": "Traditional Moroccan houses with interior gardens in Nador medina"
+    },
+    "VacationHomes": {
+      "title": "Vacation Homes",
+      "description": "Private vacation homes in Nador"
+    }
+  },
+  "homeTitle": {
+    "DiscoverNador": "Discover Nador",
+    "BrowseByPropertyType": "Browse by property type",
+    "HomesGuestsLove": "Homes guests love"
+  },
+  "FeaturedProperties": {
+    "perNight": "per night",
+    "ratings": {
+      "exceptional": "Exceptional",
+      "excellent": "Excellent",
+      "veryGood": "Very Good",
+      "good": "Good"
+    },
+    "reviews": "reviews {{count}}",
+    "city": "Nador",
+    "bookNow": "Book Now"
+  },
+  "footer": {
+    "contactUs": "Contact Us",
+    "companyName": "Professional Booking Services",
+    "phone": "Phone: {{phone}}",
+    "email": "Email: {{email}}",
+    "ourServices": "Our Services",
+    "services": {
+      "hotelBookings": "Hotel Bookings",
+      "vacationRentals": "Vacation Rentals",
+      "carRentals": "Car Rentals",
+      "propertySales": "Property Sales",
+      "businessTravel": "Business Travel"
+    },
+    "company": {
+      "companyName": "Professional Booking Services",
+      "aboutUs": "About Us",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy",
+      "partner": "Partner With Us"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok"
+    },
+    "copyright": "© {{year}} Professional Booking Services. All rights reserved."
+  },
+  "hotel": {
+    "HotelNavMenu": {
+      "overview": "Overview",
+      "info": "Info & Prices",
+      "area": "Location",
+      "facilities": "Facilities",
+      "rules": "Rules",
+      "print": "Details"
+    },
+    "FeaturedAmenities": {
+      "pool": "Swimming Pool",
+      "parking": "Free Parking",
+      "restaurant": "Restaurant",
+      "wifi": "Free WiFi",
+      "spa": "Spa Services",
+      "bar": "Bar & Lounge",
+      "roomService": "Room Service",
+      "ac": "Air Conditioning"
+    },
+    "HotelBookingBox": {
+      "ratingText": "Excellent",
+      "reviews": "reviews {{count}}",
+      "price": "Price for {{nights}} nights",
+      "priceValue": "MAD {{price}}",
+      "includes": "Includes taxes and fees",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guests": "Guests",
+      "reserveNow": "Reserve Now"
+    },
+    "AreaInfo": {
+      "title": "Area info",
+      "bestRates": "Best rates guaranteed - Book directly with us!",
+      "bookNow": "Book Now",
+      "location": "Excellent location – show map",
+      "whatsNearby": "What's nearby",
+      "forbesMuseum": "Forbes Museum of Tangier",
+      "jardinMendoubia": "Jardin de la Mendoubia",
+      "darElMakhzen": "Dar el Makhzen",
+      "kasbahMuseum": "Kasbah Museum",
+      "americanLegationMuseum": "American Legation Museum",
+      "placeAinKtiouet": "Place Ain Ktiouet",
+      "parcPerdicaris": "Parc Perdicaris",
+      "capeMalabata": "Cape Malabata",
+      "cafeDeParque": "Cafe De Parque",
+      "cafeHanafta": "Cafe Hanafta",
+      "salonDeThe": "Salon de the",
+      "tangerVille": "Tanger Ville",
+      "tgvDepot": "TGV Depot",
+      "tangierMunicipalBeach": "Tangier Municipal Beach",
+      "beachesNeighborhood": "Beaches in the Neighborhood",
+      "malabata": "Malabata",
+      "plageGhandouri": "Plage Ghandouri",
+      "plageMrisat": "Plage Mrisat",
+      "closestAirports": "Closest Airports",
+      "tangierIbnBattutaAirport": "Tangier Ibn Battuta Airport",
+      "saniaRamelAirport": "Sania Ramel Airport",
+      "ceutaHeliport": "Ceuta Heliport",
+      "shortestDistances": "Shortest estimated walking or driving distances displayed. Actual distances may vary."
+    }
+  },
+  "HotelFacilities": {
+    "title": "Highlights",
+    "nonSmokingRooms": "Non-smoking rooms",
+    "fitnessCenter": "Fitness center",
+    "floorService": "Floor service",
+    "disabilityEquipment": "Disability equipment",
+    "restaurant": "Restaurant",
+    "freeParking": "Free parking",
+    "beachFront": "Beachfront",
+    "bouilloire": "Kettle in all units",
+    "bar": "Bar",
+    "breakfast": "Excellent breakfast",
+    "idealForYourStay": "Perfect for your stay",
+    "beach": "Beach",
+    "wifi": "Free WiFi",
+    "airConditioning": "Air conditioning",
+    "parking": "Parking",
+    "shuttleService": "Shuttle service",
+    "familyRooms": "Family rooms",
+    "bathroom": "Bathroom",
+    "articlesToilette": "Free toiletries",
+    "hairDryer": "Hair dryer",
+    "kitchen": "Kitchen",
+    "refrigerator": "Refrigerator",
+    "petsAllowed": "Pets allowed (surcharge may apply)",
+    "activities": "Activities",
+    "highTech": "High-tech",
+    "flatScreenTV": "Flat-screen TV",
+    "phone": "Phone",
+    "tv": "Television",
+    "wine": "Wine/champagne",
+    "childrenMenu": "Children's menu",
+    "snackBar": "Snack bar",
+    "wifiAvailable": "Free WiFi is available throughout the property",
+    "reception": "Reception",
+    "baggage": "Baggage storage",
+    "reception24h24": "24-hour front desk",
+    "dryCleaning": "Dry cleaning",
+    "laundry": "Laundry",
+    "businessServices": "Business services",
+    "fax": "Fax/photocopies",
+    "meetingRooms": "Meeting/banquet facilities",
+    "security": "Security",
+    "extinguishers": "Fire extinguishers",
+    "surveillance": "Security cameras outside property",
+    "smokeDetectors": "Smoke detectors",
+    "securityAlarm": "Security alarm",
+    "accessCards": "Access cards",
+    "accessKeys": "Access keys",
+    "security24h24": "24-hour security",
+    "safe": "Safe",
+    "general": "General",
+    "supermarket": "On-site convenience store",
+    "smokingArea": "Smoking area",
+    "heating": "Heating",
+    "elevator": "Elevator",
+    "laundryService": "Ironing facilities",
+    "toiletWithHandrails": "Toilet with handrails",
+    "wheelchairAccessible": "Wheelchair accessible",
+    "wellness": "Wellness",
+    "fitness": "Fitness",
+    "languages": "Languages spoken",
+    "arabic": "Arabic",
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "French",
+    "missingInformation": "Missing some information?"
+  },
+  "FAQ": {
+    "missingInformation": "Missing some information?",
+    "yes": "Yes",
+    "no": "No"
+  }
+} 
+
+  

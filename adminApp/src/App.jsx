@@ -17,10 +17,10 @@ import NewHotel from './pages/House/hotels/newHotel'
 
 // Style imports
 import './index.css'
-import UpdateHotel from './pages/House/hotels/UpdateHotel';
+// import UpdateHotel from './pages/House/hotels/UpdateHotel';
 import { PageDiscount } from './pages/PageDiscount/PageDiscount';
-import NewHotelTest from './pages/House/hotels/newTest';
-import PropertyForm from './pages/House/hotels/newTest';
+// import NewHotelTest from './pages/House/hotels/newTest';
+// import PropertyForm from './pages/House/hotels/newTest';
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -87,10 +87,7 @@ function App() {
               </ProtectedRoute>
             } />
           </Route>
-          <Route path="testt" element={
-            <PropertyForm />
-
-          } />
+          
           <Route path="discount" element={
             <ProtectedRoute>
               <PageDiscount type="/" />

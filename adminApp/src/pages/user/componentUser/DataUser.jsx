@@ -52,8 +52,27 @@ const DataUser = () => {
         },
     ];
 
-    const handleDelete = (id) => {
-        setData(data.filter((item) => item._id !== id));
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this user?")) {
+            try {
+                const response = await fetch(`/api/users/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    setData(data.filter((item) => item._id !== id));
+                    alert("User deleted successfully!");
+                } else {
+                    alert("Error deleting user");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error deleting user");
+            }
+        }
     };
 
     const actionColumn = [

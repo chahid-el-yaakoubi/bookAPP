@@ -28,7 +28,7 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
   };
 
   return (
-    <div className={`${isOpen ? 'w-48' : 'w-20'} bg-blue-600 min-h-screen bg-blue-500 border-r border-gray-200 transition-all duration-300 maw-h-screen`}>
+    <div className={`${isOpen ? 'w-48' : 'w-20'} bg-blue-600 min-h-screen bg-blue-500 border-r border-gray-200 transition-all duration-300 maw-h-screen fixed top-0 left-0 z-50`}>
       <div className="h-12 flex items-center justify-between px-4">
         <Link to="/" className="no-underline">
           <span className={`${isOpen ? 'block' : 'hidden'} text-xl font-bold`}>

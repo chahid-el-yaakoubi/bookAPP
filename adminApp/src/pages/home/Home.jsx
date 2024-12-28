@@ -10,6 +10,7 @@ const Home = () => {
 
     return (
         <Layout children={<>
+            <div className="">
             <div className="flex gap-5 p-5">
                 <Widget type="user" />
                 <Widget type="order" />
@@ -18,6 +19,9 @@ const Home = () => {
                 <Widget type="order" />
                 <Widget type="user" />
             </div>
+
+            </div>
+            
   
             <div className="flex gap-5 mt-10 p-5">
                 <Featured />

@@ -249,7 +249,7 @@ const hotelSchema = new mongoose.Schema({
 
   // Policies
   policies: {
-    pets: {
+    pets: { 
       allowed: Boolean,
     },
     smoking: {

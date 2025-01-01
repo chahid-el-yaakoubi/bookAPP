@@ -14,7 +14,7 @@ const Layout = ({ children, use }) => {
             <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} use={use} />
             <div className={`w-full   scrollbar-hide transition-all duration-300 ${sidebarOpen ? 'ml-48' : 'ml-20'}`}>
                 {/* <NavBar closeSide={sidebarOpen} /> */}
-                {children}
+                {children  }
             </div>
         </div>
     );

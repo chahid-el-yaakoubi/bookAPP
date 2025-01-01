@@ -6,7 +6,7 @@ import moment from "moment";
 import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 
-const Hotels = () => {
+const Hotels = ({sideOpen}) => {
 
     
     const { data: fetchedData, loading, error } = useFetch(`/api/hotels`);
@@ -233,7 +233,7 @@ const Hotels = () => {
     ];
 
     return (
-        <div style={{ fontSize: "12px" }} className="p-2 sm:p-4 md:p-6 max-w-[98vw]  md:max-w-[86vw]  mx-auto container-fluid h-[100vh] md:h-[98vh] overflow-hidden">
+        <div style={{ fontSize: "12px" }} className={`p-2 sm:p-4 md:p-6 w-auto  mx-auto  h-[100vh]`}>
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Hotels List</h2>
 
@@ -258,7 +258,7 @@ const Hotels = () => {
                     Add New Hotel
                 </Link>
             </div>
-            <div className="bg-white rounded-lg shadow-sm h-[calc(96vh-100px)] md:h-[calc(96vh-80px)] w-full">
+            <div className="bg-white rounded-lg shadow-sm ">
                 <DataGrid style={{ fontSize: "11px", width: "100%" }}
                     rows={data}
                     columns={hotelColumns.concat(actionColumn)}

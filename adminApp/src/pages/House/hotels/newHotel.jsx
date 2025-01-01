@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel, faCity, faLocationDot, faMoneyBill, faBed, faStar, faPhone, faWifi, faParking, faSwimmingPool, faUtensils, faDumbbell, faBath, faSnowflake, faKitchenSet, faTv, faPeopleRoof, faWater, faCarSide, faMugHot, faShower, faDesktop, faTvAlt, faElevator, faUmbrella, faUmbrellaBeach, faTree, faGamepad, faMusic, faBicycle, faPersonWalking, faHorse, faBiking, faPersonHiking, faWind, faTableTennis, faConciergeBell, faMoneyBillTransfer, faClock, faBaby, faStore, faScissors, faSmoking, faVolumeXmark, faFireExtinguisher, faShieldHalved, faKey, faSpa, faEye, faToilet, faDoorClosed, faChair, faPlus, faMinus, faPlug, faTable, faSquare, faDoorOpen, faBuilding, faHouse, faStairs, faCamera, faBell, faSmokingBan, faFileInvoice, faCloudUpload, faCalendarDays, faHourglassHalf, faMoon, faMoneyBillWheat, faCouch, faTimes, faBroom, faTshirt } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { City, Neighborhood, Region } from "./Location";
 
 function NewHotel() {
     const navigate = useNavigate()
@@ -19,16 +20,21 @@ function NewHotel() {
     ]);
     const [hotelId, setHotelId] = useState(id || null); // Set hotelId from URL or null
 
+    // location 
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
+
     // Initial form state
     const [formData, setFormData] = useState({
         name: "",
         title: "",
         type: "",
         location: {
+            region: "",
             city: "",
-            address: "",
-            latitude: "",
-            longitude: "",
+            neighborhood: "",
+            latitudeLongitude: "",
             distanceFromCityCenter: "",
 
         },
@@ -872,10 +878,10 @@ function NewHotel() {
             title: "",
             type: "",
             location: {
+                region: "",
                 city: "",
-                address: "",
-                latitude: "",
-                longitude: "",
+                neighborhood: "",
+                latitudeLongitude: "",
                 distanceFromCityCenter: "",
             },
             description: "",
@@ -1101,16 +1107,22 @@ function NewHotel() {
             const fetchHotelData = async () => {
                 try {
                     const response = await axios.get(`/api/hotels/find/${hotelId}`);
+
+                    setSelectedRegion(response.data.location?.region || "")
+                    setSelectedCity(response.data.location?.city || "")
+                    setSelectedNeighboorhd(response.data.location?.neighborhood || "")
+
                     setFormData({
                         name: response.data.name || "",
                         title: response.data.title || "",
                         type: response.data.type || "",
                         location: {
-                            city: response.data.location?.city || "",
-                            address: response.data.location?.address || "",
-                            latitude: response.data.location?.latitude || "",
-                            longitude: response.data.location?.longitude || "",
+                            region: selectedRegion || "",
+                            city: selectedCity || "",
+                            neighborhood: selectedNeighboorhd || "",
+                            latitudeLongitude: response.data.location?.latitudeLongitude || "",
                             distanceFromCityCenter: response.data.location?.distanceFromCityCenter || "",
+
                         },
                         contact: {
                             phone: response.data.contact?.phone || "",
@@ -1283,6 +1295,8 @@ function NewHotel() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log()
+
         try {
             // Validate check-in and check-out times
             // ... existing validation code ...
@@ -1293,10 +1307,11 @@ function NewHotel() {
                 title: formData.title,
                 type: formData.type,
                 location: {
-                    city: formData.location.city,
-                    address: formData.location.address,
-                    latitude: Number(formData.location.latitude),
-                    longitude: Number(formData.location.longitude),
+
+                    region: selectedRegion,
+                    city: selectedCity,
+                    neighborhood: selectedNeighboorhd,
+                    latitudeLongitude: formData.location.latitudeLongitude,
                     distanceFromCityCenter: Number(formData.location.distanceFromCityCenter),
                 },
                 contact: {
@@ -1338,27 +1353,29 @@ function NewHotel() {
                 amenities: formData.amenities,
                 proximity: {
                     nearbyPlaces: environmentSections[0].items.map(item => ({
-                        name: item.title,
+                        name: item.name,
                         distance: item.distance,
                     })),
                     restaurants: environmentSections[1].items.map(item => ({
-                        name: item.title,
+                        name: item.name,
                         distance: item.distance,
                     })),
                     publicTransit: environmentSections[3].items.map(item => ({
-                        name: item.title,
+                        name: item.name,
                         distance: item.distance,
                     })),
                     beaches: environmentSections[2].items.map(item => ({
-                        name: item.title,
+                        name: item.name,
                         distance: item.distance,
                     })),
                     airports: environmentSections[4].items.map(item => ({
-                        name: item.title,
+                        name: item.name,
                         distance: item.distance,
                     })),
                 },
             };
+
+            console.log(hotelData)
 
             if (hotelId) {
                 // Update existing hotel
@@ -1382,7 +1399,7 @@ function NewHotel() {
 
     const addEnvironmentItem = (index) => {
         const newSections = [...environmentSections];
-        newSections[index].items.push({ title: '', distance: '' });
+        newSections[index].items.push({ name: '', distance: '' });
         setEnvironmentSections(newSections);
     };
 
@@ -1416,14 +1433,14 @@ function NewHotel() {
     };
 
     return (
-        <div className="mx-auto   px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto  px-4 sm:px-6 lg:px-8">
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
                 </div>
             )}
             <form onSubmit={handleSubmit}>
-                <div className="p-6 m-6 bg-blue-50 max-h-[88vh] overflow-y-auto scrollbar-width-none rounded-lg shadow-md">
+                <div className="py-10">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold text-cyan-500">
                             <FontAwesomeIcon icon={faHotel} className="mr-2" />
@@ -1434,7 +1451,9 @@ function NewHotel() {
                         </Link>
                     </div>
 
-                    <div className="space-y-6 bg-white">
+                    
+
+                    <div className="space-y-6   p-12 bg-white">
                         <div className="">
                             <div className="space-y-4 grid gap-6 mb-6 md:grid-cols-3">
                                 <div className="bg-white rounded-lg p-4 mt-4">
@@ -1448,7 +1467,7 @@ function NewHotel() {
                                         value={formData.name}
                                         onChange={handleChange}
                                         placeholder="e.g. Hilton Garden Inn"
-                                        className={ `${formData.name.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.name.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1467,14 +1486,14 @@ function NewHotel() {
                                         value={formData.title}
                                         onChange={handleChange}
                                         placeholder="e.g. Luxury Beach Resort & Spa"
-                                        className={ `${formData.title.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.title.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
 
-                               
 
-                               
+
+
 
                                 <div className="bg-white rounded-lg p-4 ">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
@@ -1487,7 +1506,7 @@ function NewHotel() {
                                         value={formData.pricing.basePrice}
                                         onChange={handleChange}
                                         placeholder="e.g. 100"
-                                        className={ `${formData.pricing.basePrice !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.pricing.basePrice !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1501,7 +1520,7 @@ function NewHotel() {
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className={ `${formData.type.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 text-white "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.type.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 text-white "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     >
                                         <option value="">Select Property Type</option>
@@ -1531,7 +1550,7 @@ function NewHotel() {
                                                 min="0"
                                                 max="5"
                                                 step="0.1"
-                                                className={ `${(formData.rating !== 0 && formData.rating !== null) ? "bg-blue-100 text-black" : "bg-gray-700 text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                                className={`${(formData.rating !== 0 && formData.rating !== null) ? "bg-blue-100 text-black" : "bg-gray-700 text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                                 required
                                             />
                                             <div className="flex items-center">
@@ -1564,7 +1583,7 @@ function NewHotel() {
                                             name="rental.durationType"
                                             value={formData.rental.durationType}
                                             onChange={handleChange}
-                                            className={ `${formData.rental.durationType.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700  text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                            className={`${formData.rental.durationType.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700  text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                             required
                                         >
                                             <option value="">Select Duration Type</option>
@@ -1605,7 +1624,7 @@ function NewHotel() {
                                                 value={formData.rental.customDays}
                                                 onChange={handleChange}
                                                 min="1"
-                                                className={ `${formData.rental.customDays !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="0"
+                                                className={`${formData.rental.customDays !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="0"
                                                 required
                                             />
                                         </div>
@@ -1617,37 +1636,12 @@ function NewHotel() {
                             {/* loaction */}
                             <h4 className="text-3xl text-center bg-yellow-500  rounded-t-lg">Location</h4>
                             <div className="space-y-4 grid gap-6 mb-6 md:grid-cols-5 border-b-2 border-yellow-500 rounded-lg" >
-                            <div className="bg-white rounded-lg p-4 mt-4 ">
-                                    <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faCity} className="mr-2" />
-                                        City
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="location.city"
-                                        value={formData.location.city}
-                                        onChange={handleChange}
-                                        placeholder="e.g. New York"
-                                        className={ `${formData.location.city.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} 
-                                        required
-                                    />
-                                </div>
+                                <Region onRegionSelect={setSelectedRegion} regionValue={selectedRegion} onCitySelect={setSelectedCity} />
+                                <City region={selectedRegion} onCitySelect={setSelectedCity} cityValue = {selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} />
+                                <Neighborhood  city={selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} neighborhoodValue = {selectedNeighboorhd}  />
 
-                                <div className="bg-white rounded-lg p-4 "   >
-                                    <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faLocationDot} className="mr-2" />
-                                        Full Address
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="location.address"
-                                        value={formData.location.address}
-                                        onChange={handleChange}
-                                        placeholder="e.g. 123 Main Street"
-                                        className={ `${formData.location.address.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
-                                        required
-                                    />
-                                </div>
+
+                                
 
                                 <div className="bg-white rounded-lg p-4 ">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
@@ -1659,39 +1653,25 @@ function NewHotel() {
                                         value={formData.location.distanceFromCityCenter}
                                         onChange={handleChange}
                                         placeholder="e.g. 2.5"
-                                        className={ `${formData.location.distanceFromCityCenter !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.location.distanceFromCityCenter !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
 
+                            
                                 <div className="bg-white rounded-lg p-4 ">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
                                         <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                        latitude
+                                        latitudeLongitude
                                     </label>
                                     <input
                                         type="text"
-                                        name="location.latitude"
-                                        value={formData.location.latitude}
+                                        name="location.latitudeLongitude"
+                                        value={formData.location.latitudeLongitude}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={ `${formData.location.latitude !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
-                                        required
-                                    />
-                                </div>
-                                <div className="bg-white rounded-lg p-4 ">
-                                    <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                        longitude
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="location.longitude"
-                                        value={formData.location.longitude}
-                                        onChange={handleChange}
-                                        placeholder="e.g. +1234567890"
-                                        className={ `${formData.location.longitude !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
-                                        required
+                                        className={`${formData.location.latitudeLongitude !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+
                                     />
                                 </div>
                             </div>
@@ -1711,7 +1691,7 @@ function NewHotel() {
                                         value={formData.contact.phone}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={ `${formData.contact.phone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.contact.phone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1726,7 +1706,7 @@ function NewHotel() {
                                         value={formData.contact.bookPhone}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={ `${formData.contact.bookPhone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.contact.bookPhone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1742,7 +1722,7 @@ function NewHotel() {
                                         value={formData.contact.email}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={ `${formData.contact.email.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.contact.email.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1758,7 +1738,7 @@ function NewHotel() {
                                         value={formData.contact.website}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={ `${formData.contact.website.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${formData.contact.website.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
                                         required
                                     />
                                 </div>
@@ -1772,7 +1752,7 @@ function NewHotel() {
                                         <FontAwesomeIcon icon={faHotel} className="mr-2" />
                                         Description
                                     </label>
-                                    <textarea value={formData?.description} id="message" rows="4" name="description" onChange={handleChange} className={ `${formData.description.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="Write your thoughts here..."></textarea>
+                                    <textarea value={formData?.description} id="message" rows="4" name="description" onChange={handleChange} className={`${formData.description.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="Write your thoughts here..."></textarea>
                                 </div>
 
                             </div>
@@ -2086,9 +2066,9 @@ function NewHotel() {
 
                         <div className="flex items-center mb-4">
                             <h3 className="mt-4 text-orange-500 text-xl font-bold">Environment</h3>
-                            <button 
-                                type="button" 
-                                onClick={toggleEnvironment} 
+                            <button
+                                type="button"
+                                onClick={toggleEnvironment}
                                 className="btn btn-secondary ms-5 mt-2 bg-gray-300 hover:bg-gray-400 text-black font-semibold py-2 px-4 rounded"
                             >
                                 {showEnvironment ? 'Hide Environment' : 'Show Environment'}
@@ -2119,9 +2099,9 @@ function NewHotel() {
                                                         value={item.distance}
                                                         onChange={(e) => handleEnvironmentChange(sectionIndex, itemIndex, 'distance', e.target.value)}
                                                     />
-                                                    <button 
-                                                        type="button" 
-                                                        className="btn btn-danger btn-sm bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded" 
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger btn-sm bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded"
                                                         onClick={() => removeEnvironmentItem(sectionIndex, itemIndex)}
                                                     >
                                                         Remove
@@ -2129,9 +2109,9 @@ function NewHotel() {
                                                 </li>
                                             ))}
                                         </ul>
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-secondary mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" 
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
                                             onClick={() => addEnvironmentItem(sectionIndex)}
                                         >
                                             Add Item

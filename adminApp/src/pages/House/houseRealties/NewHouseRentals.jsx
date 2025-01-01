@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faCity, faLocationDot, faMoneyBill, faBed, faBath, faPhone, faEnvelope, faCalendarDays, faRulerCombined, faBuilding, faParking, faPaw, faWifi, faSnowflake, faFire, faElevator, faUtensils, faWater, faBolt, faFireBurner, faGlobe, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+// import { FormSection, InputField, SelectField, CheckboxField } from '../../../components/HouseRentals/FormSection';
 
 // Add this new component for section headers
 const SectionHeader = ({ icon, title }) => (
@@ -10,6 +11,69 @@ const SectionHeader = ({ icon, title }) => (
         <FontAwesomeIcon icon={icon} className="mr-3" />
         {title}
     </h3>
+);
+
+
+export const FormSection = ({ icon, title, children }) => (
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
+        <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
+            <FontAwesomeIcon icon={icon} className="mr-3" />
+            {title}
+        </h3>
+        {children}
+    </div>
+);
+
+export const InputField = ({ label, name, value, onChange, type = "text", required = false, placeholder = "" }) => (
+    <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+            {label}
+        </label>
+        <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            required={required}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+    </div>
+);
+
+export const SelectField = ({ label, name, value, onChange, options, required = false }) => (
+    <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+            {label}
+        </label>
+        <select
+            name={name}
+            value={value}
+            onChange={onChange}
+            required={required}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+        >
+            <option value="">Select {label}</option>
+            {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    </div>
+);
+
+export const CheckboxField = ({ label, name, checked, onChange }) => (
+    <label className="flex items-center space-x-3">
+        <input
+            type="checkbox"
+            name={name}
+            checked={checked}
+            onChange={onChange}
+            className="h-4 w-4 text-blue-600"
+        />
+        <span className="text-sm text-gray-700">{label}</span>
+    </label>
 );
 
 function NewHouseRentals() {
@@ -242,332 +306,290 @@ function NewHouseRentals() {
 
                 <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Basic Information */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                        <SectionHeader icon={faHouse} title="Basic Property Information" />
+                    <FormSection icon={faHouse} title="Basic Property Information">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField
+                                label="Property Name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                            <SelectField
+                                label="Property Type"
+                                name="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "apartment", label: "Apartment" },
+                                    { value: "villa", label: "Villa" },
+                                    { value: "house", label: "House" },
+                                    { value: "studio", label: "Studio" },
+                                    { value: "duplex", label: "Duplex" },
+                                    { value: "penthouse", label: "Penthouse" }
+                                ]}
+                                required
+                            />
+                            <InputField
+                                label="Description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                type="textarea"
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Location Information */}
+                    <FormSection icon={faLocationDot} title="Location Information">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField
+                                label="City"
+                                name="location.city"
+                                value={formData.location.city}
+                                onChange={handleChange}
+                                required
+                            />
+                            <InputField
+                                label="Address"
+                                name="location.address"
+                                value={formData.location.address}
+                                onChange={handleChange}
+                                required
+                            />
+                            <InputField
+                                label="Distance to Nearest School (km)"
+                                name="locationDetails.distanceToSchool"
+                                value={formData.locationDetails.distanceToSchool}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Supermarket (km)"
+                                name="locationDetails.nearbyAmenities.groceryStores"
+                                value={formData.locationDetails.nearbyAmenities.groceryStores}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Beach (km)"
+                                name="locationDetails.distanceToBeach"
+                                value={formData.locationDetails.distanceToBeach}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Cafes/Restaurants (km)"
+                                name="locationDetails.nearbyAmenities.restaurants"
+                                value={formData.locationDetails.nearbyAmenities.restaurants}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Mosque (km)"
+                                name="locationDetails.landmarks.distanceToMosque"
+                                value={formData.locationDetails.landmarks.distanceToMosque}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Souq (km)"
+                                name="locationDetails.landmarks.distanceToSouq"
+                                value={formData.locationDetails.landmarks.distanceToSouq}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Latitude"
+                                name="location.latitude"
+                                value={formData.location.latitude}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.000001"
+                            />
+                            <InputField
+                                label="Longitude"
+                                name="location.longitude"
+                                value={formData.location.longitude}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.000001"
+                            />
+                            <InputField
+                                label="Distance from City Center (km)"
+                                name="location.distanceFromCityCenter"
+                                value={formData.location.distanceFromCityCenter}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Contact Information */}
+                    <FormSection icon={faPhone} title="Contact Information">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Property Name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Property Type
-                                </label>
-                                <select
-                                    name="type"
-                                    value={formData.type}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    required
-                                >
-                                    <option value="">Select Type</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="house">House</option>
-                                    <option value="studio">Studio</option>
-                                    <option value="duplex">Duplex</option>
-                                    <option value="penthouse">Penthouse</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Sale Price
-                                </label>
-                                <input
-                                    type="number"
-                                    name="sale.price"
-                                    value={formData.sale.price}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Payment Terms
-                                </label>
-                                <select
-                                    name="sale.paymentTerms"
-                                    value={formData.sale.paymentTerms}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    required
-                                >
-                                    <option value="">Select Payment Terms</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="mortgage">Mortgage</option>
-                                    <option value="installments">Installments</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Property Age (Years)
-                                </label>
-                                <input
-                                    type="number"
-                                    name="sale.propertyAge"
-                                    value={formData.sale.propertyAge}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Title Deed Status
-                                </label>
-                                <select
-                                    name="sale.titleDeedStatus"
-                                    value={formData.sale.titleDeedStatus}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    required
-                                >
-                                    <option value="">Select Status</option>
-                                    <option value="clean">Clean Title</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="disputed">Disputed</option>
-                                </select>
-                            </div>
-
-                            <div className="flex items-center">
-                                <label className="flex items-center space-x-3">
-                                    <input
-                                        type="checkbox"
-                                        name="sale.negotiable"
-                                        checked={formData.sale.negotiable}
-                                        onChange={handleChange}
-                                        className="h-4 w-4 text-blue-600"
-                                    />
-                                    <span>Price Negotiable</span>
-                                </label>
-                            </div>
+                            <InputField
+                                label="Phone Number"
+                                name="contact.phone"
+                                value={formData.contact.phone}
+                                onChange={handleChange}
+                                type="tel"
+                                required
+                            />
+                            <InputField
+                                label="Email"
+                                name="contact.email"
+                                value={formData.contact.email}
+                                onChange={handleChange}
+                                type="email"
+                                required
+                            />
+                            <InputField
+                                label="WhatsApp"
+                                name="contact.whatsapp"
+                                value={formData.contact.whatsapp}
+                                onChange={handleChange}
+                                type="tel"
+                            />
                         </div>
-                    </div>
+                    </FormSection>
 
-                    {/* Location Details */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                        <SectionHeader icon={faLocationDot} title="Location Details" />
-                        <div className="space-y-6">
-                            {/* Neighborhood Selection */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Neighborhood
-                                    </label>
-                                    <select
-                                        name="locationDetails.neighborhood"
-                                        value={formData.locationDetails.neighborhood}
-                                        onChange={handleChange}
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        <option value="">Select Neighborhood</option>
-                                        <option value="lari">Lari</option>
-                                        <option value="ouladMimoun">Oulad Mimoun</option>
-                                        <option value="laroui">Laroui</option>
-                                        <option value="centerVille">Centre Ville</option>
-                                        <option value="corniche">Corniche</option>
-                                        <option value="alMatar">Al Matar</option>
-                                        <option value="beniEnsar">Beni Ensar</option>
-                                        <option value="ihaddaden">Ihaddaden</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Landmarks */}
-                            <div>
-                                <h4 className="font-medium text-gray-900 mb-4">Key Landmarks</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    <input
-                                        type="text"
-                                        name="locationDetails.landmarks.distanceToMosque"
-                                        placeholder="Distance to Mosque"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.landmarks.distanceToMosque}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="locationDetails.landmarks.distanceToSouq"
-                                        placeholder="Distance to Souq"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.landmarks.distanceToSouq}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="locationDetails.landmarks.distanceToCornicheNador"
-                                        placeholder="Distance to Corniche"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.landmarks.distanceToCornicheNador}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="locationDetails.landmarks.distanceToMarcheCentral"
-                                        placeholder="Distance to Central Market"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.landmarks.distanceToMarcheCentral}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Transportation */}
-                            <div>
-                                <h4 className="font-medium text-gray-900 mb-4">Transportation</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <input
-                                        type="text"
-                                        name="locationDetails.publicTransport.distanceToSpanishBorder"
-                                        placeholder="Distance to Melilla Border"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.publicTransport.distanceToSpanishBorder}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="locationDetails.publicTransport.grandTaxiStation"
-                                        placeholder="Distance to Grand Taxi Station"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.publicTransport.grandTaxiStation}
-                                    />
-                                    <input
-                                        type="text"
-                                        name="locationDetails.publicTransport.busStation"
-                                        placeholder="Distance to Bus Station"
-                                        className="w-full p-2 border rounded"
-                                        onChange={handleChange}
-                                        value={formData.locationDetails.publicTransport.busStation}
-                                    />
-                                </div>
-                            </div>
+                    {/* Sale Information */}
+                    <FormSection icon={faMoneyBill} title="Sale Information">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField
+                                label="Price"
+                                name="sale.price"
+                                value={formData.sale.price}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <SelectField
+                                label="Property Type"
+                                name="sale.propertyType"
+                                value={formData.sale.propertyType}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "residential", label: "Residential" },
+                                    { value: "commercial", label: "Commercial" },
+                                    { value: "land", label: "Land" }
+                                ]}
+                                required
+                            />
+                            <SelectField
+                                label="Sale Type"
+                                name="sale.saleType"
+                                value={formData.sale.saleType}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "direct", label: "Direct Sale" },
+                                    { value: "auction", label: "Auction" }
+                                ]}
+                            />
+                            <SelectField
+                                label="Payment Terms"
+                                name="sale.paymentTerms"
+                                value={formData.sale.paymentTerms}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "cash", label: "Cash" },
+                                    { value: "mortgage", label: "Mortgage" },
+                                    { value: "installments", label: "Installments" }
+                                ]}
+                            />
+                            <InputField
+                                label="Property Age (years)"
+                                name="sale.propertyAge"
+                                value={formData.sale.propertyAge}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Last Renovated"
+                                name="sale.lastRenovated"
+                                value={formData.sale.lastRenovated}
+                                onChange={handleChange}
+                                type="date"
+                            />
+                            <CheckboxField
+                                label="Price Negotiable"
+                                name="sale.negotiable"
+                                checked={formData.sale.negotiable}
+                                onChange={handleChange}
+                            />
                         </div>
-                    </div>
+                    </FormSection>
 
-                    {/* Property Features */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                        <SectionHeader icon={faBuilding} title="Property Features" />
-                        <div className="space-y-6">
-                            {/* Construction Details */}
-                            <div>
-                                <h4 className="font-medium text-gray-900 mb-4">Construction Details</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <select
-                                        name="propertyDetails.constructionType"
-                                        value={formData.propertyDetails.constructionType}
-                                        onChange={handleChange}
-                                        className="w-full p-2 border rounded"
-                                    >
-                                        <option value="">Construction Type</option>
-                                        <option value="traditional">Traditional Moroccan</option>
-                                        <option value="modern">Modern</option>
-                                        <option value="contemporary">Contemporary</option>
-                                    </select>
-                                    <select
-                                        name="propertyDetails.facadeDirection"
-                                        value={formData.propertyDetails.facadeDirection}
-                                        onChange={handleChange}
-                                        className="w-full p-2 border rounded"
-                                    >
-                                        <option value="">Facade Direction</option>
-                                        <option value="north">North</option>
-                                        <option value="south">South</option>
-                                        <option value="east">East</option>
-                                        <option value="west">West</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Water System */}
-                            <div>
-                                <h4 className="font-medium text-gray-900 mb-4">Water System</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="checkbox"
-                                            name="propertyDetails.waterSystem.hasWaterTank"
-                                            checked={formData.propertyDetails.waterSystem.hasWaterTank}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 text-blue-600"
-                                        />
-                                        <span>Water Tank</span>
-                                    </label>
-                                    {formData.propertyDetails.waterSystem.hasWaterTank && (
-                                        <>
-                                            <input
-                                                type="text"
-                                                name="propertyDetails.waterSystem.tankCapacity"
-                                                placeholder="Tank Capacity (L)"
-                                                className="w-full p-2 border rounded"
-                                                onChange={handleChange}
-                                                value={formData.propertyDetails.waterSystem.tankCapacity}
-                                            />
-                                            <input
-                                                type="text"
-                                                name="propertyDetails.waterSystem.waterPressure"
-                                                placeholder="Water Pressure"
-                                                className="w-full p-2 border rounded"
-                                                onChange={handleChange}
-                                                value={formData.propertyDetails.waterSystem.waterPressure}
-                                            />
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Security Features */}
-                            <div>
-                                <h4 className="font-medium text-gray-900 mb-4">Security Features</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="checkbox"
-                                            name="propertyDetails.securityFeatures.hasConcierge"
-                                            checked={formData.propertyDetails.securityFeatures.hasConcierge}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 text-blue-600"
-                                        />
-                                        <span>Concierge</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="checkbox"
-                                            name="propertyDetails.securityFeatures.hasSecurityDoors"
-                                            checked={formData.propertyDetails.securityFeatures.hasSecurityDoors}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 text-blue-600"
-                                        />
-                                        <span>Security Doors</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="checkbox"
-                                            name="propertyDetails.securityFeatures.hasSurveillanceSystem"
-                                            checked={formData.propertyDetails.securityFeatures.hasSurveillanceSystem}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 text-blue-600"
-                                        />
-                                        <span>Surveillance System</span>
-                                    </label>
-                                </div>
-                            </div>
+                    {/* Property Details */}
+                    <FormSection icon={faBuilding} title="Property Details">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <InputField
+                                label="Size (m²)"
+                                name="details.size"
+                                value={formData.details.size}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Bedrooms"
+                                name="details.bedrooms"
+                                value={formData.details.bedrooms}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Bathrooms"
+                                name="details.bathrooms"
+                                value={formData.details.bathrooms}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Floor Number"
+                                name="details.floor"
+                                value={formData.details.floor}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Total Floors"
+                                name="details.totalFloors"
+                                value={formData.details.totalFloors}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Year Built"
+                                name="details.yearBuilt"
+                                value={formData.details.yearBuilt}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <CheckboxField
+                                label="Parking Available"
+                                name="details.parking"
+                                checked={formData.details.parking}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Pets Allowed"
+                                name="details.petsAllowed"
+                                checked={formData.details.petsAllowed}
+                                onChange={handleChange}
+                            />
                         </div>
-                    </div>
+                    </FormSection>
 
                     {/* Submit Button */}
                     <div className="flex justify-end space-x-4">

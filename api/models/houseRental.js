@@ -1,278 +1,185 @@
 import mongoose from 'mongoose';
 
-const hotelSchema = new mongoose.Schema({
-    // Basic Information
-    name: {
-        type: String,
-        required: [true, 'Property name is required'],
+const houseRentalSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    type: { type: String, required: true },
+    location: {
+        city: String,
+        address: String,
+        latitude: String,
+        longitude: String,
+        distanceFromCityCenter: String
     },
-    title: {
-        type: String,
-        required: [true, 'Property title is required'],
+    contact: {
+        phone: String,
+        email: String,
+        whatsapp: String
     },
-    type: {
-        type: String,
-        required: [true, 'Property type is required'],
-        enum: ['hotel', 'apartment', 'resort', 'villa', 'cabin', 'guesthouse', 'hostel', 'boutique'],
+    description: String,
+    sale: {
+        price: { type: Number, required: true },
+        propertyType: String,
+        saleType: String,
+        negotiable: { type: Boolean, default: false },
+        paymentTerms: String,
+        titleDeedStatus: String,
+        propertyAge: Number,
+        lastRenovated: Date
     },
-    city: {
-        type: String,
-        required: [true, 'City is required'],
-    },
-    address: {
-        type: String,
-        required: [true, 'Address is required'],
-    },
-    distance: {
-        type: Number,
-        required: [true, 'Distance is required'],
-        min: [0, 'Distance cannot be negative'],
-    },
-    phone: {
-        type: String,
-        required: [true, 'Contact phone is required'],
-    },
-    description: {
-        type: String,
-        required: [true, 'Description is required'],
-    },
-    rating: {
-        type: Number,
-        min: 0,
-        max: 5,
-        default: 0,
-    },
-
-  // Pricing
-  basePrice: {
-        type: Number,
-        required: [true, 'Base price is required'],
-        min: [0, 'Price cannot be negative'],
-    },
-
-    // Rental Details
-    rental: {
-        durationType: {
-            type: String,
-            enum: ['night', 'month', 'custom'],
-            required: true,
-        },
-        customDays: {
-            type: Number,
-            min: 1,
-            required: function () {
-                return this.rental.durationType === 'custom';
-            },
-        },
-        hasFurniture: {
-            type: Boolean,
-            required: function () {
-                return this.rental.durationType === 'month';
-            },
-        },
-    },
-
-    // Amenities
-    amenities: {
-        // Basic Amenities
-        wifi: { type: Boolean, default: false },
+    details: {
+        size: { type: Number, required: true },
+        bedrooms: { type: Number, required: true },
+        bathrooms: { type: Number, required: true },
+        floor: Number,
+        totalFloors: Number,
+        yearBuilt: Number,
         parking: { type: Boolean, default: false },
-        pool: { type: Boolean, default: false },
-        restaurant: { type: Boolean, default: false },
-        gym: { type: Boolean, default: false },
-
-        // Room Features
-        privateBathroom: { type: Boolean, default: false },
-        airConditioning: { type: Boolean, default: false },
-        kitchen: { type: Boolean, default: false },
-        flatScreenTV: { type: Boolean, default: false },
-        familyRooms: { type: Boolean, default: false },
-        washingMachine: { type: Boolean, default: false },
-        sofa: { type: Boolean, default: false },
-        desk: { type: Boolean, default: false },
-        wardrobe: { type: Boolean, default: false },
-        alarmClock: { type: Boolean, default: false },
-        socketNearBed: { type: Boolean, default: false },
-        sofaBed: { type: Boolean, default: false },
-        clothesRack: { type: Boolean, default: false },
-        dryingRack: { type: Boolean, default: false },
-        tileMarbleFloor: { type: Boolean, default: false },
-        privateEntrance: { type: Boolean, default: false },
-        fan: { type: Boolean, default: false },
-        iron: { type: Boolean, default: false },
-        extraLongBeds: { type: Boolean, default: false },
-        linens: { type: Boolean, default: false },
-
-        // Bathroom
-        shower: { type: Boolean, default: false },
-        bath: { type: Boolean, default: false },
-        bidet: { type: Boolean, default: false },
-        hairdryer: { type: Boolean, default: false },
-
-        // Parking Options
-        privateParking: { type: Boolean, default: false },
-        parkingGarage: { type: Boolean, default: false },
-
-        // Kitchen & Dining
-        coffeemaker: { type: Boolean, default: false },
-        oven: { type: Boolean, default: false },
-        microwave: { type: Boolean, default: false },
-        refrigerator: { type: Boolean, default: false },
-        highChair: { type: Boolean, default: false },
-        diningTable: { type: Boolean, default: false },
-        toaster: { type: Boolean, default: false },
-        stovetop: { type: Boolean, default: false },
-        kitchenware: { type: Boolean, default: false },
-        electricKettle: { type: Boolean, default: false },
-        dishwasher: { type: Boolean, default: false },
-
-        // Outdoor & Recreation
-        picnicArea: { type: Boolean, default: false },
-        beachfront: { type: Boolean, default: false },
-        garden: { type: Boolean, default: false },
-        outdoorPool: { type: Boolean, default: false },
-        poolView: { type: Boolean, default: false },
-        beachChairs: { type: Boolean, default: false },
-        outdoorFurniture: { type: Boolean, default: false },
-        sunTerrace: { type: Boolean, default: false },
-        balcony: { type: Boolean, default: false },
-        patio: { type: Boolean, default: false },
-        beachAccess: { type: Boolean, default: false },
-
-        // Activities & Entertainment
-        gamesRoom: { type: Boolean, default: false },
-        liveMusic: { type: Boolean, default: false },
-        bikeTours: { type: Boolean, default: false },
-        walkingTours: { type: Boolean, default: false },
-        horseRiding: { type: Boolean, default: false },
-        cycling: { type: Boolean, default: false },
-        hiking: { type: Boolean, default: false },
-        windsurfing: { type: Boolean, default: false },
-        tennis: { type: Boolean, default: false },
-        billiards: { type: Boolean, default: false },
-
-        // Hotel Services
-        conciergeService: { type: Boolean, default: false },
-        currencyExchange: { type: Boolean, default: false },
-        frontDesk24h: { type: Boolean, default: false },
-        ironingService: { type: Boolean, default: false },
-        housekeeping: { type: Boolean, default: false },
-        drycleaning: { type: Boolean, default: false },
-        laundry: { type: Boolean, default: false },
-        airportShuttle: { type: Boolean, default: false },
-        invoiceProvided: { type: Boolean, default: false },
-        expressCheckInOut: { type: Boolean, default: false },
-
-        // Building Facilities
-        elevator: { type: Boolean, default: false },
-        minimarket: { type: Boolean, default: false },
-        beautyShop: { type: Boolean, default: false },
-        smokingArea: { type: Boolean, default: false },
-        soundproofRooms: { type: Boolean, default: false },
-        meetingFacilities: { type: Boolean, default: false },
-        sharedLounge: { type: Boolean, default: false },
-
-        // Safety & Security
-        fireExtinguishers: { type: Boolean, default: false },
-        security24h: { type: Boolean, default: false },
-        keyCardAccess: { type: Boolean, default: false },
-        cctvOutside: { type: Boolean, default: false },
-        cctvCommonAreas: { type: Boolean, default: false },
-        securityAlarm: { type: Boolean, default: false },
-        smokeFree: { type: Boolean, default: false },
-
-        // Wellness
-        spa: { type: Boolean, default: false },
-        steamRoom: { type: Boolean, default: false },
-        bodyTreatments: { type: Boolean, default: false },
-        beautyServices: { type: Boolean, default: false },
-        hammam: { type: Boolean, default: false }
+        petsAllowed: { type: Boolean, default: false }
     },
-
-    // Policies
-    policies: {
-        pets: {
-            allowed: Boolean,
+    features: {
+        balcony: {
+            exists: { type: Boolean, default: false },
+            size: String,
+            view: String
         },
-        smoking: {
-            allowed: Boolean,
+        terrace: {
+            exists: { type: Boolean, default: false },
+            size: String,
+            view: String
         },
-        events: {
-            allowed: Boolean,
+        kitchen: {
+            type: String,
+            equipment: [String]
         },
-        quietHours: {
-            enforced: Boolean,
-            from: {
-                type: String,
-                required: function () {
-                    return this.policies.quietHours.enforced;
-                }
-            },
-            to: {
-                type: String,
-                required: function () {
-                    return this.policies.quietHours.enforced;
-                }
-            }
+        bathroom: {
+            count: Number,
+            features: [String]
         },
-        checkIn: {
-            from: String,
-            to: String,
+        heating: {
+            type: String
         },
-        checkOut: {
-            from: String,
-            to: String,
+        airConditioning: {
+            installed: { type: Boolean, default: false },
+            units: Number
         },
+        internet: {
+            available: { type: Boolean, default: false },
+            type: String,
+            speed: String
+        },
+        soundproofing: { type: Boolean, default: false },
+        thermalInsulation: { type: Boolean, default: false }
     },
-
-    // Languages
-    languages: [{
-        type: String,
-        enum: [
-            "Arabic",
-            "English",
-            "French",
-            "Spanish",
-            "German",
-            "Italian",
-            "Chinese",
-            "Japanese",
-            "Russian",
-            "Turkish",
-            "Hindi",
-            "Portuguese",
-            "Korean",
-            "Dutch"
-        ],
-    }],
-
-    // Media
-    photos: {
-        type: [String],
-        default: [],
+    proximity: {
+        restaurants: {
+            closest: String,
+            walkingTime: String
+        },
+        cafes: {
+            closest: String,
+            walkingTime: String
+        }
     },
-
-    // Additional fields
-    rooms: {
-        type: [String],
-        default: [],
+    amenities: {
+        basic: {
+            wifi: { type: Boolean, default: false },
+            airConditioning: { type: Boolean, default: false },
+            heating: { type: Boolean, default: false },
+            elevator: { type: Boolean, default: false },
+            parking: { type: Boolean, default: false }
+        },
+        kitchen: {
+            refrigerator: { type: Boolean, default: false },
+            microwave: { type: Boolean, default: false },
+            stove: { type: Boolean, default: false },
+            dishwasher: { type: Boolean, default: false },
+            washingMachine: { type: Boolean, default: false }
+        },
+        outdoor: {
+            balcony: { type: Boolean, default: false },
+            garden: { type: Boolean, default: false },
+            terrace: { type: Boolean, default: false }
+        },
+        security: {
+            securitySystem: { type: Boolean, default: false },
+            cctv: { type: Boolean, default: false },
+            doorman: { type: Boolean, default: false }
+        }
     },
-    featured: {
-        type: Boolean,
-        default: false,
+    utilities: {
+        electricity: { type: Boolean, default: false },
+        water: { type: Boolean, default: false },
+        internet: { type: Boolean, default: false },
+        gas: { type: Boolean, default: false }
     },
+    status: { 
+        type: String, 
+        enum: ['available', 'rented', 'pending', 'maintenance'],
+        default: 'available'
+    },
+    featured: { type: Boolean, default: false },
+    locationDetails: {
+        distanceToSchool: String,
+        schoolTransportPrice: Number,
+        nearestSchools: [String],
+        distanceToBeach: String,
+        nearestBeaches: [String],
+        parkingDetails: {
+            type: String,
+            distance: String,
+            pricePerMonth: Number
+        },
+        transportation: {
+            busStopDistance: String,
+            busLines: [String],
+            taxiStandDistance: String,
+            averageTaxiFare: Number
+        },
+        nearbyAmenities: {
+            groceryStores: String,
+            restaurants: String,
+            cafes: String,
+            mosques: String,
+            hospitals: String,
+            pharmacies: String
+        },
+        neighborhood: String,
+        landmarks: {
+            distanceToMosque: String,
+            distanceToSouq: String,
+            distanceToCornicheNador: String,
+            distanceToMarcheCentral: String
+        },
+        publicTransport: {
+            grandTaxiStation: String,
+            busStation: String,
+            distanceToSpanishBorder: String
+        },
+        schools: {
+            arabicSchools: [String],
+            frenchSchools: [String],
+            spanishSchools: [String],
+            languageInstitutes: [String]
+        }
+    },
+    propertyDetails: {
+        constructionType: String,
+        facadeDirection: String,
+        waterSystem: {
+            hasWaterTank: { type: Boolean, default: false },
+            tankCapacity: String,
+            waterPressure: String
+        },
+        securityFeatures: {
+            hasConcierge: { type: Boolean, default: false },
+            hasSecurityDoors: { type: Boolean, default: false },
+            hasSurveillanceSystem: { type: Boolean, default: false }
+        }
+    }
 }, {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    timestamps: true
 });
 
-// Indexes
-hotelSchema.index({ 'basicInfo.city': 1, 'basicInfo.type': 1 });
-hotelSchema.index({ basePrice: 1 });
-hotelSchema.index({ 'rental.durationType': 1 });
-hotelSchema.index({ featured: 1 });
-hotelSchema.index({ 'amenities.parking': 1 });
+const HouseRental = mongoose.model('HouseRental', houseRentalSchema);
 
-const Hotel = mongoose.model('Hotel', hotelSchema);
-export default Hotel;
+export default HouseRental; 

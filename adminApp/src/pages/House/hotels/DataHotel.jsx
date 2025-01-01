@@ -269,7 +269,7 @@ const Hotels = ({sideOpen}) => {
 
             <div style={{ height: 700, width: '100%' }}>
                 <DataGrid 
-                    style={{fontSize: "10px"}}
+                    style={{fontSize: "11px"}}
                     rows={data}
                     columns={[...hotelColumns, ...actionColumn]}
                     initialState={{

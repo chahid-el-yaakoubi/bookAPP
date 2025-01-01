@@ -384,16 +384,16 @@ const SingleHotel = () => {
                             <span className="text-gray-600">{hotel?.location?.address || 'Not available'}</span>
                         </div>
                         <div className="flex items-center space-x-3 p-2 transition-colors">
-                            <span className="font-medium text-gray-700">Coordinates: </span>
+                            <span className="font-medium text-gray-700">Loaction on map: </span>
                             <span className="text-gray-600">
-                                {hotel?.location?.latitude && hotel?.location?.longitude ? (
+                                {hotel?.location?.latitudeLongitude ? (
                                     <a 
-                                        href={`https://www.google.com/maps/@${hotel.location.latitude},${hotel.location.longitude},15z`} 
+                                        href={`https://www.google.com/maps/search/${hotel.location.latitudeLongitude}`} 
                                         target="_blank" 
                                         rel="noopener noreferrer" 
                                         className="text-blue-500 hover:underline"
                                     >
-                                        {`Lat: ${hotel.location.latitude}, Long: ${hotel.location.longitude}`}
+                                        click me
                                     </a>
                                 ) : 'Not available'}
                             </span>

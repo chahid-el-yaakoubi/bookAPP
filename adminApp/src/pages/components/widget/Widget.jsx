@@ -8,7 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-const Widget = ({ type }) => {
+const Widget = ({ type, count }) => {
+  console.log(count);
   // temporary
   const amount = 100;
   const diff = 20;
@@ -16,6 +17,7 @@ const Widget = ({ type }) => {
   const data = {
     user: {
       title: "USERS",
+      Count: count || 100,
       isMoney: false,
       path: "/users",
       link: "See all users",
@@ -25,6 +27,7 @@ const Widget = ({ type }) => {
     },
     order: {
       title: "HOUSE_RENTALS",
+      Count: count,
       isMoney: false,
       path: "/hotels",
       link: "View all orders",
@@ -34,6 +37,7 @@ const Widget = ({ type }) => {
     },
     earning: {
       title: "REAL_ESTATE",
+      Count: count || 100,
       isMoney: false,
       path: "/users",
       link: "View net earnings",
@@ -43,6 +47,7 @@ const Widget = ({ type }) => {
     },
     balance: {
       title: "CARS",
+      Count: count || 100,
       isMoney: false,
       link: "See details",
       path: "/users",
@@ -57,7 +62,7 @@ const Widget = ({ type }) => {
       <div className="flex flex-col justify-between">
         <span className="font-bold text-sm text-gray-400">{data.title}</span>
         <span className="text-2xl font-light">
-          {data.isMoney && "$"} {amount}
+          {data.isMoney && "$"} {data.Count}
         </span>
         <Link to={`${data.path}`}>
           <span className="text-xs border-b border-gray-400 w-max cursor-pointer hover:text-blue-500 hover:text-sm transition-all duration-200">

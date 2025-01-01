@@ -3,16 +3,14 @@ import Sidebar from "./sideBar/SideBar";
 import NavBar from "./navBar/NavBar";
 
 const Layout = ({ children, use }) => {
-    const [sidebarOpen, setSidebarOpen] = useState(localStorage.getItem('sidebar') === 'true');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    useEffect(() => {
-        localStorage.setItem('sidebar', sidebarOpen);
-    }, [sidebarOpen]);
+
 
     return (
         <div className="flex min-h-screen bg-blue-100">
             <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} use={use} />
-            <div className={`w-full   scrollbar-hide transition-all duration-300 ${sidebarOpen ? 'ml-48' : 'ml-20'}`}>
+            <div className={`w-full   scrollbar-hide transition-all duration-300 ${sidebarOpen ? 'ml-20' : 'ml-20'}`}>
                 {/* <NavBar closeSide={sidebarOpen} /> */}
                 {children  }
             </div>

@@ -34,7 +34,7 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
       <div className="h-12 flex items-center justify-between px-4">
         <Link to="/" className="no-underline">
           <span className={`${isOpen ? 'block' : 'hidden'} text-xl font-bold`}>
-            OverNight
+            XXXXXXXX
           </span>
         </Link>
         <div 

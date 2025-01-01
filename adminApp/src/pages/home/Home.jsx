@@ -5,15 +5,20 @@ import Widget from "../components/widget/Widget";
 import Featured from "../components/featured/Featured";
 import Chart from "../components/chart/Chart";
 import Layout from "../components/Layout";
+import axios from "axios";
+import useFetch from "../../hooks/useFetch";
 
 const Home = () => {
+
+    const {data:contByCity} = useFetch(`/api/hotels/contByCity`)
+    console.log(contByCity)
 
     return (
         <Layout children={<>
             <div className="">
             <div className="flex gap-5 p-5">
                 <Widget type="user" />
-                <Widget type="order" />
+                <Widget type="order" count={contByCity}  />
                 <Widget type="earning" />
                 <Widget type="balance" />
                 <Widget type="order" />

@@ -5,8 +5,14 @@ import useFetch from "../../../hooks/useFetch";
 import moment from "moment";
 import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Hotels = ({sideOpen}) => {
+
+    if(sideOpen){
+        alert("sideOpen")
+    }
 
     
     const { data: fetchedData, loading, error } = useFetch(`/api/hotels`);
@@ -231,69 +237,78 @@ const Hotels = ({sideOpen}) => {
             ),
         },
     ];
-
     return (
-        <div style={{ fontSize: "12px" }} className={`p-2 sm:p-4 md:p-6 w-auto  mx-auto  h-[100vh]`}>
-            <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Hotels List</h2>
-
-                <div>
-                    <select
-                        id="countries"
-                        value={typeFilter}
-                        onChange={handleTypeChange} // Use a proper handler function
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                        <option value="all">ALL</option>
-                        <option value="hotel">HOTELS</option>
-                        <option value="villa">VILLAS</option>
-                        <option value="house">HOUSES</option>
-                        <option value="studio">STUDIO</option>
-                    </select>
-                </div>
-                <Link
-                    to="/hotels/new"
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                    Add New Hotel
+        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
+            sideOpen ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-100px)]'
+        }`}>
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                    <FontAwesomeIcon icon={faTable} className="mr-3 text-indigo-600" />
+                    Hotels List
+                </h3>
+                <Link to="/hotels/new" className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center">
+                    <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                    Add Hotel
                 </Link>
             </div>
-            <div className="bg-white rounded-lg shadow-sm ">
-                <DataGrid style={{ fontSize: "11px", width: "100%" }}
+
+            <div className="mb-4">
+                <select
+                    value={typeFilter}
+                    onChange={handleTypeChange}
+                    className="p-2 border rounded-md"
+                >
+                    <option value="all">All Types</option>
+                    <option value="hotel">Hotel</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="resort">Resort</option>
+                    <option value="villa">Villa</option>
+                    <option value="cabin">Cabin</option>
+                </select>
+            </div>
+
+            <div style={{ height: 700, width: '100%' }}>
+                <DataGrid 
+                    style={{fontSize: "10px"}}
                     rows={data}
-                    columns={hotelColumns.concat(actionColumn)}
-                    getRowId={(row) => row._id}
+                    columns={[...hotelColumns, ...actionColumn]}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 10 },
+                        },
+                    }}
+                    pageSizeOptions={[5, 10, 25, 50, 100]}
+                    checkboxSelection={false}
+                    disableSelectionOnClick
                     loading={loading}
-                    pageSizeOptions={[10, 25, 50]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
                 />
             </div>
+
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white rounded-lg p-6 w-96">
-                        <h3 className="text-lg font-semibold mb-4">Change Status</h3>
+                    <div className="bg-white p-6 rounded-lg">
+                        <h2 className="text-xl mb-4">Update Status</h2>
                         <select
                             value={newStatus}
                             onChange={(e) => setNewStatus(e.target.value)}
-                            className="w-full border border-gray-300 rounded-md p-2 mb-4"
+                            className="p-2 border rounded-md mb-4"
                         >
-                            <option value="available">Available</option>
+                            <option value="disponible">Disponible</option>
                             <option value="booked">Booked</option>
-                            <option value="maintenance">Maintenance</option>
+                            <option value="en mantenimiento">En Mantenimiento</option>
                         </select>
-                        <div className="flex justify-end gap-4">
+                        <div className="flex justify-end gap-2">
                             <button
-                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                                 onClick={() => setShowModal(false)}
+                                className="px-4 py-2 bg-gray-200 rounded-md"
                             >
                                 Cancel
                             </button>
                             <button
-                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                                 onClick={handleStatusChange}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-md"
                             >
-                                Change
+                                Update
                             </button>
                         </div>
                     </div>

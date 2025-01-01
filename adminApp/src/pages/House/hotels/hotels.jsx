@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import DataHotel from "./DataHotel";
 import NewHotel from "./newHotel";
@@ -7,7 +8,7 @@ function Hotels({type}) {
     return (
         <Layout children={
             <>
-                {type === "/" ? <DataHotel  /> : type === "new" ? <NewHotel /> : type === "edit" ? <UpdateHotel /> : <SingleHotel />}
+                {type === "/" ? <DataHotel   /> : type === "new" ? <NewHotel /> : type === "edit" ? <UpdateHotel /> : <SingleHotel />}
             </>
         } use="hotels" />
     );

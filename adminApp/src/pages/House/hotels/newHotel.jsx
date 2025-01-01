@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHotel, faCity, faLocationDot, faMoneyBill, faBed, faStar, faPhone, faWifi, faParking, faSwimmingPool, faUtensils, faDumbbell, faBath, faSnowflake, faKitchenSet, faTv, faPeopleRoof, faWater, faCarSide, faMugHot, faShower, faDesktop, faTvAlt, faElevator, faUmbrella, faUmbrellaBeach, faTree, faGamepad, faMusic, faBicycle, faPersonWalking, faHorse, faBiking, faPersonHiking, faWind, faTableTennis, faConciergeBell, faMoneyBillTransfer, faClock, faBaby, faStore, faScissors, faSmoking, faVolumeXmark, faFireExtinguisher, faShieldHalved, faKey, faSpa, faEye, faToilet, faDoorClosed, faChair, faPlus, faMinus, faPlug, faTable, faSquare, faDoorOpen, faBuilding, faHouse, faStairs, faCamera, faBell, faSmokingBan, faFileInvoice, faCloudUpload, faCalendarDays, faHourglassHalf, faMoon, faMoneyBillWheat, faCouch, faTimes, faBroom, faTshirt } from "@fortawesome/free-solid-svg-icons";
+import { faHotel, faCity, faLocationDot, faMoneyBill, faBed, faStar, faPhone, faWifi, faParking, faSwimmingPool, faUtensils, faDumbbell, faBath, faSnowflake, faKitchenSet, faTv, faPeopleRoof, faWater, faCarSide, faMugHot, faShower, faDesktop, faTvAlt, faElevator, faUmbrella, faUmbrellaBeach, faTree, faGamepad, faMusic, faBicycle, faPersonWalking, faHorse, faBiking, faPersonHiking, faWind, faTableTennis, faConciergeBell, faMoneyBillTransfer, faClock, faBaby, faStore, faScissors, faSmoking, faVolumeXmark, faFireExtinguisher, faShieldHalved, faKey, faSpa, faEye, faToilet, faDoorClosed, faChair, faPlus, faMinus, faPlug, faTable, faSquare, faDoorOpen, faBuilding, faHouse, faStairs, faCamera, faBell, faSmokingBan, faFileInvoice, faCloudUpload, faCalendarDays, faHourglassHalf, faMoon, faMoneyBillWheat, faCouch, faTimes, faBroom, faTshirt, faEnvelope, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { City, Neighborhood, Region } from "./Location";
+import { City, Neighborhood, Region } from "../../../components/Location";
+import AmenitiesSection from "../../../components/amenities/AmenitiesSection";
+import { amenityCategories, amenityTranslations } from "../../../components/amenities/amenitiesConfig";
 
 function NewHotel() {
+
+    console.log(amenityCategories)
     const navigate = useNavigate()
     const { id } = useParams(); // Get hotel ID from URL parameters
     const [error, setError] = useState(null)
@@ -199,572 +203,7 @@ function NewHotel() {
         }
     });
 
-    // Add amenity categories configuration
-    const amenityCategories = {
-        BasicAmenities: {
-            title: "Basic Amenities",
-            items: [
-                { label: "WiFi", name: "wifi", icon: faWifi },
-                { label: "Parking", name: "parking", icon: faParking },
-                { label: "Pool", name: "pool", icon: faSwimmingPool },
-                { label: "Restaurant", name: "restaurant", icon: faUtensils },
-                { label: "Gym", name: "gym", icon: faDumbbell },
-            ]
-        },
-        RoomFeatures: {
-            title: "Room Features",
-            items: [
-                { label: "Private Bathroom", name: "privateBathroom", icon: faBath },
-                { label: "Air Conditioning", name: "airConditioning", icon: faSnowflake },
-                { label: "Kitchen", name: "kitchen", icon: faKitchenSet },
-                { label: "Flat Screen TV", name: "flatScreenTV", icon: faTv },
-                { label: "Family Rooms", name: "familyRooms", icon: faPeopleRoof },
-                { label: "Washing Machine", name: "washingMachine", icon: faTv },
-                { label: "Sofa", name: "sofa", icon: faCouch },
-                { label: "Desk", name: "desk", icon: faDesktop },
-                { label: "Wardrobe", name: "wardrobe", icon: faSpa },
-                { label: "Alarm Clock", name: "alarmClock", icon: faClock },
-                { label: "Socket Near Bed", name: "socketNearBed", icon: faPlug },
-                { label: "Sofa Bed", name: "sofaBed", icon: faCouch },
-                { label: "Clothes Rack", name: "clothesRack", icon: faClock },
-                { label: "Drying Rack", name: "dryingRack", icon: faTshirt },
-                { label: "Tile Marble Floor", name: "tileMarbleFloor", icon: faSquare },
-                { label: "Private Entrance", name: "privateEntrance", icon: faDoorOpen },
-                { label: "Fan", name: "fan", icon: faClock },
-                { label: "Iron", name: "iron", icon: faClock },
-                { label: "Extra Long Beds", name: "extraLongBeds", icon: faBed },
-                { label: "Linens", name: "linens", icon: faBed },
-            ]
-        },
-        Bathroom: {
-            title: "Bathroom",
-            items: [
-                { label: "Shower", name: "shower", icon: faShower },
-                { label: "Bath", name: "bath", icon: faBath },
-                { label: "Bidet", name: "bidet", icon: faToilet },
-                { label: "Hairdryer", name: "hairdryer", icon: faClock },
-            ]
-        },
-        ParkingOptions: {
-            title: "Parking",
-            items: [
-                { label: "Private Parking", name: "privateParking", icon: faParking },
-                { label: "Parking Garage", name: "parkingGarage", icon: faParking },
-            ]
-        },
-        KitchenDining: {
-            title: "Kitchen & Dining",
-            items: [
-                { label: "Coffee Maker", name: "coffeemaker", icon: faClock },
-                { label: "Oven", name: "oven", icon: faClock },
-                { label: "Microwave", name: "microwave", icon: faClock },
-                { label: "Refrigerator", name: "refrigerator", icon: faClock },
-                { label: "High Chair", name: "highChair", icon: faClock },
-                { label: "Dining Table", name: "diningTable", icon: faTable },
-                { label: "Toaster", name: "toaster", icon: faClock },
-                { label: "Stovetop", name: "stovetop", icon: faClock },
-                { label: "Kitchenware", name: "kitchenware", icon: faKitchenSet },
-                { label: "Electric Kettle", name: "electricKettle", icon: faClock },
-                { label: "Dishwasher", name: "dishwasher", icon: faClock },
-            ]
-        },
-        OutdoorRecreation: {
-            title: "Outdoor & Recreation",
-            items: [
-                { label: "Picnic Area", name: "picnicArea", icon: faUmbrella },
-                { label: "Beachfront", name: "beachfront", icon: faUmbrellaBeach },
-                { label: "Garden", name: "garden", icon: faTree },
-                { label: "Outdoor Pool", name: "outdoorPool", icon: faSwimmingPool },
-                { label: "Pool View", name: "poolView", icon: faSwimmingPool },
-                { label: "Beach Chairs", name: "beachChairs", icon: faChair },
-                { label: "Outdoor Furniture", name: "outdoorFurniture", icon: faChair },
-                { label: "Sun Terrace", name: "sunTerrace", icon: faUmbrella },
-                { label: "Balcony", name: "balcony", icon: faUmbrella },
-                { label: "Patio", name: "patio", icon: faUmbrella },
-                { label: "Beach Access", name: "beachAccess", icon: faUmbrellaBeach },
-            ]
-        },
-        ActivitiesEntertainment: {
-            title: "Activities",
-            items: [
-                { label: "Games Room", name: "gamesRoom", icon: faGamepad },
-                { label: "Live Music", name: "liveMusic", icon: faMusic },
-                { label: "Bike Tours", name: "bikeTours", icon: faBicycle },
-                { label: "Walking Tours", name: "walkingTours", icon: faPersonWalking },
-                { label: "Horse Riding", name: "horseRiding", icon: faHorse },
-                { label: "Cycling", name: "cycling", icon: faBicycle },
-                { label: "Hiking", name: "hiking", icon: faPersonHiking },
-                { label: "Windsurfing", name: "windsurfing", icon: faWind },
-                { label: "Tennis", name: "tennis", icon: faTableTennis },
-                { label: "Billiards", name: "billiards", icon: faTableTennis },
-            ]
-        },
-        HotelServices: {
-            title: "Services",
-            items: [
-                { label: "Concierge Service", name: "conciergeService", icon: faConciergeBell },
-                { label: "Currency Exchange", name: "currencyExchange", icon: faMoneyBillTransfer },
-                { label: "Front Desk 24h", name: "frontDesk24h", icon: faClock },
-                { label: "Ironing Service", name: "ironingService", icon: faBroom },
-                { label: "Housekeeping", name: "housekeeping", icon: faBroom },
-                { label: "Dry Cleaning", name: "drycleaning", icon: faBroom },
-                { label: "Laundry", name: "laundry", icon: faBroom },
-                { label: "Airport Shuttle", name: "airportShuttle", icon: faCarSide },
-                { label: "Invoice Provided", name: "invoiceProvided", icon: faFileInvoice },
-                { label: "Express Check-in/Out", name: "expressCheckInOut", icon: faDoorOpen },
-            ]
-        },
-        BuildingFacilities: {
-            title: "Building Facilities",
-            items: [
-                { label: "Elevator", name: "elevator", icon: faElevator },
-                { label: "Mini Market", name: "minimarket", icon: faStore },
-                { label: "Beauty Shop", name: "beautyShop", icon: faSpa },
-                { label: "Smoking Area", name: "smokingArea", icon: faSmoking },
-                { label: "Soundproof Rooms", name: "soundproofRooms", icon: faShieldHalved },
-                { label: "Meeting Facilities", name: "meetingFacilities", icon: faPeopleRoof },
-                { label: "Shared Lounge", name: "sharedLounge", icon: faChair },
-            ]
-        },
-        SafetySecurity: {
-            title: "Safety & Security",
-            items: [
-                { label: "Fire Extinguishers", name: "fireExtinguishers", icon: faFireExtinguisher },
-                { label: "Security 24h", name: "security24h", icon: faShieldHalved },
-                { label: "Key Card Access", name: "keyCardAccess", icon: faKey },
-                { label: "CCTV Outside", name: "cctvOutside", icon: faCamera },
-                { label: "CCTV Common Areas", name: "cctvCommonAreas", icon: faCamera },
-                { label: "Security Alarm", name: "securityAlarm", icon: faBell },
-                { label: "Smoke Free", name: "smokeFree", icon: faSmokingBan },
-            ]
-        },
-        Wellness: {
-            title: "Wellness",
-            items: [
-                { label: "Spa", name: "spa", icon: faSpa },
-                { label: "Steam Room", name: "steamRoom", icon: faClock },
-                { label: "Body Treatments", name: "bodyTreatments", icon: faClock },
-                { label: "Beauty Services", name: "beautyServices", icon: faSpa },
-                { label: "Hammam", name: "hammam", icon: faClock },
-            ]
-        }
-    };
-
-    // Add translations for tooltips (optional)
-    const amenityTranslations = {
-        wifi: {
-            en: "Free WiFi throughout the property",
-            ar: "واي فاي"
-        },
-        parking: {
-            en: "On-site parking available",
-            ar: "موقف سيارات"
-        },
-        pool: {
-            en: "Swimming pool access",
-            ar: "دخول مسبح"
-        },
-        restaurant: {
-            en: "On-site restaurant",
-            ar: "مطعم على الموقع"
-        },
-        gym: {
-            en: "Fitness center",
-            ar: "مركز رياضة"
-        },
-        spa: {
-            en: "Spa and wellness center",
-            ar: "مركز سبا والصحة البدنية"
-        },
-        airConditioning: {
-            en: "Climate control in rooms",
-            ar: "تحكم في المناخ في الغرف"
-        },
-        kitchen: {
-            en: "Kitchen facilities",
-            ar: "معدات المطبخ"
-        },
-        tv: {
-            en: "Television in rooms",
-            ar: "تلفزيون في ال��������������رف"
-        },
-        elevator: {
-            en: "Elevator access",
-            ar: "دخول المصعد"
-        },
-        beachAccess: {
-            en: "Direct beach access",
-            ar: "دخول مباشر للشطئ"
-        },
-        garden: {
-            en: "Garden area",
-            ar: "منطقة حديقة"
-        },
-        gameRoom: {
-            en: "Game room facilities",
-            ar: "مرافق الغرفة الألعاب"
-        },
-        businessCenter: {
-            en: "Business center services",
-            ar: "خدمات مركز الأعمال"
-        },
-        laundry: {
-            en: "Laundry services",
-            ar: "خدمات التنظيف"
-        },
-        roomService: {
-            en: "24/7 room service",
-            ar: "خدمة الغرفة 24/7"
-        },
-        bar: {
-            en: "On-site bar",
-            ar: "مقهى على الموقع"
-        },
-        terrace: {
-            en: "Terrace area",
-            ar: "منطقة الملعب"
-        },
-        familyRooms: {
-            en: "Family-friendly rooms",
-            ar: "غرف عائلية"
-        },
-        sauna: {
-            en: "Sauna facilities",
-            ar: "مرافق السون��"
-        },
-        privateBathroom: {
-            en: "Private Bathroom",
-            ar: "حمام خاص"
-        },
-        washingMachine: {
-            en: "Washing Machine",
-            ar: "غسالة"
-        },
-        sofa: {
-            en: "Sofa",
-            ar: "مقعد جلدي"
-        },
-        desk: {
-            en: "Desk",
-            ar: "مكتب"
-        },
-        wardrobe: {
-            en: "Wardrobe",
-            ar: "إبرة"
-        },
-        alarmClock: {
-            en: "Alarm Clock",
-            ar: "ساعة صوت"
-        },
-        socketNearBed: {
-            en: "Socket Near Bed",
-            ar: "موصل على المنفذ القريب من السرير"
-        },
-        sofaBed: {
-            en: "Sofa Bed",
-            ar: "مقعد جلدي"
-        },
-        clothesRack: {
-            en: "Clothes Rack",
-            ar: "إبرة"
-        },
-        dryingRack: {
-            en: "Drying Rack",
-            ar: "إبرة"
-        },
-        tileMarbleFloor: {
-            en: "Tile Marble Floor",
-            ar: "أرضية ماربل"
-        },
-        privateEntrance: {
-            en: "Private Entrance",
-            ar: "مدخل خاص"
-        },
-        fan: {
-            en: "Fan",
-            ar: "مروحة"
-        },
-        iron: {
-            en: "Iron",
-            ar: "ثلاجة"
-        },
-        extraLongBeds: {
-            en: "Extra Long Beds",
-            ar: "أسرة طويلة"
-        },
-        linens: {
-            en: "Linens",
-            ar: "ملبس"
-        },
-        shower: {
-            en: "Shower",
-            ar: "مروحة"
-        },
-        bath: {
-            en: "Bath",
-            ar: "حمام"
-        },
-        bidet: {
-            en: "Bidet",
-            ar: "بيديت"
-        },
-        hairdryer: {
-            en: "Hairdryer",
-            ar: "مكواة الشعر"
-        },
-        privateParking: {
-            en: "Private Parking",
-            ar: "موقف خاص"
-        },
-        parkingGarage: {
-            en: "Parking Garage",
-            ar: "موقف سيارات"
-        },
-        coffeemaker: {
-            en: "Coffee Maker",
-            ar: "ماكينة إسبريسو"
-        },
-        oven: {
-            en: "Oven",
-            ar: "فرن"
-        },
-        microwave: {
-            en: "Microwave",
-            ar: "ميكرويف"
-        },
-        refrigerator: {
-            en: "Refrigerator",
-            ar: "ثلاجة"
-        },
-        highChair: {
-            en: "High Chair",
-            ar: "كرسي عالي"
-        },
-        diningTable: {
-            en: "Dining Table",
-            ar: "طاولة الطعام"
-        },
-        toaster: {
-            en: "Toaster",
-            ar: "توستر"
-        },
-        stovetop: {
-            en: "Stovetop",
-            ar: "فرن الطهي"
-        },
-        kitchenware: {
-            en: "Kitchenware",
-            ar: "معدات المطبخ"
-        },
-        electricKettle: {
-            en: "Electric Kettle",
-            ar: "ميكروفورن"
-        },
-        dishwasher: {
-            en: "Dishwasher",
-            ar: "غسالة الأطباق"
-        },
-        picnicArea: {
-            en: "Picnic Area",
-            ar: "منطقة الطعام"
-        },
-        beachfront: {
-            en: "Beachfront",
-            ar: "شاطئ البحر"
-        },
-        garden: {
-            en: "Garden",
-            ar: "حديقة"
-        },
-        outdoorPool: {
-            en: "Outdoor Pool",
-            ar: "مسبحة خارجية"
-        },
-        poolView: {
-            en: "Pool View",
-            ar: "منظر مسبح"
-        },
-        beachChairs: {
-            en: "Beach Chairs",
-            ar: "كراسي ش��طئ"
-        },
-        outdoorFurniture: {
-            en: "Outdoor Furniture",
-            ar: "أثاث خارجي"
-        },
-        sunTerrace: {
-            en: "Sun Terrace",
-            ar: "ملعب الشمس"
-        },
-        balcony: {
-            en: "Balcony",
-            ar: "ملعب"
-        },
-        patio: {
-            en: "Patio",
-            ar: "ملعب"
-        },
-        beachAccess: {
-            en: "Beach Access",
-            ar: "دخول مباشر للشاطئ"
-        },
-        gamesRoom: {
-            en: "Games Room",
-            ar: "غرفة الألعاب"
-        },
-        liveMusic: {
-            en: "Live Music",
-            ar: "موسيقى حية"
-        },
-        bikeTours: {
-            en: "Bike Tours",
-            ar: "جولات على الدراجات"
-        },
-        walkingTours: {
-            en: "Walking Tours",
-            ar: "جولات على المشي"
-        },
-        horseRiding: {
-            en: "Horse Riding",
-            ar: "السفر على الموج"
-        },
-        cycling: {
-            en: "Cycling",
-            ar: "الدراجات النارية"
-        },
-        hiking: {
-            en: "Hiking",
-            ar: "الجولات عل����� الجبال"
-        },
-        windsurfing: {
-            en: "Windsurfing",
-            ar: "الركب على الريح"
-        },
-        tennis: {
-            en: "Tennis",
-            ar: "التنس"
-        },
-        billiards: {
-            en: "Billiards",
-            ar: "البيليارد"
-        },
-        conciergeService: {
-            en: "Concierge Service",
-            ar: "خدمة المستشار"
-        },
-        currencyExchange: {
-            en: "Currency Exchange",
-            ar: "تبادل العملات"
-        },
-        frontDesk24h: {
-            en: "Front Desk 24h",
-            ar: "خدمة المكاتب 24/7"
-        },
-        ironingService: {
-            en: "Ironing Service",
-            ar: "خدمة التنظيف"
-        },
-        housekeeping: {
-            en: "Housekeeping",
-            ar: "خدمة التنظيف"
-        },
-        drycleaning: {
-            en: "Dry Cleaning",
-            ar: "تنظيف جاف"
-        },
-        laundry: {
-            en: "Laundry",
-            ar: "تنظيف"
-        },
-        airportShuttle: {
-            en: "Airport Shuttle",
-            ar: "النقل الجوي"
-        },
-        invoiceProvided: {
-            en: "Invoice Provided",
-            ar: "الف��تو��ة مقدمة"
-        },
-        expressCheckInOut: {
-            en: "Express Check-in/Out",
-            ar: "التسجيل السريع"
-        },
-        elevator: {
-            en: "Elevator",
-            ar: "المصعد"
-        },
-        minimarket: {
-            en: "Mini Market",
-            ar: "متجر صغير"
-        },
-        beautyShop: {
-            en: "Beauty Shop",
-            ar: "محل جميلات"
-        },
-        smokingArea: {
-            en: "Smoking Area",
-            ar: "منطقة تدخين"
-        },
-        soundproofRooms: {
-            en: "Soundproof Rooms",
-            ar: "غرف صامتة"
-        },
-        meetingFacilities: {
-            en: "Meeting Facilities",
-            ar: "مرافق الاجتماعات"
-        },
-        sharedLounge: {
-            en: "Shared Lounge",
-            ar: "ملعب مشترك"
-        },
-        fireExtinguishers: {
-            en: "Fire Extinguishers",
-            ar: "أفران الإطفاء"
-        },
-        security24h: {
-            en: "Security 24h",
-            ar: "الأمن 24/7"
-        },
-        keyCardAccess: {
-            en: "Key Card Access",
-            ar: "دخول الكارد"
-        },
-        cctvOutside: {
-            en: "CCTV Outside",
-            ar: "كاميرات الموقع الخارجي"
-        },
-        cctvCommonAreas: {
-            en: "CCTV Common Areas",
-            ar: "كاميرات المناطق المشتركة"
-        },
-        securityAlarm: {
-            en: "Security Alarm",
-            ar: "إشارة الأمن"
-        },
-        smokeFree: {
-            en: "Smoke Free",
-            ar: "صفر التدخين"
-        },
-        spa: {
-            en: "Spa",
-            ar: "مركز سبا"
-        },
-        steamRoom: {
-            en: "Steam Room",
-            ar: "مركز البخار"
-        },
-        bodyTreatments: {
-            en: "Body Treatments",
-            ar: "تدليك"
-        },
-        beautyServices: {
-            en: "Beauty Services",
-            ar: "خدمات الجمال"
-        },
-        hammam: {
-            en: "Hammam",
-            ar: "هامم"
-        }
-    };
+    
 
     // Add new handler for check-in/out times
     const handleTimeChange = (e, type) => {
@@ -1283,6 +722,48 @@ function NewHotel() {
                             },
                         }
                     });
+
+                    // Initialize environment sections with existing data
+                    if (response.data.proximity) {
+                        setEnvironmentSections([
+                            { 
+                                title: "NearbyPlaces", 
+                                items: response.data.proximity.nearbyPlaces.map(place => ({
+                                    name: place.name,
+                                    distance: place.distance
+                                })) || []
+                            },
+                            { 
+                                title: "RestaurantsCoffee", 
+                                items: response.data.proximity.restaurants.map(rest => ({
+                                    name: rest.name,
+                                    distance: rest.distance
+                                })) || []
+                            },
+                            { 
+                                title: "NearbyBeaches", 
+                                items: response.data.proximity.beaches.map(beach => ({
+                                    name: beach.name,
+                                    distance: beach.distance
+                                })) || []
+                            },
+                            { 
+                                title: "PublicTransport", 
+                                items: response.data.proximity.publicTransit.map(transit => ({
+                                    name: transit.name,
+                                    distance: transit.distance
+                                })) || []
+                            },
+                            { 
+                                title: "NearbyAirports", 
+                                items: response.data.proximity.airports.map(airport => ({
+                                    name: airport.name,
+                                    distance: airport.distance
+                                })) || []
+                            },
+                        ]);
+                    }
+
                 } catch (error) {
                     setError('Error fetching hotel data');
                 }
@@ -1411,7 +892,11 @@ function NewHotel() {
 
     const handleEnvironmentChange = (sectionIndex, itemIndex, field, value) => {
         const newSections = [...environmentSections];
-        newSections[sectionIndex].items[itemIndex][field] = value;
+        if (field === 'title') {
+            newSections[sectionIndex].items[itemIndex].name = value;
+        } else {
+            newSections[sectionIndex].items[itemIndex][field] = value;
+        }
         setEnvironmentSections(newSections);
     };
 
@@ -1431,6 +916,15 @@ function NewHotel() {
             }
         }));
     };
+
+    // Base input class - add this near the top of your component
+    const inputBaseClass = "block w-full px-4 py-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200";
+
+    // For inputs that show state (filled vs empty)
+    const getInputStateClass = (value) => 
+      value && value.toString().trim() !== "" 
+        ? "bg-blue-50 border-blue-200" 
+        : "bg-gray-50 border-gray-300";
 
     return (
         <div className="mx-auto  px-4 sm:px-6 lg:px-8">
@@ -1467,7 +961,7 @@ function NewHotel() {
                                         value={formData.name}
                                         onChange={handleChange}
                                         placeholder="e.g. Hilton Garden Inn"
-                                        className={`${formData.name.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${inputBaseClass} ${getInputStateClass(formData.name)}`}
                                         required
                                     />
                                 </div>
@@ -1486,7 +980,7 @@ function NewHotel() {
                                         value={formData.title}
                                         onChange={handleChange}
                                         placeholder="e.g. Luxury Beach Resort & Spa"
-                                        className={`${formData.title.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${inputBaseClass} ${getInputStateClass(formData.title)}`}
                                         required
                                     />
                                 </div>
@@ -1506,7 +1000,7 @@ function NewHotel() {
                                         value={formData.pricing.basePrice}
                                         onChange={handleChange}
                                         placeholder="e.g. 100"
-                                        className={`${formData.pricing.basePrice !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${inputBaseClass} ${getInputStateClass(formData.pricing.basePrice)}`}
                                         required
                                     />
                                 </div>
@@ -1520,7 +1014,7 @@ function NewHotel() {
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className={`${formData.type.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 text-white "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className={`${inputBaseClass} ${getInputStateClass(formData.type)}`}
                                         required
                                     >
                                         <option value="">Select Property Type</option>
@@ -1550,7 +1044,7 @@ function NewHotel() {
                                                 min="0"
                                                 max="5"
                                                 step="0.1"
-                                                className={`${(formData.rating !== 0 && formData.rating !== null) ? "bg-blue-100 text-black" : "bg-gray-700 text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                                className={`${inputBaseClass} ${getInputStateClass(formData.rating)}`}
                                                 required
                                             />
                                             <div className="flex items-center">
@@ -1583,7 +1077,7 @@ function NewHotel() {
                                             name="rental.durationType"
                                             value={formData.rental.durationType}
                                             onChange={handleChange}
-                                            className={`${formData.rental.durationType.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700  text-white"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                            className={`${inputBaseClass} ${getInputStateClass(formData.rental.durationType)}`}
                                             required
                                         >
                                             <option value="">Select Duration Type</option>
@@ -1624,7 +1118,8 @@ function NewHotel() {
                                                 value={formData.rental.customDays}
                                                 onChange={handleChange}
                                                 min="1"
-                                                className={`${formData.rental.customDays !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="0"
+                                                className={`${inputBaseClass} ${getInputStateClass(formData.rental.customDays)}`}
+                                                placeholder="0"
                                                 required
                                             />
                                         </div>
@@ -1637,13 +1132,10 @@ function NewHotel() {
                             <h4 className="text-3xl text-center bg-yellow-500  rounded-t-lg">Location</h4>
                             <div className="space-y-4 grid gap-6 mb-6 md:grid-cols-5 border-b-2 border-yellow-500 rounded-lg" >
                                 <Region onRegionSelect={setSelectedRegion} regionValue={selectedRegion} onCitySelect={setSelectedCity} />
-                                <City region={selectedRegion} onCitySelect={setSelectedCity} cityValue = {selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} />
-                                <Neighborhood  city={selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} neighborhoodValue = {selectedNeighboorhd}  />
+                                <City region={selectedRegion} onCitySelect={setSelectedCity} cityValue={selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} />
+                                <Neighborhood city={selectedCity} onNeighborhoodSelect={setSelectedNeighboorhd} neighborhoodValue={selectedNeighboorhd} />
 
-
-                                
-
-                                <div className="bg-white rounded-lg p-4 ">
+                                <div className="bg-white rounded-lg p-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
                                         Dis from Center (km)
                                     </label>
@@ -1653,25 +1145,23 @@ function NewHotel() {
                                         value={formData.location.distanceFromCityCenter}
                                         onChange={handleChange}
                                         placeholder="e.g. 2.5"
-                                        className={`${formData.location.distanceFromCityCenter !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                         required
                                     />
                                 </div>
 
-                            
-                                <div className="bg-white rounded-lg p-4 ">
+                                <div className="bg-white rounded-lg p-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                        latitudeLongitude
+                                        <FontAwesomeIcon icon={faLocationDot} className="mr-2" />
+                                        Latitude/Longitude
                                     </label>
                                     <input
                                         type="text"
                                         name="location.latitudeLongitude"
                                         value={formData.location.latitudeLongitude}
                                         onChange={handleChange}
-                                        placeholder="e.g. +1234567890"
-                                        className={`${formData.location.latitudeLongitude !== 0 ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
-
+                                        placeholder="e.g. 12.3456, 78.9012"
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                     />
                                 </div>
                             </div>
@@ -1680,7 +1170,7 @@ function NewHotel() {
 
                             <h4 className="text-3xl text-center bg-orange-500  rounded-t-lg">Contact</h4>
                             <div className="space-y-4 grid gap-6 mb-6 md:grid-cols-4 border-b-2 border-orange-500 rounded-lg" >
-                                <div className="bg-white rounded-lg p-4 mt-4 ">
+                                <div className="bg-white rounded-lg p-4 mt-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
                                         <FontAwesomeIcon icon={faPhone} className="mr-2" />
                                         Phone
@@ -1691,11 +1181,11 @@ function NewHotel() {
                                         value={formData.contact.phone}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={`${formData.contact.phone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                         required
                                     />
                                 </div>
-                                <div className="bg-white rounded-lg p-4 ">
+                                <div className="bg-white rounded-lg p-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
                                         <FontAwesomeIcon icon={faPhone} className="mr-2" />
                                         Booking Phone
@@ -1706,14 +1196,14 @@ function NewHotel() {
                                         value={formData.contact.bookPhone}
                                         onChange={handleChange}
                                         placeholder="e.g. +1234567890"
-                                        className={`${formData.contact.bookPhone.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                         required
                                     />
                                 </div>
 
-                                <div className="bg-white rounded-lg p-4 ">
+                                <div className="bg-white rounded-lg p-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                                        <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
                                         Email
                                     </label>
                                     <input
@@ -1721,24 +1211,24 @@ function NewHotel() {
                                         name="contact.email"
                                         value={formData.contact.email}
                                         onChange={handleChange}
-                                        placeholder="e.g. +1234567890"
-                                        className={`${formData.contact.email.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        placeholder="example@email.com"
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                         required
                                     />
                                 </div>
 
-                                <div className="bg-white rounded-lg p-4 ">
+                                <div className="bg-white rounded-lg p-4">
                                     <label className="block text-md mb-3 font-medium text-gray-700">
-                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                        WebSite
+                                        <FontAwesomeIcon icon={faGlobe} className="mr-2" />
+                                        Website
                                     </label>
                                     <input
                                         type="text"
                                         name="contact.website"
                                         value={formData.contact.website}
                                         onChange={handleChange}
-                                        placeholder="e.g. +1234567890"
-                                        className={`${formData.contact.website.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`}
+                                        placeholder="www.example.com"
+                                        className="block w-full px-4 py-2 mt-1 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                         required
                                     />
                                 </div>
@@ -1752,7 +1242,15 @@ function NewHotel() {
                                         <FontAwesomeIcon icon={faHotel} className="mr-2" />
                                         Description
                                     </label>
-                                    <textarea value={formData?.description} id="message" rows="4" name="description" onChange={handleChange} className={`${formData.description.trim() !== "" ? "bg-blue-100 text-black" : "bg-gray-700 "}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  mb-0`} placeholder="Write your thoughts here..."></textarea>
+                                    <textarea 
+                                        value={formData?.description} 
+                                        id="message" 
+                                        rows="4" 
+                                        name="description" 
+                                        onChange={handleChange} 
+                                        className={`${inputBaseClass} ${getInputStateClass(formData.description)} min-h-[120px] resize-y`}
+                                        placeholder="Write your thoughts here..."
+                                    ></textarea>
                                 </div>
 
                             </div>
@@ -1782,7 +1280,7 @@ function NewHotel() {
                                                     name="policies.checkIn.from"
                                                     value={formData.policies.checkIn.from}
                                                     onChange={handleChange}
-                                                    className="mt-1 block w-full px-4 bg-transparent hover:border-red-500 py-2 outline-none focus:border-blue-500"
+                                                    className={`${inputBaseClass} ${getInputStateClass(formData.policies.checkIn.from)}`}
                                                     required
                                                 />
                                             </div>
@@ -1793,7 +1291,7 @@ function NewHotel() {
                                                     name="policies.checkIn.to"
                                                     value={formData.policies.checkIn.to}
                                                     onChange={handleChange}
-                                                    className="mt-1 block w-full px-4 bg-transparent hover:border-red-500 py-2 outline-none focus:border-blue-500"
+                                                    className={`${inputBaseClass} ${getInputStateClass(formData.policies.checkIn.to)}`}
                                                     required
                                                 />
                                             </div>
@@ -1815,7 +1313,7 @@ function NewHotel() {
                                                     name="policies.checkOut.from"
                                                     value={formData.policies.checkOut.from}
                                                     onChange={handleChange}
-                                                    className="mt-1 block w-full px-4 bg-transparent hover:border-red-500 py-2 outline-none focus:border-blue-500"
+                                                    className={`${inputBaseClass} ${getInputStateClass(formData.policies.checkOut.from)}`}
                                                     required
                                                 />
                                             </div>
@@ -1826,7 +1324,7 @@ function NewHotel() {
                                                     name="policies.checkOut.to"
                                                     value={formData.policies.checkOut.to}
                                                     onChange={handleChange}
-                                                    className="mt-1 block w-full px-4 bg-transparent hover:border-red-500 py-2 outline-none focus:border-blue-500"
+                                                    className={`${inputBaseClass} ${getInputStateClass(formData.policies.checkOut.to)}`}
                                                     required
                                                 />
                                             </div>
@@ -1939,7 +1437,7 @@ function NewHotel() {
                                                         name="policies.quietHours.from"
                                                         value={formData.policies.quietHours.from}
                                                         onChange={handleChange}
-                                                        className="mt-1 block w-cyan-54 bg-cyan-100 hover:bg-blue-200 py-2 border-b-2 border-cyan-500 outline-none focus:border-black rounded"
+                                                        className={`${inputBaseClass} ${getInputStateClass(formData.policies.quietHours.from)}`}
                                                         required={formData.policies.quietHours.enforced}
                                                     />
                                                 </div>
@@ -1950,7 +1448,7 @@ function NewHotel() {
                                                         name="policies.quietHours.to"
                                                         value={formData.policies.quietHours.to}
                                                         onChange={handleChange}
-                                                        className="mt-1 block w-cyan-54 bg-cyan-100 hover:bg-blue-200 py-2 border-b-2 border-cyan-500 outline-none focus:border-black rounded"
+                                                        className={`${inputBaseClass} ${getInputStateClass(formData.policies.quietHours.to)}`}
                                                         required={formData.policies.quietHours.enforced}
                                                     />
                                                 </div>
@@ -1985,7 +1483,7 @@ function NewHotel() {
                                     <select
                                         value={selectedLanguage}
                                         onChange={(e) => setSelectedLanguage(e.target.value)}
-                                        className="flex-1 pxcyan-5y-2 cyang-blue-100 focus:bg-blue-200 border-b-2 border-cyan-500 outline-none focus:border-black"
+                                        className={`${inputBaseClass} ${getInputStateClass(selectedLanguage)}`}
                                     >
                                         <option value="">Select a language</option>
                                         {availableLanguages
@@ -2023,46 +1521,12 @@ function NewHotel() {
                             </div>
                         </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-medium text-gray-700">
-                                Amenities
-                                <span className="block text-sm text-gray-500 mt-1" dir="rtl" lang="ar">
-                                    المرافق والخدمات
-                                </span>
-                            </h3>
-                            {Object.entries(amenityCategories).map(([category, { title, items }]) => (
-                                <div key={category} className="space-y-2">
-                                    <h4 className="font-medium text-gray-600">
-                                        {title}
-                                        <span className="block text-sm text-gray-500" dir="rtl" lang="ar">
-                                            {amenityTranslations[category]?.ar || title}
-                                        </span>
-                                    </h4>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-                                        {items.map(({ label, name: amenityName, icon }) => (
-                                            <div key={amenityName} className="flex items-center group relative">
-                                                <input
-                                                    id={`amenities.${category}.${amenityName}`}
-                                                    type="checkbox"
-                                                    name={`amenities.${category}.${amenityName}`}
-                                                    checked={formData.amenities[category][amenityName] || false} // Access the correct category
-                                                    onChange={(e) => handleAmenityChange(category, amenityName, e.target.checked)} // Pass category and name
-                                                    className="h-4 w-4 text-blue-600"
-                                                />
-                                                <label htmlFor={`amenities.${category}.${amenityName}`}
-                                                    className="ml-2 cursor-pointer hover:scale-105 transition-transform flex items-center">
-                                                    <FontAwesomeIcon icon={icon} className="mr-1" />
-                                                    <span className="mr-1">{label}</span>
-                                                    <span className="text-sm text-white z-50 hidden group-hover:block absolute -top-10 right-0 bg-blue-500 shadow-lg p-2 rounded z-[100]" dir="rtl" lang="ar">
-                                                        {amenityTranslations[amenityName]?.ar}
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <AmenitiesSection
+                    amenityCategories={amenityCategories}
+                    formData={formData}
+                    handleAmenityChange={handleAmenityChange}
+                    amenityTranslations={amenityTranslations}
+                />
 
                         <div className="flex items-center mb-4">
                             <h3 className="mt-4 text-orange-500 text-xl font-bold">Environment</h3>
@@ -2085,18 +1549,18 @@ function NewHotel() {
                                                 <li className="list-group-item flex items-center justify-between bg-white p-2 rounded shadow mb-2" key={itemIndex}>
                                                     <input
                                                         type="text"
-                                                        className="form-control me-2 border border-gray-300 rounded p-2"
-                                                        placeholder="Title"
-                                                        value={item.title}
-                                                        onChange={(e) => handleEnvironmentChange(sectionIndex, itemIndex, 'title', e.target.value)}
+                                                        className={`${inputBaseClass} ${getInputStateClass(item.name)}`}
+                                                        placeholder="Name"
+                                                        value={item.name || ''}
+                                                        onChange={(e) => handleEnvironmentChange(sectionIndex, itemIndex, 'name', e.target.value)}
                                                     />
                                                     <input
                                                         type="number"
-                                                        className="form-control me-2 border border-gray-300 rounded p-2"
+                                                        className={`${inputBaseClass} ${getInputStateClass(item.distance)}`}
                                                         placeholder="Distance (km)"
                                                         min="0"
                                                         step="0.1"
-                                                        value={item.distance}
+                                                        value={item.distance || ''}
                                                         onChange={(e) => handleEnvironmentChange(sectionIndex, itemIndex, 'distance', e.target.value)}
                                                     />
                                                     <button

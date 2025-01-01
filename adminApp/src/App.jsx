@@ -11,7 +11,7 @@ import User from './pages/user/Users'
 import Single from './pages/user/componentUser/Single'
 import AuthForm from './pages/login/Login'
 import { AuthContext } from './pages/context/AuthContect'
-import AddHouse from './pages/House/houseRealties/addHouse'
+import AddHouse from './pages/House/houseRealties/NewHouseRentals'
 import Hotels from './pages/House/hotels/hotels'
 import NewHotel from './pages/House/hotels/newHotel'
 
@@ -19,6 +19,10 @@ import NewHotel from './pages/House/hotels/newHotel'
 import './index.css'
 // import UpdateHotel from './pages/House/hotels/UpdateHotel';
 import { PageDiscount } from './pages/PageDiscount/PageDiscount';
+import HouseRentals from './pages/House/houseRealties/houseRentals';
+import NewHouseRentals from './pages/House/houseRealties/NewHouseRentals';
+import Cities from './pages/cities/Cities';
+import CityDetails from './pages/cities/CityDetails';
 // import NewHotelTest from './pages/House/hotels/newTest';
 // import PropertyForm from './pages/House/hotels/newTest';
 
@@ -38,11 +42,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='login' element={<AuthForm />} />
-          <Route path='/addHouse' element={
-            <ProtectedRoute>
-              <AddHouse />
-            </ProtectedRoute>
-          } />
           <Route path="/" element={
             <ProtectedRoute>
               <Home use="dashbord" />
@@ -87,10 +86,49 @@ function App() {
               </ProtectedRoute>
             } />
           </Route>
+
+          <Route path="houses-sales">
+            <Route index element={
+              <ProtectedRoute>
+                <HouseRentals type="/" />
+              </ProtectedRoute>
+            } />
+            <Route path="new" element={
+              <ProtectedRoute>
+                <HouseRentals type="new" />
+              </ProtectedRoute>
+            } />
+          </Route>
+
+          <Route path="cities">
+            <Route index element={
+              <ProtectedRoute>
+                <Cities type="/" />
+              </ProtectedRoute>
+            } />
+            <Route path="new" element={
+              <ProtectedRoute>
+                <Cities type="new" />
+              </ProtectedRoute>
+            } />
+            <Route path=":cityId" element={
+              <ProtectedRoute>
+                <Cities />
+              </ProtectedRoute>
+            } />
+            <Route path="edit/:cityId" element={
+              <ProtectedRoute>
+                <Cities type="edit" />
+              </ProtectedRoute>
+            } />
+          </Route>
+
           
-          <Route path="discount" element={
+
+          
+          <Route path="/addHouseRentals" element={
             <ProtectedRoute>
-              <PageDiscount type="/" />
+              <NewHouseRentals type="/" />
             </ProtectedRoute>
           } />
         </Routes>

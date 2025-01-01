@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 
-const itemSchema = {
-  name: { type: String, required: true }, // Name of the item
-  description: { type: String },         // Optional description
-  distance: { type: String },            // Optional distance (e.g., "2 km")
-  rating: { type: Number, min: 0, max: 5 } // Optional rating for the item
-};
+
 
 const hotelSchema = new mongoose.Schema({
   // Basic Information
@@ -23,10 +18,10 @@ const hotelSchema = new mongoose.Schema({
     enum: ['hotel', 'apartment', 'resort', 'villa', 'cabin', 'guesthouse', 'hostel', 'boutique'],
   },
   location: {
+    region: { type: String, },
     city: { type: String, },
-    address: { type: String, },
-    latitude: { type: Number, },
-    longitude: { type: Number, },
+    neighborhood: { type: String, },
+    latitudeLongitude: { type: String, },
     distanceFromCityCenter: { type: Number, }
   },
   contact: {

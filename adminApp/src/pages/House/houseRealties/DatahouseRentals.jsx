@@ -8,7 +8,7 @@ import useFetch from '../../../hooks/useFetch';
 import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
 
-const DataUser = (props) => {
+const DataHouseSales  = () => {
     const { data: fetchedData, loading, error } = useFetch(`/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
@@ -20,12 +20,18 @@ const DataUser = (props) => {
     }, [fetchedData]);
 
     const userColumns = [
-        { field: "_id", headerName: "ID", flex: 1, minWidth: 200 },
+        { 
+            field: "_id", 
+            headerName: "ID", 
+            flex: 1, 
+            minWidth: 150,
+            hide: window.innerWidth < 768 
+        },
         { 
             field: "fullName", 
             headerName: "Nom et Prénom", 
             flex: 1,
-            minWidth: 150
+            minWidth: 120
         },
         { field: "username", headerName: "Username", flex: 0.8, minWidth: 120 },
         { field: "email", headerName: "Email", flex: 1.2, minWidth: 180 },
@@ -103,15 +109,20 @@ const DataUser = (props) => {
     
 
     return (
-        <div style={{ fontSize: "12px" }} className="p-2 sm:p-4 md:p-6 max-w-[98vw]  md:max-w-[86vw]  mx-auto container-fluid h-[100vh] md:h-[98vh] overflow-hidden">
+        <div className="p-2 sm:p-4 md:p-6 max-w-full mx-auto container-fluid h-[85vh] overflow-hidden">
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold mb-4 md:mb-0">Users List</h2>
-                <Link to="/users/new" className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center ">
-                    Ajouter utilisateur
+                <h2 className="text-xl font-semibold mb-4 md:mb-0">Houses Sales List</h2>
+                <Link to="/houses-sales/new" className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center text-sm ">
+                    Add houseSales
                 </Link>
             </div>
-            <div className="bg-white rounded-lg shadow-sm h-[calc(96vh-100px)] md:h-[calc(96vh-80px)] w-full">
-                <DataGrid style={{ fontSize: "11px"}}
+            <div className="bg-white rounded-lg shadow-sm h-[calc(100%-60px)] w-full">
+                <DataGrid
+                    style={{ 
+                        fontSize: "12px",
+                        width: '100%',
+                        height: '100%'
+                    }}
                     rows={data}
                     columns={userColumns.concat(actionColumn)}
                     getRowId={(row) => row._id.$oid || row._id}
@@ -120,15 +131,23 @@ const DataUser = (props) => {
                         pagination: {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
+                        columns: {
+                            columnVisibilityModel: {
+                                _id: window.innerWidth >= 768,
+                                updatedAt: window.innerWidth >= 768,
+                                createdAt: window.innerWidth >= 768,
+                            }
+                        }
                     }}
                     pageSizeOptions={[5, 10, 25, 50, 100]}
                     pagination
                     checkboxSelection
                     disableSelectionOnClick
+                    autoHeight={false}
                 />
             </div>
         </div>
     );
 };
 
-export default DataUser;
+export default DataHouseSales;

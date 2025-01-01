@@ -8,12 +8,34 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' });
 
 // CREATE  
-router.post('/', verifyAdmin, creatHotel);
+router.post('/', async (req, res) => {
+    try {
+        const hotel = new Hotel(req.body);
+        await hotel.save();
+        res.status(201).json(hotel);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 
 
 
 // UPDATE 
-router.put('/:id', verifyAdmin, updateHotel)
+router.put('/:id', async (req, res) => {
+    try {
+        const hotel = await Hotel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        if (!hotel) {
+            return res.status(404).json({ message: 'Hotel not found' });
+        }
+        res.json(hotel);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 // DELETE
 router.delete('/:id', verifyAdmin, deleteHotel)
 // GET

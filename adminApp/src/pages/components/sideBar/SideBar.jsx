@@ -19,7 +19,9 @@ import {
   faXmark,
   faChevronLeft,
   faChevronRight,
-  faHotel
+  faHotel,
+  faHouse,
+  faCity
 } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({isOpen, setIsOpen, use}) => {
@@ -92,14 +94,21 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
               {isOpen && <span className="text-sm font-semibold  ml-2">Hotels</span>}
             </li>
           </Link>
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
-            <FontAwesomeIcon icon={faCreditCard} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Orders</span>}
-          </li>
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
-            <FontAwesomeIcon icon={faTruck} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Delivery</span>}
-          </li>
+
+          {/* Houses Section */}
+          <Link to="/houses-sales" className="no-underline">
+            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "housesSales" ? 'active' : null}`}>
+              <FontAwesomeIcon icon={faHouse} className="icon" />
+              {isOpen && <span className="text-sm font-semibold  ml-2">Houses</span>}
+            </li>
+          </Link>
+
+          <Link to="/cities" className="no-underline">
+            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "cities" ? 'active' : null}`}>
+              <FontAwesomeIcon icon={faCity} className="icon" />
+              {isOpen && <span className="text-sm font-semibold  ml-2">Cities</span>}
+            </li>
+          </Link>
 
           {/* Useful Section */}
           {isOpen && <p className="text-xs font-bold text-gray-400 my-4">USEFUL</p>}

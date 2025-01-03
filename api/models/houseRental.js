@@ -2,184 +2,88 @@ import mongoose from 'mongoose';
 
 const houseRentalSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    type: { type: String, required: true },
+    type: { type: String, required: true, enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse'] },
+    description: { type: String },
+    status: { type: String, default: 'available', enum: ['available', 'rented', 'maintenance'] },
+    featured: { type: Boolean, default: false },
     location: {
-        city: String,
-        address: String,
-        latitude: String,
-        longitude: String,
-        distanceFromCityCenter: String
+        region: { type: String, },
+        city: { type: String, },
+        neighborhood: { type: String, },
+        coordinates: { type: String },
+        distanceFromCityCenter: { type: Number },
+        nearbyPlaces: {
+            school: { type: Number },
+            supermarket: { type: Number },
+            beach: { type: Number },
+            restaurants: { type: Number },
+            mosques: { type: Number },
+            souq: { type: Number }
+        }
     },
     contact: {
-        phone: String,
-        email: String,
-        whatsapp: String
+        phone: { type: String, required: true },
+        email: { type: String, required: true },
+        whatsapp: { type: String }
     },
-    description: String,
-    sale: {
+    rental: {
         price: { type: Number, required: true },
-        propertyType: String,
-        saleType: String,
+        propertyType: {
+            type: String,
+            required: true,
+            enum: ['residential', 'commercial', 'land']
+        },
         negotiable: { type: Boolean, default: false },
-        paymentTerms: String,
-        titleDeedStatus: String,
-        propertyAge: Number,
-        lastRenovated: Date
+        propertyAge: { type: Number },
+        lastRenovated: { type: Date }
     },
-    details: {
+    specifications: {
         size: { type: Number, required: true },
         bedrooms: { type: Number, required: true },
         bathrooms: { type: Number, required: true },
-        floor: Number,
-        totalFloors: Number,
-        yearBuilt: Number,
+        floor: { type: Number },
+        totalFloors: { type: Number },
+        yearBuilt: { type: Number },
         parking: { type: Boolean, default: false },
         petsAllowed: { type: Boolean, default: false }
     },
-    features: {
-        balcony: {
-            exists: { type: Boolean, default: false },
-            size: String,
-            view: String
-        },
-        terrace: {
-            exists: { type: Boolean, default: false },
-            size: String,
-            view: String
-        },
-        kitchen: {
+    amenities: {
+        balcony: { type: Boolean, default: false },
+        terrace: { type: Boolean, default: false },
+        elevator: { type: Boolean, default: false },
+        view: {
             type: String,
-            equipment: [String]
+            enum: ['city', 'sea', 'garden', 'mountain', 'street', 'park', '']
         },
-        bathroom: {
-            count: Number,
-            features: [String]
-        },
+        kitchen: [{ type: String }],
         heating: {
-            type: String
+            type: String,
+            enum: ['central', 'electric', 'gas', 'none', '']
         },
         airConditioning: {
             installed: { type: Boolean, default: false },
-            units: Number
+            units: { type: Number }
         },
-        internet: {
-            available: { type: Boolean, default: false },
-            type: String,
-            speed: String
-        },
+        internet: { type: Boolean, default: false },
         soundproofing: { type: Boolean, default: false },
         thermalInsulation: { type: Boolean, default: false }
     },
-    proximity: {
-        restaurants: {
-            closest: String,
-            walkingTime: String
-        },
-        cafes: {
-            closest: String,
-            walkingTime: String
-        }
-    },
-    amenities: {
-        basic: {
-            wifi: { type: Boolean, default: false },
-            airConditioning: { type: Boolean, default: false },
-            heating: { type: Boolean, default: false },
-            elevator: { type: Boolean, default: false },
-            parking: { type: Boolean, default: false }
-        },
-        kitchen: {
-            refrigerator: { type: Boolean, default: false },
-            microwave: { type: Boolean, default: false },
-            stove: { type: Boolean, default: false },
-            dishwasher: { type: Boolean, default: false },
-            washingMachine: { type: Boolean, default: false }
-        },
-        outdoor: {
-            balcony: { type: Boolean, default: false },
-            garden: { type: Boolean, default: false },
-            terrace: { type: Boolean, default: false }
-        },
-        security: {
-            securitySystem: { type: Boolean, default: false },
-            cctv: { type: Boolean, default: false },
-            doorman: { type: Boolean, default: false }
-        }
-    },
-    utilities: {
-        electricity: { type: Boolean, default: false },
-        water: { type: Boolean, default: false },
-        internet: { type: Boolean, default: false },
-        gas: { type: Boolean, default: false }
-    },
-    status: { 
-        type: String, 
-        enum: ['available', 'rented', 'pending', 'maintenance'],
-        default: 'available'
-    },
-    featured: { type: Boolean, default: false },
-    locationDetails: {
-        distanceToSchool: String,
-        schoolTransportPrice: Number,
-        nearestSchools: [String],
-        distanceToBeach: String,
-        nearestBeaches: [String],
-        parkingDetails: {
-            type: String,
-            distance: String,
-            pricePerMonth: Number
-        },
-        transportation: {
-            busStopDistance: String,
-            busLines: [String],
-            taxiStandDistance: String,
-            averageTaxiFare: Number
-        },
-        nearbyAmenities: {
-            groceryStores: String,
-            restaurants: String,
-            cafes: String,
-            mosques: String,
-            hospitals: String,
-            pharmacies: String
-        },
-        neighborhood: String,
-        landmarks: {
-            distanceToMosque: String,
-            distanceToSouq: String,
-            distanceToCornicheNador: String,
-            distanceToMarcheCentral: String
-        },
-        publicTransport: {
-            grandTaxiStation: String,
-            busStation: String,
-            distanceToSpanishBorder: String
-        },
-        schools: {
-            arabicSchools: [String],
-            frenchSchools: [String],
-            spanishSchools: [String],
-            languageInstitutes: [String]
-        }
-    },
-    propertyDetails: {
-        constructionType: String,
-        facadeDirection: String,
-        waterSystem: {
-            hasWaterTank: { type: Boolean, default: false },
-            tankCapacity: String,
-            waterPressure: String
-        },
-        securityFeatures: {
-            hasConcierge: { type: Boolean, default: false },
-            hasSecurityDoors: { type: Boolean, default: false },
-            hasSurveillanceSystem: { type: Boolean, default: false }
-        }
+    security: {
+        concierge: { type: Boolean, default: false },
+        securityDoors: { type: Boolean, default: false },
+        surveillanceSystem: { type: Boolean, default: false }
     }
 }, {
     timestamps: true
 });
 
+// Indexes for better query performance
+houseRentalSchema.index({ 'location.region': 1, 'location.city': 1 });
+houseRentalSchema.index({ 'rental.price': 1 });
+houseRentalSchema.index({ 'specifications.bedrooms': 1 });
+houseRentalSchema.index({ status: 1 });
+houseRentalSchema.index({ featured: 1 });
+
 const HouseRental = mongoose.model('HouseRental', houseRentalSchema);
 
-export default HouseRental; 
+export default HouseRental;

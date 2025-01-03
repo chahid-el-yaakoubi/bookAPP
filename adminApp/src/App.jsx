@@ -123,14 +123,25 @@ function App() {
             } />
           </Route>
 
-          
 
-          
-          <Route path="/addHouseRentals" element={
-            <ProtectedRoute>
-              <NewHouseRentals type="/" />
-            </ProtectedRoute>
-          } />
+          <Route path="houses-rentals">
+            <Route index element={
+              <ProtectedRoute>
+                <HouseRentals type="/" />
+              </ProtectedRoute>
+            } />
+            <Route path="new" element={
+              <ProtectedRoute>
+                <HouseRentals type="new" />
+              </ProtectedRoute>
+            } />
+            <Route path="edit/:id" element={
+              <ProtectedRoute>
+                <HouseRentals type="edit" />
+              </ProtectedRoute>
+            } />
+          </Route>
+
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,113 +1,60 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faCity, faLocationDot, faMoneyBill, faBed, faBath, faPhone, faEnvelope, faCalendarDays, faRulerCombined, faBuilding, faParking, faPaw, faWifi, faSnowflake, faFire, faElevator, faUtensils, faWater, faBolt, faFireBurner, faGlobe, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faCity, faLocationDot, faMoneyBill, faBed, faBath, faPhone, faEnvelope, faCalendarDays, faRulerCombined, faBuilding, faParking, faPaw, faWifi, faSnowflake, faFire, faElevator, faUtensils, faWater, faBolt, faFireBurner, faGlobe, faCheck, faTimes, faKitchenSet } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { FormSection, InputField, SelectField, CheckboxField } from '../../../components/HouseRentals/FormSection';
-
-// Add this new component for section headers
-const SectionHeader = ({ icon, title }) => (
-    <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
-        <FontAwesomeIcon icon={icon} className="mr-3" />
-        {title}
-    </h3>
-);
+import { FormSection, InputField, SelectField, CheckboxField } from '../../../components/ComponentInputs';
+import { City, Neighborhood, Region } from "../../../components/Location";
 
 
-export const FormSection = ({ icon, title, children }) => (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
-            <FontAwesomeIcon icon={icon} className="mr-3" />
-            {title}
-        </h3>
-        {children}
-    </div>
-);
 
-export const InputField = ({ label, name, value, onChange, type = "text", required = false, placeholder = "" }) => (
-    <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-            {label}
-        </label>
-        <input
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            required={required}
-            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-        />
-    </div>
-);
-
-export const SelectField = ({ label, name, value, onChange, options, required = false }) => (
-    <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-            {label}
-        </label>
-        <select
-            name={name}
-            value={value}
-            onChange={onChange}
-            required={required}
-            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
-            <option value="">Select {label}</option>
-            {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                    {option.label}
-                </option>
-            ))}
-        </select>
-    </div>
-);
-
-export const CheckboxField = ({ label, name, checked, onChange }) => (
-    <label className="flex items-center space-x-3">
-        <input
-            type="checkbox"
-            name={name}
-            checked={checked}
-            onChange={onChange}
-            className="h-4 w-4 text-blue-600"
-        />
-        <span className="text-sm text-gray-700">{label}</span>
-    </label>
-);
 
 function NewHouseRentals() {
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
+
+
     const navigate = useNavigate();
     const [error, setError] = useState(null);
 
-    // Initial form state
+    // Fixed formData initialization with all nested objects
     const [formData, setFormData] = useState({
-        name: "",
-        type: "",
+        propertyInfo: {
+            name: "",
+            type: "", // enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse']
+            description: "",
+            status: "available",
+            featured: false
+        },
         location: {
+            region: "",
             city: "",
-            address: "",
-            latitude: "",
-            longitude: "",
+            neighborhood: "",
+            coordinates: "",
             distanceFromCityCenter: "",
+            nearbyPlaces: {  // Added this nested object
+                school: "",
+                supermarket: "",
+                beach: "",
+                restaurants: "",
+                mosques: "",
+                souq: ""
+            }
         },
         contact: {
             phone: "",
             email: "",
-            whatsapp: "",
+            whatsapp: ""
         },
-        description: "",
-        sale: {
+        rental: {
             price: "",
-            propertyType: "", // residential, commercial, land
-            saleType: "", // direct sale, auction, etc.
+            propertyType: "",
             negotiable: false,
-            paymentTerms: "", // cash, mortgage, installments
-            titleDeedStatus: "", // clean, disputed, etc.
             propertyAge: "",
-            lastRenovated: "",
+            lastRenovated: ""
         },
-        details: {
+        specifications: {
             size: "",
             bedrooms: "",
             bathrooms: "",
@@ -117,170 +64,97 @@ function NewHouseRentals() {
             parking: false,
             petsAllowed: false
         },
-        features: {
-            balcony: {
-                exists: false,
-                size: "",
-                view: ""
-            },
-            terrace: {
-                exists: false,
-                size: "",
-                view: ""
-            },
-            kitchen: {
-                type: "",
-                equipment: []
-            },
-            bathroom: {
-                count: "",
-                features: []
-            },
-            heating: {
-                type: ""
-            },
+        amenities: {
+            balcony: false,
+            terrace: false,
+            elevator: false,
+            view: "",
+            kitchen: [],
+            heating: "",
             airConditioning: {
                 installed: false,
                 units: ""
             },
-            internet: {
-                available: false,
-                type: "",
-                speed: ""
-            },
+            internet: false,
             soundproofing: false,
             thermalInsulation: false
         },
-        proximity: {
-            restaurants: {
-                closest: "",
-                walkingTime: ""
-            },
-            cafes: {
-                closest: "",
-                walkingTime: ""
-            }
-        },
-        amenities: {
-            basic: {
-                wifi: false,
-                airConditioning: false,
-                heating: false,
-                elevator: false,
-                parking: false
-            },
-            kitchen: {
-                refrigerator: false,
-                microwave: false,
-                stove: false,
-                dishwasher: false,
-                washingMachine: false
-            },
-            outdoor: {
-                balcony: false,
-                garden: false,
-                terrace: false
-            },
-            security: {
-                securitySystem: false,
-                cctv: false,
-                doorman: false
-            }
-        },
-        utilities: {
-            electricity: false,
-            water: false,
-            internet: false,
-            gas: false
-        },
-        status: "available",
-        featured: false,
-        locationDetails: {
-            distanceToSchool: "",
-            schoolTransportPrice: "",
-            nearestSchools: [],
-            distanceToBeach: "",
-            nearestBeaches: [],
-            parkingDetails: {
-                type: "", // "private", "public", "street"
-                distance: "",
-                pricePerMonth: "",
-            },
-            transportation: {
-                busStopDistance: "",
-                busLines: [],
-                taxiStandDistance: "",
-                averageTaxiFare: "",
-            },
-            nearbyAmenities: {
-                groceryStores: "",
-                restaurants: "",
-                cafes: "",
-                mosques: "",
-                hospitals: "",
-                pharmacies: "",
-            },
-            neighborhood: "", // Popular neighborhoods in Nador
-            landmarks: {
-                distanceToMosque: "",
-                distanceToSouq: "",
-                distanceToCornicheNador: "", // Distance to Nador's Corniche
-                distanceToMarcheCentral: "", // Distance to Central Market
-            },
-            publicTransport: {
-                grandTaxiStation: "",
-                busStation: "",
-                distanceToSpanishBorder: "", // Distance to Melilla border
-            },
-            schools: {
-                arabicSchools: [],
-                frenchSchools: [],
-                spanishSchools: [], // Given proximity to Spain
-                languageInstitutes: []
-            }
-        },
-        propertyDetails: {
-            constructionType: "", // Traditional Moroccan, Modern, etc.
-            facadeDirection: "", // Important for sun exposure
-            waterSystem: {
-                hasWaterTank: false,
-                tankCapacity: "",
-                waterPressure: ""
-            },
-            securityFeatures: {
-                hasConcierge: false,
-                hasSecurityDoors: false,
-                hasSurveillanceSystem: false
-            }
+        security: {
+            concierge: false,
+            securityDoors: false,
+            surveillanceSystem: false
         }
     });
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        if (name.includes('.')) {
-            const [parent, child] = name.split('.');
-            setFormData(prev => ({
-                ...prev,
-                [parent]: {
-                    ...prev[parent],
-                    [child]: type === 'checkbox' ? checked : value
+        // Handle nested properties
+        const updateNestedState = (path, value) => {
+            const keys = path.split('.');
+            setFormData(prev => {
+                let newState = { ...prev };
+                let current = newState;
+
+                for (let i = 0; i < keys.length - 1; i++) {
+                    current[keys[i]] = { ...current[keys[i]] };
+                    current = current[keys[i]];
                 }
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: type === 'checkbox' ? checked : value
-            }));
-        }
+
+                current[keys[keys.length - 1]] = type === 'checkbox' ? checked : value;
+                return newState;
+            });
+        };
+
+        updateNestedState(name, value);
+    };
+
+    const handleRegionSelect = (region) => {
+        setSelectedRegion(region);
+        setFormData(prev => ({
+            ...prev,
+            location: {
+                ...prev.location,
+                region: region
+            }
+        }));
+    };
+
+    const handleCitySelect = (city) => {
+        setSelectedCity(city);
+        setFormData(prev => ({
+            ...prev,
+            location: {
+                ...prev.location,
+                city: city
+            }
+        }));
+    };
+
+    const handleNeighborhoodSelect = (neighborhood) => {
+        setSelectedNeighboorhd(neighborhood);
+        setFormData(prev => ({
+            ...prev,
+            location: {
+                ...prev.location,
+                neighborhood: neighborhood
+            }
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Form submission started');
+        console.log('Form data:', formData);
+        
         try {
-            await axios.post('/api/house-sales', formData);
+            console.log('Sending POST request to /api/house-sales');
+            const response = await axios.post('/api/house-rentals', formData);
+            console.log('Server response:', response.data);
             navigate('/houses-sales');
         } catch (err) {
+            console.error('Error submitting form:', err);
             setError(err.response?.data?.message || 'Error creating property listing');
         }
     };
@@ -310,15 +184,15 @@ function NewHouseRentals() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <InputField
                                 label="Property Name"
-                                name="name"
-                                value={formData.name}
+                                name="propertyInfo.name"
+                                value={formData.propertyInfo.name}
                                 onChange={handleChange}
                                 required
                             />
                             <SelectField
                                 label="Property Type"
-                                name="type"
-                                value={formData.type}
+                                name="propertyInfo.type"
+                                value={formData.propertyInfo.type}
                                 onChange={handleChange}
                                 options={[
                                     { value: "apartment", label: "Apartment" },
@@ -332,8 +206,8 @@ function NewHouseRentals() {
                             />
                             <InputField
                                 label="Description"
-                                name="description"
-                                value={formData.description}
+                                name="propertyInfo.description"
+                                value={formData.propertyInfo.description}
                                 onChange={handleChange}
                                 type="textarea"
                             />
@@ -342,84 +216,31 @@ function NewHouseRentals() {
 
                     {/* Location Information */}
                     <FormSection icon={faLocationDot} title="Location Information">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <InputField
-                                label="City"
-                                name="location.city"
-                                value={formData.location.city}
-                                onChange={handleChange}
-                                required
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <Region 
+                                onRegionSelect={handleRegionSelect} 
+                                regionValue={selectedRegion} 
+                                onCitySelect={handleCitySelect} 
                             />
-                            <InputField
-                                label="Address"
-                                name="location.address"
-                                value={formData.location.address}
-                                onChange={handleChange}
-                                required
+                            <City 
+                                region={selectedRegion} 
+                                onCitySelect={handleCitySelect} 
+                                cityValue={selectedCity} 
+                                onNeighborhoodSelect={handleNeighborhoodSelect} 
                             />
-                            <InputField
-                                label="Distance to Nearest School (km)"
-                                name="locationDetails.distanceToSchool"
-                                value={formData.locationDetails.distanceToSchool}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.1"
+                            <Neighborhood 
+                                city={selectedCity} 
+                                onNeighborhoodSelect={handleNeighborhoodSelect} 
+                                neighborhoodValue={selectedNeighboorhd} 
                             />
+                            
                             <InputField
-                                label="Distance to Supermarket (km)"
-                                name="locationDetails.nearbyAmenities.groceryStores"
-                                value={formData.locationDetails.nearbyAmenities.groceryStores}
+                                label="Coordinates"
+                                name="location.coordinates"
+                                value={formData.location.coordinates}
                                 onChange={handleChange}
-                                type="number"
-                                step="0.1"
-                            />
-                            <InputField
-                                label="Distance to Beach (km)"
-                                name="locationDetails.distanceToBeach"
-                                value={formData.locationDetails.distanceToBeach}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.1"
-                            />
-                            <InputField
-                                label="Distance to Cafes/Restaurants (km)"
-                                name="locationDetails.nearbyAmenities.restaurants"
-                                value={formData.locationDetails.nearbyAmenities.restaurants}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.1"
-                            />
-                            <InputField
-                                label="Distance to Mosque (km)"
-                                name="locationDetails.landmarks.distanceToMosque"
-                                value={formData.locationDetails.landmarks.distanceToMosque}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.1"
-                            />
-                            <InputField
-                                label="Distance to Souq (km)"
-                                name="locationDetails.landmarks.distanceToSouq"
-                                value={formData.locationDetails.landmarks.distanceToSouq}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.1"
-                            />
-                            <InputField
-                                label="Latitude"
-                                name="location.latitude"
-                                value={formData.location.latitude}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.000001"
-                            />
-                            <InputField
-                                label="Longitude"
-                                name="location.longitude"
-                                value={formData.location.longitude}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.000001"
+                                placeholder="e.g., 25.2867° N, 51.5333° E"
+                                type="text"
                             />
                             <InputField
                                 label="Distance from City Center (km)"
@@ -428,6 +249,315 @@ function NewHouseRentals() {
                                 onChange={handleChange}
                                 type="number"
                                 step="0.1"
+                            />
+                            <InputField
+                                label="Distance to School (km)"
+                                name="location.nearbyPlaces.school"
+                                value={formData.location.nearbyPlaces.school}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Supermarket (km)"
+                                name="location.nearbyPlaces.supermarket"
+                                value={formData.location.nearbyPlaces.supermarket}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Beach (km)"
+                                name="location.nearbyPlaces.beach"
+                                value={formData.location.nearbyPlaces.beach}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Restaurants (km)"
+                                name="location.nearbyPlaces.restaurants"
+                                value={formData.location.nearbyPlaces.restaurants}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Mosque (km)"
+                                name="location.nearbyPlaces.mosques"
+                                value={formData.location.nearbyPlaces.mosques}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                            <InputField
+                                label="Distance to Souq (km)"
+                                name="location.nearbyPlaces.souq"
+                                value={formData.location.nearbyPlaces.souq}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.1"
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Rental Information (previously Sale Information) */}
+                    <FormSection icon={faMoneyBill} title="Rental Information">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField
+                                label="Monthly Rent"
+                                name="rental.price"
+                                value={formData.rental.price}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <SelectField
+                                label="Property Type"
+                                name="rental.propertyType"
+                                value={formData.rental.propertyType}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "residential", label: "Residential" },
+                                    { value: "commercial", label: "Commercial" },
+                                    { value: "land", label: "Land" }
+                                ]}
+                                required
+                            />
+                            <InputField
+                                label="Property Age (years)"
+                                name="rental.propertyAge"
+                                value={formData.rental.propertyAge}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Last Renovated"
+                                name="rental.lastRenovated"
+                                value={formData.rental.lastRenovated}
+                                onChange={handleChange}
+                                type="date"
+                            />
+                            <CheckboxField
+                                label="Price Negotiable"
+                                name="rental.negotiable"
+                                checked={formData.rental.negotiable}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Property Specifications (previously Property Details) */}
+                    <FormSection icon={faBuilding} title="Property Specifications">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <InputField
+                                label="Size (m²)"
+                                name="specifications.size"
+                                value={formData.specifications.size}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Bedrooms"
+                                name="specifications.bedrooms"
+                                value={formData.specifications.bedrooms}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Bathrooms"
+                                name="specifications.bathrooms"
+                                value={formData.specifications.bathrooms}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+                            <InputField
+                                label="Floor Number"
+                                name="specifications.floor"
+                                value={formData.specifications.floor}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Total Floors"
+                                name="specifications.totalFloors"
+                                value={formData.specifications.totalFloors}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <InputField
+                                label="Year Built"
+                                name="specifications.yearBuilt"
+                                value={formData.specifications.yearBuilt}
+                                onChange={handleChange}
+                                type="number"
+                            />
+                            <CheckboxField
+                                label="Parking Available"
+                                name="specifications.parking"
+                                checked={formData.specifications.parking}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Pets Allowed"
+                                name="specifications.petsAllowed"
+                                checked={formData.specifications.petsAllowed}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Amenities (previously Property Features) */}
+                    <FormSection icon={faHouse} title="Amenities">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <CheckboxField
+                                    label="Balcony"
+                                    name="amenities.balcony"
+                                    checked={formData.amenities.balcony}
+                                    onChange={handleChange}
+                                />
+                                <CheckboxField
+                                    label="Terrace"
+                                    name="amenities.terrace"
+                                    checked={formData.amenities.terrace}
+                                    onChange={handleChange}
+                                />
+                                <CheckboxField
+                                    label="Elevator"
+                                    name="amenities.elevator"
+                                    checked={formData.amenities.elevator}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <SelectField
+                                label="View"
+                                name="amenities.view"
+                                value={formData.amenities.view}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "", label: "Select View Type" },
+                                    { value: "city", label: "City View" },
+                                    { value: "sea", label: "Sea View" },
+                                    { value: "garden", label: "Garden View" },
+                                    { value: "mountain", label: "Mountain View" },
+                                    { value: "street", label: "Street View" },
+                                    { value: "park", label: "Park View" }
+                                ]}
+                            />
+
+                            <SelectField
+                                label="Heating Type"
+                                name="amenities.heating"
+                                value={formData.amenities.heating}
+                                onChange={handleChange}
+                                options={[
+                                    { value: "", label: "Select Heating Type" },
+                                    { value: "central", label: "Central Heating" },
+                                    { value: "electric", label: "Electric Heating" },
+                                    { value: "gas", label: "Gas Heating" },
+                                    { value: "none", label: "No Heating" }
+                                ]}
+                            />
+
+                            <div className="space-y-4">
+                                <CheckboxField
+                                    label="Internet Available"
+                                    name="amenities.internet"
+                                    checked={formData.amenities.internet}
+                                    onChange={handleChange}
+                                />
+                                <CheckboxField
+                                    label="Soundproofing"
+                                    name="amenities.soundproofing"
+                                    checked={formData.amenities.soundproofing}
+                                    onChange={handleChange}
+                                />
+                                <CheckboxField
+                                    label="Thermal Insulation"
+                                    name="amenities.thermalInsulation"
+                                    checked={formData.amenities.thermalInsulation}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Kitchen Amenities */}
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
+                                    <FontAwesomeIcon icon={faKitchenSet} className="mr-3" />
+                                    Kitchen
+                                </h3>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Refrigerator', 'Oven', 'Microwave', 'Dishwasher', 'Stove', 'Hood'].map((item) => (
+                                        <CheckboxField
+                                            key={item}
+                                            label={item}
+                                            name={`amenities.kitchen`}
+                                            checked={formData.amenities.kitchen.includes(item)}
+                                            onChange={(e) => {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    amenities: {
+                                                        ...prev.amenities,
+                                                        kitchen: e.target.checked
+                                                            ? [...prev.amenities.kitchen, item]
+                                                            : prev.amenities.kitchen.filter(equip => equip !== item)
+                                                    }
+                                                }));
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Air Conditioning</h3>
+                                <div className="flex flex-col gap-3">
+                                    <CheckboxField
+                                        label="Air Conditioning Installed"
+                                        name="amenities.airConditioning.installed"
+                                        checked={formData.amenities.airConditioning.installed}
+                                        onChange={handleChange}
+                                    />
+                                    {formData.amenities.airConditioning.installed && (
+                                        <InputField
+                                            label="Number of AC Units"
+                                            name="amenities.airConditioning.units"
+                                            value={formData.amenities.airConditioning.units}
+                                            onChange={handleChange}
+                                            type="number"
+                                            min="0"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </FormSection>
+
+                    {/* Security Features */}
+                    <FormSection icon={faBuilding} title="Security Features">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <CheckboxField
+                                label="Concierge Service"
+                                name="security.concierge"
+                                checked={formData.security.concierge}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Security Doors"
+                                name="security.securityDoors"
+                                checked={formData.security.securityDoors}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Surveillance System"
+                                name="security.surveillanceSystem"
+                                checked={formData.security.surveillanceSystem}
+                                onChange={handleChange}
                             />
                         </div>
                     </FormSection>
@@ -461,136 +591,6 @@ function NewHouseRentals() {
                         </div>
                     </FormSection>
 
-                    {/* Sale Information */}
-                    <FormSection icon={faMoneyBill} title="Sale Information">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <InputField
-                                label="Price"
-                                name="sale.price"
-                                value={formData.sale.price}
-                                onChange={handleChange}
-                                type="number"
-                                required
-                            />
-                            <SelectField
-                                label="Property Type"
-                                name="sale.propertyType"
-                                value={formData.sale.propertyType}
-                                onChange={handleChange}
-                                options={[
-                                    { value: "residential", label: "Residential" },
-                                    { value: "commercial", label: "Commercial" },
-                                    { value: "land", label: "Land" }
-                                ]}
-                                required
-                            />
-                            <SelectField
-                                label="Sale Type"
-                                name="sale.saleType"
-                                value={formData.sale.saleType}
-                                onChange={handleChange}
-                                options={[
-                                    { value: "direct", label: "Direct Sale" },
-                                    { value: "auction", label: "Auction" }
-                                ]}
-                            />
-                            <SelectField
-                                label="Payment Terms"
-                                name="sale.paymentTerms"
-                                value={formData.sale.paymentTerms}
-                                onChange={handleChange}
-                                options={[
-                                    { value: "cash", label: "Cash" },
-                                    { value: "mortgage", label: "Mortgage" },
-                                    { value: "installments", label: "Installments" }
-                                ]}
-                            />
-                            <InputField
-                                label="Property Age (years)"
-                                name="sale.propertyAge"
-                                value={formData.sale.propertyAge}
-                                onChange={handleChange}
-                                type="number"
-                            />
-                            <InputField
-                                label="Last Renovated"
-                                name="sale.lastRenovated"
-                                value={formData.sale.lastRenovated}
-                                onChange={handleChange}
-                                type="date"
-                            />
-                            <CheckboxField
-                                label="Price Negotiable"
-                                name="sale.negotiable"
-                                checked={formData.sale.negotiable}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </FormSection>
-
-                    {/* Property Details */}
-                    <FormSection icon={faBuilding} title="Property Details">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <InputField
-                                label="Size (m²)"
-                                name="details.size"
-                                value={formData.details.size}
-                                onChange={handleChange}
-                                type="number"
-                                required
-                            />
-                            <InputField
-                                label="Bedrooms"
-                                name="details.bedrooms"
-                                value={formData.details.bedrooms}
-                                onChange={handleChange}
-                                type="number"
-                                required
-                            />
-                            <InputField
-                                label="Bathrooms"
-                                name="details.bathrooms"
-                                value={formData.details.bathrooms}
-                                onChange={handleChange}
-                                type="number"
-                                required
-                            />
-                            <InputField
-                                label="Floor Number"
-                                name="details.floor"
-                                value={formData.details.floor}
-                                onChange={handleChange}
-                                type="number"
-                            />
-                            <InputField
-                                label="Total Floors"
-                                name="details.totalFloors"
-                                value={formData.details.totalFloors}
-                                onChange={handleChange}
-                                type="number"
-                            />
-                            <InputField
-                                label="Year Built"
-                                name="details.yearBuilt"
-                                value={formData.details.yearBuilt}
-                                onChange={handleChange}
-                                type="number"
-                            />
-                            <CheckboxField
-                                label="Parking Available"
-                                name="details.parking"
-                                checked={formData.details.parking}
-                                onChange={handleChange}
-                            />
-                            <CheckboxField
-                                label="Pets Allowed"
-                                name="details.petsAllowed"
-                                checked={formData.details.petsAllowed}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </FormSection>
-
                     {/* Submit Button */}
                     <div className="flex justify-end space-x-4">
                         <button
@@ -602,6 +602,7 @@ function NewHouseRentals() {
                         </button>
                         <button
                             type="submit"
+                            onClick={handleSubmit}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         >
                             List Property for Rent
@@ -614,3 +615,4 @@ function NewHouseRentals() {
 }
 
 export default NewHouseRentals;
+

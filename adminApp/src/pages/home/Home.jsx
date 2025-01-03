@@ -16,13 +16,17 @@ const Home = () => {
     return (
         <Layout children={<>
             <div className="">
-            <div className="flex gap-5 p-5">
+            <div className="flex gap-5 p-5  ">
                 <Widget type="user" />
                 <Widget type="order" count={contByCity}  />
                 <Widget type="earning" />
                 <Widget type="balance" />
                 <Widget type="order" />
-                <Widget type="user" />
+                    
+            </div>
+            <div className="flex gap-5 p-5">
+                <Widget type="user" />  
+
             </div>
 
             </div>

@@ -15,7 +15,7 @@ const HouseRentals = ({sideOpen}) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedHouse, setSelectedHouse] = useState(null);
     const [newStatus, setNewStatus] = useState("");
-
+    const [count, setCount] = useState(0);
     useEffect(() => {
         const savedFilter = localStorage.getItem("houseTypeFilter");
         if (savedFilter) {
@@ -23,20 +23,25 @@ const HouseRentals = ({sideOpen}) => {
         }
     }, []);
 
+
+
     const handleTypeChange = (event) => {
         const selectedValue = event.target.value;
         setTypeFilter(selectedValue);
         localStorage.setItem("houseTypeFilter", selectedValue);
     };
 
+
+
     useEffect(() => {
         if (fetchedData) {
-            const transformedData = fetchedData.map((item) => ({
+            const transformedData = fetchedData.map((item, i) => ({
+                count: i+1,
                 id: item._id,
                 _id: item._id,
-                name: item.propertyInfo?.name || "N/A",
-                type: item.propertyInfo?.type || "N/A",
-                status: item.propertyInfo?.status || "N/A",
+                name: item?.name || "N/A",
+                type: item?.type || "N/A",
+                status: item?.status || "N/A",
                 city: item.location?.city || "N/A",
                 neighborhood: item.location?.neighborhood || "N/A",
                 phone: item.contact?.phone || "N/A",
@@ -63,9 +68,10 @@ const HouseRentals = ({sideOpen}) => {
 
     const handleStatusChange = async () => {
         try {
-            const response = await axios.put(`/api/houses/${selectedHouse._id}`, {
-                'propertyInfo.status': newStatus,
+            const response = await axios.put(`/api/house-rentals/${selectedHouse._id}`, {
+                'status': newStatus,
             });
+
 
             if (response.status === 200) {
                 setData((prevData) =>
@@ -86,11 +92,37 @@ const HouseRentals = ({sideOpen}) => {
         }
     };
 
+    const handleDelete = async (id
+
+    ) => {
+        const isConfirmed = confirm("Are you sure you want to delete this house?");
+        if (!isConfirmed) {
+            return; // Exit the function if the user cancels
+        }
+    
+        try {
+            await axios.delete(`/api/house-rentals/${id}`);
+            setData((prevData) => prevData.filter((item) => item._id !== id));
+        } catch (err) {
+            console.error("Error deleting house:", err);
+           
+    
+     alert("Failed to delete house. Please try again.");
+        }
+    };
+    
     const columns = [
+        {
+            field: "count",
+            headerName: "count",
+            // width: 200,
+            headerAlign: "center",
+            align: "center",
+        },
         {
             field: "_id",
             headerName: "ID",
-            width: 150,
+            width: 200,
             headerAlign: "center",
             align: "center",
         },
@@ -114,7 +146,10 @@ const HouseRentals = ({sideOpen}) => {
             renderCell: (params) => (
                 <button
                     className="text-cyan-400"
-                    onClick={() => handleOpenModal(params.row)}
+                    onClick={() => (
+                        setShowModal(true),
+                        setSelectedHouse(params.row)
+                    )   }
                 >
                     {params.row.status}
                 </button>
@@ -170,7 +205,7 @@ const HouseRentals = ({sideOpen}) => {
             align: "center",
             renderCell: (params) => (
                 <div className="flex gap-4">
-                    <Link to={`/houses/find/${params.row._id}`}>
+                    <Link to={`/houses-sales/single/${params.row._id}`}>
                         <FaEye className="w-5 h-5 text-blue-600 hover:text-blue-700 cursor-pointer" />
                     </Link>
                     <FaTrashAlt

@@ -9,7 +9,8 @@ import {
     updateCity,
     deleteCity,
     addNeighbor,
-    removeNeighbor
+    removeNeighbor,
+    countByCity
 } from '../controllers/cities.js';
 
 // CREATE
@@ -24,6 +25,9 @@ router.get('/region/:region', getCitiesByRegion);
 // GET SINGLE CITY
 router.get('/:id', getCity);
 
+// COUNT CARS BY CITY
+router.get('/countByCity/count', countByCity);
+
 // UPDATE CITY
 router.put('/:id', verifyAdmin, updateCity);
 
@@ -34,6 +38,6 @@ router.delete('/:id', verifyAdmin, deleteCity);
 router.patch('/:cityId/neighbors', verifyAdmin, addNeighbor);
 
 // REMOVE NEIGHBOR
-router.delete('/:cityId/neighbors', removeNeighbor);
+router.delete('/:cityId/neighbors',verifyAdmin, removeNeighbor);
 
 export default router;

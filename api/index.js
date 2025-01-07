@@ -8,6 +8,8 @@ import hotelsRouter from "./routes/hotels.js"
 import roomsRouter from "./routes/rooms.js"
 import citiesRouter from "./routes/cities.js"
 import houseRentalRouter from "./routes/houseRental.js"
+import shopsRouter from "./routes/shopSaleRent.js"
+import carsRouter from "./routes/cars.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -30,6 +32,8 @@ app.use('/api/hotels', hotelsRouter);
 app.use('/api/rooms', roomsRouter);
 app.use('/api/cities', citiesRouter);
 app.use('/api/house-rentals', houseRentalRouter);
+app.use('/api/shops', shopsRouter);
+app.use('/api/cars', carsRouter);
 
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;

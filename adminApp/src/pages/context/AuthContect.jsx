@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useReducer } from "react";
 
 // Initial state
 const INITIAL_STATE = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
+  user: JSON.parse(sessionStorage.getItem("user")) || null, // Use sessionStorage for session-specific persistence
   loading: false,
-  error: null
+  error: null,
 };
 
 // Create context
@@ -17,25 +17,25 @@ const AuthReducer = (state, action) => {
       return {
         user: null,
         loading: true,
-        error: null
+        error: null,
       };
     case "LOGIN_SUCCESS":
       return {
         user: action.payload,
-        loading: false,  // Fixed typo here
-        error: null
+        loading: false,
+        error: null,
       };
     case "LOGIN_FAILED":
       return {
         ...state,
-        loading: false,  // Fixed typo here
-        error: action.payload
+        loading: false,
+        error: action.payload,
       };
     case "LOGOUT":
       return {
         user: null,
-        loading: false, 
-        error: null
+        loading: false,
+        error: null,
       };
     default:
       return state;
@@ -46,18 +46,24 @@ const AuthReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
 
-  // Sync user data with localStorage
+  // Sync user data with sessionStorage
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(state.user));
+    if (state.user) {
+      sessionStorage.setItem("user", JSON.stringify(state.user)); // Store user in sessionStorage
+    } else {
+      sessionStorage.removeItem("user"); // Clear sessionStorage on logout
+    }
   }, [state.user]);
 
   return (
-    <AuthContext.Provider value={{
-      user: state.user,
-      loading: state.loading,
-      error: state.error,
-      dispatch
-    }}>
+    <AuthContext.Provider
+      value={{
+        user: state.user,
+        loading: state.loading,
+        error: state.error,
+        dispatch,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

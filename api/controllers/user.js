@@ -52,3 +52,12 @@ export const getUsers = async (req, res, next) => {
     }
 }
 
+
+export const countByUser = async (req, res, next) => {
+    try {
+    const userCount = await User.countDocuments({});
+        res.status(200).json(userCount);
+    } catch (err) {
+        next(err);
+    }
+}

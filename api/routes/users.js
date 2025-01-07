@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import { getUser, getUsers, updateUser, deleteUser } from '../controllers/user.js';
+import { getUser, getUsers, updateUser, deleteUser, countByUser } from '../controllers/user.js';
 import { verifyToken , verifyUSer, verifyAdmin} from '../utils/verifyToken.js';
 
 // router.get('/checkoutauth', verifyToken, (req, res, next)=>{
@@ -21,6 +21,7 @@ router.delete('/:id',verifyUSer, deleteUser)
 router.get('/:id', verifyUSer, getUser)
 // GET ALL
 router.get('/', verifyAdmin, getUsers)
+router.get('/count/users', verifyAdmin, countByUser)
 
 
 export default router

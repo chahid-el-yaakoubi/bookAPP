@@ -752,7 +752,7 @@ function NewHotel() {
         : "bg-gray-50 border-gray-300";
 
     return (
-        <div className="mx-auto  px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl  px-4 sm:px-6 lg:px-8">
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
@@ -842,15 +842,14 @@ function NewHotel() {
                                         className={`${inputBaseClass} ${getInputStateClass(formData.type)}`}
                                         required
                                     >
+                                       
                                         <option value="">Select Property Type</option>
                                         <option value="hotel">Hotel</option>
                                         <option value="apartment">Apartment</option>
-                                        <option value="resort">Resort</option>
+                                        <option value="duplex">Duplex</option>
                                         <option value="villa">Villa</option>
-                                        <option value="cabin">Cabin</option>
-                                        <option value="guesthouse">Guesthouse</option>
-                                        <option value="hostel">Hostel</option>
-                                        <option value="boutique">Boutique Hotel</option>
+                                        <option value="studio">Studio</option>
+                                        <option value="penthouse">Penthouse</option>
                                     </select>
                                 </div>
 

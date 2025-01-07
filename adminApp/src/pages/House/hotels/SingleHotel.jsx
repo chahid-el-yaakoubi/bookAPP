@@ -32,12 +32,13 @@ import {
     faChair,
 } from "@fortawesome/free-solid-svg-icons";
 import DataRoom from './DataRoom';
-import ImgHotel from './imgHotel';
+import ImgHotel from '../../components/imgHotel';
 import { ImTelegram } from 'react-icons/im';
 
 const SingleHotel = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+
 
     const roomAmenities = [
         "Free toiletries",
@@ -282,7 +283,7 @@ const SingleHotel = () => {
     if (hotelLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (hotelError) return <div className="text-red-500 text-center">Error: {hotelError}</div>;
     return (
-        <div className="p-8 bg-slate-50 max-h-[94vh] overflow-y-auto bg-blue-500">
+        <div className="p-8 bg-slate-50 max-w-7xl mx-auto overflow-y-auto bg-blue-500">
             {/* Basic Information Section */}
             <div className="mb-8 flex justify-between items-center bg-transparent p-6 rounded-xl shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-900">
@@ -646,7 +647,7 @@ const SingleHotel = () => {
                 </div>
                 {isImagesOpen && (
                     <div>
-                        <ImgHotel hotelId={id} />
+                        <ImgHotel hotelId={id} type={"hotel"} />
                     </div>
                 )}
             </div>

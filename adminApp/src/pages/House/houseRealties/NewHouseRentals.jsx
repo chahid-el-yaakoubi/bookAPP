@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faCity, faLocationDot, faMoneyBill, faBed, faBath, faPhone, faEnvelope, faCalendarDays, faRulerCombined, faBuilding, faParking, faPaw, faWifi, faSnowflake, faFire, faElevator, faUtensils, faWater, faBolt, faFireBurner, faGlobe, faCheck, faTimes, faKitchenSet } from "@fortawesome/free-solid-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FormSection, InputField, SelectField, CheckboxField } from '../../../components/ComponentInputs';
 import { City, Neighborhood, Region } from "../../../components/Location";
+import useFetch from "../../../hooks/useFetch";
+// import { set } from "mongoose";
 
 
 
@@ -15,22 +17,28 @@ function NewHouseRentals() {
     const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
 
 
+
+
     const navigate = useNavigate();
     const [error, setError] = useState(null);
 
-    // Fixed formData initialization with all nested objects
+    const { id } = useParams();
+
+    // if (id) {
+    const { data } = useFetch(`/api/house-rentals/find/${id}`)
+
+
     const [formData, setFormData] = useState({
-        propertyInfo: {
-            name: "",
-            type: "", // enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse']
-            description: "",
-            status: "available",
-            featured: false
-        },
+        idAdmin: "",
+        name: "",
+        type: "", // enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse']
+        description: "",
+        status: "available",
+        featured: false,
         location: {
-            region: "",
-            city: "",
-            neighborhood: "",
+            region: selectedRegion,
+            city: selectedCity,
+            neighborhood: selectedNeighboorhd,
             coordinates: "",
             distanceFromCityCenter: "",
             nearbyPlaces: {  // Added this nested object
@@ -49,10 +57,13 @@ function NewHouseRentals() {
         },
         rental: {
             price: "",
-            propertyType: "",
             negotiable: false,
-            propertyAge: "",
-            lastRenovated: ""
+            lastRenovated: "",
+            luxury: false,
+        },
+        syndicDetails: {
+            monthlyFees: "",
+            servicesIncluded: [],
         },
         specifications: {
             size: "",
@@ -61,13 +72,12 @@ function NewHouseRentals() {
             floor: "",
             totalFloors: "",
             yearBuilt: "",
-            parking: false,
-            petsAllowed: false
         },
         amenities: {
             balcony: false,
             terrace: false,
             elevator: false,
+            parking: false,
             view: "",
             kitchen: [],
             heating: "",
@@ -75,9 +85,14 @@ function NewHouseRentals() {
                 installed: false,
                 units: ""
             },
+
             internet: false,
             soundproofing: false,
             thermalInsulation: false
+        },
+        Furnishing: {
+            status: false,
+            furniture: [],
         },
         security: {
             concierge: false,
@@ -87,8 +102,32 @@ function NewHouseRentals() {
     });
 
 
+    useEffect(() => {
+        if (data) {
+
+
+            const region = data?.location?.region;
+            const city = data?.location?.city;
+            const neighborhood = data?.location?.neighborhood;
+
+            setFormData((prevFormData) => ({
+                ...prevFormData, // Retain all existing data
+                ...data         // Override with new data from 'data'
+            }));
+
+
+            setSelectedRegion(region);
+            setSelectedCity(city);
+            setSelectedNeighboorhd(neighborhood);
+
+        }
+    }, [data]);
+
+
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+        
 
         // Handle nested properties
         const updateNestedState = (path, value) => {
@@ -145,18 +184,24 @@ function NewHouseRentals() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submission started');
-        console.log('Form data:', formData);
-        
-        try {
-            console.log('Sending POST request to /api/house-sales');
-            const response = await axios.post('/api/house-rentals', formData);
-            console.log('Server response:', response.data);
-            navigate('/houses-sales');
-        } catch (err) {
-            console.error('Error submitting form:', err);
-            setError(err.response?.data?.message || 'Error creating property listing');
+        if (id) {
+            // Update existing property
+            try {
+                await axios.put(`/api/house-rentals/${id}`, formData);
+                navigate('/houses-rentals');
+            } catch (err) {
+                setError(err.response?.data?.message || 'Error updating property listing');
+            }
+        } else {
+            // Create new property
+            try {
+                await axios.post('/api/house-rentals', formData);
+                navigate('/houses-rentals');
+            } catch (err) {
+                setError(err.response?.data?.message || 'Error creating property listing');
+            }
         }
+
     };
 
     return (
@@ -184,15 +229,15 @@ function NewHouseRentals() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <InputField
                                 label="Property Name"
-                                name="propertyInfo.name"
-                                value={formData.propertyInfo.name}
+                                name="name"
+                                value={formData.name}
                                 onChange={handleChange}
                                 required
                             />
                             <SelectField
                                 label="Property Type"
-                                name="propertyInfo.type"
-                                value={formData.propertyInfo.type}
+                                name="type"
+                                value={formData.type}
                                 onChange={handleChange}
                                 options={[
                                     { value: "apartment", label: "Apartment" },
@@ -206,10 +251,39 @@ function NewHouseRentals() {
                             />
                             <InputField
                                 label="Description"
-                                name="propertyInfo.description"
-                                value={formData.propertyInfo.description}
+                                name="description"
+                                value={formData.description}
                                 onChange={handleChange}
                                 type="textarea"
+                            />
+                        </div>
+                    </FormSection>
+
+                    {/* Contact Information */}
+                    <FormSection icon={faPhone} title="Contact Information">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <InputField
+                                label="Phone Number"
+                                name="contact.phone"
+                                value={formData.contact.phone}
+                                onChange={handleChange}
+                                type="tel"
+                                required
+                            />
+                            <InputField
+                                label="Email"
+                                name="contact.email"
+                                value={formData.contact.email}
+                                onChange={handleChange}
+                                type="email"
+                                required
+                            />
+                            <InputField
+                                label="WhatsApp"
+                                name="contact.whatsapp"
+                                value={formData.contact.whatsapp}
+                                onChange={handleChange}
+                                type="tel"
                             />
                         </div>
                     </FormSection>
@@ -217,23 +291,23 @@ function NewHouseRentals() {
                     {/* Location Information */}
                     <FormSection icon={faLocationDot} title="Location Information">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Region 
-                                onRegionSelect={handleRegionSelect} 
-                                regionValue={selectedRegion} 
-                                onCitySelect={handleCitySelect} 
+                            <Region
+                                onRegionSelect={handleRegionSelect}
+                                regionValue={selectedRegion}
+                                onCitySelect={handleCitySelect}
                             />
-                            <City 
-                                region={selectedRegion} 
-                                onCitySelect={handleCitySelect} 
-                                cityValue={selectedCity} 
-                                onNeighborhoodSelect={handleNeighborhoodSelect} 
+                            <City
+                                region={selectedRegion}
+                                onCitySelect={handleCitySelect}
+                                cityValue={selectedCity}
+                                onNeighborhoodSelect={handleNeighborhoodSelect}
                             />
-                            <Neighborhood 
-                                city={selectedCity} 
-                                onNeighborhoodSelect={handleNeighborhoodSelect} 
-                                neighborhoodValue={selectedNeighboorhd} 
+                            <Neighborhood
+                                city={selectedCity}
+                                onNeighborhoodSelect={handleNeighborhoodSelect}
+                                neighborhoodValue={selectedNeighboorhd}
                             />
-                            
+
                             <InputField
                                 label="Coordinates"
                                 name="location.coordinates"
@@ -305,32 +379,15 @@ function NewHouseRentals() {
                     <FormSection icon={faMoneyBill} title="Rental Information">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <InputField
-                                label="Monthly Rent"
+                                label="Price"
                                 name="rental.price"
                                 value={formData.rental.price}
                                 onChange={handleChange}
                                 type="number"
                                 required
                             />
-                            <SelectField
-                                label="Property Type"
-                                name="rental.propertyType"
-                                value={formData.rental.propertyType}
-                                onChange={handleChange}
-                                options={[
-                                    { value: "residential", label: "Residential" },
-                                    { value: "commercial", label: "Commercial" },
-                                    { value: "land", label: "Land" }
-                                ]}
-                                required
-                            />
-                            <InputField
-                                label="Property Age (years)"
-                                name="rental.propertyAge"
-                                value={formData.rental.propertyAge}
-                                onChange={handleChange}
-                                type="number"
-                            />
+
+
                             <InputField
                                 label="Last Renovated"
                                 name="rental.lastRenovated"
@@ -344,8 +401,142 @@ function NewHouseRentals() {
                                 checked={formData.rental.negotiable}
                                 onChange={handleChange}
                             />
+                            <CheckboxField
+                                label="Price luxury"
+                                name="rental.luxury"
+                                checked={formData.rental.luxury}
+                                onChange={handleChange}
+                            />
                         </div>
                     </FormSection>
+
+                    {/* syndic details */}
+                    <FormSection icon={faMoneyBill} title="Syndic Details">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField
+                                label="monthly Fees"
+                                name="syndicDetails.monthlyFees"
+                                value={formData.syndicDetails.monthlyFees}
+                                onChange={handleChange}
+                                type="number"
+                                required
+                            />
+
+
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
+                                    <FontAwesomeIcon icon={faKitchenSet} className="mr-3" />
+                                    Services
+                                </h3>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Cleaning Services',
+                                        'Elevator Maintenance',
+                                        'Lighting of Common Areas',
+                                        'Security Services',
+                                        'Building Maintenance',
+                                        'Gardening and Landscaping',
+                                        'Pest Control Services',
+                                        'Water System Maintenance',
+                                        'Waste Management',
+                                        'Heating and AC Maintenance',
+                                        'Internet and Wi-Fi',
+                                        'Parking Lot Management',
+                                        'Pool Maintenance',
+                                        'Trash Compaction',
+                                        'Insurance for Common Areas',
+                                        'Social/Community Services',
+                                        'Maintenance of Entry Systems'].map((item) => (
+                                            <CheckboxField
+                                                key={item}
+                                                label={item}
+                                                name={`syndicDetails.servicesIncluded`}
+                                                checked={formData.syndicDetails.servicesIncluded.includes(item)}
+                                                onChange={(e) => {
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        syndicDetails: {
+                                                            ...prev.syndicDetails,
+                                                            servicesIncluded: e.target.checked
+                                                                ? [...prev.syndicDetails.servicesIncluded, item]
+                                                                : prev.syndicDetails.servicesIncluded.filter(equip => equip !== item)
+                                                        }
+                                                    }));
+                                                }}
+                                            />
+                                        ))}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </FormSection>
+
+
+                    {/* Furnishing Section */}
+                    <FormSection icon={faMoneyBill} title="Furnishing">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <div className="flex flex-col gap-3">
+                                    {/* Furnishing Status Checkbox */}
+                                    <CheckboxField
+                                        label="Furnishing Status"
+                                        name="Furnishing.status"
+                                        checked={formData.Furnishing.status}
+                                        onChange={handleChange}
+                                    />
+                                    {formData.Furnishing.status && (
+                                        <div className="space-y-4">
+                                            <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
+                                                <FontAwesomeIcon icon={faKitchenSet} className="mr-3" />
+                                                Existing Furnishings (Meubles)
+                                            </h3>
+                                            <div className="flex flex-wrap gap-3">
+                                                {/* List of furniture commonly found in Moroccan homes */}
+                                                {[
+                                                    'Sofa',
+                                                    'Bed',
+                                                    'Wardrobe',
+                                                    'Coffee Table',
+                                                    'Dining Table',
+                                                    'Chairs',
+                                                    'TV Stand',
+                                                    'Bookshelf',
+                                                    'Side Tables',
+                                                    'Dressers',
+                                                    'Closet',
+                                                    'Armchair',
+                                                    'Nightstand',
+                                                    'Dining Chairs',
+                                                    'Buffet'
+                                                ].map((item) => (
+                                                    <CheckboxField
+                                                        key={item}
+                                                        label={item}
+                                                        name="Furnishing.furniture"
+                                                        checked={formData.Furnishing.furniture.includes(item)}
+                                                        onChange={(e) => {
+                                                            
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                Furnishing: {
+                                                                    ...prev.Furnishing,
+                                                                    furniture: e.target.checked
+                                                                        ? [...prev.Furnishing.furniture, item]
+                                                                        : prev.Furnishing.furniture.filter(equip => equip !== item)
+                                                                }
+                                                            }));
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </FormSection>
+
+
 
                     {/* Property Specifications (previously Property Details) */}
                     <FormSection icon={faBuilding} title="Property Specifications">
@@ -395,18 +586,7 @@ function NewHouseRentals() {
                                 onChange={handleChange}
                                 type="number"
                             />
-                            <CheckboxField
-                                label="Parking Available"
-                                name="specifications.parking"
-                                checked={formData.specifications.parking}
-                                onChange={handleChange}
-                            />
-                            <CheckboxField
-                                label="Pets Allowed"
-                                name="specifications.petsAllowed"
-                                checked={formData.specifications.petsAllowed}
-                                onChange={handleChange}
-                            />
+
                         </div>
                     </FormSection>
 
@@ -430,6 +610,13 @@ function NewHouseRentals() {
                                     label="Elevator"
                                     name="amenities.elevator"
                                     checked={formData.amenities.elevator}
+                                    onChange={handleChange}
+                                />
+
+                                <CheckboxField
+                                    label="Parking Available"
+                                    name="amenities.parking"
+                                    checked={formData.amenities.parking}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -483,6 +670,7 @@ function NewHouseRentals() {
                                     checked={formData.amenities.thermalInsulation}
                                     onChange={handleChange}
                                 />
+
                             </div>
 
                             {/* Kitchen Amenities */}
@@ -562,34 +750,7 @@ function NewHouseRentals() {
                         </div>
                     </FormSection>
 
-                    {/* Contact Information */}
-                    <FormSection icon={faPhone} title="Contact Information">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <InputField
-                                label="Phone Number"
-                                name="contact.phone"
-                                value={formData.contact.phone}
-                                onChange={handleChange}
-                                type="tel"
-                                required
-                            />
-                            <InputField
-                                label="Email"
-                                name="contact.email"
-                                value={formData.contact.email}
-                                onChange={handleChange}
-                                type="email"
-                                required
-                            />
-                            <InputField
-                                label="WhatsApp"
-                                name="contact.whatsapp"
-                                value={formData.contact.whatsapp}
-                                onChange={handleChange}
-                                type="tel"
-                            />
-                        </div>
-                    </FormSection>
+
 
                     {/* Submit Button */}
                     <div className="flex justify-end space-x-4">
@@ -605,7 +766,7 @@ function NewHouseRentals() {
                             onClick={handleSubmit}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         >
-                            List Property for Rent
+                            {id ? "Update" : "create"}
                         </button>
                     </div>
                 </form>

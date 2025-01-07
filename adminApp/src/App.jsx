@@ -22,7 +22,12 @@ import { PageDiscount } from './pages/PageDiscount/PageDiscount';
 import HouseRentals from './pages/House/houseRealties/houseRentals';
 import NewHouseRentals from './pages/House/houseRealties/NewHouseRentals';
 import Cities from './pages/cities/Cities';
+
 import CityDetails from './pages/cities/CityDetails';
+import Shops from './pages/House/shops/shops';
+import Cars from './pages/House/cars/Cars';
+// import Cars from '../../api/models/cars';
+// import Cars from './pages/House/cars/Cars';
 // import NewHotelTest from './pages/House/hotels/newTest';
 // import PropertyForm from './pages/House/hotels/newTest';
 
@@ -47,6 +52,8 @@ function App() {
               <Home use="dashbord" />
             </ProtectedRoute>
           } />
+
+          {/* user */}
           <Route path='users'>
             <Route index element={
               <ProtectedRoute>
@@ -64,6 +71,8 @@ function App() {
               </ProtectedRoute>
             } />
           </Route>
+
+          {/* hotels */}
           <Route path="hotels">
             <Route index element={
               <ProtectedRoute>
@@ -87,6 +96,8 @@ function App() {
             } />
           </Route>
 
+          {/* house sales */}
+
           <Route path="houses-sales">
             <Route index element={
               <ProtectedRoute>
@@ -98,7 +109,14 @@ function App() {
                 <HouseRentals type="new" />
               </ProtectedRoute>
             } />
+            <Route path="single/:id" element={
+              <ProtectedRoute>
+                <HouseRentals type="single" />
+              </ProtectedRoute>
+            } />
           </Route>
+
+          {/* cities */}
 
           <Route path="cities">
             <Route index element={
@@ -121,7 +139,61 @@ function App() {
                 <Cities type="edit" />
               </ProtectedRoute>
             } />
+            
           </Route>
+
+
+          {/* shops */}
+
+          <Route path="shops">
+            <Route index element={
+              <ProtectedRoute>
+                <Shops type="/" />
+              </ProtectedRoute>
+            } />
+            <Route path="new" element={
+              <ProtectedRoute>
+                <Shops type="new" />
+              </ProtectedRoute>
+            } />
+            <Route path="single/:id" element={
+              <ProtectedRoute>
+                <Shops type="single" />
+              </ProtectedRoute>
+            } />
+            <Route path="edit/:id" element={
+              <ProtectedRoute>
+                <Shops type="new" />
+              </ProtectedRoute>
+            } />
+          </Route>
+
+
+          {/* cars */}
+
+          <Route path="cars">
+            <Route index element={
+              <ProtectedRoute>
+                <Cars type="/" />
+              </ProtectedRoute>
+            } />
+            <Route path="new" element={
+              <ProtectedRoute>
+                <Cars type="new" />
+              </ProtectedRoute>
+            } />
+            <Route path="single/:id" element={
+              <ProtectedRoute>
+                <Cars type="single" />
+              </ProtectedRoute>
+            } />
+            <Route path="edit/:id" element={
+              <ProtectedRoute>
+                <Cars type="new" />
+              </ProtectedRoute>
+            } />
+          </Route>
+
 
 
           <Route path="houses-rentals">

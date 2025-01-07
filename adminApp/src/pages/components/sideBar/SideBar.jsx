@@ -21,7 +21,9 @@ import {
   faChevronRight,
   faHotel,
   faHouse,
-  faCity
+  faCity,
+  faShop,
+  faCar
 } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({isOpen, setIsOpen, use}) => {
@@ -92,6 +94,7 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
             <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "hotels" ? 'active' : null}`}>
               <FontAwesomeIcon icon={faHotel} className="icon" />
               {isOpen && <span className="text-sm font-semibold  ml-2">Hotels</span>}
+              {/* <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full ml-2">1</span> */}
             </li>
           </Link>
 
@@ -107,6 +110,18 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
             <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "cities" ? 'active' : null}`}>
               <FontAwesomeIcon icon={faCity} className="icon" />
               {isOpen && <span className="text-sm font-semibold  ml-2">Cities</span>}
+            </li>
+          </Link>
+          <Link to="/shops" className="no-underline">
+            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "shops" ? 'active' : null}`}>
+              <FontAwesomeIcon icon={faShop} className="icon" />
+              {isOpen && <span className="text-sm font-semibold  ml-2"> Shops </span>}
+            </li>
+          </Link>
+          <Link to="/cars" className="no-underline">
+            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "cars" ? 'active' : null}`}>
+              <FontAwesomeIcon icon={faCar} className="icon" />
+              {isOpen && <span className="text-sm font-semibold  ml-2"> Cars </span>}
             </li>
           </Link>
 

@@ -109,9 +109,9 @@ export const countByType = async (req, res, next) => {
 export const removeImgs = async (req, res, next) => {
     try {
         const houseId = req.params.houseId;
-        const { images } = req.body;
+        const { images } = req.body; // Array of image URLs to be removed
 
-        if (!images || !images.length) {
+        if (!images || images.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: "No images provided for deletion"
@@ -129,38 +129,39 @@ export const removeImgs = async (req, res, next) => {
 
         // Delete images from Cloudinary
         const deletePromises = images.map(imgUrl => {
-            // Extract public ID from the full URL
-            const publicId = imgUrl.split('/').pop().split('.')[0];
-            return cloudinary.uploader.destroy(publicId);  // Removed 'houses/' prefix
+            // Extract the public ID from the Cloudinary URL
+            const publicId = imgUrl.split('/').slice(-2).join('/').split('.')[0]; // Get folder/file without extension
+            return cloudinary.v2.uploader.destroy(publicId);
         });
 
-        await Promise.all(deletePromises);
+        // Wait for all deletions to complete
+        const deleteResults = await Promise.all(deletePromises);
+
+        // Log Cloudinary responses for debugging
+        console.log('Cloudinary delete responses:', deleteResults);
 
         // Remove images from house's photos array
         const updatedHouse = await HouseRental.findByIdAndUpdate(
             houseId,
-            { $pull: { photos: { $in: images } } },
-            { new: true }
+            { $pull: { photos: { $in: images } } }, // Remove matching images
+            { new: true } // Return updated document
         );
 
         res.status(200).json({
             success: true,
+            message: "Images successfully removed",
             house: updatedHouse
         });
     } catch (err) {
         console.error('Remove images error:', err);
         next(err);
     }
-}
+};
 
 
 export const uploadImgs = async (req, res, next) => {
     try {
-        const houseId = req.params.houseId;
-        
-        // Debug log
-        console.log('Files:', req.files);  // Check if files are being received
-        console.log('House ID:', houseId); // Check the house ID being received
+        const houseId = req.params.houseId; // Extract house ID from the URL params
 
         // Validate if files exist
         if (!req.files || req.files.length === 0) {
@@ -170,8 +171,8 @@ export const uploadImgs = async (req, res, next) => {
             });
         }
 
-        // Find house first
-        const house = await House.findById(houseId);
+        // Find the house first
+        const house = await HouseRental.findById(houseId);
         if (!house) {
             return res.status(404).json({
                 success: false,
@@ -179,21 +180,26 @@ export const uploadImgs = async (req, res, next) => {
             });
         }
 
+        // Ensure photos field exists
+        if (!house.photos) {
+            house.photos = []; // Initialize an empty array for photos if not present
+        }
+
         // Upload new images to Cloudinary
         const uploadPromises = req.files.map(file =>
             cloudinary.v2.uploader.upload(file.path, {
-                folder: "houses"
+                folder: "houses" // Make sure to use the correct folder for house images
             })
         );
 
         const results = await Promise.all(uploadPromises);
-        const imageUrls = results.map(result => result.secure_url);
+        const imageUrls = results.map(result => result.secure_url); // Get the image URLs
 
         // Add new images to house's photos array
         const updatedHouse = await HouseRental.findByIdAndUpdate(
             houseId,
-            { $push: { photos: { $each: imageUrls } } },
-            { new: true }
+            { $push: { photos: { $each: imageUrls } } }, // Push the image URLs to the photos array
+            { new: true } // Return the updated house document
         );
 
         res.status(200).json({
@@ -201,12 +207,8 @@ export const uploadImgs = async (req, res, next) => {
             house: updatedHouse
         });
     } catch (err) {
-        console.error('Upload error:', err); // Debug log
+        console.error('Upload error:', err); // Debug log for errors
         next(err);
     }
 }
-
-
-
-
 

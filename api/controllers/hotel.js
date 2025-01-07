@@ -101,20 +101,20 @@ export const countByType = async (req, res, next) => {
 }
 
 
-
 export const removeImgs = async (req, res, next) => {
     try {
         const hotelId = req.params.hotelId;
         const { images } = req.body;
 
-        if (!images || !images.length) {
+        // Validate input
+        if (!images || !Array.isArray(images) || images.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: "No images provided for deletion"
             });
         }
 
-        // Find hotel first
+        // Find the hotel by ID
         const hotel = await Hotel.findById(hotelId);
         if (!hotel) {
             return res.status(404).json({
@@ -125,39 +125,47 @@ export const removeImgs = async (req, res, next) => {
 
         // Delete images from Cloudinary
         const deletePromises = images.map(imgUrl => {
-            // Extract public ID from the full URL
-            const publicId = imgUrl.split('/').pop().split('.')[0];
-            return cloudinary.uploader.destroy(publicId);  // Removed 'houses/' prefix
+            // Extract the public ID from the Cloudinary URL
+            const publicId = imgUrl.split('/').slice(-2).join('/').split('.')[0]; // Get folder/file without extension
+            return cloudinary.v2.uploader.destroy(publicId);
         });
 
-        await Promise.all(deletePromises);
+        // Wait for all deletions to complete
+        const deleteResults = await Promise.all(deletePromises);
 
-        // Remove images from hotel's photos array
+        // Remove images from the hotel's photos array in MongoDB
         const updatedHotel = await Hotel.findByIdAndUpdate(
             hotelId,
-            { $pull: { photos: { $in: images } } },
-            { new: true }
+            { $pull: { photos: { $in: images } } }, // Ensure `photos` is a simple array of URLs
+            { new: true } // Return the updated document
         );
 
         res.status(200).json({
             success: true,
-            hotel: updatedHotel
+            message: "Images removed successfully",
+            hotel: updatedHotel,
         });
     } catch (err) {
         console.error('Remove images error:', err);
-        next(err);
+
+        // Send a specific error response for Cloudinary errors
+        if (err.message.includes('Invalid image URL format')) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid image URL format provided for deletion"
+            });
+        }
+
+        next(err); // Pass the error to the global error handler
     }
-}
+};
 
 
 export const uploadImgs = async (req, res, next) => {
     try {
         const hotelId = req.params.hotelId;
         
-        // Debug log
-        console.log('Files:', req.files);  // Check if files are being received
-        console.log('Hotel ID:', hotelId); // Check the hotel ID being received
-
+      
         // Validate if files exist
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({
@@ -178,7 +186,7 @@ export const uploadImgs = async (req, res, next) => {
         // Upload new images to Cloudinary
         const uploadPromises = req.files.map(file =>
             cloudinary.v2.uploader.upload(file.path, {
-                folder: "houses"
+                folder: "hotels"
             })
         );
 

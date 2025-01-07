@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const FormSection = ({ icon, title, children }) => (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
         <h3 className="text-xl font-semibold text-gray-900 border-b pb-3 mb-6 flex items-center">
-            <FontAwesomeIcon icon={icon} className="mr-3" />
+            {icon && <FontAwesomeIcon icon={icon} className="mr-3" />}
             {title}
         </h3>
         {children}
@@ -22,7 +22,7 @@ export const InputField = ({ label, name, value, onChange, type = "text", requir
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
                 rows={4}
             />
         ) : (
@@ -33,7 +33,7 @@ export const InputField = ({ label, name, value, onChange, type = "text", requir
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
             />
         )}
     </div>
@@ -49,7 +49,7 @@ export const SelectField = ({ label, name, value, onChange, options, required = 
             value={value}
             onChange={onChange}
             required={required}
-            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
         >
             <option value="">Select {label}</option>
             {options.map((option) => (
@@ -72,4 +72,4 @@ export const CheckboxField = ({ label, name, checked, onChange }) => (
         />
         <span className="text-sm text-gray-700">{label}</span>
     </label>
-); 
+);

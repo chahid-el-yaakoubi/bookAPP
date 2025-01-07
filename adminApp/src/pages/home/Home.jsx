@@ -10,24 +10,35 @@ import useFetch from "../../hooks/useFetch";
 
 const Home = () => {
 
-    const {data:contByCity} = useFetch(`/api/hotels/contByCity`)
-    console.log(contByCity)
+    const {data:countByCity} = useFetch(`/api/hotels/contByCity`)
+    const {data:coutHouse} = useFetch(`/api/house-rentals/contByCity`)
+    const {data:coutCar} = useFetch(`/api/cars/countByCity`)
+    const {data:coutShop} = useFetch(`/api/shops/countByCity`)
+    const {data:countUser} = useFetch(`/api/users/count/users`)
+    let {data:countCities} = useFetch(`/api/cities/countByCity/count`)
+
+
+    
 
     return (
         <Layout children={<>
-            <div className="">
+            <div className="grid grid-cols-1 xl:grid-cols-2 ">
             <div className="flex gap-5 p-5  ">
-                <Widget type="user" />
-                <Widget type="order" count={contByCity}  />
-                <Widget type="earning" />
-                <Widget type="balance" />
-                <Widget type="order" />
+                <Widget type="cities"  count={countCities} />
+                <Widget type="hotel" count={countByCity}  />
+                <Widget type="house" count={coutHouse} />
+
+                
+            </div>
+            <div className="flex gap-5 p-5  ">
+                
+                <Widget type="cars" count={coutCar} />
+                <Widget type="shops" count={coutShop} />
+                <Widget type="user"  count={countUser}/>  
+
                     
             </div>
-            <div className="flex gap-5 p-5">
-                <Widget type="user" />  
-
-            </div>
+            
 
             </div>
             

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 const houseRentalSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -26,16 +27,19 @@ const houseRentalSchema = new mongoose.Schema({
         email: { type: String, required: true },
         whatsapp: { type: String }
     },
+    photos: {
+        type: [String], // Array of URLs to store image paths
+        default: [] // Default to an empty array if no photos are uploaded
+    },
     rental: {
-        price: { type: Number, required: true },
-        propertyType: {
-            type: String,
-            required: true,
-            enum: ['residential', 'commercial', 'land']
-        },
+        price: { type: Number},
         negotiable: { type: Boolean, default: false },
-        propertyAge: { type: Number },
+        luxury: { type: Boolean, default: false },
         lastRenovated: { type: Date }
+    },
+    syndicDetails: {
+        monthlyFees:  { type: Number},
+        servicesIncluded: [{ type: String }],
     },
     specifications: {
         size: { type: Number, required: true },
@@ -44,13 +48,12 @@ const houseRentalSchema = new mongoose.Schema({
         floor: { type: Number },
         totalFloors: { type: Number },
         yearBuilt: { type: Number },
-        parking: { type: Boolean, default: false },
-        petsAllowed: { type: Boolean, default: false }
     },
     amenities: {
         balcony: { type: Boolean, default: false },
         terrace: { type: Boolean, default: false },
         elevator: { type: Boolean, default: false },
+        parking: { type: Boolean, default: false },
         view: {
             type: String,
             enum: ['city', 'sea', 'garden', 'mountain', 'street', 'park', '']
@@ -68,11 +71,16 @@ const houseRentalSchema = new mongoose.Schema({
         soundproofing: { type: Boolean, default: false },
         thermalInsulation: { type: Boolean, default: false }
     },
+    Furnishing: {
+        status: { type: Boolean, default: false },
+        furniture: [{type: String}],
+    },
     security: {
         concierge: { type: Boolean, default: false },
         securityDoors: { type: Boolean, default: false },
         surveillanceSystem: { type: Boolean, default: false }
-    }
+    },
+
 }, {
     timestamps: true
 });

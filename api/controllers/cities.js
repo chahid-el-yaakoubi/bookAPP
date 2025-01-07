@@ -143,3 +143,14 @@ export const removeNeighbor = async (req, res, next) => {
     }
 };
 
+
+
+export const countByCity = async (req, res, next) => {
+    try {
+    const hotelCount = await City.countDocuments({});
+        res.status(200).json(hotelCount);
+    } catch (err) {
+        next(err);
+    }
+}
+

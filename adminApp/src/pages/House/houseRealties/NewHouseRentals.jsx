@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faCity, faLocationDot, faMoneyBill, faBed, faBath, faPhone, faEnvelope, faCalendarDays, faRulerCombined, faBuilding, faParking, faPaw, faWifi, faSnowflake, faFire, faElevator, faUtensils, faWater, faBolt, faFireBurner, faGlobe, faCheck, faTimes, faKitchenSet } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -6,18 +6,20 @@ import axios from "axios";
 import { FormSection, InputField, SelectField, CheckboxField } from '../../../components/ComponentInputs';
 import { City, Neighborhood, Region } from "../../../components/Location";
 import useFetch from "../../../hooks/useFetch";
+import { AuthContext } from "../../context/AuthContect";
 // import { set } from "mongoose";
 
 
 
 
 function NewHouseRentals() {
+
+    const { user} = useContext(AuthContext);
+    const isA = user._id
+
     const [selectedRegion, setSelectedRegion] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
-
-
-
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -29,7 +31,7 @@ function NewHouseRentals() {
 
 
     const [formData, setFormData] = useState({
-        idAdmin: "",
+        isA: isA,
         name: "",
         type: "", // enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse']
         description: "",

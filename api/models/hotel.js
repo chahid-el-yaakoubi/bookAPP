@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 
 const hotelSchema = new mongoose.Schema({
   // Basic Information
+  isA: { type: String, required: true },
+
   name: {
     type: String,
     required: [true, 'Property name is required'],

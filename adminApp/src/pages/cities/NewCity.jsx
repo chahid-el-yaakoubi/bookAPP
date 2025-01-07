@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContect";
+
 
 function CityForm({ isOpen, onClose, onSubmitSuccess, cityData , refetch }) {
-    console.log(cityData);
+    const { user} = useContext(AuthContext);
+    const isA = user._id
     const moroccanRegions = [
         "Tanger-Tétouan-Al Hoceïma",
         "L'Oriental",
@@ -19,6 +22,7 @@ function CityForm({ isOpen, onClose, onSubmitSuccess, cityData , refetch }) {
     ];
 
     const [formData, setFormData] = useState({
+        isA: isA,
         name: cityData?.name || "",
         region: cityData?.region || "",
     });

@@ -1,13 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { FormSection, InputField, SelectField, CheckboxField } from "../../../components/ComponentInputs";
 import { City, Neighborhood, Region } from "../../../components/Location";
 import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContect";
 import useFetch from "../../../hooks/useFetch";
 
 
 const NewShop = () => {
+    const { user} = useContext(AuthContext);
+    const isA = user._id
     const navigate = useNavigate();
 
     const [selectedRegion, setSelectedRegion] = useState("");
@@ -23,6 +26,8 @@ const NewShop = () => {
     const neighborhood = data.location?.neighborhood;
 
     const [formData, setFormData] = useState({
+        isA: isA,
+
         shopName: "",
         ownerName: "",
         contactNumber: "",

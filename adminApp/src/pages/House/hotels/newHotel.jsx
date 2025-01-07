@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel, faCity, faLocationDot, faMoneyBill, faBed, faStar, faPhone, faWifi, faParking, faSwimmingPool, faUtensils, faDumbbell, faBath, faSnowflake, faKitchenSet, faTv, faPeopleRoof, faWater, faCarSide, faMugHot, faShower, faDesktop, faTvAlt, faElevator, faUmbrella, faUmbrellaBeach, faTree, faGamepad, faMusic, faBicycle, faPersonWalking, faHorse, faBiking, faPersonHiking, faWind, faTableTennis, faConciergeBell, faMoneyBillTransfer, faClock, faBaby, faStore, faScissors, faSmoking, faVolumeXmark, faFireExtinguisher, faShieldHalved, faKey, faSpa, faEye, faToilet, faDoorClosed, faChair, faPlus, faMinus, faPlug, faTable, faSquare, faDoorOpen, faBuilding, faHouse, faStairs, faCamera, faBell, faSmokingBan, faFileInvoice, faCloudUpload, faCalendarDays, faHourglassHalf, faMoon, faMoneyBillWheat, faCouch, faTimes, faBroom, faTshirt, faEnvelope, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -6,10 +6,15 @@ import axios from "axios";
 import { City, Neighborhood, Region } from "../../../components/Location";
 import AmenitiesSection from "../../../components/amenities/AmenitiesSection";
 import { amenityCategories, amenityTranslations } from "../../../components/amenities/amenitiesConfig";
+import { AuthContext } from "../../context/AuthContect";
 
 function NewHotel() {
+    const { user} = useContext(AuthContext);
+ 
+    const isA = user._id
+    console.log(isA)
 
-    console.log(amenityCategories)
+
     const navigate = useNavigate()
     const { id } = useParams(); // Get hotel ID from URL parameters
     const [error, setError] = useState(null)
@@ -29,8 +34,10 @@ function NewHotel() {
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
 
+    
     // Initial form state
     const [formData, setFormData] = useState({
+        isA: isA,
         name: "",
         title: "",
         type: "",
@@ -377,6 +384,7 @@ function NewHotel() {
                     setSelectedNeighboorhd(response.data.location?.neighborhood || "")
 
                     setFormData({
+                        isA: isA,
                         name: response.data.name || "",
                         title: response.data.title || "",
                         type: response.data.type || "",
@@ -609,6 +617,7 @@ function NewHotel() {
 
             // Transform formData to match schema structure
             const hotelData = {
+                isA: isA,
                 name: formData.name,
                 title: formData.title,
                 type: formData.type,

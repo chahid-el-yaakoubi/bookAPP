@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const CitySchema = new mongoose.Schema({
+    isA: { type: String, required: true },
     region: {
         type: String,
         required: true,

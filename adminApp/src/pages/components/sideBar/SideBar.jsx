@@ -25,11 +25,14 @@ import {
   faShop,
   faCar
 } from '@fortawesome/free-solid-svg-icons';
+import Logout from "../../login/Logout";
 
 const Sidebar = ({isOpen, setIsOpen, use}) => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const [logout, setLout] = React.useState(false);
 
   return (
     <div className={`${isOpen ? 'w-48' : 'w-20'} bg-blue-600 min-h-screen bg-blue-500 border-r border-gray-200 transition-all duration-300 maw-h-screen fixed top-0 left-0 z-50`}>
@@ -157,10 +160,15 @@ const Sidebar = ({isOpen, setIsOpen, use}) => {
             <FontAwesomeIcon icon={faCircleUser} className="icon" />
             {isOpen && <span className="text-sm font-semibold  ml-2">Profile</span>}
           </li>
+          <button className="w-full" onClick={()=>{
+            setLout(true)
+          }} >
           <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faRightFromBracket} className="icon" />
             {isOpen && <span className="text-sm font-semibold  ml-2">Logout</span>}
+           {logout &&  <Logout open ={true}/>}
           </li>
+          </button>
         </ul>
       </div>
     </div>

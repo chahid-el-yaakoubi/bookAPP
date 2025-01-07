@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { type } from 'os';
 
 const houseRentalSchema = new mongoose.Schema({
+    isA: { type: String, required: true },
     name: { type: String, required: true },
     type: { type: String, required: true, enum: ['apartment', 'villa', 'house', 'studio', 'duplex', 'penthouse'] },
     description: { type: String },

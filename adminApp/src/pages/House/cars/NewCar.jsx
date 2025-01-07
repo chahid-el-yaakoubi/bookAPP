@@ -4,9 +4,13 @@ import axios from "axios";
 import { FormSection, InputField, SelectField, CheckboxField } from "../../../components/ComponentInputs";
 import { City, Neighborhood, Region } from "../../../components/Location";
 import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContect";
 import useFetch from "../../../hooks/useFetch";
 
 const NewCar = () => {
+
+    const { user} = React.useContext(AuthContext);
+    const isA = user._id
     const navigate = useNavigate();
 
     const [selectedRegion, setSelectedRegion] = useState("");
@@ -22,6 +26,8 @@ const NewCar = () => {
     const neighborhood = data.location?.neighborhood;
 
     const [formData, setFormData] = useState({
+        isA: isA,
+
         carMake: "", // e.g., Toyota
         carModel: "", // e.g., Corolla
         ownerName: "", // Name of the car owner

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const carSchema = new mongoose.Schema({
+    isA: { type: String, required: true },
     // Basic car details
     carMake: { type: String, required: true }, // Car's brand (e.g., Toyota)
     carModel: { type: String, required: true }, // Model of the car (e.g., Corolla)

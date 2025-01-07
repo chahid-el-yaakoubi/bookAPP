@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { type } from "os";
 
 const shopSchema = new mongoose.Schema({
+    isA: { type: String, required: true },
+
     shopName: {
         type: String,
         trim: true,

@@ -1,9 +1,20 @@
+import React from "react";
 import Sidebar from "../../components/sideBar/SideBar";
 import Navbar from "../../components/navBar/NavBar";
 import Chart from "../../components/chart/Chart";
+import useFetch from "../../../hooks/useFetch";
+import { useParams } from "react-router-dom";
 // import List from "../../components/table/Table";
 
 const Single = () => {
+
+
+  const {userId} = useParams();
+  console.log(userId);
+
+  const {data: user, loading, error} = useFetch(`/api/users/${userId}`);
+
+  console.log(user);
   return (
     <div className="w-full">
       <div className="flex gap-5 p-5">
@@ -20,14 +31,18 @@ const Single = () => {
                 className="w-24 h-24 rounded-full object-cover"
               />
               <div className="details">
-                <h1 className="text-gray-600 mb-2.5">Jane Doe</h1>
+                <h1 className="text-gray-600 mb-2.5">{user.fullName}</h1>
                 <div className="mb-2.5 text-sm">
                   <span className="font-bold text-gray-500 mr-1">Email:</span>
-                  <span className="font-light">janedoe@gmail.com</span>
+                  <span className="font-light">{user.email}</span>
+                </div>
+                <div className="mb-2.5 text-sm">
+                  <span className="font-bold text-gray-500 mr-1">User Name:</span>
+                  <span className="font-light">{user.username}</span>
                 </div>
                 <div className="mb-2.5 text-sm">
                   <span className="font-bold text-gray-500 mr-1">Phone:</span>
-                  <span className="font-light">+1 2345 67 89</span>
+                  <span className="font-light">{user.phone}</span>
                 </div>
                 <div className="mb-2.5 text-sm">
                   <span className="font-bold text-gray-500 mr-1">Address:</span>
@@ -37,7 +52,7 @@ const Single = () => {
                 </div>
                 <div className="mb-2.5 text-sm">
                   <span className="font-bold text-gray-500 mr-1">Country:</span>
-                  <span className="font-light">USA</span>
+                  <span className="font-light">{user.city}</span>
                 </div>
               </div>
             </div>

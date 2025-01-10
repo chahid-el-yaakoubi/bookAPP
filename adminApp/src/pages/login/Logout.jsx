@@ -2,13 +2,17 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 
-const Logout = ({open}) => {
+const Logout = ({open, setOpen}) => {
+
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(open || false);
+  const [isModalOpen, setIsModalOpen] = useState(open);
+  const closeModal = () => {
+    setIsModalOpen(!open)
+    setOpen(false)
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  
+  };
 
   const handleConfirmLogout = () => {
     dispatch({ type: "LOGOUT" }); // Dispatch the logout action
@@ -26,7 +30,7 @@ const Logout = ({open}) => {
       </button> */}
 
       {/* Confirmation Modal */}
-      {isModalOpen && (
+      {open && (
         <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-md text-center">
             <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>

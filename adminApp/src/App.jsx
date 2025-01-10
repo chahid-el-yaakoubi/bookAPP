@@ -26,6 +26,7 @@ import Cities from './pages/cities/Cities';
 import CityDetails from './pages/cities/CityDetails';
 import Shops from './pages/House/shops/shops';
 import Cars from './pages/House/cars/Cars';
+import { Profile } from './pages/components/profile/Profile';
 // import Cars from '../../api/models/cars';
 // import Cars from './pages/House/cars/Cars';
 // import NewHotelTest from './pages/House/hotels/newTest';
@@ -68,6 +69,11 @@ function App() {
             <Route path='find/:userId' element={
               <ProtectedRoute>
                 <User use="user" type="single" />
+              </ProtectedRoute>
+            } />
+            <Route path='edit/:userId' element={
+              <ProtectedRoute>
+                <User use="user" type="new" />
               </ProtectedRoute>
             } />
           </Route>
@@ -213,6 +219,12 @@ function App() {
               </ProtectedRoute>
             } />
           </Route>
+
+          <Route path='profile' element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
 
         </Routes>
       </BrowserRouter>

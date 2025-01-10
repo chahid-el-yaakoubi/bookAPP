@@ -1,8 +1,15 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import axios from "axios" // Make sure axios is installed
+import { useParams } from "react-router-dom"
+import useFetch from "../../../hooks/useFetch"
+import { useEffect } from "react"
 
 export const AddUser = () => {
+
+    const {userId} = useParams()
+
+    const {data: user, loading} = useFetch(`/api/users/${userId}`)
     const navigate = useNavigate()
     const [error, setError] = useState(null)
     const [formData, setFormData] = useState({
@@ -15,6 +22,20 @@ export const AddUser = () => {
         city: '',
         phone: '',
     })
+
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                fullName: user.fullName,
+                username: user.username,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                city: user.city,
+                phone: user.phone,
+            }))
+        }
+    }, [user])
 
     const handleChange = (e) => {
         const { name, value, type, files, checked } = e.target

@@ -22,7 +22,7 @@ export const InputField = ({ label, name, value, onChange, type = "text", requir
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
-                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
+                className={`block w-full px-4 py-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${value ? 'bg-blue-50' : 'bg-white'}`}
                 rows={4}
             />
         ) : (
@@ -33,7 +33,7 @@ export const InputField = ({ label, name, value, onChange, type = "text", requir
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
-                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
+                className={`block w-full px-4 py-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${value ? 'bg-blue-50' : 'bg-white'}`}
             />
         )}
     </div>
@@ -49,10 +49,10 @@ export const SelectField = ({ label, name, value, onChange, options, required = 
             value={value}
             onChange={onChange}
             required={required}
-            className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${value ? 'bg-blue-50' : 'bg-white'}`}
+            className={`block w-full px-4 py-2.5 text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${value ? 'bg-blue-50' : 'bg-white'}`}
         >
             <option value="">Select {label}</option>
-            {options.map((option) => (
+            {options.map((option) => ( 
                 <option key={option.value} value={option.value}>
                     {option.label}
                 </option>
@@ -68,7 +68,7 @@ export const CheckboxField = ({ label, name, checked, onChange }) => (
             name={name}
             checked={checked}
             onChange={onChange}
-            className="h-4 w-4 text-blue-600"
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
         />
         <span className="text-sm text-gray-700">{label}</span>
     </label>

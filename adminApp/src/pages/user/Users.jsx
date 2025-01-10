@@ -9,7 +9,7 @@ const User = ({ type }) => {
 
     return (
         <Layout children={<>
-            {type === "/" ? (<DataUser />) : ( type === "new" ? <AddUser /> : <Single />)}
+            {type === "/" ? (<DataUser />) : ( type === "new" ? <AddUser />  : ( type === "edit" ? <AddUser />   : <Single />))}
         </>} use="user" />
     );
 };

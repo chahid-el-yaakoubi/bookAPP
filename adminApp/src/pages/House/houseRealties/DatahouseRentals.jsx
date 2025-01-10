@@ -220,11 +220,14 @@ const HouseRentals = ({sideOpen}) => {
         },
     ];
 
+    sideOpen = true
+
     // ... rest of the component (handleDelete, handleOpenModal, etc.) remains the same
 
     return (
-        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
-            sideOpen ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-100px)]'
+        
+        <div className={`my-2 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
+            sideOpen ? 'w-[calc(100vw-220px)]' : 'w-[calc(100vw-100px)]'
         }`}>
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center">

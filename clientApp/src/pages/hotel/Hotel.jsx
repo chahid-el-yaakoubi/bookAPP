@@ -29,6 +29,7 @@ import { FeaturedAmenities } from './componentHotel/FeaturedAmenities';
 import { ContactOwnersModule } from '../../components/ContactOwnersModule';
 import { HotelRooms } from './componentHotel/HotelRooms';
 import { PageReload } from '../../components/pageRealod/pageRealod';
+import Descriptions from './componentHotel/HotelDesc';
 // import { hotelRoomsData } from '../../data/hotelRoomsData';
 
 
@@ -37,6 +38,7 @@ import { PageReload } from '../../components/pageRealod/pageRealod';
 const HotelNavMenu = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const navRef = useRef(null);
+
 
   // Enhanced menu items with icons
   const menuItems = [
@@ -287,9 +289,29 @@ const professionalHotelData = {
 
 
 export const Hotel = () => {
+  const [dataDes, setDataDes] = useState(null);
   const location = useLocation();
   const id = location.pathname.split("/")[2];
-  const { data, loading, error } = useFetch(`/api/hotels/find/${id}`);
+  const { data, loading, error } = useFetch(`/api/hotels/find/6773c62b5c2627d41a99e4ad`);
+
+
+  const photoss = data?.photos;
+  const proximity =  data.proximity
+  const amenities = data?.amenities
+  const rooms = data?.rooms
+  const rules = data?.rules
+  const areaInfo = data?.areaInfo
+
+  useEffect(() => {
+   
+    if(data){
+      setDataDes(data) }
+    }, [data]);
+
+
+  console.log({"data hotel " : dataDes})
+  
+  
 
   // Ensure rooms data is properly structured
   const hotelData = {
@@ -433,7 +455,7 @@ export const Hotel = () => {
                     address: hotelData.address
                   }} 
                 />
-                <ImageGallery photos={photos} />
+                <ImageGallery photos={photoss} />
               </div>
 
               <div id="info" className="scroll-mt-24">
@@ -443,7 +465,8 @@ export const Hotel = () => {
                     <div className="mb-6">
                       <h2 className="text-2xl font-semibold my-4">À propos de cet établissement</h2>
                       <div className="relative bg-gray-100/70 rounded p-4">
-                        <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                      <Descriptions data={dataDes} />
+                        {/* <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                           {getDisplayDescription()}
                         </p>
                         {description.split('\n').filter(line => line.trim()).length > 5 && (
@@ -453,7 +476,7 @@ export const Hotel = () => {
                           >
                             {showFullDescription ? 'Voir moins' : 'Lire plus'}
                           </button>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -478,8 +501,9 @@ export const Hotel = () => {
                   scrollToContact={scrollToContact}
                 />
 
+
                 <div id="area">
-                  <AreaInfo className="scroll-mt-24" hotelData={hotelData} contactModule={scrollToContact} />
+                  <AreaInfo className="scroll-mt-24" hotelData={proximity} contactModule={scrollToContact} />
                 </div>
                 <div id='facilities' className='scroll-mt-24'>
                   <HotelFacilities />

@@ -459,44 +459,15 @@ const NewCar = () => {
                             name="registration.plateNumber"
                             value={formData.registration.plateNumber}
                             onChange={handleChange}
-                            required
                             type="text"
                         />
-                        <SelectField
+                        <InputField
                             label="Registration registrationState"
                             name="registration.registrationState"
-                            value={formData.registration.registrationState}
+                            value={formData.registration.registrationState.toUpperCase()}
                             onChange={handleChange}
-                            required
-                            options={[
-                                { label: "Rabat", value: "RAB" },
-                                { label: "Casablanca", value: "CAS" },
-                                { label: "Marrakech", value: "MRC" },
-                                { label: "Fes", value: "FEZ" },
-                                { label: "Tangier", value: "TNG" },
-                                { label: "Agadir", value: "AGD" },
-                                { label: "Meknes", value: "MEK" },
-                                { label: "Oujda", value: "OUD" },
-                                { label: "Kenitra", value: "KEN" },
-                                { label: "Sale", value: "SAL" },
-                                { label: "Tetouan", value: "TET" },
-                                { label: "Beni Mellal", value: "BEN" },
-                                { label: "El Jadida", value: "EJA" },
-                                { label: "Nador", value: "NAD" },
-                                { label: "Khenifra", value: "KHE" },
-                                { label: "Ifrane", value: "IFR" },
-                                { label: "Dakhla", value: "DAK" },
-                                { label: "Taza", value: "TAZ" },
-                                { label: "Essaouira", value: "ESS" },
-                                { label: "Safi", value: "SAF" },
-                                { label: "Larache", value: "LAR" },
-                                { label: "Tiznit", value: "TIZ" },
-                                { label: "Tata", value: "TAT" },
-                                { label: "Berkane", value: "BER" },
-                                { label: "Military", value: "MIL" },
-                                { label: "Diplomatic", value: "CD" }
-                            ]}
-
+                            type="text"
+                            
                         />
                     </div>
                 </FormSection>

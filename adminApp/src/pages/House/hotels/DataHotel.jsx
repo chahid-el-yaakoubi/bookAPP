@@ -7,14 +7,11 @@ import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Neighborhood } from "../../../components/Location";
 
 const Hotels = ({sideOpen}) => {
 
-    if(sideOpen){
-        alert("sideOpen")
-    }
-
-    
+  
     const { data: fetchedData, loading, error } = useFetch(`/api/hotels`);
     console.log(fetchedData)
     const [data, setData] = useState([]);
@@ -40,13 +37,14 @@ const Hotels = ({sideOpen}) => {
 
     useEffect(() => {
         if (fetchedData) {
+            console.log(fetchedData)
             const transformedData = fetchedData.map((item) => ({
                 id: item._id,
                 _id: item._id,
                 name: item?.name || "N/A",
                 type: item?.type || "N/A",
                 city: item?.location.city || "N/A",
-                address: item?.location?.address || "N/A",
+                neighborhood: item?.location?.neighborhood || "N/A",
                 phone: item?.contact?.phone || "N/A",
                 bookPhone: item?.contact?.bookPhone || "N/A",
                 status: item.status || "N/A",
@@ -157,8 +155,8 @@ const Hotels = ({sideOpen}) => {
             // minWidth: 120,
         },
         {
-            field: "address",
-            headerName: "Address",
+            field: "neighborhood",
+            headerName: "Neighborhood",
             flex: 1.5,
             // minWidth: 150,
         },
@@ -238,9 +236,7 @@ const Hotels = ({sideOpen}) => {
         },
     ];
     return (
-        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
-            sideOpen ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-100px)]'
-        }`}>
+        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-[calc(100vw-100px)] `}>
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center">
                     <FontAwesomeIcon icon={faTable} className="mr-3 text-indigo-600" />

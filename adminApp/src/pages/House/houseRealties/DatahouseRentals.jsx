@@ -8,7 +8,9 @@ import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-const HouseRentals = ({sideOpen}) => {
+
+const HouseRentals = () => {
+
     const { data: fetchedData, loading, error } = useFetch(`/api/house-rentals`);
     const [data, setData] = useState([]);
     const [typeFilter, setTypeFilter] = useState("all");
@@ -195,7 +197,14 @@ const HouseRentals = ({sideOpen}) => {
             headerName: "Created",
             width: 130,
             renderCell: (params) =>
-                moment(params.row.createdAt).format('DD/MM/YYYY'),
+                moment(params.row.createdAt).startOf().fromNow(),
+        },
+        {
+            field: "updatedAt",
+            headerName: "Updated",
+            width: 130,
+            renderCell: (params) =>
+                moment(params.row.createdAt).startOf().fromNow(),
         },
         {
             field: "action",
@@ -220,15 +229,12 @@ const HouseRentals = ({sideOpen}) => {
         },
     ];
 
-    sideOpen = true
 
     // ... rest of the component (handleDelete, handleOpenModal, etc.) remains the same
 
     return (
         
-        <div className={`my-2 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
-            sideOpen ? 'w-[calc(100vw-220px)]' : 'w-[calc(100vw-100px)]'
-        }`}>
+        <div className={`my-2 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-[calc(100vw-110px)]`}>
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center">
                     <FontAwesomeIcon icon={faTable} className="mr-3 text-indigo-600" />
@@ -250,8 +256,8 @@ const HouseRentals = ({sideOpen}) => {
                     <option value="house">House</option>
                     <option value="apartment">Apartment</option>
                     <option value="villa">Villa</option>
-                    <option value="riad">Riad</option>
-                    <option value="studio">Studio</option>
+                    <option value="duplex">Duplex</option>
+                    <option value="penthouse">Penthouse</option>
                 </select>
             </div>
 

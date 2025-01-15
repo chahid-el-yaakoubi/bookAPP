@@ -66,6 +66,11 @@ function App() {
                 <User use="user" type="new" />
               </ProtectedRoute>
             } />
+             <Route path='verify/:userId' element={
+              <ProtectedRoute>
+                <User use="user" type="verify" />
+              </ProtectedRoute>
+            } />
             <Route path='find/:userId' element={
               <ProtectedRoute>
                 <User use="user" type="single" />

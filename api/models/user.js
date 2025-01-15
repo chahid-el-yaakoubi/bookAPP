@@ -25,7 +25,13 @@ const UserSchema = new mongoose.Schema({
     },
     city: String,
     phone: String,
-    img: String
+    img: String,
+    isVerified: {
+        type: Boolean,
+        default: false,
+      },
+      verificationCode: String,
+      verificationCodeExpires: Date,
 }, { timestamps: true });
 
 

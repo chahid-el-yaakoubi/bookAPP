@@ -76,7 +76,7 @@ export const AddUser = () => {
             
             console.log('Response:', response.data);
             if (response.data) {
-                navigate('/users')
+                navigate(`/users/verify/${response.data.userId}`)
             }
         } catch (error) {
             console.error('Submission error:', error);
@@ -200,7 +200,7 @@ export const AddUser = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="**************"
+                                placeholder=""
                                 required
                             />
                         </div>
@@ -213,7 +213,7 @@ export const AddUser = () => {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="**************"
+                                placeholder=""
                                 required
                             />
                         </div>
@@ -256,6 +256,6 @@ export const AddUser = () => {
                     </button>
                 </div>
             </form>
-        </div>
-    )
+        </div>
+    )
 }

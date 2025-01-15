@@ -1,34 +1,35 @@
-
-
 .items li:hover span,
-.items li:hover .icon{
-    color: black;
-
+.items li:hover .icon {
+  color: black;
 }
 
-
-.items li span{
-    font-size: 12px;
-    color: rgb(211, 237, 255);
-    font-style: italic;
-    font-weight: 700;
-    transition: all 0.3s;
-
+.items li span {
+  font-size: 12px;
+  color: rgb(211, 237, 255);
+  font-style: italic;
+  font-weight: 700;
+  transition: all 0.3s;
+  
 }
 
 .items .active {
-    background-color: rgb(21, 22, 22);
-    color: black;
-
+  background-color: rgb(21, 22, 22);
+  color: black;
 }
 
 .items .active span {
-    font-style: normal;
+  font-style: normal;
 }
 
-
 .items li .icon {
-    color: rgb(255, 255, 255);
-    font-size: 12px;
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+}
 
+.sidebar .sidebar-text {
+  display: none;
+}
+
+.sidebar:hover .sidebar-text {
+  display: inline;
 }

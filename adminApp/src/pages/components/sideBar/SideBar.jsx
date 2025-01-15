@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import './sideBar.css';
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,147 +27,97 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Logout from "../../login/Logout";
 
-const Sidebar = ({isOpen, setIsOpen, use}) => {
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
+const Sidebar = ({ use }) => {
   const [logout, setLout] = useState(false);
 
   return (
-    <div className={`${isOpen ? 'w-48' : 'w-20'} bg-blue-600 min-h-screen bg-blue-500 border-r border-gray-200 transition-all duration-300 maw-h-screen fixed top-0 left-0 z-50`}>
-      <div className="h-12 flex items-center justify-between px-4">
+    <div className="sidebar w-20 hover:w-48 bg-blue-600  border-r border-gray-200 transition-all duration-300 fixed top-0 left-0 z-50 bottom-0 overflow-auto scrollbar-hide ">
+      <div className="h-12 flex  justify-between px-4">
         <Link to="/" className="no-underline">
-          <span className={`${isOpen ? 'block' : 'hidden'} text-xl font-bold`}>
-            XXXXXXXX
+          <span className="block text-xl font-bold">
+            logo
           </span>
         </Link>
-        <div 
-          className="flex items-center gap-1 cursor-pointer hover:text-[#533399] transition-colors"
-          onClick={toggleSidebar}
-        >
-          {isOpen ? (
-            <>
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className="text-sm"
-              />
-              <FontAwesomeIcon
-                icon={faBars}
-                className="text-lg"
-              />
-            </>
-          ) : (
-            <>
-              <FontAwesomeIcon
-                icon={faBars}
-                className="text-lg"
-              />
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="text-sm"
-              />
-            </>
-          )}
-        </div>
       </div>
-      
       <hr className="border-gray-200" />
-      
       <div className="px-3">
-        <ul className="list-none m-0 p-0 items">
-          {/* Main Section */}
-          {isOpen && <p className="text-xs font-bold text-gray-400 my-4">MAIN</p>}
+        <ul className="list-none m-0 p-0 items ">
+          <p className="text-xs font-bold text-gray-400 my-4">MAIN</p>
           <Link to="/" className="no-underline">
-            <li className={` ${!isOpen ? 'my-4' : null}  ${use === "dashbord" ? 'active' : null} items-center p-2  cursor-pointer hover:bg-blue-100 rounded-md transition-colors`}>
+            <li className={`my-4 ${use === "dashboard" ? 'active' : ''} flex p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors`}>
               <FontAwesomeIcon icon={faGauge} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2">Dashboard</span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Dashboard</span>
             </li>
           </Link>
-
-          {/* Lists Section */}
-          {isOpen && <p className="text-xs font-bold text-gray-400 my-4">LISTS</p>}
+          <p className="text-xs font-bold text-gray-400 my-4">LISTS</p>
           <Link to="/users" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "user" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "user" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faUsers} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2">Users</span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Users</span>
             </li>
           </Link>
           <Link to="/hotels" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "hotels" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "hotels" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faHotel} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2">Hotels</span>}
-              {/* <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full ml-2">1</span> */}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Hotels</span>
             </li>
           </Link>
-
-          {/* Houses Section */}
           <Link to="/houses-sales" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "housesSales" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "housesSales" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faHouse} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2">Houses</span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Houses</span>
             </li>
           </Link>
-
           <Link to="/cities" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "cities" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "cities" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faCity} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2">Cities</span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Cities</span>
             </li>
           </Link>
           <Link to="/shops" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "shops" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "shops" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faShop} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2"> Shops </span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Shops</span>
             </li>
           </Link>
           <Link to="/cars" className="no-underline">
-            <li className={`flex items-center p-2 cursor-pointer hover:bg-blue-100  rounded-md ${use === "cars" ? 'active' : null}`}>
+            <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "cars" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faCar} className="icon" />
-              {isOpen && <span className="text-sm font-semibold  ml-2"> Cars </span>}
+              <span className="text-sm font-semibold ml-2 sidebar-text">Cars</span>
             </li>
           </Link>
-
-          {/* Useful Section */}
-          {isOpen && <p className="text-xs font-bold text-gray-400 my-4">USEFUL</p>}
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
+          <p className="text-xs font-bold text-gray-400 my-4">USEFUL</p>
+          <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faChartLine} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Stats</span>}
+            <span className="text-sm font-semibold ml-2 sidebar-text">Stats</span>
           </li>
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
+          <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faBell} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Notifications</span>}
+            <span className="text-sm font-semibold ml-2 sidebar-text">Notifications</span>
           </li>
-
-          {/* Service Section */}
-          {isOpen && <p className="text-xs font-bold text-gray-400 my-4">SERVICE</p>}
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
-            <FontAwesomeIcon icon={faServer} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">System Health</span>}
-          </li>
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
+          <p className="text-xs font-bold text-gray-400 my-4">SERVICE</p>
+          
+          <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faClipboardList} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Logs</span>}
+            <span className="text-sm font-semibold ml-2 sidebar-text">Logs</span>
           </li>
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
+          <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faGears} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Settings</span>}
+            <span className="text-sm font-semibold ml-2 sidebar-text">Settings</span>
           </li>
-
-          {/* User Section */}
-          {isOpen && <p className="text-xs font-bold text-gray-400 my-4">USER</p>}
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
+          <p className="text-xs font-bold text-gray-400 my-4">USER</p>
+          <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
             <FontAwesomeIcon icon={faCircleUser} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Profile</span>}
+            <span className="text-sm font-semibold ml-2 sidebar-text">Profile</span>
           </li>
-          <button className="w-full" onClick={()=>{
-            setLout(!logout)
-          }} >
-          <li className="flex items-center p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors">
-            <FontAwesomeIcon icon={faRightFromBracket} className="icon" />
-            {isOpen && <span className="text-sm font-semibold  ml-2">Logout</span>}
-              <Logout open ={logout} setOpen={setLout}/>  
-          </li>
+          <button className="w-full" onClick={() => setLout(!logout)}>
+            <li className="flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md transition-colors group relative">
+              <FontAwesomeIcon icon={faRightFromBracket} className="icon" />
+            <span className="text-sm font-semibold ml-2 sidebar-text">Logout</span>
+
+             
+              <Logout open={logout} setOpen={setLout} />
+            </li>
           </button>
         </ul>
       </div>

@@ -8,7 +8,7 @@ function Hotels({type}) {
     return (
         <Layout children={
             <>
-                {type === "/" ? <DataHotel   /> : type === "new" ? <NewHotel /> : type === "edit" ? <UpdateHotel /> : <SingleHotel />}
+                {type === "/" ? <DataHotel   /> : type === "new" ? <NewHotel /> : <SingleHotel />}
             </>
         } use="hotels" />
     );

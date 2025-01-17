@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
 import ImgHotel from '../../components/imgHotel';
+import { AuthContext } from '../../context/AuthContect';
 
 export const PropertyDetails = ({ data }) => {
     if (!data) {
@@ -172,10 +173,32 @@ export const PropertyDetails = ({ data }) => {
 };
 
 function SingleHouseRentals() {
+    const navigate = useNavigate();
     const [newData, setNewData] = useState([])
     const { id } = useParams();
-    const { data: datahouse, loading, error } = useFetch(`/api/house-rentals/find/${id}`);
-    const hotelId = "6773c62b5c2627d41a99e4ad";
+    const { data: datahouse , loading, error } = useFetch(`/api/house-rentals/find/${id}`);
+
+    // const datahouse = datahouse;
+
+    // const {user} = useContext(AuthContext);
+    
+    // useEffect(() => {
+    //     const checkAdmin = async () => {
+    //         // Ensure data is not empty or undefined
+    //         if (!data || Object.keys(data).length === 0) return;
+
+    //         if (user?.adminHouses && !user?.adminUsers) {
+    //             const isAdminMismatch = user._id !== data?.isA;
+    //             if (isAdminMismatch) {
+    //                 navigate("/houses-sales");
+    //             }
+    //         }
+    //     };
+
+    //     checkAdmin();
+    // }, [user, data, navigate]);
+
+
 
     useEffect(()=>{
         setNewData(datahouse)

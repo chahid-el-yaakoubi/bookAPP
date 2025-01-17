@@ -55,6 +55,7 @@ export const getHouse = async (req, res, next) => {
     try {
         const house = await HouseRental.findById(req.params.id);
         res.status(200).json(house);
+        console.log(house)
     } catch (err) {
         next(err);
     }
@@ -73,6 +74,18 @@ export const getHouses = async (req, res, next) => {
         next(err);
     }
 }
+
+
+export const getAdminHouses = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const houses = await HouseRental.find({isA: id});
+        res.status(200).json(houses);
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 export const countByCity = async (req, res, next) => {
     try {

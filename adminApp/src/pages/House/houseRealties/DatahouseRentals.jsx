@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import useFetch from "../../../hooks/useFetch";
@@ -7,11 +7,22 @@ import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from "../../context/AuthContect";
 
 
 const HouseRentals = () => {
 
-    const { data: fetchedData, loading, error } = useFetch(`/api/house-rentals`);
+    const { user } = useContext(AuthContext);
+    const { adminHouses, adminUsers, _id } = user;
+    let helpApi = `/`
+    if (adminHouses) {
+        helpApi = `/api/house-rentals/${_id}`
+    }
+    if (adminUsers) {
+        helpApi = `/api/house-rentals`
+    }
+
+    const { data: fetchedData, loading, error } = useFetch(helpApi);
     const [data, setData] = useState([]);
     const [typeFilter, setTypeFilter] = useState("all");
     const [showModal, setShowModal] = useState(false);
@@ -39,6 +50,7 @@ const HouseRentals = () => {
         if (fetchedData) {
             const transformedData = fetchedData.map((item, i) => ({
                 count: i+1,
+                isA: item.isA,
                 id: item._id,
                 _id: item._id,
                 name: item?.name || "N/A",
@@ -124,6 +136,13 @@ const HouseRentals = () => {
         {
             field: "_id",
             headerName: "ID",
+            width: 200,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "isA",
+            headerName: "IDAdmin",
             width: 200,
             headerAlign: "center",
             align: "center",
@@ -221,7 +240,7 @@ const HouseRentals = () => {
                         className="w-5 h-5 text-red-600 hover:text-red-700 cursor-pointer"
                         onClick={() => handleDelete(params.row._id)}
                     />
-                    <Link to={`/houses-rentals/edit/${params.row._id}`}>
+                    <Link to={`/houses-sales/edit/${params.row._id}`}>
                         <FaEdit className="w-5 h-5 text-gray-600 hover:text-gray-700 cursor-pointer" />
                     </Link>
                 </div>
@@ -240,7 +259,7 @@ const HouseRentals = () => {
                     <FontAwesomeIcon icon={faTable} className="mr-3 text-indigo-600" />
                     Properties List
                 </h3>
-                <Link to="/houses-rentals/new" className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center">
+                <Link to="/houses-sales/new" className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 flex items-center">
                     <FontAwesomeIcon icon={faPlus} className="mr-2" />
                     Add Property
                 </Link>

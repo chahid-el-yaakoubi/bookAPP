@@ -23,6 +23,27 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    adminCars: {
+        type: Boolean,
+        default: false
+    },
+    adminUsers: {
+        type: Boolean,
+        default: false
+    },
+    adminHotes: {
+        type: Boolean,
+        default: false
+    },
+    adminHouses: {
+        type: Boolean,
+        default: false
+    },
+    adminShops: {
+        type: Boolean,
+        default: false
+    },
+    
     city: String,
     phone: String,
     img: String,

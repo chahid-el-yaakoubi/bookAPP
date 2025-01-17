@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import { creatHouse, getHouse, getHouses, updateHouse, deleteHouse, countByCity, countByType, uploadImgs, removeImgs } from '../controllers/houseRental.js';
+import { creatHouse, getHouse, getHouses, updateHouse, deleteHouse, countByCity, countByType, uploadImgs, removeImgs, getAdminHouses } from '../controllers/houseRental.js';
 import { verifyAdmin } from '../utils/verifyToken.js';
 import multer from 'multer';
 
@@ -20,7 +20,10 @@ router.delete('/:id', verifyAdmin, deleteHouse)
 router.get('/find/:id', getHouse)
 // GET ALL
 router.get('/', getHouses)
-router.get('/contByCity', countByCity)
+// get house admin
+router.get('/:id', getAdminHouses)
+
+router.get('/contByCity/count', countByCity)
 router.get('/countByType', countByType)
 
 

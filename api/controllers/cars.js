@@ -52,6 +52,15 @@ export const getCar = async (req, res, next) => {
     }
 }
 
+export const getAdminCars = async (req, res, next) => {
+    try {
+        const cars = await CarRental.find({ isA: req.params.id });
+        res.status(200).json(cars);
+    } catch (err) {
+        next(err);
+    }
+}
+
 export const getCars = async (req, res, next) => {
     const { min, max, limit, ...other } = req.query;
     const city = other.city;

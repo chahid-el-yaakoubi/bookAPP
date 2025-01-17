@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import useFetch from "../../../hooks/useFetch";
@@ -7,9 +7,23 @@ import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from "../../context/AuthContect";
 
 const DataCars = ({ sideOpen }) => {
-    const { data: fetchedData, loading, error } = useFetch(`/api/cars`);
+    const { user } = useContext(AuthContext);
+        const { adminCars , adminUsers , _id } = user;
+    let helpApi = `/api/cars/${_id}`
+    if(adminUsers){
+        helpApi = `/api/cars`
+    }
+
+  
+
+    
+    
+
+    const { data: fetchedData, loading, error } = useFetch(helpApi);
+    console.log(fetchedData)
     const [data, setData] = useState([]);
     const [typeFilter, setTypeFilter] = useState("all");
     const [showModal, setShowModal] = useState(false);

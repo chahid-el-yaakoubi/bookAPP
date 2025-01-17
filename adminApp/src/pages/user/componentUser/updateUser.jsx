@@ -1,15 +1,12 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import axios from "axios" // Make sure axios is installed
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { useParams } from "react-router-dom"
 import useFetch from "../../../hooks/useFetch"
-import { useEffect } from "react"
 
-export const AddUser = () => {
-
-    const {userId} = useParams()
-
-    const {data: user, loading} = useFetch(`/api/users/${userId}`)
+const UpdateUser = () => {
+    const { userId } = useParams()
+    const { data: user, loading } = useFetch(`/api/users/${userId}`)
     const navigate = useNavigate()
     const [error, setError] = useState(null)
     const [formData, setFormData] = useState({
@@ -26,6 +23,7 @@ export const AddUser = () => {
         adminShops: false,
         city: '',
         phone: '',
+        isVerified: false
     })
 
     useEffect(() => {
@@ -43,16 +41,25 @@ export const AddUser = () => {
                 adminShops: user.adminShops,
                 city: user.city,
                 phone: user.phone,
+                password: '',
+                confirmPassword: '',
+                isVerified: user.isVerified
             }))
         }
     }, [user])
 
-    const handleChange = (e) => {
+    const  handleChange = (e) => {
         const { name, value, type, files, checked } = e.target
         setFormData(prev => ({
             ...prev,
             [name]: type === 'file' ? files[0] 
                   : type === 'radio' && name === 'isAdmin' ? checked
+                  : type === 'checkbox' && name === 'isVerified' ? checked
+                  : type === 'checkbox' && name === 'adminCars' ? checked
+                  : type === 'checkbox' && name === 'adminUsers' ? checked
+                  : type === 'checkbox' && name === 'adminHotes' ? checked
+                  : type === 'checkbox' && name === 'adminHouses' ? checked
+                  : type === 'checkbox' && name === 'adminShops' ? checked
                   : value
         }))
     }
@@ -61,15 +68,21 @@ export const AddUser = () => {
         e.preventDefault()
         setError(null)
         
-        // Validation
-        if (formData.password !== formData.confirmPassword) {
-            setError("Passwords don't match!")
-            return
+        // Only validate passwords if either password field is filled
+        if (formData.password || formData.confirmPassword) {
+            if (formData.password !== formData.confirmPassword) {
+                setError("Passwords don't match!")
+                return
+            }
         }
-        // console.log(formData)
+
         const submitData = new FormData()
         Object.keys(formData).forEach(key => {
             if (key !== 'confirmPassword') {
+                // Only include password if it was changed
+                if (key === 'password' && !formData.password) {
+                    return
+                }
                 // Only append if the value exists
                 if (formData[key] !== null && formData[key] !== undefined) {
                     submitData.append(key, formData[key])
@@ -78,18 +91,16 @@ export const AddUser = () => {
         })
 
         try {
-            const response = await axios.post('/api/auth/register', submitData, {
+            const response = await axios.put(`/api/users/${userId}`, submitData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
             
-            console.log('Response:', response.data);
-            if (response.data ) {
-                navigate(`/users/verify/${response.data.userId}`)
-            }
+            console.log('Response:', response.data)
+            navigate('/users')
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error('Update error:', error)
             setError(
                 error.response?.data?.message || 
                 error.message || 
@@ -98,10 +109,14 @@ export const AddUser = () => {
         }
     }
 
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
     return (
         <div className="flex-[6] p-8 bg-gray-50">
             <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm mb-6">
-                <h1 className="text-2xl font-semibold text-gray-800">NOUVELLE UTILISATEUR</h1>
+                <h1 className="text-2xl font-semibold text-gray-800">MODIFIER UTILISATEUR</h1>
                 <Link to="/users/">
                     <button className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200'>
                         tout utilisateur
@@ -173,6 +188,11 @@ export const AddUser = () => {
                                 placeholder="Nador" 
                             />
                         </div>
+
+                        <div className="form-group">
+                            <label htmlFor="isVerified" className="block text-sm font-medium text-gray-700 mb-2">Vérifié:</label>
+                            <input type="checkbox" id="isVerified" name="isVerified" checked={formData.isVerified} onChange={handleChange} className="w-4 h-4 text-blue-600" />
+                        </div>
                     </div>
 
                     <div className="flex-[1] flex flex-col gap-6">
@@ -203,28 +223,26 @@ export const AddUser = () => {
                         </div>
 
                         <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Mode passe:</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Mode passe: (Optional)</label>
                             <input 
                                 type="password" 
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder=""
-                                required
+                                placeholder="Leave blank to keep current password"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Mode passe:</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Mode passe: (Optional)</label>
                             <input 
                                 type="password" 
                                 name="confirmPassword"
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder=""
-                                required
+                                placeholder="Leave blank to keep current password"
                             />
                         </div>
 
@@ -258,75 +276,79 @@ export const AddUser = () => {
                             </div>
                         </div>
 
-                        <div className="form-group mt-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-4">Catégories d'administration :</label>
-                            <div className="space-y-3">
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminCars" 
-                                        name="adminCars"
-                                        checked={formData.adminCars}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminCars: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminCars" className="ml-2 text-gray-700">Voitures</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminUsers" 
-                                        name="adminUsers"
-                                        checked={formData.adminUsers}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminUsers: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminUsers" className="ml-2 text-gray-700">Utilisateurs</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminHotes" 
-                                        name="adminHotes"
-                                        checked={formData.adminHotes}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminHotes: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminHotes" className="ml-2 text-gray-700">Hôtes</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminHouses" 
-                                        name="adminHouses"
-                                        checked={formData.adminHouses}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminHouses: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminHouses" className="ml-2 text-gray-700">Maisons</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminShops" 
-                                        name="adminShops"
-                                        checked={formData.adminShops}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminShops: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminShops" className="ml-2 text-gray-700">Magasins</label>
+                        {formData.isAdmin && (
+                            <div className="form-group mt-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-4">Catégories d'administration :</label>
+                                <div className="space-y-3">
+                                    <div className="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="adminCars" 
+                                            name="adminCars"
+                                            checked={formData.adminCars}
+                                            onChange={handleChange}
+                                            className="w-4 h-4 text-blue-600" 
+                                        />
+                                        <label htmlFor="adminCars" className="ml-2 text-gray-700">Voitures</label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="adminUsers" 
+                                            name="adminUsers"
+                                            checked={formData.adminUsers}
+                                            onChange={handleChange}
+                                            className="w-4 h-4 text-blue-600" 
+                                        />
+                                        <label htmlFor="adminUsers" className="ml-2 text-gray-700">Utilisateurs</label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="adminHotes" 
+                                            name="adminHotes"
+                                            checked={formData.adminHotes}
+                                            onChange={handleChange}
+                                            className="w-4 h-4 text-blue-600" 
+                                        />
+                                        <label htmlFor="adminHotes" className="ml-2 text-gray-700">Hôtes</label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="adminHouses" 
+                                            name="adminHouses"
+                                            checked={formData.adminHouses}
+                                            onChange={handleChange}
+                                            className="w-4 h-4 text-blue-600" 
+                                        />
+                                        <label htmlFor="adminHouses" className="ml-2 text-gray-700">Maisons</label>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="adminShops" 
+                                            name="adminShops"
+                                            checked={formData.adminShops}
+                                            onChange={handleChange}
+                                            className="w-4 h-4 text-blue-600" 
+                                        />
+                                        <label htmlFor="adminShops" className="ml-2 text-gray-700">Magasins</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
                 <div className="flex justify-center mt-8">
                     <button className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium">
-                        Ajouter
+                        Modifier
                     </button>
                 </div>
             </form>
-        </div>
-    )
+        </div>
+    )
 }
+
+export default UpdateUser

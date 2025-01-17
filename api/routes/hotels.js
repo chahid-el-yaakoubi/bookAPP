@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import { creatHotel, getHotel, getHotels, updateHotel, deleteHotel, countByCity, countByType, uploadImgs, removeImgs } from '../controllers/hotel.js';
+import { creatHotel, getHotel, getHotels, updateHotel, deleteHotel, countByCity, countByType, uploadImgs, removeImgs , getAdminHotels} from '../controllers/hotel.js';
 import { verifyAdmin } from '../utils/verifyToken.js';
 import multer from 'multer';
 
@@ -20,7 +20,11 @@ router.delete('/:id', verifyAdmin, deleteHotel)
 router.get('/find/:id', getHotel)
 // GET ALL
 router.get('/', getHotels)
-router.get('/contByCity', countByCity)
+//  get hotels admins
+router.get('/:id', getAdminHotels)
+
+// COUNT BY CITY
+router.get('/contByCity/count', countByCity)
 router.get('/countByType', countByType)
 
 

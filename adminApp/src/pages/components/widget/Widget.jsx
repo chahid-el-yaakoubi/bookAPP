@@ -11,9 +11,7 @@ import {
 import { Link } from "react-router-dom";
 
 const Widget = ({ type, count }) => {
-  console.log(count);
-  const amount = 100; // temporary
-  const diff = 20; // temporary
+  const diff = 25; // temporary
 
   const data = {
     cities: {
@@ -40,7 +38,7 @@ const Widget = ({ type, count }) => {
       title: "REAL ESTATE",
       Count: count || 100,
       isMoney: false,
-      path: "/houses-rentals",
+      path: "/houses-sales",
       link: "View all houses",
       icon: faHouseChimneyMedical,
       iconStyle: "bg-green-200 text-green-800", // Softer green

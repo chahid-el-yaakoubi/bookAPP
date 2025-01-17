@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import useFetch from "../../../hooks/useFetch";
@@ -7,12 +7,23 @@ import axios from "axios";
 import { FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTable, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Neighborhood } from "../../../components/Location";
+import { AuthContext } from "../../context/AuthContect";
 
-const Hotels = ({sideOpen}) => {
+const Hotels = () => {
 
-  
-    const { data: fetchedData, loading, error } = useFetch(`/api/hotels`);
+    const { user } = useContext(AuthContext);
+    const { adminHotes, adminUsers, _id } = user;
+    let helpApi = `/`
+    if (adminHotes) {
+        helpApi = `/api/hotels/${_id}`
+    }
+    if (adminUsers) {
+        helpApi = `/api/hotels`
+    }
+
+
+
+    const { data: fetchedData, loading, error } = useFetch(helpApi);
     console.log(fetchedData)
     const [data, setData] = useState([]);
     const [typeFilter, setTypeFilter] = useState("all");
@@ -23,22 +34,23 @@ const Hotels = ({sideOpen}) => {
     useEffect(() => {
         const savedFilter = localStorage.getItem("typeFilter");
         if (savedFilter) {
-          setTypeFilter(savedFilter);
+            setTypeFilter(savedFilter);
         }
-      }, []);
-    
-      // Handle change and save to localStorage
-      const handleTypeChange = (event) => {
+    }, []);
+
+    // Handle change and save to localStorage
+    const handleTypeChange = (event) => {
         const selectedValue = event.target.value;
         setTypeFilter(selectedValue);
         localStorage.setItem("typeFilter", selectedValue); // Save the value to localStorage
-      };
+    };
 
 
     useEffect(() => {
         if (fetchedData) {
             console.log(fetchedData)
             const transformedData = fetchedData.map((item) => ({
+                isA: item.isA,
                 id: item._id,
                 _id: item._id,
                 name: item?.name || "N/A",
@@ -130,6 +142,13 @@ const Hotels = ({sideOpen}) => {
         {
             field: "_id",
             headerName: "ID",
+            width: 150,
+            headerAlign: "center",
+            align: "center",
+        },
+        {
+            field: "isA",
+            headerName: "IDAdmin",
             width: 150,
             headerAlign: "center",
             align: "center",
@@ -264,8 +283,8 @@ const Hotels = ({sideOpen}) => {
             </div>
 
             <div style={{ height: 700, width: '100%' }}>
-                <DataGrid 
-                    style={{fontSize: "11px"}}
+                <DataGrid
+                    style={{ fontSize: "11px" }}
                     rows={data}
                     columns={[...hotelColumns, ...actionColumn]}
                     initialState={{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -34,10 +34,12 @@ import {
 import DataRoom from './DataRoom';
 import ImgHotel from '../../components/imgHotel';
 import { ImTelegram } from 'react-icons/im';
+import { AuthContext } from '../../context/AuthContect';
 
 const SingleHotel = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const {user} = useContext(AuthContext);
 
 
     const roomAmenities = [
@@ -58,7 +60,25 @@ const SingleHotel = () => {
 
 
 
-    const { data: hotel, loading: hotelLoading, error: hotelError, reFetch } = useFetch(`/api/hotels/find/${id}`);
+    const { data: hotel , loading: hotelLoading, error: hotelError, reFetch } = useFetch(`/api/hotels/find/${id}`);
+    const data = hotel;
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            // Ensure data is not empty or undefined
+            if (!data || Object.keys(data).length === 0) return;
+
+            if (user?.adminHotes && !user?.adminUsers) {
+                const isAdminMismatch = user._id !== data?.isA;
+                if (isAdminMismatch) {
+                    navigate("/hotels");
+                }
+            }
+        };
+
+        checkAdmin();
+    }, [user, data, navigate]);
+
     const hotelId = hotel?._id;
     const [roomFormData, setRoomFormData] = useState({
         title: '',

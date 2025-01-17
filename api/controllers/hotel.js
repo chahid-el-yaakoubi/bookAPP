@@ -70,6 +70,17 @@ export const getHotels = async (req, res, next) => {
     }
 }
 
+export const getAdminHotels = async (req, res, next) => {
+    const {id } = req.params;
+    try {
+        const hotels = await Hotel.find({ isA: id });
+        res.status(200).json(hotels);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
 export const countByCity = async (req, res, next) => {
     try {
     const hotelCount = await Hotel.countDocuments({});

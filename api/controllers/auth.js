@@ -19,13 +19,18 @@ export const register = async (req, res, next) => {
             isVerified: false
         });
 
+
+
         await newUser.save();
+
+        if(!newUser.isVerified) {
 
         await sendEmail(
             req.body.email,
             'Your Verification Code',
             `Your verification code is: ${verificationCode}\nThis code will expire in 10 minutes.`
         );
+        }
 
         res.status(200).json({ 
             message: 'User created. Please check your email for verification code.',
@@ -63,17 +68,66 @@ export const login = async (req, res, next) => {
         const user = await User.findOne({ username: req.body.username });
         if (!user) return next(createError(401, "User not found!"));
 
-        if (!user.isVerified) return next(createError(401, "Please verify your email first"));
-
         const isPassword = await bcrypt.compare(req.body.password, user.password);
         if (!isPassword) return next(createError(401, "Incorrect username or password!"));
+
+        if (user.isAdmin) {
+            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const verificationCodeExpires = Date.now() + 10*60*1000; // 10 minutes
+            
+            user.verificationCode = verificationCode;
+            user.verificationCodeExpires = verificationCodeExpires;
+            await user.save();
+
+
+            const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+
+            await sendEmail(
+                user.email,
+                `Admin Verification Code #${randomNumber}`,
+                `Your admin verification code is: ${verificationCode}\nThis code will expire in 10 minutes.`
+            );
+
+            return res.status(200).json({ 
+                message: 'Please verify admin access with code sent to your email',
+                userId: user._id,
+                requiresVerification: true
+            });
+        }
         
         const {isAdmin, password, ...otherDetail} = user._doc
-        const token = jwt.sign({ id: user._id, isAdmin : user.isAdmin }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin, adminCars: user.adminCars, adminUsers: user.adminUsers, adminHotes: user.adminHotes, adminHouses: user.adminHouses, adminShops: user.adminShops }, process.env.JWT_SECRET);
         res.cookie("access_token", token, {
             httpOnly: true,
         }).status(200).json({details:{...otherDetail}, isAdmin});
     } catch (err) {
         next(err);
-    }
+    }
 };
+
+export const verifyAdmin = async (req, res, next) => {
+    try {
+        const { userId, code } = req.body;
+        const user = await User.findOne({ _id: userId });
+        
+        if (!user) return next(createError(404, "User not found!"));
+        if (!user.isAdmin) return next(createError(403, "User is not an admin"));
+        if (!user.verificationCode) return next(createError(400, "No verification code found"));
+        if (user.verificationCode !== code) return next(createError(400, "Invalid verification code"));
+        if (user.verificationCodeExpires < Date.now()) return next(createError(400, "Verification code has expired"));
+
+        // Clear verification code after successful verification
+        user.verificationCode = undefined;
+        user.verificationCodeExpires = undefined;
+        await user.save();
+
+        // Generate token and send response
+        const {isAdmin, password, ...otherDetail} = user._doc
+        const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
+        res.cookie("access_token", token, {
+            httpOnly: true,
+        }).status(200).json({details:{...otherDetail}, isAdmin});
+    } catch (err) {
+        next(err);
+    }
+}

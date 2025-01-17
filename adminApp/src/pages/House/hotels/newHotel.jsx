@@ -7,12 +7,35 @@ import { City, Neighborhood, Region } from "../../../components/Location";
 import AmenitiesSection from "../../../components/amenities/AmenitiesSection";
 import { amenityCategories, amenityTranslations } from "../../../components/amenities/amenitiesConfig";
 import { AuthContext } from "../../context/AuthContect";
+import useFetch from "../../../hooks/useFetch";
 
 function NewHotel() {
     const { user } = useContext(AuthContext);
     const isA = user._id;
+
     const navigate = useNavigate();
     const { id } = useParams();
+
+    const {data} = useFetch(`/api/hotels/find/${id}`);
+
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            // Ensure data is not empty or undefined
+            if (!data || Object.keys(data).length === 0) return;
+
+            if (user?.adminHotes && !user?.adminUsers) {
+                const isAdminMismatch = isA !== data?.isA;
+                if (isAdminMismatch) {
+                    navigate("/hotels");
+                }
+            }
+        };
+
+        checkAdmin();
+    }, [user, data, navigate]);
+
+
     const [error, setError] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState("");
     const [showEnvironment, setShowEnvironment] = useState(false);
@@ -27,6 +50,7 @@ function NewHotel() {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedNeighboorhd, setSelectedNeighboorhd] = useState("");
+
     const [formData, setFormData] = useState({
         isA: isA,
         name: "",

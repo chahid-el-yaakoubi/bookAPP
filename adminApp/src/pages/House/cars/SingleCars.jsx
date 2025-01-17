@@ -1,13 +1,20 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
 import ImgHotel from '../../components/imgHotel';
+import { AuthContext } from '../../context/AuthContect';
 
 // PropertyDetails Component
 export const PropertyDetails = ({ data }) => {
+
+   
+   
     if (!data) {
         return <div>Loading property details...</div>; // Handle loading state for property details
     }
+
+
+    
 
     const {
         carMake,
@@ -109,7 +116,27 @@ export const PropertyDetails = ({ data }) => {
 // SingleCars Component
 function SingleCars() {
     const { id } = useParams();
-    const { data: dataCar, loading, error } = useFetch(`/api/cars/find/${id}`);
+    const { data, loading, error } = useFetch(`/api/cars/find/${id}`);
+    
+
+
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+    useEffect(() => {
+        const checkAdmin = async () => {
+            // Ensure data is not empty or undefined
+            if (!data || Object.keys(data).length === 0) return;
+
+            if (user?.adminCars && !user?.adminUsers) {
+                const isAdminMismatch = user._id !== data?.isA;
+                if (isAdminMismatch) {
+                    navigate("/cars");
+                }
+            }
+        };
+
+        checkAdmin();
+    }, [user, data, navigate]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -120,7 +147,7 @@ function SingleCars() {
 
     return (
         <>
-            <PropertyDetails data={dataCar} />
+            <PropertyDetails data={data} />
             <div className="flex justify-center max-w-7xl mx-auto bg-white m-5 text-white p-6 rounded-lg shadow-md">
                 <ImgHotel hotelId={id} type={"cars"} />
 

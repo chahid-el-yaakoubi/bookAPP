@@ -43,6 +43,45 @@ function App() {
     return children;
   }
 
+  const ProtectedUser = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    if (!user || !user.adminUsers) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  }
+  const ProtectedHotes = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    if (!user || !user.adminHotes) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  }
+
+  const ProtectedCars = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    if (!user || !user.adminCars) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  }
+
+  const ProtectedShops = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    if (!user || !user.adminShops) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  }
+
+  const ProtectedHouses = ({ children }) => {
+    const { user } = useContext(AuthContext);
+    if (!user || !user.adminHouses) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  }
+  
   return (
     <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
@@ -57,53 +96,53 @@ function App() {
           {/* user */}
           <Route path='users'>
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <User use="user" type="/" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path='new' element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <User use="user" type="new" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
              <Route path='verify/:userId' element={
-              <ProtectedRoute>
+                <ProtectedUser>
                 <User use="user" type="verify" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path='find/:userId' element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <User use="user" type="single" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path='edit/:userId' element={
-              <ProtectedRoute>
-                <User use="user" type="new" />
-              </ProtectedRoute>
+              <ProtectedUser>
+                <User use="user" type="edit" />
+              </ProtectedUser>
             } />
           </Route>
 
           {/* hotels */}
           <Route path="hotels">
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedHotes>
                 <Hotels type="/" />
-              </ProtectedRoute>
+              </ProtectedHotes>
             } />
             <Route path="new" element={
-              <ProtectedRoute>
+              <ProtectedHotes>
                 <Hotels type="new" />
-              </ProtectedRoute>
+              </ProtectedHotes>
             } />
             <Route path="find/:id" element={
-              <ProtectedRoute>
+              <ProtectedHotes>
                 <Hotels type="single" />
-              </ProtectedRoute>
+              </ProtectedHotes>
             } />
             <Route path="update/:id" element={
-              <ProtectedRoute>
+              <ProtectedHotes>
                 <Hotels type="new" />
-              </ProtectedRoute>
+              </ProtectedHotes>
             } />
           </Route>
 
@@ -111,44 +150,58 @@ function App() {
 
           <Route path="houses-sales">
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedHouses>
                 <HouseRentals type="/" />
-              </ProtectedRoute>
+              </ProtectedHouses>
             } />
             <Route path="new" element={
-              <ProtectedRoute>
+              <ProtectedHouses>
                 <HouseRentals type="new" />
-              </ProtectedRoute>
+              </ProtectedHouses>
+            } />
+             <Route path="edit/:id" element={
+              <ProtectedHouses>
+                <HouseRentals type="edit" />
+              </ProtectedHouses>
             } />
             <Route path="single/:id" element={
-              <ProtectedRoute>
+              <ProtectedHouses>
                 <HouseRentals type="single" />
-              </ProtectedRoute>
+              </ProtectedHouses>
             } />
           </Route>
+
+          
+          
+
+          <Route path='profile' element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
 
           {/* cities */}
 
           <Route path="cities">
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <Cities type="/" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path="new" element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <Cities type="new" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path=":cityId" element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <Cities />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             <Route path="edit/:cityId" element={
-              <ProtectedRoute>
+              <ProtectedUser>
                 <Cities type="edit" />
-              </ProtectedRoute>
+              </ProtectedUser>
             } />
             
           </Route>
@@ -156,26 +209,27 @@ function App() {
 
           {/* shops */}
 
+            
           <Route path="shops">
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedShops>
                 <Shops type="/" />
-              </ProtectedRoute>
+              </ProtectedShops>
             } />
             <Route path="new" element={
-              <ProtectedRoute>
+              <ProtectedShops>
                 <Shops type="new" />
-              </ProtectedRoute>
+              </ProtectedShops>
             } />
             <Route path="single/:id" element={
-              <ProtectedRoute>
+              <ProtectedShops>
                 <Shops type="single" />
-              </ProtectedRoute>
+              </ProtectedShops>
             } />
             <Route path="edit/:id" element={
-              <ProtectedRoute>
+              <ProtectedShops>
                 <Shops type="new" />
-              </ProtectedRoute>
+              </ProtectedShops>
             } />
           </Route>
 
@@ -184,52 +238,29 @@ function App() {
 
           <Route path="cars">
             <Route index element={
-              <ProtectedRoute>
+              <ProtectedCars>
                 <Cars type="/" />
-              </ProtectedRoute>
+              </ProtectedCars>
             } />
             <Route path="new" element={
-              <ProtectedRoute>
+              <ProtectedCars>
                 <Cars type="new" />
-              </ProtectedRoute>
+              </ProtectedCars>
             } />
             <Route path="single/:id" element={
-              <ProtectedRoute>
+              <ProtectedCars>
                 <Cars type="single" />
-              </ProtectedRoute>
+              </ProtectedCars>
             } />
             <Route path="edit/:id" element={
-              <ProtectedRoute>
+              <ProtectedCars>
                 <Cars type="new" />
-              </ProtectedRoute>
+              </ProtectedCars>
             } />
           </Route>
 
 
 
-          <Route path="houses-rentals">
-            <Route index element={
-              <ProtectedRoute>
-                <HouseRentals type="/" />
-              </ProtectedRoute>
-            } />
-            <Route path="new" element={
-              <ProtectedRoute>
-                <HouseRentals type="new" />
-              </ProtectedRoute>
-            } />
-            <Route path="edit/:id" element={
-              <ProtectedRoute>
-                <HouseRentals type="edit" />
-              </ProtectedRoute>
-            } />
-          </Route>
-
-          <Route path='profile' element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
 
         </Routes>
       </BrowserRouter>

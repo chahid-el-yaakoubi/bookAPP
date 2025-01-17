@@ -1,4 +1,5 @@
 import User from '../models/user.js';
+import bcrypt from 'bcryptjs';
 
 // export const creatUser = async (req, res, next) => {
 //     const newUser = new User(req.body);
@@ -11,12 +12,22 @@ import User from '../models/user.js';
 // }
 
 export const updateUser = async (req, res, next) => {
-
     try {
-        const updateUser = await User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+        // If password is included in the request, hash it
+        if (req.body.password) {
+            const salt = await bcrypt.genSalt(10);
+            req.body.password = await bcrypt.hash(req.body.password, salt);
+        }
+
+        const updateUser = await User.findByIdAndUpdate(
+            req.params.id, 
+            { $set: req.body }, 
+            { new: true }
+        );
+        
         res.status(200).json(updateUser);
     } catch (err) {
-       next(err);
+        next(err);
     }
 }
 

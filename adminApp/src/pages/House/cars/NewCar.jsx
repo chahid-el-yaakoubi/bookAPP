@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { FormSection, InputField, SelectField, CheckboxField } from "../../../components/ComponentInputs";
 import { City, Neighborhood, Region } from "../../../components/Location";
@@ -9,7 +9,7 @@ import useFetch from "../../../hooks/useFetch";
 
 const NewCar = () => {
 
-    const { user} = React.useContext(AuthContext);
+    const { user} = useContext(AuthContext);
     const isA = user._id
     const navigate = useNavigate();
 
@@ -20,6 +20,22 @@ const NewCar = () => {
     const { id } = useParams();
 
     const { data } = useFetch(`/api/cars/find/${id}`);
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            // Ensure data is not empty or undefined
+            if (!data || Object.keys(data).length === 0) return;
+
+            if (user?.adminCars && !user?.adminUsers) {
+                const isAdminMismatch = user._id !== data?.isA;
+                if (isAdminMismatch) {
+                    navigate("/cars");
+                }
+            }
+        };
+
+        checkAdmin();
+    }, [user, data, navigate]);
 
     const region = data.location?.region;
     const city = data.location?.city;
@@ -464,10 +480,9 @@ const NewCar = () => {
                         <InputField
                             label="Registration registrationState"
                             name="registration.registrationState"
-                            value={formData.registration.registrationState.toUpperCase()}
+                            value={formData.registration.registrationState?.toUpperCase() || ''}
                             onChange={handleChange}
                             type="text"
-                            
                         />
                     </div>
                 </FormSection>

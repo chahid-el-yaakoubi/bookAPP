@@ -9,7 +9,8 @@ import {
     countByCity, 
     countByType, 
     uploadImgs, 
-    removeImgs 
+    removeImgs,
+    getAdminCars
 } from '../controllers/cars.js'; // Update the path to your car controller
 import { verifyAdmin } from '../utils/verifyToken.js';
 import multer from 'multer';
@@ -30,8 +31,12 @@ router.get('/find/:id', getCar);
 // GET ALL CARS
 router.get('/', getCars);
 
+
+// GET ALL CARS
+router.get('/:id', getAdminCars);
+
 // COUNT CARS BY CITY
-router.get('/countByCity', countByCity);
+router.get('/countCars/count', countByCity);
 
 // COUNT CARS BY TYPE
 router.get('/countByType', countByType);

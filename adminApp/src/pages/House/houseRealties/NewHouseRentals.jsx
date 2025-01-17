@@ -29,6 +29,24 @@ function NewHouseRentals() {
     // if (id) {
     const { data } = useFetch(`/api/house-rentals/find/${id}`)
 
+    console.log(data)
+
+    // useEffect(() => {
+    //     const checkAdmin = async () => {
+    //         // Ensure data is not empty or undefined
+    //         if (!data || Object.keys(data).length === 0) return;
+
+    //         if (user?.adminHouses && !user?.adminUsers) {
+    //             const isAdminMismatch = isA !== data?.isA;
+    //             if (isAdminMismatch) {
+    //                 navigate("/houses-sales");
+    //             }
+    //         }
+    //     };
+
+    //     checkAdmin();
+    // }, [user, data, navigate]);
+
 
     const [formData, setFormData] = useState({
         isA: isA,
@@ -190,7 +208,7 @@ function NewHouseRentals() {
             // Update existing property
             try {
                 await axios.put(`/api/house-rentals/${id}`, formData);
-                navigate('/houses-rentals');
+                navigate('/houses-sales');
             } catch (err) {
                 setError(err.response?.data?.message || 'Error updating property listing');
             }
@@ -198,7 +216,7 @@ function NewHouseRentals() {
             // Create new property
             try {
                 await axios.post('/api/house-rentals', formData);
-                navigate('/houses-rentals');
+                navigate('/houses-sales');
             } catch (err) {
                 setError(err.response?.data?.message || 'Error creating property listing');
             }

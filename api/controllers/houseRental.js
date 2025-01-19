@@ -1,4 +1,4 @@
-import HouseRental from '.';
+import HouseRental from '../models/HouseRental';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 dotenv.config();

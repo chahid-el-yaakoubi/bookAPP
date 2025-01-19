@@ -15,7 +15,7 @@ import cors from "cors";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 18012;
+const PORT = process.env.PORT || 4000;
 
 const connect = async () => {
     try {

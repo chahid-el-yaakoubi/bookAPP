@@ -15,6 +15,8 @@ import cors from "cors";
 
 dotenv.config();
 
+const PORT = process.env.PORT || 18012;
+
 const connect = async () => {
     try {
         await mongoose.connect(process.env.MONGO_DB);
@@ -53,7 +55,7 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("disconnect", () => {
     console.log('MongoDB connection lost!');
 })
-app.listen(8800, () => {
+app.listen(PORT, () => {
     connect();
-    console.log('http://localhost:8800');
+    console.log(`http://localhost:${PORT}`);
 })

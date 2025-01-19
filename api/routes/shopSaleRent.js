@@ -10,7 +10,8 @@ import {
     countByCity, 
     countByType, 
     uploadImages, 
-    removeImages 
+    removeImages,
+    getAdminShops 
 } from '../controllers/shopSaleRent.js';
 import { verifyAdmin } from '../utils/verifyToken.js';
 import multer from 'multer';
@@ -32,8 +33,11 @@ router.get('/find/:id', getShop);
 // GET ALL SHOPS
 router.get('/', getShops);
 
+// GET ALL SHOPS admin
+router.get('/:id', getAdminShops);
+
 // COUNT SHOPS BY CITY
-router.get('/countByCity', countByCity);
+router.get('/countByCity/count/:id', countByCity);
 
 // COUNT SHOPS BY TYPE
 router.get('/countByType', countByType);

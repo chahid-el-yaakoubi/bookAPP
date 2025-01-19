@@ -3,22 +3,20 @@ import mongoose from 'mongoose';
 const carSchema = new mongoose.Schema({
     isA: { type: String, required: true },
     // Basic car details
-    carMake: { type: String, required: true }, // Car's brand (e.g., Toyota)
-    carModel: { type: String, required: true }, // Model of the car (e.g., Corolla)
-    ownerName: { type: String, required: true }, // Name of the car owner
-    contactNumber: { type: String, required: true }, // Phone number for contact
-    email: { type: String, required: true }, // Email address for contact
+    carDetails: {
+        carMake: { type: String, required: true }, // Car's brand (e.g., Toyota)
+        carModel: { type: String, required: true }, // Model of the car (e.g., Corolla
+    },
+    numberplaces: { type: Number, required: true }, // Number of places
+    autoManual: { type: String, required: true }, // Automatic or Manual transmission
     location: {
         region: { type: String, required: true }, // Region where the car is located
         city: { type: String, required: true }, // City where the car is located
         neighborhood: { type: String }, // Optional neighborhood
         coordinates: { type: String }, // Optional GPS coordinates
     },
-    type: { type: String, required: true }, // Type of car (e.g., Sedan, SUV)
+    type: { type: String }, // Type of car (e.g., Sedan, SUV)
     price: { type: Number, required: true }, // Price per day or rental period
-    currency: { type: String, default: "USD" }, // Currency for the price
-    mileage: { type: Number, required: true }, // Current mileage of the car
-    year: { type: Number, required: true }, // Year of manufacture
     fuel: {
         type: { type: String, required: true }, // Fuel type (e.g., Petrol, Diesel)
         policy: { type: String }, // Fuel policy (e.g., Full-to-Full)
@@ -30,7 +28,6 @@ const carSchema = new mongoose.Schema({
         hasNavigation: { type: Boolean, default: false },
         hasHeatedSeats: { type: Boolean, default: false },
         hasSunroof: { type: Boolean, default: false },
-        hasChildSeats: { type: Boolean, default: false },
     },
     // insurance: {
     //     policyNumber: { type: String }, // Insurance policy ID
@@ -63,12 +60,8 @@ const carSchema = new mongoose.Schema({
             totalAmount: { type: Number }, // Total payment
         },
     ],
-    registration: {
-        plateNumber: { type: String, required: true }, // Registration plate
-        registrationState: { type: String }, // State of registration
-    },
-    description: { type: String }, // Additional details about the car
-});
+    plateNumber: { type: String, required: true }, // Registration plate
+}, { timestamps: true });
 
 // Export the schema
 const CarRental = mongoose.model("CarRental", carSchema);

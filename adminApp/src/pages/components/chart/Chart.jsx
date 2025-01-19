@@ -9,8 +9,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const data = [
-  { name: "January", Total: 1200 },
-  { name: "February", Total: 2100 },
+  { name: "January", Total: 300 },
+  { name: "February", Total: 800 },
   { name: "March", Total: 800 },
   { name: "April", Total: 1600 },
   { name: "May", Total: 800 },

@@ -165,7 +165,7 @@ const ImgHotel = ({ hotelId , type}) => {
                 <ImageGallery photos={images} />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 
                 {images && images.length > 0 ? (
                     images.map((img, index) => (
@@ -173,7 +173,7 @@ const ImgHotel = ({ hotelId , type}) => {
                             <img
                                 src={img}
                                 alt={`Hotel ${index + 1}`}
-                                className="w-full h-48 object-cover rounded-lg"
+                                className="w-full h-36 object-cover rounded-lg"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                 <button

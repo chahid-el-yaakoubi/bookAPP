@@ -11,20 +11,17 @@ import { AuthContext } from "../../context/AuthContect";
 
 const DataCars = ({ sideOpen }) => {
     const { user } = useContext(AuthContext);
-        const { adminCars , adminUsers , _id } = user;
-    let helpApi = `/api/cars/${_id}`
-    if(adminUsers){
-        helpApi = `/api/cars`
+    const { adminCars, adminUsers, username } = user;
+    let helpApi = `/api/cars/${username}`;
+    if (adminUsers) {
+        helpApi = `/api/cars`;
     }
 
-  
+    const { data: fetchedData, loading, error , reFetch} = useFetch(helpApi);
 
-    
-    
-
-    const { data: fetchedData, loading, error } = useFetch(helpApi);
-    console.log(fetchedData)
-    const [data, setData] = useState([]);
+   
+    const [data, setData] = useState([]); 
+    const POLLING_INTERVAL = 10000; // Poll every 5 seconds
     const [typeFilter, setTypeFilter] = useState("all");
     const [showModal, setShowModal] = useState(false);
     const [selectedCar, setSelectedCar] = useState(null);
@@ -37,6 +34,14 @@ const DataCars = ({ sideOpen }) => {
         }
     }, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            reFetch(); // Call the reFetch function to refresh data
+        }, POLLING_INTERVAL);
+
+        return () => clearInterval(interval); // Cleanup the interval on component unmount
+    }, [reFetch]); // Dependency array includes reFetch to avoid stale closures
+
     const handleTypeChange = (event) => {
         const selectedValue = event.target.value;
         setTypeFilter(selectedValue);
@@ -47,21 +52,21 @@ const DataCars = ({ sideOpen }) => {
         if (fetchedData) {
             const transformedData = fetchedData.map((item, i) => ({
                 count: i + 1,
+                isA: item.isA,
+                firstImage: item.photos && item.photos.length > 0 ? item.photos[0] : null, // Include the first image URL
+
                 id: item._id,
                 _id: item._id,
-                carMake: item.carMake || "N/A",
-                carModel: item.carModel || "N/A",
-                ownerName: item.ownerName || "N/A",
-                contactNumber: item.contactNumber || "N/A",
-                email: item.email || "N/A",
+                carMake: item?.carDetails?.carMake || "N/A",
+                carModel: item?.carDetails?.carModel || "N/A",
                 city: item.location?.city || "N/A",
                 neighborhood: item.location?.neighborhood || "N/A",
                 price: item.price || "N/A",
-                mileage: item.mileage || "N/A",
-                year: item.year || "N/A",
+                autoManual: item.autoManual || "N/A",
                 fuelType: item.fuel?.type || "N/A",
                 status: item.status || "N/A",
                 createdAt: item.createdAt,
+                updatedAt: item.updatedAt,
                 originalData: item,
                 type: item.type || "N/A", // Ensure the type field is included
             }));
@@ -124,68 +129,52 @@ const DataCars = ({ sideOpen }) => {
         {
             field: "_id",
             headerName: "ID",
-            // width: 200,
             headerAlign: "center",
             align: "center",
         },
         {
+            field: "firstImage",
+            headerName: "Image",
+            renderCell: (params) => (
+                params.row.firstImage ? <img src={params.row.firstImage} alt="Car" style={{ width: '100%', height: 'auto' }} /> : 'N/A'
+            ),
+        },
+        {
             field: "carMake",
-            headerName: "Make",
-            flex: 1,
-            headerAlign: "left",
+            headerName: "carMake",
+            headerAlign: "center",
+            align: "center",
         },
         {
             field: "carModel",
-            headerName: "Model",
-            flex: 1,
-            headerAlign: "left",
-        },
-        {
-            field: "ownerName",
-            headerName: "Owner",
-            width: 150,
-        },
-        {
-            field: "contactNumber",
-            headerName: "Contact",
-            width: 150,
+            headerName: "carModel",
         },
         {
             field: "city",
             headerName: "City",
-            width: 120,
+            headerAlign: "center",
+            align: "center",
         },
         {
             field: "neighborhood",
             headerName: "Neighborhood",
-            width: 150,
         },
         {
             field: "price",
             headerName: "Price (USD)",
-            width: 100,
-            renderCell: (params) => `${params.row.price} USD`,
-        },
-        {
-            field: "mileage",
-            headerName: "Mileage",
-            width: 100,
-            renderCell: (params) => `${params.row.mileage} km`,
-        },
-        {
-            field: "year",
-            headerName: "Year",
-            width: 100,
+            renderCell: (params) => `${params.row.price} MAD`,
         },
         {
             field: "fuelType",
             headerName: "Fuel Type",
-            width: 120,
+        },
+        {
+            field: "autoManual",
+            headerName: "AutoManual",
         },
         {
             field: "status",
             headerName: "Status",
-            width: 120,
             renderCell: (params) => (
                 <button
                     className="text-cyan-400"
@@ -203,12 +192,18 @@ const DataCars = ({ sideOpen }) => {
             headerName: "Created",
             width: 130,
             renderCell: (params) =>
-                moment(params.row.createdAt).format('DD/MM/YYYY'),
+                moment(params.row.createdAt).startOf().fromNow(),
+        },
+        {
+            field: "updatedAt",
+            headerName: "Updated",
+            width: 130,
+            renderCell: (params) =>
+                moment(params.row.updatedAt).startOf().fromNow(),
         },
         {
             field: "action",
             headerName: "Actions",
-            width: 150,
             headerAlign: "center",
             align: "center",
             renderCell: (params) => (
@@ -228,10 +223,18 @@ const DataCars = ({ sideOpen }) => {
         },
     ];
 
+    if (adminUsers) {
+        columns.splice(1, 0, {
+            field: "isA",
+            headerName: "IDAdmin",
+            headerAlign: "center",
+            align: "center",
+        });
+    }
+
     return (
-        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${
-            sideOpen ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-100px)]'
-        }`}>
+        <div className={`mb-8 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ${sideOpen ? 'w-[calc(100vw-280px)]' : 'w-[calc(100vw-100px)]'
+            }`}>
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center">
                     <FontAwesomeIcon icon={faTable} className="mr-3 text-indigo-600" />
@@ -307,3 +310,4 @@ const DataCars = ({ sideOpen }) => {
 };
 
 export default DataCars;
+  

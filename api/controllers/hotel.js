@@ -82,8 +82,10 @@ export const getAdminHotels = async (req, res, next) => {
 
 
 export const countByCity = async (req, res, next) => {
+    const {id} = req.params;
+    const condition = id === "all" ? {} : {isA: id};
     try {
-    const hotelCount = await Hotel.countDocuments({});
+    const hotelCount = await Hotel.countDocuments(condition);
         res.status(200).json(hotelCount);
     } catch (err) {
         next(err);

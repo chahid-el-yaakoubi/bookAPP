@@ -1,8 +1,5 @@
-// import nodemailer from 'nodemailer'
+// Import nodemailer
 import nodemailer from 'nodemailer';
-
-
-
 
 const sendEmail = async (to, subject, text) => {
   try {
@@ -15,7 +12,7 @@ const sendEmail = async (to, subject, text) => {
     });
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"Axistay" <${process.env.EMAIL_USER}>`, // Custom sender name
       to,
       subject,
       text,
@@ -28,4 +25,4 @@ const sendEmail = async (to, subject, text) => {
   }
 };
 
-export default sendEmail;
+export default sendEmail;

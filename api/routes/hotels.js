@@ -24,7 +24,7 @@ router.get('/', getHotels)
 router.get('/:id', getAdminHotels)
 
 // COUNT BY CITY
-router.get('/contByCity/count', countByCity)
+router.get('/contByCity/count/:id', countByCity)
 router.get('/countByType', countByType)
 
 

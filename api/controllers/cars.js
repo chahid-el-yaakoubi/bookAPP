@@ -74,8 +74,10 @@ export const getCars = async (req, res, next) => {
 }
 
 export const countByCity = async (req, res, next) => {
+    const {id} = req.params;
+    const condition = id === "all" ? {} : {isA: id};
     try {
-        const carCount = await CarRental.countDocuments({});
+        const carCount = await CarRental.countDocuments(condition);
         res.status(200).json(carCount);
     } catch (err) {
         next(err);

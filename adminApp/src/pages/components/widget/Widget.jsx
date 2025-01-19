@@ -16,7 +16,7 @@ const Widget = ({ type, count }) => {
   const data = {
     cities: {
       title: "CITIES",
-      Count: count || 100,
+      Count: count,
       isMoney: false,
       path: "/cities",
       link: "See all cities",
@@ -56,7 +56,7 @@ const Widget = ({ type, count }) => {
     },
     cars: {
       title: "CARS",
-      Count: count || 100,
+      Count: count,
       isMoney: false,
       link: "See all cars",
       path: "/cars",

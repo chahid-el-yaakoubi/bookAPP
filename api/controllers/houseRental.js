@@ -88,8 +88,10 @@ export const getAdminHouses = async (req, res, next) => {
 
 
 export const countByCity = async (req, res, next) => {
+    const {id} = req.params;
+    const condition = id === "all" ? {} : {isA: id};
     try {
-    const houseCount = await HouseRental.countDocuments({});
+    const houseCount = await HouseRental.countDocuments(condition);
         res.status(200).json(houseCount);
     } catch (err) {
         next(err);

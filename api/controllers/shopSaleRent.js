@@ -64,10 +64,23 @@ export const getShops = async (req, res, next) => {
     }
 };
 
+// GET ALL SHOPS admin
+export const getAdminShops = async (req, res, next) => {
+   const { id } = req.params;
+    try {
+        const shops = await Shop.find({ isA: id });
+        res.status(200).json(shops);
+    } catch (err) {
+        next(err);
+    }
+};
+
 // COUNT SHOPS BY CITY
 export const countByCity = async (req, res, next) => {
+    const {id} = req.params;
+    const condition = id === "all" ? {} : {isA: id};
     try {
-        const shopCount = await Shop.countDocuments({});
+        const shopCount = await Shop.countDocuments(condition);
         res.status(200).json(shopCount);
     } catch (err) {
         next(err);

@@ -6,22 +6,30 @@ import Layout from "../components/Layout";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
 import { AuthContext } from "../context/AuthContect";
+import Cookies from "js-cookie";
 
 const Home = () => {
-    const [countStyle, setCountStyle] = useState(6)
-    const { data: countByCity } = useFetch(`/api/hotels/contByCity/count`)
-    const { data: coutHouse } = useFetch(`/api/house-rentals/contByCity/count`)
-    const { data: coutCar } = useFetch(`/api/cars//countCars/count`)
-    const { data: coutShop } = useFetch(`/api/shops/countByCity`)
-    const { data: countUser } = useFetch(`/api/users/count/users`)
-    let { data: countCities } = useFetch(`/api/cities/countByCity/count`)
-    
+
+    const token = Cookies.get("user");
+    console.log(token);
 
     const { user } = useContext(AuthContext);
     const { adminCars, adminUsers, adminHotes, adminHouses, adminShops } = user;
 
+    let idCount = "all";
+    if (!adminUsers) {
+        idCount = user._id
+    }
 
- 
+    const { data: countByCity } = useFetch(`/api/hotels/contByCity/count/${idCount}`)
+    const { data: coutHouse } = useFetch(`/api/house-rentals/contByCity/count/${idCount}`)
+    const { data: coutCar } = useFetch(`/api/cars//countCars/count/${idCount}`)
+    const { data: coutShop } = useFetch(`/api/shops/countByCity/count/${idCount}`)
+    const { data: countUser } = useFetch(`/api/users/count/users`)
+    let { data: countCities } = useFetch(`/api/cities/countByCity/count`)
+
+
+
 
     return (
         <Layout children={<>

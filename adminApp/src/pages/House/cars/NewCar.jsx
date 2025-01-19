@@ -9,8 +9,8 @@ import useFetch from "../../../hooks/useFetch";
 
 const NewCar = () => {
 
-    const { user} = useContext(AuthContext);
-    const isA = user._id
+    const { user } = useContext(AuthContext);
+    const isA = user.username
     const navigate = useNavigate();
 
     const [selectedRegion, setSelectedRegion] = useState("");
@@ -27,7 +27,7 @@ const NewCar = () => {
             if (!data || Object.keys(data).length === 0) return;
 
             if (user?.adminCars && !user?.adminUsers) {
-                const isAdminMismatch = user._id !== data?.isA;
+                const isAdminMismatch = user.username !== data?.isA;
                 if (isAdminMismatch) {
                     navigate("/cars");
                 }
@@ -43,12 +43,12 @@ const NewCar = () => {
 
     const [formData, setFormData] = useState({
         isA: isA,
-
-        carMake: "", // e.g., Toyota
-        carModel: "", // e.g., Corolla
-        ownerName: "", // Name of the car owner
-        contactNumber: "", // Owner's contact number
-        email: "", // Owner's email address
+        carDetails: {
+            carMake: "", // e.g., Toyota
+            carModel: "", // e.g., Corolla
+        },
+        numberplaces: null,
+        autoManual: "", // e.g., Automatic, Manual
         location: {
             region: "", // Selected region
             city: "", // Selected city
@@ -57,8 +57,6 @@ const NewCar = () => {
         },
         type: "", // e.g., Sedan, SUV, Hatchback
         price: "", // Rental price (e.g., per day)
-        mileage: "", // Car's mileage (e.g., 20,000 km)
-        year: "", // Year of manufacture
         fuel: {
             type: "", // e.g., Petrol, Diesel, Electric
             policy: "", // e.g., Full-to-Full, Prepaid
@@ -70,8 +68,8 @@ const NewCar = () => {
             hasNavigation: false,
             hasHeatedSeats: false,
             hasSunroof: false,
-            hasChildSeats: false,
         },
+
         // insurance: {
         //     policyNumber: "", // Insurance policy number
         //     coverageType: "", // e.g., Full Coverage, Liability Only
@@ -83,13 +81,7 @@ const NewCar = () => {
             lateReturnFee: "", // Fee for late returns
         },
         status: "Available", // e.g., Available, Rented, Under Maintenance
-
-
-        registration: {
-            plateNumber: "", // Vehicle registration number
-            registrationState: "", // Registration state
-        },
-        description: "", // Additional details about the car
+        plateNumber: "", // Vehicle registration number
     });
 
     useEffect(() => {
@@ -177,7 +169,7 @@ const NewCar = () => {
         setIsSubmitting(true);
         setErrorMessage(""); // Reset error message
 
-        const requiredFields = ["carMake", "carModel", "ownerName", "contactNumber", "email", "type", "price", "mileage", "year"];
+        const requiredFields = ["price", "numberplaces", "autoManual", "type"];
 
         for (const field of requiredFields) {
             if (!formData[field]) {
@@ -185,13 +177,6 @@ const NewCar = () => {
                 setIsSubmitting(false);
                 return;
             }
-        }
-
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(formData.email)) {
-            setErrorMessage("Please enter a valid email address.");
-            setIsSubmitting(false);
-            return;
         }
 
         const price = parseFloat(formData.price);
@@ -232,39 +217,75 @@ const NewCar = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <SelectField
                             label="Car Make"
-                            name="carMake"
-                            value={formData.carMake}
+                            name="carDetails.carMake"
+                            value={formData.carDetails.carMake}
                             onChange={handleChange}
                             required
                             options={[
+                                { value: "Acura", label: "Acura" },
+                                { value: "Alfa Romeo", label: "Alfa Romeo" },
+                                { value: "Aston Martin", label: "Aston Martin" },
                                 { value: "Audi", label: "Audi" },
+                                { value: "Bentley", label: "Bentley" },
                                 { value: "BMW", label: "BMW" },
+                                { value: "Bugatti", label: "Bugatti" },
+                                { value: "Buick", label: "Buick" },
+                                { value: "Cadillac", label: "Cadillac" },
                                 { value: "Chevrolet", label: "Chevrolet" },
+                                { value: "Chrysler", label: "Chrysler" },
                                 { value: "Citroën", label: "Citroën" },
                                 { value: "Dacia", label: "Dacia" },
+                                { value: "Daewoo", label: "Daewoo" },
+                                { value: "Daihatsu", label: "Daihatsu" },
+                                { value: "Dodge", label: "Dodge" },
+                                { value: "Ferrari", label: "Ferrari" },
                                 { value: "Fiat", label: "Fiat" },
                                 { value: "Ford", label: "Ford" },
+                                { value: "Genesis", label: "Genesis" },
+                                { value: "GMC", label: "GMC" },
                                 { value: "Honda", label: "Honda" },
                                 { value: "Hyundai", label: "Hyundai" },
+                                { value: "Infiniti", label: "Infiniti" },
+                                { value: "Isuzu", label: "Isuzu" },
+                                { value: "Jaguar", label: "Jaguar" },
                                 { value: "Jeep", label: "Jeep" },
                                 { value: "Kia", label: "Kia" },
+                                { value: "Koenigsegg", label: "Koenigsegg" },
+                                { value: "Lamborghini", label: "Lamborghini" },
                                 { value: "Land Rover", label: "Land Rover" },
+                                { value: "Lexus", label: "Lexus" },
+                                { value: "Lincoln", label: "Lincoln" },
+                                { value: "Lotus", label: "Lotus" },
+                                { value: "Maserati", label: "Maserati" },
                                 { value: "Mazda", label: "Mazda" },
+                                { value: "McLaren", label: "McLaren" },
                                 { value: "Mercedes-Benz", label: "Mercedes-Benz" },
+                                { value: "Mini", label: "Mini" },
                                 { value: "Mitsubishi", label: "Mitsubishi" },
                                 { value: "Nissan", label: "Nissan" },
                                 { value: "Opel", label: "Opel" },
+                                { value: "Pagani", label: "Pagani" },
                                 { value: "Peugeot", label: "Peugeot" },
+                                { value: "Porsche", label: "Porsche" },
+                                { value: "Ram", label: "Ram" },
                                 { value: "Renault", label: "Renault" },
+                                { value: "Rolls-Royce", label: "Rolls-Royce" },
+                                { value: "Saab", label: "Saab" },
+                                { value: "Seat", label: "Seat" },
+                                { value: "Skoda", label: "Skoda" },
+                                { value: "Smart", label: "Smart" },
                                 { value: "Subaru", label: "Subaru" },
                                 { value: "Suzuki", label: "Suzuki" },
+                                { value: "Tata", label: "Tata" },
+                                { value: "Tesla", label: "Tesla" },
                                 { value: "Toyota", label: "Toyota" },
                                 { value: "Volkswagen", label: "Volkswagen" },
-                                { value: "Volvo", label: "Volvo" }
+                                { value: "Volvo", label: "Volvo" },
+                                { value: "Zotye", label: "Zotye" }
                             ]}
-
                         />
-                        <InputField label="Car Model" name="carModel" value={formData.carModel} onChange={handleChange} required />
+
+                        <InputField label="Car Model" name="carDetails.carModel" value={formData.carDetails.carModel} onChange={handleChange} required />
                         <SelectField
                             label="Fuel Type"
                             name="fuel.type"
@@ -290,10 +311,78 @@ const NewCar = () => {
                                 { value: "empty-to-empty", label: "Empty-to-Empty" },
                             ]}
                         />
-                        <InputField label="Owner Name" name="ownerName" value={formData.ownerName} onChange={handleChange} required />
-                        <InputField label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} required type="tel" />
-                        <InputField label="Email" name="email" value={formData.email} onChange={handleChange} required type="email" />
+
+                        <SelectField
+
+                            label="Auto Manual"
+                            name="autoManual"
+                            value={formData.autoManual}
+                            onChange={handleChange}
+                            required
+                            options={[
+                                { value: "auto", label: "Automatic" },
+                                { value: "manual", label: "Manual" },
+                            ]}
+
+                        />
+
+                        <InputField
+                            label="Registration Plate Number"
+                            name="plateNumber"
+                            value={formData.plateNumber}
+                            onChange={handleChange}
+                            type="text"
+                            placeholder="NADOR - A50 "
+                        />
+
+                        <InputField label="Number Places" name="numberplaces" value={formData.numberplaces} onChange={handleChange} required type="number" placeholder="Enter number of places like 5" />
+
+
+
+
+
                     </div>
+                    <FormSection title="Amenities">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <CheckboxField
+                                label="Air Conditioning"
+                                name="amenities.hasAirConditioning"
+                                checked={formData.amenities.hasAirConditioning}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Parking Sensors"
+                                name="amenities.hasParkingSensors"
+                                checked={formData.amenities.hasParkingSensors}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Navigation"
+                                name="amenities.hasNavigation"
+                                checked={formData.amenities.hasNavigation}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Sunroof"
+                                name="amenities.hasSunroof"
+                                checked={formData.amenities.hasSunroof}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="Bluetooth"
+                                name="amenities.hasBluetooth"
+                                checked={formData.amenities.hasBluetooth}
+                                onChange={handleChange}
+                            />
+                            <CheckboxField
+                                label="HeatedSeats"
+                                name="amenities.hasHeatedSeats"
+                                checked={formData.amenities.hasHeatedSeats}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </FormSection>
+
                 </FormSection>
 
                 {/* Address Section */}
@@ -341,105 +430,14 @@ const NewCar = () => {
                                 { value: "Sedan", label: "Sedan (سيارة عائلية بأربعة أبواب)" },
                                 { value: "Hatchback", label: "Hatchback (سيارة مدمجة مع باب خلفي)" },
                                 { value: "Crossover", label: "Crossover (مزيج بين SUV وسيدان)" },
-                                { value: "Coupe", label: "Coupe (سيارة رياضية بأبواب قليلة)" },
-                                { value: "Convertible", label: "Convertible (سيارة مكشوفة مع سقف قابل للتحريك)" },
-                                { value: "Wagon", label: "Wagon (سيارة مع صندوق خلفي طويل)" },
-                                { value: "Minivan", label: "Minivan (ميكروباص عائلي)" },
                                 { value: "Pickup", label: "Pickup (بيك أب لنقل البضائع)" },
                                 { value: "Electric", label: "Electric (سيارة كهربائية)" },
                                 { value: "Hybrid", label: "Hybrid (سيارة هجينة)" },
-                                { value: "Luxury", label: "Luxury (سيارة فاخرة)" },
-                                { value: "Sports", label: "Sports (سيارة رياضية)" },
-                                { value: "Van", label: "Van (فان لنقل الأشخاص أو البضائع)" },
-                                { value: "Truck", label: "Truck (شاحنة لنقل البضائع الثقيلة)" },
-                                { value: "Microcar", label: "Microcar (سيارة صغيرة للمدينة)" }
-
+                                { value: "Van", label: "Van (فان لنقل الأشخاص أو البضائع)" }
                             ]}
                         />
+
                         <InputField label="Price" name="price" value={formData.price} onChange={handleChange} required type="number" />
-                        <InputField label="Mileage" name="mileage" value={formData.mileage} onChange={handleChange} required type="number" />
-                        <InputField label="Year" name="year" value={formData.year} onChange={handleChange} required type="number" />
-                    </div>
-                </FormSection>
-
-                {/* Amenities Section */}
-                <FormSection title="Amenities">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <CheckboxField
-                            label="Air Conditioning"
-                            name="amenities.hasAirConditioning"
-                            checked={formData.amenities.hasAirConditioning}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Parking Sensors"
-                            name="amenities.hasParkingSensors"
-                            checked={formData.amenities.hasParkingSensors}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Bluetooth"
-                            name="amenities.hasBluetooth"
-                            checked={formData.amenities.hasBluetooth}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Navigation"
-                            name="amenities.hasNavigation"
-                            checked={formData.amenities.hasNavigation}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Heated Seats"
-                            name="amenities.hasHeatedSeats"
-                            checked={formData.amenities.hasHeatedSeats}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Sunroof"
-                            name="amenities.hasSunroof"
-                            checked={formData.amenities.hasSunroof}
-                            onChange={handleChange}
-                        />
-                        <CheckboxField
-                            label="Child Seats"
-                            name="amenities.hasChildSeats"
-                            checked={formData.amenities.hasChildSeats}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </FormSection>
-
-                {/* Insurance Section */}
-                {/* <FormSection title="Insurance">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InputField
-                            label="Insurance Policy Number"
-                            name="insurance.policyNumber"
-                            value={formData.insurance.policyNumber}
-                            onChange={handleChange}
-                            type="text"
-                        />
-                        <InputField
-                            label="Coverage Type"
-                            name="insurance.coverageType"
-                            value={formData.insurance.coverageType}
-                            onChange={handleChange}
-                            type="text"
-                        />
-                        <InputField
-                            label="Insurance Expiry Date"
-                            name="insurance.expiryDate"
-                            value={formData.insurance.expiryDate}
-                            onChange={handleChange}
-                            type="date"
-                        />
-                    </div>
-                </FormSection> */}
-
-                {/* Rental Terms Section */}
-                <FormSection title="Rental Terms">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <InputField
                             label="Minimum Rental Period (days)"
                             name="rentalTerms.minimumPeriod"
@@ -448,60 +446,23 @@ const NewCar = () => {
                             type="number"
                         />
                         <InputField
-                            label="Maximum Mileage Allowed"
-                            name="rentalTerms.maximumMileage"
-                            value={formData.rentalTerms.maximumMileage}
-                            onChange={handleChange}
-                            type="number"
-                        />
-                        <InputField
-                            label="Late Return Fee"
+                            label="Late Return Fee(days)"
                             name="rentalTerms.lateReturnFee"
                             value={formData.rentalTerms.lateReturnFee}
                             onChange={handleChange}
                             type="number"
                         />
+                        <InputField label="Distance allowed"
+                            name="rentalTerms.maximumMileage"
+                            value={formData.rentalTerms.maximumMileage}
+                            onChange={handleChange}
+                            required type="number"
+                            placeholder="999 KM or 0"
+                        />
+
                     </div>
                 </FormSection>
 
-
-
-
-                {/* Registration Section */}
-                <FormSection title="Registration Details">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InputField
-                            label="Registration Plate Number"
-                            name="registration.plateNumber"
-                            value={formData.registration.plateNumber}
-                            onChange={handleChange}
-                            type="text"
-                        />
-                        <InputField
-                            label="Registration registrationState"
-                            name="registration.registrationState"
-                            value={formData.registration.registrationState?.toUpperCase() || ''}
-                            onChange={handleChange}
-                            type="text"
-                        />
-                    </div>
-                </FormSection>
-
-                {/* Car Description Section */}
-                <FormSection title="Car Description">
-                    <div className="grid grid-cols-1 gap-6">
-
-                        <InputField
-                            label="Description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            type="textarea"
-                            placeholder="Enter any additional details about the car"
-
-                        />
-                    </div>
-                </FormSection>
 
                 <div className="text-center mt-8">
                     <button

@@ -23,7 +23,7 @@ router.get('/', getHouses)
 // get house admin
 router.get('/:id', getAdminHouses)
 
-router.get('/contByCity/count', countByCity)
+router.get('/contByCity/count/:id', countByCity)
 router.get('/countByType', countByType)
 
 

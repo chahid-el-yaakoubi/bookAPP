@@ -69,28 +69,28 @@ export const login = async (req, res, next) => {
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
         if (!isPasswordCorrect) return next(createError(401, "Incorrect username or password!"));
 
-        if (user.isAdmin) {
-            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const verificationCodeExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        // if (user.isAdmin) {
+        //     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        //     const verificationCodeExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-            user.verificationCode = verificationCode;
-            user.verificationCodeExpires = verificationCodeExpires;
-            await user.save();
+        //     user.verificationCode = verificationCode;
+        //     user.verificationCodeExpires = verificationCodeExpires;
+        //     await user.save();
 
-            const liveTime = new Date(user.verificationCodeExpires).toLocaleString();
+        //     const liveTime = new Date(user.verificationCodeExpires).toLocaleString();
 
-            await sendEmail(
-                user.email,
-                `Important: Your Admin Verification Code - ${liveTime}`,
-                `Dear ${user.fullName},\n\nWe have received a request for admin access to your account. To complete the verification process, use the following code:\n\n** ${verificationCode} **\n\nThis code is valid for the next 10 minutes. If you did not request this, please contact our support team.\n\nThank you,\nAxistay Support Team`
-            );
+        //     await sendEmail(
+        //         user.email,
+        //         `Important: Your Admin Verification Code - ${liveTime}`,
+        //         `Dear ${user.fullName},\n\nWe have received a request for admin access to your account. To complete the verification process, use the following code:\n\n** ${verificationCode} **\n\nThis code is valid for the next 10 minutes. If you did not request this, please contact our support team.\n\nThank you,\nAxistay Support Team`
+        //     );
 
-            return res.status(200).json({
-                message: 'Please verify admin access with the code sent to your email',
-                userId: user._id,
-                requiresVerification: true
-            });
-        }
+        //     return res.status(200).json({
+        //         message: 'Please verify admin access with the code sent to your email',
+        //         userId: user._id,
+        //         requiresVerification: true
+        //     });
+        // }
 
         const { isAdmin, password, ...otherDetails } = user._doc;
 

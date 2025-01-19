@@ -24,7 +24,6 @@ const connect = async () => {
         throw err;
     }
 };
-app.use(cors());
 app.use(cors({
     origin: 'https://axistay-backend.onrender.com', // replace with your actual domain
   }));

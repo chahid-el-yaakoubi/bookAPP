@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { type } from 'os';
+// import { type } from 'os';
 
 const houseRentalSchema = new mongoose.Schema({
     isA: { type: String, required: true },

@@ -1,4 +1,4 @@
-import DataUser from "./componentUser/Datauser";
+import DataUser from "./componentUser/DataUser";
 import { AddUser } from "./componentUser/AddUser";
 import Single from "./componentUser/Single";
 import Layout from "../components/Layout";

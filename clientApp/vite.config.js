@@ -15,4 +15,10 @@ export default defineConfig({
       overlay: true,
     },
   },
+  optimizeDeps: {
+    exclude: ['js-cookie']
+  },
+  build: {
+    outDir: 'build'
+  }
 });

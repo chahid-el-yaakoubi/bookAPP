@@ -15,7 +15,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['js-cookie']
   },
-  build: {
-    outDir: 'build',
-  }
+
 });

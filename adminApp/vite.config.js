@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:18012', // Change this to match your backend port
+        target: 'https://axistay-backend.onrender.com', // Change this to match your backend port
         changeOrigin: true,
         secure: false,
       }
@@ -15,5 +15,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['js-cookie']
   },
+  build: {
+    outDir: 'dist',
+  }
 
 });

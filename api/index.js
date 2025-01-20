@@ -25,7 +25,8 @@ const connect = async () => {
     }
 };
 app.use(cors({
-    origin: 'https://axistay-backend.onrender.com', // replace with your actual domain
+    origin: 'https://axistay-admin.onrender.com', 
+    credentials: true, 
   }));
 app.use(express.json())
 app.use(cookieParser())

@@ -69,40 +69,12 @@ export const login = async (req, res, next) => {
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
         if (!isPasswordCorrect) return next(createError(401, "Incorrect username or password!"));
 
-        // if (user.isAdmin) {
-        //     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-        //     const verificationCodeExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-
-        //     user.verificationCode = verificationCode;
-        //     user.verificationCodeExpires = verificationCodeExpires;
-        //     await user.save();
-
-        //     const liveTime = new Date(user.verificationCodeExpires).toLocaleString();
-
-        //     await sendEmail(
-        //         user.email,
-        //         `Important: Your Admin Verification Code - ${liveTime}`,
-        //         `Dear ${user.fullName},\n\nWe have received a request for admin access to your account. To complete the verification process, use the following code:\n\n** ${verificationCode} **\n\nThis code is valid for the next 10 minutes. If you did not request this, please contact our support team.\n\nThank you,\nAxistay Support Team`
-        //     );
-
-        //     return res.status(200).json({
-        //         message: 'Please verify admin access with the code sent to your email',
-        //         userId: user._id,
-        //         requiresVerification: true
-        //     });
-        // }
-
         const { isAdmin, password, ...otherDetails } = user._doc;
 
         const token = jwt.sign(
             {
                 id: user._id,
                 isAdmin: user.isAdmin,
-                adminCars: user.adminCars,
-                adminUsers: user.adminUsers,
-                adminHotels: user.adminHotes,
-                adminHouses: user.adminHouses,
-                adminShops: user.adminShops
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' } // Token expires in 1 hour
@@ -131,12 +103,10 @@ export const verifyAdmin = async (req, res, next) => {
         if (user.verificationCode !== code) return next(createError(400, "Invalid verification code"));
         if (user.verificationCodeExpires < Date.now()) return next(createError(400, "Verification code has expired"));
 
-        // Clear verification code after successful verification
         user.verificationCode = undefined;
         user.verificationCodeExpires = undefined;
         await user.save();
 
-        // Generate token and send response
         const { isAdmin, password, ...otherDetails } = user._doc;
         const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
 

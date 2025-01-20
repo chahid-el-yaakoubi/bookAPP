@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 import "./Login.css"
+import { BASE_URL } from "../utils/apiConfig";
 
 const AuthForm = () => {
   const [credentials, setCredentials] = useState({
@@ -29,18 +30,8 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
 
-    (async () => {
-      try {
-        const response = await axios.get('https://axistay-backend.onrender.com/api/hotels');
-        console.log({ test: response.data }); // Logs the actual data
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    })();
-    
-
     try {
-      const res = await axios.post("https://axistay-backend.onrender.com/api/auth/login", credentials, { withCredentials: true });
+      const res = await axios.post( `${BASE_URL}/api/auth/login`, credentials, { withCredentials: true });
 
       if (res.data.requiresVerification) {
         setShowVerification(true);
@@ -62,7 +53,7 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post("https://axistay-backend.onrender.com/api/auth/verifyAdmin", {
+      const res = await axios.post(`${BASE_URL}/api/auth/verifyAdmin`, {
         userId,
         code: verificationCode,
       });

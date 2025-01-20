@@ -7,6 +7,8 @@ import axios from "axios";
 import useFetch from "../../hooks/useFetch";
 import { AuthContext } from "../context/AuthContect";
 import Cookies from "js-cookie";
+import { BASE_URL } from "../utils/apiConfig";
+
 
 const Home = () => {
 
@@ -21,12 +23,12 @@ const Home = () => {
         idCount = user._id
     }
 
-    const { data: countByCity } = useFetch(`/api/hotels/contByCity/count/${idCount}`)
-    const { data: coutHouse } = useFetch(`/api/house-rentals/contByCity/count/${idCount}`)
-    const { data: coutCar } = useFetch(`/api/cars//countCars/count/${idCount}`)
-    const { data: coutShop } = useFetch(`/api/shops/countByCity/count/${idCount}`)
-    const { data: countUser } = useFetch(`/api/users/count/users`)
-    let { data: countCities } = useFetch(`/api/cities/countByCity/count`)
+    const { data: countByCity } = useFetch(`/${BASE_URL}/hotels/contByCity/count/${idCount}`)
+    const { data: coutHouse } = useFetch(`/${BASE_URL}/house-rentals/contByCity/count/${idCount}`)
+    const { data: coutCar } = useFetch(`/${BASE_URL}/cars//countCars/count/${idCount}`)
+    const { data: coutShop } = useFetch(`/${BASE_URL}/shops/countByCity/count/${idCount}`)
+    const { data: countUser } = useFetch(`/${BASE_URL}/users/count/users`)
+    let { data: countCities } = useFetch(`/${BASE_URL}/cities/countByCity/count`)
 
 
 

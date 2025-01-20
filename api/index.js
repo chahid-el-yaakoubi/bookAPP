@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import helmet from "helmet";
+
 import authoRouter from "./routes/auth.js";
 import usersRouter from "./routes/users.js";
 import hotelsRouter from "./routes/hotels.js";
@@ -15,28 +17,42 @@ import carsRouter from "./routes/cars.js";
 dotenv.config();
 const app = express();
 
-app.use(cookieParser());
+if (!process.env.MONGO_DB || !process.env.JWT_SECRET) {
+    console.error("Environment variables are not properly configured!");
+    process.exit(1);
+}
 
 // Middleware
-app.use(express.json()); // Built-in JSON body parser
-app.use(express.urlencoded({ extended: true })); // Built-in URL-encoded parser
+app.use(helmet());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// CORS Configuration (Keep this one only)
+// CORS Configuration
+const allowedOrigins = ['http://localhost:5173', 'https://axistay-admin.onrender.com'];
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://axistay-admin.onrender.com'], // Allow these origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-    credentials: true, // Allow cookies and credentials
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
 }));
 
 const PORT = process.env.PORT || 4000;
 
+// Database Connection
 const connect = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_DB);
+        await mongoose.connect(process.env.MONGO_DB); // No options needed
         console.log('MongoDB connected!');
     } catch (err) {
-        console.log('MongoDB connection failed:', err);
-        throw err;
+        console.error('Failed to connect to MongoDB:', err);
+        console.log('Retrying connection in 5 seconds...');
+        setTimeout(connect, 5000); // Retry after 5 seconds
     }
 };
 
@@ -50,26 +66,34 @@ app.use('/api/house-rentals', houseRentalRouter);
 app.use('/api/shops', shopsRouter);
 app.use('/api/cars', carsRouter);
 
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: "OK", message: "Server is healthy" });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
     const errorMessage = err.message || "Something went wrong!";
-    return res.status(errorStatus).json({
+    if (process.env.NODE_ENV === 'development') {
+        console.error(err.stack);
+    }
+    res.status(errorStatus).json({
         success: false,
         message: errorMessage,
         status: errorStatus,
-        stack: err.stack,
     });
 });
 
-mongoose.connection.on("connected", () => {
-    console.log('MongoDB connected!');
+// Graceful Shutdown
+process.on('SIGINT', () => {
+    mongoose.connection.close(() => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+    });
 });
 
-mongoose.connection.on("disconnect", () => {
-    console.log('MongoDB connection lost!');
-});
-
+// Start Server
 app.listen(PORT, () => {
     connect();
     console.log(`Server running at http://localhost:${PORT}`);

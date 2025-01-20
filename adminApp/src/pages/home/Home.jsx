@@ -23,12 +23,12 @@ const Home = () => {
         idCount = user._id
     }
 
-    const { data: countByCity } = useFetch(`/${BASE_URL}/hotels/contByCity/count/${idCount}`)
-    const { data: coutHouse } = useFetch(`/${BASE_URL}/house-rentals/contByCity/count/${idCount}`)
-    const { data: coutCar } = useFetch(`/${BASE_URL}/cars//countCars/count/${idCount}`)
-    const { data: coutShop } = useFetch(`/${BASE_URL}/shops/countByCity/count/${idCount}`)
-    const { data: countUser } = useFetch(`/${BASE_URL}/users/count/users`)
-    let { data: countCities } = useFetch(`/${BASE_URL}/cities/countByCity/count`)
+    const { data: countByCity } = useFetch(`${BASE_URL}/api/hotels/contByCity/count/${idCount}`)
+    const { data: coutHouse } = useFetch(`${BASE_URL}/api/house-rentals/contByCity/count/${idCount}`)
+    const { data: coutCar } = useFetch(`${BASE_URL}/api/cars//countCars/count/${idCount}`)
+    const { data: coutShop } = useFetch(`${BASE_URL}/api/shops/countByCity/count/${idCount}`)
+    const { data: countUser } = useFetch(`${BASE_URL}/api/users/count/users`)
+    let { data: countCities } = useFetch(`${BASE_URL}/api/cities/countByCity/count`)
 
 
 

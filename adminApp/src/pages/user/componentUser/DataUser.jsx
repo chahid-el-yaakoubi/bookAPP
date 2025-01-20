@@ -8,19 +8,13 @@ import useFetch from '../../../hooks/useFetch';
 import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
 import axios from 'axios';
+import { BASE_URL } from "../../utils/apiConfig";
+
 
 const DataUser = (props) => {
-    (async () => {
-        try {
-          const response = await axios.get('https://axistay-backend.onrender.com/api/cars');
-          console.log({ test: response.data }); // Logs the actual data
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      })();
-      ;
 
-    const { data: fetchedData, loading, error } = useFetch(`/api/users`);
+
+    const { data: fetchedData, loading, error } = useFetch(`${BASE_URL}/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
 

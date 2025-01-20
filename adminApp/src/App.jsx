@@ -2,8 +2,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useContext } from "react";
 
-// Context imports
-import { DarkModeContext } from "./context/darkModeContext";
 
 // Component imports
 import Home from './pages/home/Home'
@@ -33,7 +31,6 @@ import { Profile } from './pages/components/profile/Profile';
 // import PropertyForm from './pages/House/hotels/newTest';
 
 function App() {
-  const { darkMode } = useContext(DarkModeContext);
 
   const ProtectedRoute = ({ children }) => {
     const { user } = useContext(AuthContext);
@@ -76,6 +73,7 @@ function App() {
 
   const ProtectedHouses = ({ children }) => {
     const { user } = useContext(AuthContext);
+
     if (!user || !user.adminHouses) {
       return <Navigate to="/login" />;
     }
@@ -83,7 +81,7 @@ function App() {
   }
   
   return (
-    <div className={darkMode ? "app dark" : "app"}>
+    <div >
       <BrowserRouter>
         <Routes>
           <Route path='login' element={<AuthForm />} />

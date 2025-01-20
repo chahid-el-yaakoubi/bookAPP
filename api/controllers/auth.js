@@ -100,7 +100,7 @@ export const login = async (req, res, next) => {
                 isAdmin: user.isAdmin,
                 adminCars: user.adminCars,
                 adminUsers: user.adminUsers,
-                adminHotels: user.adminHotels,
+                adminHotels: user.adminHotes,
                 adminHouses: user.adminHouses,
                 adminShops: user.adminShops
             },

@@ -29,6 +29,16 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
 
+    (async () => {
+      try {
+        const response = await axios.get('https://axistay-backend.onrender.com/api/hotels');
+        console.log({ test: response.data }); // Logs the actual data
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    })();
+    
+
     try {
       const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
 

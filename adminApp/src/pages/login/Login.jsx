@@ -3,6 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 
+const backendUrl =  'http://localhost:18099';
+
+
+
 const AuthForm = () => {
   const [credentials, setCredentials] = useState({
     username: "",
@@ -31,7 +35,9 @@ const AuthForm = () => {
     console.log(credentials)
     
     try {
-        const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
+const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
+
+        // const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
 
         // Handle verification requirement
         if (res.data.requiresVerification) {

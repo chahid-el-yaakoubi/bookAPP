@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 
-const backendUrl =  'https://axistay-backend.onrender.com';
+// const backendUrl =  'https://axistay-backend.onrender.com';
 
 
 
@@ -35,9 +35,9 @@ const AuthForm = () => {
     console.log(credentials)
     
     try {
-const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
+// const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
 
-        // const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
+        const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
 
         // Handle verification requirement
         if (res.data.requiresVerification) {

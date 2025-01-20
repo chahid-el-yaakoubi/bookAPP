@@ -20,7 +20,7 @@ const AuthForm = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/index.html");
     }
   }, [user, navigate]);
 
@@ -54,7 +54,7 @@ const AuthForm = () => {
 
 
       // Navigate to the homepage (or wherever appropriate)
-      navigate("/");
+      navigate("/index.html");
 
     } catch (err) {
       // Handle login failure and show error message

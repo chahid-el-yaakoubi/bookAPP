@@ -85,7 +85,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='login' element={<AuthForm />} />
-          <Route path="/" element={
+          <Route path="/index.html" element={
             <ProtectedRoute>
               <Home use="dashbord" />
             </ProtectedRoute>

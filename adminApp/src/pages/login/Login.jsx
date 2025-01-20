@@ -40,7 +40,7 @@ const AuthForm = () => {
     
 
     try {
-      const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
+      const res = await axios.post("/https://axistay-backend.onrender.com/api/auth/login", credentials, { withCredentials: true });
 
       if (res.data.requiresVerification) {
         setShowVerification(true);
@@ -62,7 +62,7 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post("/api/auth/verifyAdmin", {
+      const res = await axios.post("https://axistay-backend.onrender.com/api/auth/verifyAdmin", {
         userId,
         code: verificationCode,
       });

@@ -22,6 +22,7 @@ const AuthForm = () => {
     if (user) {
       navigate("/index.html");
     }
+    console.log(user)
   }, [user, navigate]);
 
   const handleChange = (e) => {

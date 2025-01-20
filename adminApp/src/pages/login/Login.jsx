@@ -27,20 +27,31 @@ const AuthForm = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
+    
     try {
-      const res = await axios.post("/api/auth/login", credentials);
-      if (res.data.requiresVerification) {
-        setShowVerification(true);
-        setUserId(res.data.userId);
-        dispatch({ type: "LOGIN_RESET" });
-        return;
-      }
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-      navigate("/");
+        const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
+
+        // Handle verification requirement
+        if (res.data.requiresVerification) {
+            setShowVerification(true);  // Show the verification form
+            setUserId(res.data.userId); // Store the userId for later verification
+            dispatch({ type: "LOGIN_RESET" });  // Reset login state
+            return;
+        }
+
+        // Handle successful login
+        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
+        
+        // Navigate to the homepage (or wherever appropriate)
+        navigate("/");
+
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILED", payload: err.response?.data?.message || "An error occurred" });
+        // Handle login failure and show error message
+        const errorMessage = err.response?.data?.message || "An error occurred";
+        dispatch({ type: "LOGIN_FAILED", payload: errorMessage });
     }
-  };
+};
+
 
   const handleVerification = async (e) => {
     e.preventDefault();

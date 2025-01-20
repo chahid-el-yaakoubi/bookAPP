@@ -84,6 +84,7 @@ export const login = async (req, res, next) => {
             httpOnly: true,
             maxAge: 60 * 60 * 1000, // Cookie expires in 1 hour
             secure: process.env.NODE_ENV === "production", // Secure flag for HTTPS
+            sameSite: 'None',
         })
         .status(200)
         .json({ details: { ...otherDetails }, isAdmin });
@@ -112,6 +113,9 @@ export const verifyAdmin = async (req, res, next) => {
 
         res.cookie("access_token", token, {
             httpOnly: true,
+            sameSite: 'None',
+            maxAge: 60 * 60 * 1000, // Cookie expires in 1 hour
+            secure: process.env.NODE_ENV === "production", // Secure flag for HTTPS
         }).status(200).json({ details: { ...otherDetails }, isAdmin });
     } catch (err) {
         next(err);

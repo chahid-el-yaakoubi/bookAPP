@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:18099', 
+        target: 'https://axistay-backend.onrender.com', 
         changeOrigin: true,
         secure: false,
       }

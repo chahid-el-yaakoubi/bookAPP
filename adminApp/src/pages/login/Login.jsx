@@ -31,34 +31,37 @@ const AuthForm = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
-    
+
     console.log(credentials)
-    
+
     try {
-// const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
+      // const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
 
-        const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
+      const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
 
-        // Handle verification requirement
-        if (res.data.requiresVerification) {
-            setShowVerification(true);  // Show the verification form
-            setUserId(res.data.userId); // Store the userId for later verification
-            dispatch({ type: "LOGIN_RESET" });  // Reset login state
-            return;
-        }
+      // Handle verification requirement
+      if (res.data.requiresVerification) {
+        setShowVerification(true);  // Show the verification form
+        setUserId(res.data.userId); // Store the userId for later verification
+        dispatch({ type: "LOGIN_RESET" });  // Reset login state
+        return;
+      }
 
-        // Handle successful login
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-        
-        // Navigate to the homepage (or wherever appropriate)
-        navigate("/");
+      // Handle successful login
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
+
+      console.log(credentials)
+
+
+      // Navigate to the homepage (or wherever appropriate)
+      navigate("/");
 
     } catch (err) {
-        // Handle login failure and show error message
-        const errorMessage = err.response?.data?.message || "An error occurred";
-        dispatch({ type: "LOGIN_FAILED", payload: errorMessage });
+      // Handle login failure and show error message
+      const errorMessage = err.response?.data?.message || "An error occurred";
+      dispatch({ type: "LOGIN_FAILED", payload: errorMessage });
     }
-};
+  };
 
 
   const handleVerification = async (e) => {
@@ -113,9 +116,8 @@ const AuthForm = () => {
 
             <button
               type="submit"
-              className={`w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md focus:outline-none hover:bg-blue-600 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md focus:outline-none hover:bg-blue-600 ${loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               disabled={loading}
             >
               {loading ? "Loading..." : "Login"}
@@ -139,7 +141,7 @@ const AuthForm = () => {
             <button
               type="submit"
               className={`w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md focus:outline-none hover:bg-blue-600 `}
-              // disabled={loading}
+            // disabled={loading}
             >
               Verify
             </button>

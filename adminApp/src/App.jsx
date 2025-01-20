@@ -86,9 +86,9 @@ function App() {
         <Routes>
           <Route path='login' element={<AuthForm />} />
           <Route path="/" element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <Home use="dashbord" />
-            // </ProtectedRoute>
+            </ProtectedRoute>
           } />
 
           {/* user */}

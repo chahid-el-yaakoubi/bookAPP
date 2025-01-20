@@ -11,7 +11,7 @@ import houseRentalRouter from "./routes/houseRental.js"
 import shopsRouter from "./routes/shopSaleRent.js"
 import carsRouter from "./routes/cars.js"
 import cookieParser from "cookie-parser";
-import cors from "cors";
+// import cors from "cors";
 
 dotenv.config();
 
@@ -24,10 +24,7 @@ const connect = async () => {
         throw err;
     }
 };
-app.use(cors({
-    origin: 'https://axistay-admin.onrender.com', 
-    credentials: true, 
-  }));
+
 app.use(express.json())
 app.use(cookieParser())
 

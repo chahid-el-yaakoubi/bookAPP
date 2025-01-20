@@ -27,7 +27,7 @@ const Home = () => {
     const { data: coutHouse } = useFetch(`${BASE_URL}/api/house-rentals/contByCity/count/${idCount}`)
     const { data: coutCar } = useFetch(`${BASE_URL}/api/cars//countCars/count/${idCount}`)
     const { data: coutShop } = useFetch(`${BASE_URL}/api/shops/countByCity/count/${idCount}`)
-    const { data: countUser } = useFetch(`${BASE_URL}/api/users/count/users`)
+    const { data: countUser } = useFetch(`/api/users/count/users`)
     let { data: countCities } = useFetch(`${BASE_URL}/api/cities/countByCity/count`)
 
 

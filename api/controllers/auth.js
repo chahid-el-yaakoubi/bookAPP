@@ -87,11 +87,13 @@ export const login = async (req, res, next) => {
             sameSite: 'None',
         })
         .status(200)
-        .json({ details: { ...otherDetails }, isAdmin });
+        .json({ message: "Login successful", details: { ...otherDetails }, isAdmin });
     } catch (err) {
+        console.error(err); // Log the error for better debugging
         next(err);
     }
 };
+
 
 export const verifyAdmin = async (req, res, next) => {
     try {

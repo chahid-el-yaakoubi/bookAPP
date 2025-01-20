@@ -8,13 +8,49 @@ import useFetch from '../../../hooks/useFetch';
 import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { BASE_URL } from "../../utils/apiConfig";
 
 
 const DataUser = (props) => {
 
+    async function fetchUserData() {
+        try {
+            // Retrieve the token from cookies
+            const token = Cookies.get('access_token');  // Use js-cookie to retrieve the token
+    
+            if (!token) {
+                console.error('No token found!');
+                return;
+            }
+    
+            const response = await axios.get('https://axistay-backend.onrender.com/api/users', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,  // Pass the token in the Authorization header
+                }
+            });
+            
+            console.log(response.data);  // Handle the response data as needed
+        } catch (error) {
+            if (error.response) {
+                // Server responded with a status code that falls out of the range of 2xx
+                console.error("Response Error:", error.response.status, error.response.data);
+            } else if (error.request) {
+                // No response was received
+                console.error("Request Error:", error.request);
+            } else {
+                // Other errors during setting up the request
+                console.error("Error:", error.message);
+            }
+        }
+    }
+    
+    // Call the function to fetch user data
+    fetchUserData();
+      
 
-    const { data: fetchedData, loading, error } = useFetch(`${BASE_URL}/api/users`);
+
+    const { data: fetchedData, loading, error } = useFetch(`https://axistay-backend.onrender.com/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
 

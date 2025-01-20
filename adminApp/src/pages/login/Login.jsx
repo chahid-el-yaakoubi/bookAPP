@@ -28,6 +28,8 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     
+    console.log(credentials)
+    
     try {
         const res = await axios.post("/api/auth/login", credentials, { withCredentials: true });
 

@@ -11,9 +11,14 @@ import houseRentalRouter from "./routes/houseRental.js"
 import shopsRouter from "./routes/shopSaleRent.js"
 import carsRouter from "./routes/cars.js"
 import cookieParser from "cookie-parser";
-// import cors from "cors";
+import cors from "cors";
 
 dotenv.config();
+
+// Allow all origins for development (you can restrict this for production)
+app.use(cors({
+  origin: '*',  // Replace with your frontend URL in production (e.g., 'https://your-frontend-domain.com')
+}));
 
 const PORT = process.env.PORT || 4000;
 

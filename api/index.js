@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true })); // Built-in URL-encoded parser
 
 // CORS Configuration
 app.use(cors({
-    origin: 'http://localhost:5173', // Match the frontend's origin
+    origin: ['http://localhost:5173', 'https://axistay-admin.onrender.com'], // Match the frontend's origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true, // Allow cookies and credentials
   }));

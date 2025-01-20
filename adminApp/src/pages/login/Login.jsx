@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 
-const backendUrl =  'http://localhost:18099';
+const backendUrl =  'https://axistay-backend.onrender.com';
 
 
 

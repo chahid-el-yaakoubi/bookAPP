@@ -1,2 +1,1 @@
-// utils/apiConfig.js
-export const BASE_URL = "http://localhost:18099"; // https://axistay-backend.onrender.com
+export const BASE_URL = import.meta.env.VITE_BACKEcND_URL || "http://localhost:18099";

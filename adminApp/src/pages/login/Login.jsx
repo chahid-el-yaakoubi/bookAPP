@@ -31,7 +31,7 @@ const AuthForm = () => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await axios.post( `${BASE_URL}/api/auth/login`, credentials, { withCredentials: true });
+      const res = await axios.post( `/api/auth/login`, credentials, { withCredentials: true });
 
       if (res.data.requiresVerification) {
         setShowVerification(true);
@@ -53,7 +53,7 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/verifyAdmin`, {
+      const res = await axios.post(`/api/auth/verifyAdmin`, {
         userId,
         code: verificationCode,
       });

@@ -1,14 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default {
+// Vite config
+export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_BACKEND_UR || " http://localhost:18099",  // Default to localhost for dev
+        target: process.env.VITE_BACKEND_URL || 'http://localhost:18099', // Default to localhost for dev
         changeOrigin: true,
-        secure: false,
+        secure: false, // Set to true if using https:// for local development
       },
     },
   },
@@ -18,4 +19,4 @@ export default {
   build: {
     outDir: 'dist',
   },
-};
+});

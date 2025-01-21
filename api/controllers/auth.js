@@ -94,7 +94,6 @@ export const login = async (req, res, next) => {
     }
 };
 
-
 export const verifyAdmin = async (req, res, next) => {
     try {
         const { userId, code } = req.body;

@@ -2,10 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
-import "./Login.css"
-import { BASE_URL } from "../utils/apiConfig";
+import "./Login.css";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
 
 const AuthForm = () => {
   const [credentials, setCredentials] = useState({
@@ -33,7 +31,7 @@ const AuthForm = () => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await axios.post( `${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
+      const res = await axios.post(`${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
 
       if (res.data.requiresVerification) {
         setShowVerification(true);
@@ -65,7 +63,6 @@ const AuthForm = () => {
       dispatch({ type: "LOGIN_FAILED", payload: err.response?.data?.message || "An error occurred" });
     }
   };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-green-500 bg-animated">
       <div className="w-full max-w-xl p-10 space-y-6 bg-white rounded-lg shadow-lg">
@@ -140,3 +137,5 @@ const AuthForm = () => {
 };
 
 export default AuthForm;
+
+

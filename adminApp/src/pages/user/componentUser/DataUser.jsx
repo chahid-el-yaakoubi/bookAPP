@@ -9,12 +9,14 @@ import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { BASE_URL } from "../../utils/apiConfig";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 
 const DataUser = (props) => {
   
 
-    const { data: fetchedData, loading, error } = useFetch(`/api/users`);
+    const { data: fetchedData, loading, error } = useFetch(`${backendUrl}/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
 

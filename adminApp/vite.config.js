@@ -1,13 +1,15 @@
-const backendUrl = process.env.NODE_ENV === 'production' ? 'https://your-production-backend.com' : 'http://localhost:18099';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import {BASE_URL} from './src/pages/utils/apiConfig'
 
-export default defineConfig({
+export default {
   plugins: [react()],
   server: {
     proxy: {
       '/api': {
-        target: backendUrl,
+        target: BASE_URL || " http://localhost:18049",  // Default to localhost for dev
         changeOrigin: true,
-        secure: process.env.NODE_ENV === 'production', // Set to true in production
+        secure: false,
       },
     },
   },
@@ -17,4 +19,4 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-});
+};

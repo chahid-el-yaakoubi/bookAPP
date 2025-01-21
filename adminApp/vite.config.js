@@ -6,7 +6,7 @@ export default {
   server: {
     proxy: {
       '/api': {
-        target: "https://axistay-backend.onrender.com" || " http://localhost:18049",  // Default to localhost for dev
+        target: "https://axistay-backend.onrender.com",  // Default to localhost for dev
         changeOrigin: true,
         secure: false,
       },

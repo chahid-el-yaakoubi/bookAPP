@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContect";
 import "./Login.css"
 import { BASE_URL } from "../utils/apiConfig";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 const AuthForm = () => {
   const [credentials, setCredentials] = useState({
@@ -31,7 +33,7 @@ const AuthForm = () => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await axios.post( `/api/auth/login`, credentials, { withCredentials: true });
+      const res = await axios.post( `${backendUrl}/api/auth/login`, credentials, { withCredentials: true });
 
       if (res.data.requiresVerification) {
         setShowVerification(true);
@@ -53,7 +55,7 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post(`/api/auth/verifyAdmin`, {
+      const res = await axios.post(`${backendUrl}/api/auth/verifyAdmin`, {
         userId,
         code: verificationCode,
       });

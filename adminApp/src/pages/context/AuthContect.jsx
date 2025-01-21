@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useReducer } from "react";
 
 // Initial state
 const INITIAL_STATE = {
-  user: JSON.parse(sessionStorage.getItem("user")) || null, // Use sessionStorage for session-specific persistence
+  user: JSON.parse(localStorage.getItem("user")) || null, // Use localStorage for persistence across sessions
   loading: false,
   error: null,
 };
@@ -46,12 +46,12 @@ const AuthReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
 
-  // Sync user data with sessionStorage
+  // Sync user data with localStorage
   useEffect(() => {
     if (state.user) {
-      sessionStorage.setItem("user", JSON.stringify(state.user)); // Store user in sessionStorage
+      localStorage.setItem("user", JSON.stringify(state.user)); // Store user in localStorage
     } else {
-      sessionStorage.removeItem("user"); // Clear sessionStorage on logout
+      localStorage.removeItem("user"); // Clear localStorage on logout
     }
   }, [state.user]);
 

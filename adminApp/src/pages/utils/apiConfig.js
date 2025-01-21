@@ -1,1 +1,1 @@
-export const BASE_URL = import.meta.env.VITE_BACKEcND_URL || "http://localhost:18049";
+export const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:18049";

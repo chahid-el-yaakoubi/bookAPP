@@ -8,12 +8,11 @@ import useFetch from "../../hooks/useFetch";
 import { AuthContext } from "../context/AuthContect";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../utils/apiConfig";
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const Home = () => {
 
-    console.log(backendUrl)
+
+const Home = () => {
 
     const token = Cookies.get("user");
     console.log(token);
@@ -26,12 +25,12 @@ const Home = () => {
         idCount = user._id
     }
 
-    const { data: countByCity } = useFetch(`/api/hotels/contByCity/count/${idCount}`)
-    const { data: coutHouse } = useFetch(`/api/house-rentals/contByCity/count/${idCount}`)
-    const { data: coutCar } = useFetch(`/api/cars//countCars/count/${idCount}`)
-    const { data: coutShop } = useFetch(`/api/shops/countByCity/count/${idCount}`)
-    const { data: countUser } = useFetch(`/api/users/count/users`)
-    let { data: countCities } = useFetch(`/api/cities/countByCity/count`)
+    const { data: countByCity } = useFetch(`${backendUrl}/api/hotels/contByCity/count/${idCount}`)
+    const { data: coutHouse } = useFetch(`${backendUrl}/api/house-rentals/contByCity/count/${idCount}`)
+    const { data: coutCar } = useFetch(`${backendUrl}/api/cars//countCars/count/${idCount}`)
+    const { data: coutShop } = useFetch(`${backendUrl}/api/shops/countByCity/count/${idCount}`)
+    const { data: countUser } = useFetch(`${backendUrl}/api/users/count/users`)
+    let { data: countCities } = useFetch(`${backendUrl}/api/cities/countByCity/count`)
 
 
 

@@ -22,7 +22,6 @@
     "@mui/material": "^6.3.0",
     "@mui/x-data-grid": "^7.23.5",
     "axios": "^1.7.9",
-    "dotenv": "^16.4.7",
     "i18next": "^24.2.0",
     "i18next-browser-languagedetector": "^8.0.2",
     "i18next-http-backend": "^3.0.1",
@@ -49,6 +48,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "nodemon": "^3.1.9",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "vite": "^6.0.5"

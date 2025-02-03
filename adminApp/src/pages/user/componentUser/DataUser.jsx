@@ -9,7 +9,8 @@ import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { BASE_URL } from "../../utils/apiConfig";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = "https://axistay-backend.onrender.com";
 
 
 
@@ -17,7 +18,7 @@ const DataUser = (props) => {
     console.log(backendUrl)
   
 
-    const { data: fetchedData, loading, error } = useFetch(`${backendUrl}/api/users`);
+    const { data: fetchedData, loading, error } = useFetch(`/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
 

@@ -9,7 +9,7 @@ import { AuthContext } from "../context/AuthContect";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../utils/apiConfig";
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = "https://axistay-backend.onrender.com"
+// const backendUrl = "https://axistay-backend.onrender.com"
 
 
 
@@ -26,7 +26,7 @@ const Home = () => {
         idCount = user._id
     }
 
-    const { data: countByCity } = useFetch(`${backendUrl}/api/hotels/contByCity/count/${idCount}`)
+    const { data: countByCity } = useFetch(`/api/hotels/contByCity/count/${idCount}`)
     const { data: coutHouse } = useFetch(`/api/house-rentals/contByCity/count/${idCount}`)
     const { data: coutCar } = useFetch(`/api/cars//countCars/count/${idCount}`)
     const { data: coutShop } = useFetch(`/api/shops/countByCity/count/${idCount}`)

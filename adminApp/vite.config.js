@@ -7,7 +7,7 @@ export default {
   server: {
     proxy: {
       '/api': {
-        target:  "https://axistay-backend.onrender.com",  // Default to localhost for dev
+        target:  import.meta.env.VITE_BACKEND_URL,  // Default to localhost for dev
         changeOrigin: true,
         secure: false,
       },

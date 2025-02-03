@@ -14,6 +14,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
 const DataUser = (props) => {
+    console.log(backendUrl)
   
 
     const { data: fetchedData, loading, error } = useFetch(`${backendUrl}/api/users`);

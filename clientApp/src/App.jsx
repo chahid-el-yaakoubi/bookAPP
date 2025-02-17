@@ -12,6 +12,7 @@ import LoginRegister from './components/Login/login';
 // import Maps from './pages/maps/maps';
 import { TransContextProvider } from './contextApi/TransContext';
 import { useTranslation } from 'react-i18next';
+import { MapComponent } from './pages/maps/maps';
 
 const property = {
   id: 1,
@@ -50,6 +51,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/maps" element={<MapComponent />} />
           {/* <Route path="/test" element={<Maps />} /> */}
           <Route path="/hotels/:city" element={<List  />} />
           <Route path="/hotel/:id" element={<Hotel />} />

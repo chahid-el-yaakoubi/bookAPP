@@ -10,6 +10,7 @@ export const Hotel = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbar />
+      djdj
       <Header type="list" />
       <div className="max-w-7xl mx-auto px-4 py-8">
         {loading ? (

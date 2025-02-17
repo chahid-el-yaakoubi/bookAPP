@@ -239,54 +239,13 @@ export const FilterModule = ({ onClose, data, setFilteredData }) => {
   ];
 
   // Add function to count filtered results
-  const getFilteredCount = () => {
-    if (!data) return 0;
-    
-    return data.filter(hotel => {
-      // Price range filter
-      const price = hotel.basePrice;
-      if (price < filters.priceRange.min || price > filters.priceRange.max) {
-        return false;
-      }
 
-      // Rooms filter
-      if (filters.rooms.bedrooms > 0 && hotel.bedrooms !== filters.rooms.bedrooms) {
-        return false;
-      }
-      if (filters.rooms.beds > 0 && hotel.beds !== filters.rooms.beds) {
-        return false;
-      }
-      if (filters.rooms.bathrooms > 0 && hotel.bathrooms !== filters.rooms.bathrooms) {
-        return false;
-      }
-
-      // Amenities filter
-      const selectedAmenities = filters.amenities.filter(amenity => amenity.state).map(amenity => amenity.id);
-      if (selectedAmenities.length > 0) {
-        const hasAllAmenities = selectedAmenities.every(amenity => 
-          hotel.amenities && hotel.amenities[amenity]
-        );
-        if (!hasAllAmenities) return false;
-      }
-
-      // Property type filter
-      const selectedTypes = filters.propertyTypes.filter(type => type.state).map(type => type.id);
-      if (selectedTypes.length > 0 && !selectedTypes.includes(hotel.basicInfo.type)) {
-        return false;
-      }
-
-      return true;
-    }).length;
-  };
 
   // Add state for filtered count
   const [filteredCount, setFilteredCount] = useState(0);
 
   // Update count when filters change
-  useEffect(() => {
-    const count = getFilteredCount();
-    setFilteredCount(count);
-  }, [filters]);
+
 
   // Modify the footer section only
   const footerSection = (
@@ -297,49 +256,8 @@ export const FilterModule = ({ onClose, data, setFilteredData }) => {
       >
         Tout effacer
       </button>
-      <button 
-        onClick={() => {
-          // Apply filters and close modal
-          const filteredResults = data.filter(hotel => {
-            // Same filtering logic as getFilteredCount
-            const price = hotel.basePrice;
-            if (price < filters.priceRange.min || price > filters.priceRange.max) {
-              return false;
-            }
-
-            if (filters.rooms.bedrooms > 0 && hotel.bedrooms !== filters.rooms.bedrooms) {
-              return false;
-            }
-            if (filters.rooms.beds > 0 && hotel.beds !== filters.rooms.beds) {
-              return false;
-            }
-            if (filters.rooms.bathrooms > 0 && hotel.bathrooms !== filters.rooms.bathrooms) {
-              return false;
-            }
-
-            const selectedAmenities = filters.amenities.filter(amenity => amenity.state).map(amenity => amenity.id);
-            if (selectedAmenities.length > 0) {
-              const hasAllAmenities = selectedAmenities.every(amenity => 
-                hotel.amenities && hotel.amenities[amenity]
-              );
-              if (!hasAllAmenities) return false;
-            }
-
-            // Property type filter
-            const selectedTypes = filters.propertyTypes.filter(type => type.state).map(type => type.id);
-            if (selectedTypes.length > 0 && !selectedTypes.includes(hotel.basicInfo.type)) {
-              return false;
-            }
-
-            return true;
-          });
-          
-          setFilteredData(filteredResults);
-          onClose();
-        }}
-        className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-black/90 transition-colors"
-      >
-        Afficher {filteredCount} logements
+      <button >
+        Afficher {5} logements
       </button>
     </div>
   );

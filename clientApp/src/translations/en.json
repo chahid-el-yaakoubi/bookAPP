@@ -82,18 +82,7 @@
     "BrowseByPropertyType": "Browse by property type",
     "HomesGuestsLove": "Homes guests love"
   },
-  "FeaturedProperties": {
-    "perNight": "per night",
-    "ratings": {
-      "exceptional": "Exceptional",
-      "excellent": "Excellent",
-      "veryGood": "Very Good",
-      "good": "Good"
-    },
-    "reviews": "reviews {{count}}",
-    "city": "Nador",
-    "bookNow": "Book Now"
-  },
+
   "footer": {
     "contactUs": "Contact Us",
     "companyName": "Professional Booking Services",
@@ -254,7 +243,79 @@
     "missingInformation": "Missing some information?",
     "yes": "Yes",
     "no": "No"
+  },
+    "experiences": {
+        "marchica": {
+            "title": "Marchica Lagoon",
+            "description": "Visit one of the largest lagoons in the Mediterranean",
+            "price": "From $40"
+        },
+        "charrana": {
+            "title": "Charrana Beach",
+            "description": "Enjoy the pristine waters of this beautiful beach",
+            "price": "From $25"
+        },
+        "gurugu": {
+            "title": "Mount Gurugu Tours",
+            "description": "Hike the iconic mountain with panoramic views of Nador",
+            "price": "From $35"
+        },
+        "souk": {
+            "title": "Traditional Souk Visit",
+            "description": "Experience the local market and Riffian culture",
+            "price": "From $20"
+        },
+        "forks": {
+            "title": "Three Forks Cape",
+            "description": "Visit the historic lighthouse and stunning coastline",
+            "price": "From $30"
+        },
+        "seafood": {
+            "title": "Local Seafood Experience",
+            "description": "Taste fresh Mediterranean seafood at local restaurants",
+            "price": "From $45"
+        }
+    } ,
+    "FeaturedProperties": {
+      "propertyDetails": "Property Details",
+      "totalReviews": "Total Reviews",
+      "rating": "Rating",
+      "ratings": {
+        "exceptional": "Exceptional",
+        "excellent": "Excellent",
+        "veryGood": "Very Good",
+        "good": "Good"
+      },
+      "perNight": "per night",
+      "bookNow": "Book Now",
+      "showLess": "Show Less"
+    },
+    "favorites": {
+      "title": "Houses guests love",
+      "location": "Location",
+      "rating": "Rating",
+      "reviews": "Reviews",
+      "startingFrom": "Starting from"
+    } ,
+  "mailList": {
+    "title": "Subscribe to our newsletter",
+    "subtitle": "Receive the latest news and updates",
+    "placeholder": "Enter your email",
+    "subscribe": "Subscribe",
+    "successTitle": "Success",
+    "successMessage": "Your email has been successfully registered.",
+    "errorTitle": "Error",
+    "errorMessage": "Please enter a valid email address."
+  } ,
+  "currency": {
+    "USD": "US Dollar",
+    "MAD": "Moroccan Dirham",
+    "EUR": "Euro",
+    "GBP": "British Pound",
+    "JPY": "Japanese Yen"
   }
-} 
+}
+
+
 
   

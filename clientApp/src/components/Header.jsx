@@ -128,7 +128,7 @@ export const Header = ({ type }) => {
   };
 
   return (
-    <div className="flex justify-center relative bg-primary pb-14 w-full mb-14">
+    <div className="sticky md:relative top-0 flex justify-center  z-40 md:z-10 bg-primary  md:pb-14 w-full">
       <div className="container flex flex-col justify-center items-center w-full px-4 md:ps-20">
         <div className="w-full p-2 text-center rounded-b-lg overflow-x-auto">
           <div className="flex items-center justify-start gap-2 md:gap-10 mx-auto min-w-max">
@@ -151,6 +151,8 @@ export const Header = ({ type }) => {
               </div>
             </div>
 
+            
+
             <div className="min-w-[70px] md:min-w-[100px]">
               <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white/80 cursor-pointer transition-all duration-300 rounded-xl bg-[rgba(18,156,190,0.226)] hover:text-white group">
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
@@ -159,6 +161,15 @@ export const Header = ({ type }) => {
                 <span className="text-[11px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.location')}</span>
               </div>
             </div>
+            <Link to={'/'} className="min-w-[70px] md:min-w-[80px]">
+              <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white cursor-pointer transition-all duration-300 rounded-xl bg-primary-dark group active:scale-95">
+                <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faBed} />
+                </div>
+                <span className="text-[11px] md:text-sm font-medium">{t('header.menu.home')}</span>
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+              </div>
+            </Link>
 
             <div className="min-w-[70px] md:min-w-[100px]">
               <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white/80 cursor-pointer transition-all duration-300 rounded-xl bg-[rgba(18,156,190,0.226)] hover:text-white group">
@@ -171,7 +182,11 @@ export const Header = ({ type }) => {
           </div>
         </div>
 
+        {/* search bar desctop */}
+        <div className="hidden md:block">
         <SearchForm />
+        </div>
+
       </div>
     </div>
   );

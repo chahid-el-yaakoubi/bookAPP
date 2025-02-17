@@ -1,76 +1,92 @@
-import { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import HouseCard from './HouseCard';
 
-const Maps = () => {
-  const [selectedDates, setSelectedDates] = useState({
-    checkIn: null,
-    checkOut: null,
-  });
+// Define the mock houses data directly in the component
+const mockHouses = [
+  {
+    id: '1',
+    title: 'Modern Downtown Loft',
+    price: 750000,
+    address: '123 Main St, City Center',
+    description: 'Stunning modern loft with city views',
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 1200,
+    position: { lat: 40.7128, lng: -74.0060 },
+    imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format',
+  },
+  {
+    id: '2',
+    title: 'Suburban Family Home',
+    price: 950000,
+    address: '456 Oak Ave, Suburbs',
+    description: 'Spacious family home with large backyard',
+    bedrooms: 4,
+    bathrooms: 3,
+    sqft: 2500,
+    position: { lat: 40.7282, lng: -73.9942 },
+    imageUrl: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&auto=format',
+  },
+];
 
-  return (
-    <div className="flex h-screen">
-      {/* Left sidebar - Search and Filters */}
-      <div className="w-1/3 p-4 overflow-y-auto border-r">
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search location..."
-            className="w-full p-2 border rounded-lg"
-          />
-        </div>
-
-        {/* Date picker */}
-        <div className="mb-6 space-y-2">
-          <h3 className="font-semibold">Dates</h3>
-          <div className="flex gap-2">
-            <DatePicker
-              selected={selectedDates.checkIn}
-              onChange={(date) => setSelectedDates({ ...selectedDates, checkIn: date })}
-              placeholderText="Check-in"
-              className="w-full p-2 border rounded-lg"
-            />
-            <DatePicker
-              selected={selectedDates.checkOut}
-              onChange={(date) => setSelectedDates({ ...selectedDates, checkOut: date })}
-              placeholderText="Check-out"
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Property listings */}
-        <div className="space-y-4">
-          {/* Example property card */}
-          <div className="p-4 border rounded-lg">
-            <img
-              src="https://via.placeholder.com/300x200"
-              alt="Property"
-              className="w-full h-48 object-cover rounded-lg mb-2"
-            />
-            <h3 className="font-semibold">Luxury Apartment</h3>
-            <p className="text-gray-600">$200/night</p>
-            <div className="flex items-center text-sm text-gray-500">
-              <span>2 beds • 2 baths • 4 guests</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right side - Map */}
-      <div className="w-2/3">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1649436416029!5m2!1sen!2s"
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen=""
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
-    </div>
-  );
+const mapContainerStyle = {
+  width: '100%',
+  height: '94vh', // Full viewport height
 };
 
-export default Maps;
+export function MapComponent({showHotelsMap, setShowHotelsMap}) {
+  const [selectedHouse, setSelectedHouse] = useState(null); // Local state for selected house
+  const center = { lat: 40.7128, lng: -74.0060 }; // Default center (New York)
+
+  return (
+    <div className=" fixed inset-10 z-50">
+       <div className="fixed bottom-20 right-10 z-50">
+                <button className='bg-blue text-white p-2  ' onClick={() => setShowHotelsMap(!showHotelsMap)}>
+                    show list
+                </button>
+            </div>
+
+      <LoadScript googleMapsApiKey="" loadingElement={<div>Loading map...</div>}>
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          zoom={13}
+          center={center}
+          onClick={() => setSelectedHouse(null)} // Clear selection on map click
+          options={{
+            styles: [
+              {
+                featureType: 'all',
+                elementType: 'all',
+                stylers: [{ saturation: -100 }],
+              },
+            ],
+          }}
+        >
+          {/* Render markers for each house */}
+          {mockHouses.map((house) => (
+            console.log({"house":house}),
+            <Marker
+              key={house.id}
+              position={house.position}
+              onMouseOver={() => setSelectedHouse(house)}
+              onMouseOut={() => setSelectedHouse(null)}
+            />
+          ))}
+
+          {/* Render InfoWindow for the selected house */}
+          {selectedHouse && (
+            <InfoWindow
+              position={selectedHouse.position}
+              onCloseClick={() => setSelectedHouse(null)}
+            >
+              <div className="max-w-sm">
+                <HouseCard house={selectedHouse} />
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+      </LoadScript>
+    </div>
+  );
+}

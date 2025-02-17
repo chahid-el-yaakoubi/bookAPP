@@ -9,14 +9,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:8800',
+      '/api': 'http://localhost:18099', // Replace with your backend server URL
     },
     hmr: {
       overlay: true,
     },
   },
-  optimizeDeps: {
-    exclude: ['js-cookie']
-  },
- 
 });

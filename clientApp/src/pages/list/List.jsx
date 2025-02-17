@@ -10,7 +10,7 @@ import BlurListItem from './listItem/BlurListItem';
 import { SearchContext } from '../../contextApi/SearchContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDownWideShort, faArrowUpFromWaterPump, faHotel, faHouse, faHouseFlag, faStar, faSwimmingPool, faWifi, faCar, faUtensils, faSliders } from '@fortawesome/free-solid-svg-icons';
-import { FilterModule } from '../../components/FilterModule';
+// import { FilterModule } from '../../components/FilterModule';
 
 export const List = () => {
   const [initialData, setInitialData] = useState([]);
@@ -388,13 +388,13 @@ export const List = () => {
               </div>
             </div>
 
-            {showFilters && (
+            {/* {showFilters && (
               <FilterModule
                 onClose={() => setShowFilters(false)}
                 data={initialData}
                 setFilteredData={setFilteredData}
               />
-            )}
+            )} */}
           </div>
 
           <div className={`

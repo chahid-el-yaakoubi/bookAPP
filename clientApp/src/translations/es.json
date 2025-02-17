@@ -82,18 +82,7 @@
     "BrowseByPropertyType": "Explora por tipo de propiedad",
     "HomesGuestsLove": "Homes invitados aman"
   },
-  "FeaturedProperties": {
-    "perNight": "por noche",
-    "ratings": {
-      "exceptional": "Excepcional",
-      "excellent": "Excelente",
-      "veryGood": "Muy bueno",
-      "good": "Bueno"
-    },
-    "reviews": "{{count}} comentarios",
-    "city": "Nador",
-    "bookNow": "Reservar ahora"
-  },
+ 
   "footer": {
     "contactUs": "Contactanos",
     "companyName": "Servicios de reserva profesionales",
@@ -121,4 +110,78 @@
       },
     "copyright": "© {{year}} Servicios de reserva profesionales. Todos los derechos reservados."
   }        
+,
+
+  "experiences": {
+      "marchica": {
+          "title": "Laguna de Marchica",
+          "description": "Visite una de las lagunas más grandes del Mediterráneo",
+          "price": "Desde $40"
+      },
+      "charrana": {
+          "title": "Playa de Charrana",
+          "description": "Disfrute de las aguas cristalinas de esta hermosa playa",
+          "price": "Desde $25"
+      },
+      "gurugu": {
+          "title": "Excursiones al Monte Gurugu",
+          "description": "Camine por la icónica montaña con vistas panorámicas de Nador",
+          "price": "Desde $35"
+      },
+      "souk": {
+          "title": "Visita al Zoco Tradicional",
+          "description": "Descubra el mercado local y la cultura rifeña",
+          "price": "Desde $20"
+      },
+      "forks": {
+          "title": "Cabo de las Tres Horquillas",
+          "description": "Visite el histórico faro y la impresionante costa",
+          "price": "Desde $30"
+      },
+      "seafood": {
+          "title": "Experiencia de Mariscos Locales",
+          "description": "Pruebe mariscos frescos del Mediterráneo en restaurantes locales",
+          "price": "Desde $45"
+      }
+  }
+  ,
+  "FeaturedProperties": {
+    "propertyDetails": "Detalles de la propiedad",
+    "totalReviews": "Total de reseñas",
+    "rating": "Calificación",
+    "ratings": {
+      "exceptional": "Excepcional",
+      "excellent": "Excelente",
+      "veryGood": "Muy bueno",
+      "good": "Bueno"
+    },
+    "perNight": "por noche",
+    "bookNow": "Reservar ahora",
+    "showLess": "Mostrar menos"
+  } ,
+  "favorites": {
+    "title": "Casas que les gustan a los huéspedes",
+    "location": "Ubicación",
+    "rating": "Calificación",
+    "reviews": "Reseñas",
+    "startingFrom": "Desde"
+  }
+  ,
+ "mailList": {
+    "title": "Suscríbete a nuestro boletín",
+    "subtitle": "Recibe las últimas noticias y actualizaciones",
+    "placeholder": "Introduce tu correo electrónico",
+    "subscribe": "Suscribirse",
+    "successTitle": "Éxito",
+    "successMessage": "Tu correo electrónico ha sido registrado con éxito.",
+    "errorTitle": "Error",
+    "errorMessage": "Por favor, introduce una dirección de correo válida."
+  },
+  "currency": {
+    "USD": "Dólar estadounidense",
+    "MAD": "Dirham marroquí",
+    "EUR": "Euro",
+    "GBP": "Libra esterlina",
+    "JPY": "Yen japonés"
+  }
 }

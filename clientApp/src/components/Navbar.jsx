@@ -3,13 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
 import Login from './Login/login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMultiply, faGlobe, faSearch, faHeart, faSliders , faUser, faDollarSign, faChevronDown} from '@fortawesome/free-solid-svg-icons';
+import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
+import SearchMobile from './searchMobile'; 
+
 
 export const Logo = () => {
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
-        <Link to="/">
+        <Link to="/" onClick={scrollToTop}>
             <div className="flex items-center">
                 <span className="text-3xl font-extrabold tracking-tight">
                     <span className="text-blue text-3xl transition-colors duration-300 hover:text-[blue]">Axi</span>
@@ -20,6 +26,7 @@ export const Logo = () => {
         </Link>
     );
 };
+
 
 // Alternative version with background
 
@@ -48,30 +55,30 @@ export const Navbar = () => {
         MAD: { symbol: 'د.م', label: 'MAD' },
     };
 
-    
+
 
     const languages = {
-        en: { 
-            flag: '../imges/lang/flag1.webp', 
-            label: 'English' 
+        en: {
+            flag: '../imges/lang/flag1.webp',
+            label: 'English'
         },
-        ar: { 
-            flag: '../imges/lang/flag2.webp', 
-            label: 'العربية' 
+        ar: {
+            flag: '../imges/lang/flag2.webp',
+            label: 'العربية'
         },
-        es: { 
-            flag: '../imges/lang/flag3.webp', 
-            label: 'Español' 
+        es: {
+            flag: '../imges/lang/flag3.webp',
+            label: 'Español'
         },
-        fr: { 
-            flag: '../imges/lang/flag4.webp', 
-            label: 'Français' 
+        fr: {
+            flag: '../imges/lang/flag4.webp',
+            label: 'Français'
         },
-        tf:{
-            flag: 'https://play-lh.googleusercontent.com/dBTaZCYCeIEjd2ALu4krH8MRyzoYSxtuXAzPRYUMBLs-JYXCPoVjRsORFBJ21TMmFg', 
+        tf: {
+            flag: 'https://play-lh.googleusercontent.com/dBTaZCYCeIEjd2ALu4krH8MRyzoYSxtuXAzPRYUMBLs-JYXCPoVjRsORFBJ21TMmFg',
             label: 'ⴰⵎⴰⵣⵉⵖ'
         }
-        
+
     };
 
     // Update currentLanguage when context language changes
@@ -175,37 +182,39 @@ export const Navbar = () => {
             <div className="shadow-xl w-full bg-primary">
                 <nav className="container mx-auto navbar w-full flex items-center justify-between py-4 px-6">
                     {/* Logo */}
-                    <Link to={'/'}>
+                    <Link to={'/'} >
                         <Logo />
                     </Link>
+
+                    {/* Mobile Navigation */}
+                    <SearchMobile/>
+
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
                         {/* Currency Dropdown */}
                         <div className="price-dropdown-container relative">
-                            <div 
+                            <div
                                 className="price cursor-pointer hover:bg-black/80 shadow-xl h-10 rounded-lg px-4 py-2 text-white flex items-center gap-2  "
-                                onClick={() => setPriceDropdown(!priceDropdown)} 
+                                onClick={() => setPriceDropdown(!priceDropdown)}
                             >
                                 <span className='text-2xl text-bold text-black bg-gradient-to-r from-orange-500 via-orange-100 to-blue h-8 w-8 rounded-full flex items-center justify-center'>{currencies[currentCurrency].symbol}</span>
                                 <span className='text-sm'>{currencies[currentCurrency].label}</span>
-                                <FontAwesomeIcon 
-                                    icon={faChevronDown} 
-                                    className={`text-xs transition-transform duration-300 ${
-                                        priceDropdown ? 'rotate-180' : ''
-                                    }`}
+                                <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={`text-xs transition-transform duration-300 ${priceDropdown ? 'rotate-180' : ''
+                                        }`}
                                 />
                             </div>
-                            
+
                             {priceDropdown && (
-                                <div className="absolute w-[300px] h-[300px] right-0 mt-2 bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg z-40 overflow-hidden flex flex-col items-center justify-center">
+                                <div className="absolute w-[300px] h-[300px] right-0 mt-2 bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg z-50 overflow-hidden flex flex-col items-center justify-center">
                                     <div className="py-2 w-full">
                                         {Object.entries(currencies).map(([code, { symbol, label }]) => (
-                                            <button 
+                                            <button
                                                 key={code}
-                                                className={`block w-full px-4 py-2 text-left text-white hover:bg-[#333333] flex flex-row items-center justify-start gap-2 ${
-                                                    currentCurrency === code ? 'bg-[#333333]' : ''
-                                                }`}
+                                                className={`block w-full px-4 py-2 text-left text-white hover:bg-[#333333] flex flex-row items-center justify-start gap-2 ${currentCurrency === code ? 'bg-[#333333]' : ''
+                                                    }`}
                                                 onClick={() => handleCurrencyChange(code)}
                                             >
                                                 <h1 className='text-3xl text-bold text-black h-14 w-14 flex items-center justify-center rounded-full bg-gradient-to-t from-blue via-orange-100 to-orange-500'>{symbol}</h1> {label} ({t(`currency.${code}`)})
@@ -218,38 +227,36 @@ export const Navbar = () => {
 
                         {/* Language Dropdown */}
                         <div className="language-dropdown-container relative">
-                            <div 
+                            <div
                                 className="language-selector flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-black/80 cursor-pointer transition-all duration-300 shadow-xl"
                                 onClick={() => setLanguageDropdown(!languageDropdown)}
                             >
-                                <img 
-                                    src={languages[currentLanguage].flag} 
+                                <img
+                                    src={languages[currentLanguage].flag}
                                     alt={`${currentLanguage} flag`}
                                     className="w-8 h-8 rounded-full object-cover object-center"
                                 />
                                 <span className='text-sm text-white font-medium'>
                                     {languages[currentLanguage].label}
                                 </span>
-                                <FontAwesomeIcon 
-                                    icon={faChevronDown} 
-                                    className={`text-white text-xs transition-transform duration-300 ${
-                                        languageDropdown ? 'rotate-180' : ''
-                                    }`}
+                                <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={`text-white text-xs transition-transform duration-300 ${languageDropdown ? 'rotate-180' : ''
+                                        }`}
                                 />
                             </div>
-                            
+
                             {languageDropdown && (
-                                <div className="absolute right-0 w-[300px] h-[300px] mt-2 bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg z-40 overflow-hidden flex flex-col items-center justify-center">
+                                <div className="absolute right-0 w-[300px] h-[300px] mt-2 bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg z-50 overflow-hidden flex flex-col items-center justify-center">
                                     {Object.entries(languages).map(([code, { flag, label }]) => (
-                                        <button 
+                                        <button
                                             key={code}
-                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${
-                                                currentLanguage === code ? 'bg-[#333333]' : ''
-                                            }`}
+                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${currentLanguage === code ? 'bg-[#333333]' : ''
+                                                }`}
                                             onClick={() => changeLanguage(code)}
                                         >
-                                            <img 
-                                                src={flag} 
+                                            <img
+                                                src={flag}
                                                 alt={`${code} flag`}
                                                 className="w-10 h-10 rounded-full object-cover"
                                             />
@@ -274,7 +281,7 @@ export const Navbar = () => {
                                 </button>
 
                                 {dropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-lg z-40">
+                                    <div className="absolute right-0 mt-2 w-56 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-lg z-50">
                                         <div className="py-2">
                                             <button
                                                 onClick={() => navigate("/profile")}
@@ -321,25 +328,23 @@ export const Navbar = () => {
             <div className={`fixed md:hidden bottom-0 left-0 right-0 w-full bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 transition-transform duration-300 z-50 
                 ${showMobileNav ? 'translate-y-0' : 'translate-y-full'} shadow-lg`}>
                 <div className="flex items-center justify-around py-3 px-4 safe-area-bottom">
-                    <Link 
-                        to="/" 
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${
-                            activeTab === 'search' 
-                                ? 'text-white bg-blue' 
+                    <Link
+                        to="/"
+                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'search'
+                                ? 'text-white bg-blue'
                                 : 'text-gray-100'
-                        } hover:bg-blue-100 active:scale-95 transition-all`}
+                            } hover:bg-blue-100 active:scale-95 transition-all`}
                         onClick={() => setActiveTab('search')}
                     >
                         <FontAwesomeIcon icon={faSearch} className="text-xl" />
                         {activeTab === 'search' && <span className="text-xs font-medium">{t('navbar.search')}</span>}
                     </Link>
 
-                    <div 
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${
-                            activeTab === 'price' 
-                                ? 'text-white bg-blue' 
+                    <div
+                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'price'
+                                ? 'text-white bg-blue'
                                 : 'text-gray-100'
-                        } hover:bg-blue-100 active:scale-95 transition-all`}
+                            } hover:bg-blue-100 active:scale-95 transition-all`}
                         onClick={() => {
                             setActiveTab('price');
                             setMobilePriceDropdown(!mobilePriceDropdown);
@@ -351,11 +356,10 @@ export const Navbar = () => {
                             <div className="fixed bottom-16 left-0 right-0 mx-auto w-[90%] max-w-[300px] bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg overflow-hidden safe-area-bottom">
                                 <div className="py-2 w-full max-h-[400px] overflow-y-auto">
                                     {Object.entries(currencies).map(([code, { symbol, label }]) => (
-                                        <button 
+                                        <button
                                             key={code}
-                                            className={`block w-full px-4 py-3 text-left text-white hover:bg-[#333333] flex items-center gap-3 ${
-                                                currentCurrency === code ? 'bg-[#333333]' : ''
-                                            }`}
+                                            className={`block w-full px-4 py-3 text-left text-white hover:bg-[#333333] flex items-center gap-3 ${currentCurrency === code ? 'bg-[#333333]' : ''
+                                                }`}
                                             onClick={() => handleCurrencyChange(code)}
                                         >
                                             <span className='text-2xl text-bold text-black bg-gradient-to-r from-orange-500 via-orange-100 to-blue h-10 w-10 rounded-full flex items-center justify-center'>
@@ -369,12 +373,11 @@ export const Navbar = () => {
                         )}
                     </div>
 
-                    <div 
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${
-                            activeTab === 'language' 
-                                ? 'text-white bg-blue' 
+                    <div
+                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'language'
+                                ? 'text-white bg-blue'
                                 : 'text-gray-100'
-                        } hover:bg-blue-100 active:scale-95 transition-all mobile-language-dropdown`}
+                            } hover:bg-blue-100 active:scale-95 transition-all mobile-language-dropdown`}
                         onClick={() => {
                             setActiveTab('language');
                             setMobileLangDropdown(!mobileLangDropdown);
@@ -386,18 +389,17 @@ export const Navbar = () => {
                             <div className="fixed bottom-16 left-0 right-0 mx-auto w-[90%] max-w-[300px] bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg overflow-hidden safe-area-bottom">
                                 <div className="py-2 w-full max-h-[400px] overflow-y-auto">
                                     {Object.entries(languages).map(([code, { flag, label }]) => (
-                                        <button 
+                                        <button
                                             key={code}
-                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${
-                                                currentLanguage === code ? 'bg-[#333333]' : ''
-                                            }`}
+                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${currentLanguage === code ? 'bg-[#333333]' : ''
+                                                }`}
                                             onClick={(e) => {
                                                 e.stopPropagation(); // Prevent event bubbling
                                                 changeLanguage(code);
                                             }}
                                         >
-                                            <img 
-                                                src={flag} 
+                                            <img
+                                                src={flag}
                                                 alt={`${code} flag`}
                                                 className="w-10 h-10 rounded-full object-cover"
                                             />
@@ -411,25 +413,23 @@ export const Navbar = () => {
 
                     {user ? (
                         <>
-                            <Link 
-                                to="" 
-                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${
-                                    activeTab === 'saved' 
-                                        ? 'text-white bg-blue' 
+                            <Link
+                                to=""
+                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'saved'
+                                        ? 'text-white bg-blue'
                                         : 'text-gray-100'
-                                } hover:bg-blue-100 active:scale-95 transition-all`}
+                                    } hover:bg-blue-100 active:scale-95 transition-all`}
                                 onClick={() => setActiveTab('saved')}
                             >
                                 <FontAwesomeIcon icon={faHeart} className="text-xl" />
                                 {activeTab === 'saved' && <span className="text-xs font-medium">{t('navbar.saved')}</span>}
                             </Link>
-                            <Link 
-                                to="" 
-                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${
-                                    activeTab === 'count' 
-                                        ? 'text-white bg-blue' 
+                            <Link
+                                to=""
+                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'count'
+                                        ? 'text-white bg-blue'
                                         : 'text-gray-100'
-                                } hover:bg-blue-100 active:scale-95 transition-all`}
+                                    } hover:bg-blue-100 active:scale-95 transition-all`}
                                 onClick={() => setActiveTab('count')}
                             >
                                 <FontAwesomeIcon icon={faUser} className="text-xl" />
@@ -468,7 +468,7 @@ export const Navbar = () => {
 
 const ConfirmLogoutModal = ({ onConfirm, onCancel }) => {
     const { t } = useTranslation();
-    
+
     return (
         <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 z-50">
             <div className="mt-20 w-full max-w-md bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-xl p-6 shadow-lg">
@@ -514,3 +514,7 @@ const LoginComponent = ({ setLoginForm }) => {
         </div >
     );
 };
+
+
+
+

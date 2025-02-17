@@ -1,18 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLocationDot,
-  faConciergeBell,
-  faClipboardList,
-  faFileAlt,
-  faHome,
-  faInfoCircle,
-  faHandshake,
-  faMosque,
-  faUtensils,
-} from "@fortawesome/free-solid-svg-icons";
+
 import './Hotel.css';
 import { useLocation } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
@@ -29,16 +18,18 @@ import { FeaturedAmenities } from './componentHotel/FeaturedAmenities';
 import { ContactOwnersModule } from '../../components/ContactOwnersModule';
 import { HotelRooms } from './componentHotel/HotelRooms';
 import { PageReload } from '../../components/pageRealod/pageRealod';
-import Descriptions from './componentHotel/HotelDesc';
 // import { hotelRoomsData } from '../../data/hotelRoomsData';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {  faInfoCircle, faLocationDot, faConciergeBell, faClipboardList, faFileAlt, faBars, faHome } from '@fortawesome/free-solid-svg-icons';
+
 
 
 
 // Add this component for the navigation menu
 const HotelNavMenu = () => {
   const [activeSection, setActiveSection] = useState('overview');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navRef = useRef(null);
-
 
   // Enhanced menu items with icons
   const menuItems = [
@@ -90,31 +81,77 @@ const HotelNavMenu = () => {
     });
   };
 
+  // Toggle mobile menu visibility
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <div ref={navRef} className="border-b sticky left-0 right-0 top-0 bg-primary z-50 shadow-md w-full">
+            {/* <div className="backdrop-blur fixed top-0 left-0 right-0   -z-50 max-h-screen"></div> */}
+
       <nav className="w-full mx-auto">
-        <ul className="flex items-center justify-between px-0 md:px-4 overflow-x-auto hide-scrollbar w-full">
-          {menuItems.map((item, index) => (
-            <li key={index} className="flex-shrink-0 min-w-fit">
-              <a
-                href={item.href}
-                onClick={(e) => handleClick(e, item.href)}
-                className={`
-                  inline-flex items-center px-3 py-3 text-sm font-medium
-                  transition-all duration-200 border-b-2 whitespace-nowrap
-                  hover:text-blue hover:border-blue/50
-                  ${activeSection === item.href.slice(1)
-                    ? 'border-blue text-blue'
-                    : 'border-transparent text-gray-100 hover:text-gray-300'}
-                `}
-              >
-                <FontAwesomeIcon icon={item.icon} className="mr-2" />
-                {item.label}
-              </a>
-            </li>
-          ))}
+        {/* Mobile Hamburger Icon */}
+        <div className="md:hidden flex justify-between items-center px-4 py-3">
+          <button onClick={toggleMobileMenu} className="text-white">
+            <FontAwesomeIcon icon={faBars} size="lg" />
+          </button>
+        </div>
+
+        {/* Navbar for desktop and mobile */}
+        <ul className="hidden md:flex items-center justify-between px-4 w-full">
+        {menuItems.map((item, index) => (
+          <li key={index} className="flex-shrink-0 min-w-fit">
+            <a
+              href={item.href}
+              onClick={(e) => handleClick(e, item.href)}
+              className={`inline-flex items-center px-3 py-3 text-sm font-medium
+                transition-all duration-200 border-b-2 whitespace-nowrap
+                hover:text-blue hover:border-blue/50
+                ${activeSection === item.href.slice(1)
+                  ? 'border-blue text-blue'
+                  : 'border-transparent text-gray-100 hover:text-gray-300'}`}
+            >
+              <FontAwesomeIcon icon={item.icon} className="mr-2" />
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {/* Mode Mobile */}
+      {isMobileMenuOpen && (
+        <ul className="flex md:hidden flex-col items-start px-4 py-2 space-y-2 w-full">
+        
         </ul>
-      </nav>
+)}
+       
+       </nav>
+
+      {/* Mobile Dropdown menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-primary w-full px-4 py-3">
+          <ul className="flex flex-col items-center">
+            {menuItems.map((item, index) => (
+              <li key={index} className="flex-shrink-0 w-full">
+                <a
+                  href={item.href}
+                  onClick={(e) => handleClick(e, item.href)}
+                  className={`inline-flex items-center w-full px-3 py-3 text-sm font-medium
+                    transition-all duration-200 border-b-2 whitespace-nowrap
+                    hover:text-blue hover:border-blue/50
+                    ${activeSection === item.href.slice(1)
+                      ? 'border-blue text-blue'
+                      : 'border-transparent text-gray-100 hover:text-gray-300'}`}
+                >
+                  <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
@@ -289,29 +326,9 @@ const professionalHotelData = {
 
 
 export const Hotel = () => {
-  const [dataDes, setDataDes] = useState(null);
   const location = useLocation();
   const id = location.pathname.split("/")[2];
-  const { data, loading, error } = useFetch(`/api/hotels/find/6773c62b5c2627d41a99e4ad`);
-
-
-  const photoss = data?.photos;
-  const proximity =  data.proximity
-  const amenities = data?.amenities
-  const rooms = data?.rooms
-  const rules = data?.rules
-  const areaInfo = data?.areaInfo
-
-  useEffect(() => {
-   
-    if(data){
-      setDataDes(data) }
-    }, [data]);
-
-
-  console.log({"data hotel " : dataDes})
-  
-  
+  const { data, loading, error } = useFetch(`/api/hotels/find/${id}`);
 
   // Ensure rooms data is properly structured
   const hotelData = {
@@ -455,7 +472,7 @@ export const Hotel = () => {
                     address: hotelData.address
                   }} 
                 />
-                <ImageGallery photos={photoss} />
+                <ImageGallery photos={photos} />
               </div>
 
               <div id="info" className="scroll-mt-24">
@@ -465,8 +482,7 @@ export const Hotel = () => {
                     <div className="mb-6">
                       <h2 className="text-2xl font-semibold my-4">À propos de cet établissement</h2>
                       <div className="relative bg-gray-100/70 rounded p-4">
-                      <Descriptions data={dataDes} />
-                        {/* <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                        <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                           {getDisplayDescription()}
                         </p>
                         {description.split('\n').filter(line => line.trim()).length > 5 && (
@@ -476,7 +492,7 @@ export const Hotel = () => {
                           >
                             {showFullDescription ? 'Voir moins' : 'Lire plus'}
                           </button>
-                        )} */}
+                        )}
                       </div>
                     </div>
                   </div>
@@ -491,7 +507,7 @@ export const Hotel = () => {
                 <div className='md:hidden mt-6'>
                   <HotelBookingBox hotel={hotelData} nights={nights} options={options} />
                 </div>
-
+                
                 <HotelRooms
                   rooms={hotelData.rooms}
                   nights={nights}
@@ -501,9 +517,8 @@ export const Hotel = () => {
                   scrollToContact={scrollToContact}
                 />
 
-
                 <div id="area">
-                  <AreaInfo className="scroll-mt-24" hotelData={proximity} contactModule={scrollToContact} />
+                  <AreaInfo className="scroll-mt-24" hotelData={hotelData} contactModule={scrollToContact} />
                 </div>
                 <div id='facilities' className='scroll-mt-24'>
                   <HotelFacilities />

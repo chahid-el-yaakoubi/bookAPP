@@ -10,12 +10,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export const AreaInfo = ({hotelData, contactModule}) => {
-  const areaData = hotelData
-
-  console.log(areaData)
+  const areaData = hotelData.areaInfo
 
   return (
-    
     <div className="mt-8 px-4  bg-gray-100  shadow-xl rounded-lg p-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
         <h2 className="text-xl md:text-2xl font-semibold">Area info</h2>
@@ -41,10 +38,10 @@ export const AreaInfo = ({hotelData, contactModule}) => {
               What's nearby
             </h3>
             <div className="space-y-3">
-              {areaData?.nearbyPlaces.map((place, index) => (
+              {areaData.nearbyPlaces.map((place, index) => (
                 <div key={index} className="flex justify-between items-center text-sm md:text-base">
                   <span className="flex-1">{place.name}</span>
-                  <span className="text-gray-600 ml-2">{place.distance} km</span>
+                  <span className="text-gray-600 ml-2">{place.distance}</span>
                 </div>
               ))}
             </div>
@@ -57,13 +54,13 @@ export const AreaInfo = ({hotelData, contactModule}) => {
               Restaurants & cafes
             </h3>
             <div className="space-y-3">
-              {areaData?.restaurants.map((restaurant, index) => (
+              {areaData.restaurants.map((restaurant, index) => (
                 <div key={index} className="flex justify-between items-center text-sm md:text-base">
                   <div className="flex items-center gap-2">
                     <FontAwesomeIcon icon={faCoffee} className="text-gray-600" />
                     <span>{restaurant.name}</span>
                   </div>
-                  <span className="text-gray-600 ml-2">{restaurant.distance} km</span>
+                  <span className="text-gray-600 ml-2">{restaurant.distance}</span>
                 </div>
               ))}
             </div>
@@ -76,13 +73,13 @@ export const AreaInfo = ({hotelData, contactModule}) => {
               Public transit
             </h3>
             <div className="space-y-3">
-              {areaData?.publicTransit.map((transit, index) => (
+              {areaData.publicTransit.map((transit, index) => (
                 <div key={index} className="flex justify-between items-center text-sm md:text-base">
                   <div className="flex items-center gap-2">
                     <FontAwesomeIcon icon={faTrain} className="text-gray-600" />
                     <span>{transit.name}</span>
                   </div>
-                  <span className="text-gray-600 ml-2">{transit.distance} km</span>
+                  <span className="text-gray-600 ml-2">{transit.distance}</span>
                 </div>
               ))}
             </div>
@@ -96,10 +93,10 @@ export const AreaInfo = ({hotelData, contactModule}) => {
             Beaches in the Neighborhood
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {areaData?.beaches.map((beach, index) => (
+            {areaData.beaches.map((beach, index) => (
               <div key={index} className="flex justify-between items-center text-sm md:text-base">
                 <span>{beach.name}</span>
-                <span className="text-gray-600 ml-2">{beach.distance} km</span>
+                <span className="text-gray-600 ml-2">{beach.distance}</span>
               </div>
             ))}
           </div>
@@ -112,10 +109,10 @@ export const AreaInfo = ({hotelData, contactModule}) => {
             Closest Airports
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {areaData?.airports.map((airport, index) => (
+            {areaData.airports.map((airport, index) => (
               <div key={index} className="flex justify-between items-center text-sm md:text-base">
                 <span>{airport.name}</span>
-                <span className="text-gray-600 ml-2">{airport.distance} km</span>
+                <span className="text-gray-600 ml-2">{airport.distance}</span>
               </div>
             ))}
           </div>

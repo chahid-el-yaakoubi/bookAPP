@@ -108,7 +108,7 @@ export const SearchForm = () => {
   };
 
   return (
-    <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-10">
+    <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-20">
       <div className={`searchItem flex flex-col md:flex-row border-4 border-gray-500 text-black justify-between items-stretch md:items-center rounded-lg bg-white ${isRTL ? 'rtl' : 'ltr'}`}>
         {/* Destination Input */}
         <div className={`searchComponent rounded bg-white test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full md:w-1/3`}>
@@ -147,11 +147,11 @@ export const SearchForm = () => {
           {opendate && (
             <>
               <div 
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" 
+                className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" 
                 onClick={handleCloseDatePicker}
               ></div>
               
-              <div className="date-picker-container absolute top-14 left-0 md:left-auto w-screen md:w-auto">
+              <div className="date-picker-container absolute top-14 left-0 md:-left-48  w-screen md:w-auto">
                 <div className="date-picker-header md:hidden flex justify-between items-center p-4 border-b">
                   <h2 className="text-lg font-semibold text-gray-800">{t('search.selectDates')}</h2>
                   <button 

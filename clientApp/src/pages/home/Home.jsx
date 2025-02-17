@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navbar } from '../../components/Navbar'
 import { Header } from '../../components/Header'
 import { Featured } from '../../components/featured/Featured'
@@ -12,17 +12,68 @@ import { MoroccanExperiences } from '../../components/moroccanExperiences/Morocc
 import { faBed, faHome, faMapLocation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTranslation } from 'react-i18next'
+import HotelsDisplay from '../../components/HotelsDisplay'
+import HotelsList from '../../components/HotelsList'
+import { MapComponent } from '../maps/maps'
 // import { MoroccanExperiences } from '../../components/moroccanExperiences/MoroccanExperiences'
+
 
 export const Home = () => {
     const { t } = useTranslation();
+    const [showHotelsMap, setShowHotelsMap] = React.useState(false);
+
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY) {
+                setIsVisible(false); // Hide when scrolling up
+            } else {
+                setIsVisible(true); // Show when scrolling down
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [lastScrollY]);
+
     return (
-        <div className="home bg-blue/40">
+        <div className="home bg-blue/40 ">
+            <div className="fixed bg-blue/40  top-0 left-0 right-0 -z-10 max-h-screen"></div>
+
+            <div className="fixed bottom-20 right-[5%] z-50">
+                <button className='bg-black text-white p-2  text-xl rounded ' onClick={() => setShowHotelsMap(!showHotelsMap)}>
+                    show maps
+                </button>
+            </div>
+
+            {showHotelsMap && <MapComponent showHotelsMap={showHotelsMap} setShowHotelsMap={setShowHotelsMap} />}
+
             {/* <div className="container-home"> </div> */}
 
+            <div
+                className={`w-full sticky top-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+                    }`}
+            >
+
+
+            </div>
             <Navbar />
             <Header />
-            <div className="homeContainer container mx-auto px-4 lg:px-0">
+            <div className="mb-0 md:mb-14"> </div>
+            <HotelsList />
+
+
+            {/* <Featured /> */}
+
+
+
+            {/* <div className="homeContainer container mx-auto px-4 lg:px-0">
                 <Featured />
 
                 <div className="flex flex-col items-center justify-start w-full">
@@ -62,12 +113,22 @@ export const Home = () => {
                     <div className="h-1 w-full bg-green-500"></div>
                 </div>
                 <FeaturedProperties />
-                {/*                  
-                <h1 className="homeTitle">Get inspiration for your next trip</h1>
-                <GuestFavorites /> */}
+                <div className="flex flex-col items-center justify-start w-full">
+                <div className="flex items-start justify-start md:gap-5 gap-2 w-full">
+        <FontAwesomeIcon icon={faHome} className="text-3xl text-green-500" />
+        <h1 className="homeTitle text-2xl font-bold text-white">
+          {t('favorites.title')}
+        </h1>
+      </div>
+
+                    <div className="h-1 w-full bg-green-500"></div>
+                </div>
+       
+                <GuestFavorites />
 
                 <Maillist />
-            </div>
+            </div> */}
+            <HotelsDisplay />
             <Footer />
 
         </div>

@@ -82,17 +82,19 @@
     "BrowseByPropertyType": "Parcourir par type de propriété",
     "HomesGuestsLove": "Homes invités adorent"
   },
-  "FeaturedProperties": {
-    "perNight": "par nuit",
+"FeaturedProperties": {
+    "propertyDetails": "Détails de la propriété",
+    "totalReviews": "Total des avis",
+    "rating": "Évaluation",
     "ratings": {
       "exceptional": "Exceptionnel",
       "excellent": "Excellent",
-      "veryGood": "Très bon",
+      "veryGood": "Très bien",
       "good": "Bon"
     },
-    "reviews": "avis {{count}}",
-    "city": "Nador",
-    "bookNow": "Réserver maintenant"
+    "perNight": "par nuit",
+    "bookNow": "Réserver maintenant",
+    "showLess": "Montrer moins"
   },
   "footer": {
     "contactUs": "Contactez-nous",
@@ -121,4 +123,62 @@
       },
     "copyright": "© {{year}} Services de réservation professionnels. Tous droits réservés."
   }
-} 
+,
+    "experiences": {
+        "marchica": {
+            "title": "Lagune de Marchica",
+            "description": "Visitez l'une des plus grandes lagunes de la Méditerranée",
+            "price": "À partir de 40 €"
+        },
+        "charrana": {
+            "title": "Plage de Charrana",
+            "description": "Profitez des eaux cristallines de cette magnifique plage",
+            "price": "À partir de 25 €"
+        },
+        "gurugu": {
+            "title": "Excursions au mont Gurugu",
+            "description": "Randonnée sur la montagne emblématique avec vue panoramique sur Nador",
+            "price": "À partir de 35 €"
+        },
+        "souk": {
+            "title": "Visite du Souk Traditionnel",
+            "description": "Découvrez le marché local et la culture rifaine",
+            "price": "À partir de 20 €"
+        },
+        "forks": {
+            "title": "Cap des Trois Fourches",
+            "description": "Visitez le phare historique et la côte spectaculaire",
+            "price": "À partir de 30 €"
+        },
+        "seafood": {
+            "title": "Expérience de Fruits de Mer",
+            "description": "Dégustez des fruits de mer méditerranéens frais dans des restaurants locaux",
+            "price": "À partir de 45 €"
+        },
+        "favorites": {
+    "title": "Maisons appréciées par les invités",
+    "location": "Emplacement",
+    "rating": "Évaluation",
+    "reviews": "Avis",
+    "startingFrom": "À partir de"
+  }
+    }
+  ,
+"mailList": {
+    "title": "Abonnez-vous à notre newsletter",
+    "subtitle": "Recevez les dernières informations",
+    "placeholder": "Entrez votre e-mail",
+    "subscribe": "S'abonner",
+    "successTitle": "Succès",
+    "successMessage": "Votre adresse e-mail a été enregistrée avec succès.",
+    "errorTitle": "Erreur",
+    "errorMessage": "Veuillez entrer une adresse e-mail valide."
+  }
+,
+"currency": {
+  "USD": "Dollar américain",
+  "MAD": "Dirham marocain",
+  "EUR": "Euro",
+  "GBP": "Livre sterling",
+  "JPY": "Yen japonais"
+}}

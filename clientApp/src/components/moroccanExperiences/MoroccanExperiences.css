@@ -1,53 +1,72 @@
 .experiencesContainer {
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     width: 100%;
+    padding: 1rem;
 }
 
 .moroccanExperiences {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding: 1rem;
+    padding: 1.5rem 0;
+    scrollbar-width: none; /* For Firefox */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .moroccanExperiences::-webkit-scrollbar {
-    display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.moroccanExperiences {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    display: none; /* For Chrome, Safari, and Opera */
 }
 
 .experienceItem {
     flex: 0 0 auto;
-    width: 90%; /* Adjust for mobile */
+    width: 85%;
     scroll-snap-align: center;
     height: 400px;
-    background-image: linear-gradient(135deg, #34b5e8 0%, #0f3443 100%);
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    padding: 1px;
+    background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+    border-radius: 20px;
+    transition: transform 0.5s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .experienceItem:hover {
-    box-shadow: 0 4px 15px rgb(255, 102, 1);
-    transform: translateY(-2px);
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Add animated glowing border */
+.experienceItem::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 102, 0, 0.6), rgba(0, 255, 255, 0.6));
+    z-index: -1;
+    filter: blur(15px);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.experienceItem:hover::before {
+    opacity: 1;
 }
 
 .experienceContent {
     background-color: #ffffff;
     height: 100%;
-    border-radius: 11px;
-    transition: all 0.2s ease;
-    overflow: hidden;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease-in-out;
 }
 
 .experienceContent:hover {
@@ -56,68 +75,136 @@
 
 .experienceItem img {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: transform 0.5s ease;
+}
+
+.experienceItem:hover img {
+    transform: scale(1.1);
 }
 
 .experienceTitle {
-    color: #000000;
-    padding: 15px 15px 10px;
-    font-weight: 600;
+    color: #333333;
+    padding: 15px 10px 5px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+    text-align: center;
+}
+
+.experienceItem:hover .experienceTitle {
+    color: #ff5722;
 }
 
 .experienceDesc {
-    color: #f1f1f1;
+    color: #666666;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 0 10px;
+    text-align: justify;
+    margin-top: auto;
 }
 
 .experiencePrice {
-    color: #ff8800;
-    margin-top: 10px;
-    font-weight: 600;
+    color: #ff8c00;
+    margin: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    transition: color 0.3s ease;
 }
 
-/* Optional: Add scroll buttons */
+.experienceItem:hover .experiencePrice {
+    color: #e64a19;
+}
+
+/* Scroll buttons with floating effect */
 .scrollButton {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgb(255, 102, 1);
+    background: linear-gradient(135deg, #ff5722, #e64a19);
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 2;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.scrollButton:hover {
+    transform: scale(1.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 .scrollButton.left {
-    left: -20px;
-    top: 46%;
+    left: 15px;
 }
 
 .scrollButton.right {
-    right: -16px;
-    top: 46%;
+    right: 15px;
 }
 
+/* Responsive design for smaller screens */
+/* Responsive design for smaller screens - Mobile View */
 @media (max-width: 768px) {
-    .experienceItem {
-        flex: 0 0 250px;
-        height: 350px;
+    .moroccanExperiences {
+        display: block; /* Switch from flex to block for vertical stacking */
+        padding: 0;
     }
-    
+
+    .experienceItem {
+        width: 100%; /* Full width for each card */
+        height: auto; /* Adjust height for content */
+        margin-bottom: 1.5rem; /* Space between cards */
+    }
+
     .experienceItem img {
-        height: 160px;
+        height: 200px; /* Adjust image height */
+        border-radius: 15px 15px 0 0; /* Only top corners rounded */
+    }
+
+    .experienceTitle {
+        font-size: 1.2rem; /* Slightly smaller title font */
+        text-align: left; /* Align text to the left */
+        padding: 10px;
+    }
+
+    .experiencePrice {
+        font-size: 1rem; /* Adjust price font size */
+        text-align: left; /* Align price to the left */
+        padding: 0 10px;
+    }
+
+    .experienceDesc {
+        padding: 0 10px;
+        text-align: left; /* Align description text to the left */
+        font-size: 0.9rem;
     }
 }
 
-/* Media query for larger screens */
 @media (min-width: 768px) {
     .experienceItem {
-        width: 270px; /* Or your desired desktop width */
+        width: 280px;
+        height: 400px;
     }
-} 
+
+    .experienceTitle {
+        font-size: 1.4rem;
+    }
+
+    .experiencePrice {
+        font-size: 1.3rem;
+    }
+    
+}

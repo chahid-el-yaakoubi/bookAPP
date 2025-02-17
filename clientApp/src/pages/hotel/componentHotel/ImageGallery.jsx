@@ -56,7 +56,7 @@ export const ImageGallery = ({ photos }) => {
     <>
       {/* Grid Gallery */}
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {photos?.slice(0, 4).map((photo, i) => (
+        {photos.slice(0, 4).map((photo, i) => (
           <div
             key={i}
             className={`${i === 0 ? 'col-span-2 row-span-2' : ''} overflow-hidden rounded-lg cursor-pointer aspect-[4/3]`}

@@ -125,15 +125,15 @@ const HotelsList = () => {
                 ].map(({ type, icon, label }) => (
                   <button
                     key={type}
-                    onClick={() => handleChooseType(type)} style={{lineHeight: "10px"}}
-                    className={` text-[8px] px-1 py-1 rounded-lg transition-all duration-200 flex flex-col items-center gap-2
+                    onClick={() => handleChooseType(type)}
+                    className={`min-w-[80px] px-3 py-2 rounded-lg transition-all duration-200 flex flex-col items-center gap-1
                     ${hotels.some((hotel) => hotel.type === type)
                         ? "bg-primary text-white hover:bg-primary/90 border-b-2 border-primary-dark"
                         : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                       }`}
                   >
-                    <FontAwesomeIcon icon={icon} className="text-[10px]" />
-                    <span>{label}</span>
+                    <FontAwesomeIcon icon={icon} className="text-lg" />
+                    <span className="text-sm whitespace-nowrap">{label}</span>
                   </button>
                 ))}
               </div>

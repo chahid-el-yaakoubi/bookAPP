@@ -108,7 +108,7 @@ export const SearchForm = () => {
   };
 
   return (
-    <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-20">
+    <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-40">
       <div className={`searchItem flex flex-col md:flex-row border-4 border-gray-500 text-black justify-between items-stretch md:items-center rounded-lg bg-white ${isRTL ? 'rtl' : 'ltr'}`}>
         {/* Destination Input */}
         <div className={`searchComponent rounded bg-white test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full md:w-1/3`}>

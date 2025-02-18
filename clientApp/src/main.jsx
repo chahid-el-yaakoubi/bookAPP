@@ -5,7 +5,6 @@ import './index.css';
 import './i18n';
 import { Provider } from 'react-redux';
 import store from './redux/store.js';
-
 // import { BrowserRouter } from 'react-router-dom';
 import { SearchContextProvider } from './contextApi/SearchContext.jsx';
 import { AuthContextProvider } from './contextApi/AuthContext.jsx';
@@ -25,3 +24,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
   </Provider> ,
 )
+

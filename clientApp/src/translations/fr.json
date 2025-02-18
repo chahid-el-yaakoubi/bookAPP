@@ -20,6 +20,8 @@
     "register": "S'inscrire",
     "profile": "Profil",
     "logout": "Déconnexion",
+    "saved": "Enregistrés",
+    "partner": "Partenaire",
     "confirmLogout": "Confirmer la déconnexion",
     "logoutMessage": "Etes-vous sûr de vouloir vous déconnecter ?",
     "cancel": "Annuler",
@@ -181,4 +183,59 @@
   "EUR": "Euro",
   "GBP": "Livre sterling",
   "JPY": "Yen japonais"
-}}
+},
+"partnerWelcome": {
+  "hero": {
+    "title": "Développez votre entreprise avec Axistay",
+    "subtitle": "Rejoignez notre marketplace et atteignez des clients à la recherche de propriétés, voitures, boutiques et services",
+    "becomePartner": "Devenir partenaire"
+  },
+  "categories": {
+    "title": "Que souhaitez-vous proposer ?",
+    "realEstate": {
+      "title": "Immobilier",
+      "description": "Vendre ou louer des propriétés"
+    },
+    "rentalHomes": {
+      "title": "Locations de vacances",
+      "description": "Proposer des locations saisonnières"
+    },
+    "carRental": {
+      "title": "Location de voitures",
+      "description": "Louer des véhicules"
+    },
+    "shops": {
+      "title": "Boutiques",
+      "description": "Proposer des espaces commerciaux"
+    },
+    "homeServices": {
+      "title": "Services à domicile",
+      "description": "Offrir des services d'entretien"
+    }
+  },
+  "benefits": {
+    "title": "Pourquoi devenir partenaire ?",
+    "platform": {
+      "title": "Plateforme tout-en-un",
+      "description": "Gérez votre entreprise depuis un seul tableau de bord"
+    },
+    "customers": {
+      "title": "Large base de clients",
+      "description": "Accédez à des milliers de clients potentiels"
+    },
+    "payments": {
+      "title": "Paiements sécurisés",
+      "description": "Traitement fiable des paiements"
+    },
+    "growth": {
+      "title": "Outils de croissance",
+      "description": "Support analytique et marketing"
+    }
+  },
+  "getStarted": {
+    "title": "Prêt à commencer ?",
+    "subtitle": "Rejoignez des milliers de partenaires prospères sur Axistay et développez votre entreprise dès aujourd'hui",
+    "createListing": "Créer votre annonce"
+  }
+}
+}

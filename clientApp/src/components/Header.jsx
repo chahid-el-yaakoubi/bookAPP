@@ -128,8 +128,8 @@ export const Header = ({ type }) => {
   };
 
   return (
-    <div className="sticky md:relative top-0 flex justify-center  z-40 md:z-10 bg-primary  md:pb-14 w-full">
-      <div className="container flex flex-col justify-center items-center w-full px-4 md:ps-20">
+    <div className="sticky md:relative top-0 flex justify-center z-50 md:z-30 bg-primary  md:pb-14 w-full">
+      <div className="container-fluid px-10 lg:px-16 xl:px-20  flex flex-col justify-center items-center w-full px-4 md:ps-20">
         <div className="w-full p-2 text-center rounded-b-lg overflow-x-auto">
           <div className="flex items-center justify-start gap-2 md:gap-10 mx-auto min-w-max">
             <Link to={'/'} className="min-w-[70px] md:min-w-[80px]">

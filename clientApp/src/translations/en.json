@@ -20,6 +20,8 @@
     "register": "Register",
     "profile": "Profile",
     "logout": "Logout",
+    "saved": "Saved",
+    "partner": "Partner",
     "confirmLogout": "Confirm Logout",
     "logoutMessage": "Are you sure you want to logout?",
     "cancel": "Cancel",
@@ -313,6 +315,60 @@
     "EUR": "Euro",
     "GBP": "British Pound",
     "JPY": "Japanese Yen"
+  },
+  "partnerWelcome": {
+    "hero": {
+      "title": "Grow Your Business with Axistay",
+      "subtitle": "Join our marketplace and reach customers looking for properties, cars, shops, and services",
+      "becomePartner": "Become a Partner"
+    },
+    "categories": {
+      "title": "What Would You Like to List?",
+      "realEstate": {
+        "title": "Real Estate",
+        "description": "Sell or rent properties"
+      },
+      "rentalHomes": {
+        "title": "Rental Homes",
+        "description": "List vacation rentals"
+      },
+      "carRental": {
+        "title": "Car Rental",
+        "description": "Rent out vehicles"
+      },
+      "shops": {
+        "title": "Shops",
+        "description": "List retail spaces"
+      },
+      "homeServices": {
+        "title": "Home Services",
+        "description": "Offer maintenance services"
+      }
+    },
+    "benefits": {
+      "title": "Why Partner With Us?",
+      "platform": {
+        "title": "All-in-One Platform",
+        "description": "Manage your business from one dashboard"
+      },
+      "customers": {
+        "title": "Large Customer Base",
+        "description": "Access thousands of potential customers"
+      },
+      "payments": {
+        "title": "Secure Payments",
+        "description": "Reliable payment processing"
+      },
+      "growth": {
+        "title": "Growth Tools",
+        "description": "Analytics and marketing support"
+      }
+    },
+    "getStarted": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of successful partners on Axistay and start growing your business today",
+      "createListing": "Create Your Listing"
+    }
   }
 }
 

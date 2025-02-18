@@ -20,6 +20,8 @@
     "register": "Registrarse",
     "profile": "Perfil",
     "logout": "Cerrar sesión",
+    "saved": "Guardados",
+    "partner": "Socio",
     "confirmLogout": "Confirmar cierre de sesión",
     "logoutMessage": "¿Está seguro de que desea cerrar la sesión?",
     "cancel": "Cancelar",
@@ -183,5 +185,59 @@
     "EUR": "Euro",
     "GBP": "Libra esterlina",
     "JPY": "Yen japonés"
+  },
+  "partnerWelcome": {
+    "hero": {
+      "title": "Haz crecer tu negocio con Axistay",
+      "subtitle": "Únete a nuestro marketplace y llega a clientes que buscan propiedades, coches, tiendas y servicios",
+      "becomePartner": "Conviértete en socio"
+    },
+    "categories": {
+      "title": "¿Qué te gustaría anunciar?",
+      "realEstate": {
+        "title": "Bienes raíces",
+        "description": "Vender o alquilar propiedades"
+      },
+      "rentalHomes": {
+        "title": "Alquileres vacacionales",
+        "description": "Publicar alquileres de vacaciones"
+      },
+      "carRental": {
+        "title": "Alquiler de coches",
+        "description": "Alquilar vehículos"
+      },
+      "shops": {
+        "title": "Tiendas",
+        "description": "Publicar espacios comerciales"
+      },
+      "homeServices": {
+        "title": "Servicios para el hogar",
+        "description": "Ofrecer servicios de mantenimiento"
+      }
+    },
+    "benefits": {
+      "title": "¿Por qué asociarte con nosotros?",
+      "platform": {
+        "title": "Plataforma todo en uno",
+        "description": "Gestiona tu negocio desde un solo panel"
+      },
+      "customers": {
+        "title": "Gran base de clientes",
+        "description": "Accede a miles de clientes potenciales"
+      },
+      "payments": {
+        "title": "Pagos seguros",
+        "description": "Procesamiento de pagos confiable"
+      },
+      "growth": {
+        "title": "Herramientas de crecimiento",
+        "description": "Soporte analítico y de marketing"
+      }
+    },
+    "getStarted": {
+      "title": "¿Listo para empezar?",
+      "subtitle": "Únete a miles de socios exitosos en Axistay y comienza a hacer crecer tu negocio hoy",
+      "createListing": "Crear tu anuncio"
+    }
   }
 }

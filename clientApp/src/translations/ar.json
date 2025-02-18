@@ -20,6 +20,8 @@
     "register": "إنشاء حساب",
     "profile": "الملف الشخصي",
     "logout": "تسجيل الخروج",
+    "saved": "محفوظات",
+    "partner": "شريك",
     "confirmLogout": "تأكيد تسجيل الخروج",
     "logoutMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
     "cancel": "إلغاء",
@@ -182,6 +184,62 @@
     "EUR": "يورو",
     "GBP": "جنيه إسترليني",
     "JPY": "ين ياباني"
+  },
+  "partnerWelcome": {
+    "hero": {
+      "title": "نمِّ أعمالك مع Axistay",
+      "subtitle": "انضم إلى سوقنا وتواصل مع العملاء الباحثين عن العقارات والسيارات والمتاجر والخدمات",
+      "becomePartner": "كن شريكاً"
+    },
+    "categories": {
+      "title": "ماذا تريد أن تعرض؟",
+      "realEstate": {
+        "title": "العقارات",
+        "description": "بيع أو تأجير العقارات"
+      },
+      "rentalHomes": {
+        "title": "منازل للإيجار",
+        "description": "عرض إيجارات العطلات"
+      },
+      "carRental": {
+        "title": "تأجير السيارات",
+        "description": "تأجير المركبات"
+      },
+      "shops": {
+        "title": "المتاجر",
+        "description": "عرض المساحات التجارية"
+      },
+      "homeServices": {
+        "title": "خدمات المنازل",
+        "description": "تقديم خدمات الصيانة"
+      }
+    },
+    "benefits": {
+      "title": "لماذا تشترك معنا؟",
+      "platform": {
+        "title": "منصة متكاملة",
+        "description": "أدر أعمالك من لوحة تحكم واحدة"
+      },
+      "customers": {
+        "title": "قاعدة عملاء كبيرة",
+        "description": "الوصول إلى آلاف العملاء المحتملين"
+      },
+      "payments": {
+        "title": "مدفوعات آمنة",
+        "description": "معالجة مدفوعات موثوقة"
+      },
+      "growth": {
+        "title": "أدوات النمو",
+        "description": "تحليلات ودعم تسويقي"
+      }
+    },
+    "getStarted": {
+      "title": "مستعد للبدء؟",
+      "subtitle": "انضم إلى آلاف الشركاء الناجحين على Axistay وابدأ في تنمية أعمالك اليوم",
+      "createListing": "أنشئ إعلانك"
+    }
   }
 }
+
+
 

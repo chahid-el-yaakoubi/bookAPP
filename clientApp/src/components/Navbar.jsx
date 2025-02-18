@@ -180,7 +180,7 @@ export const Navbar = () => {
     return (
         <div className="relative w-full max-h-[100px]">
             <div className="shadow-xl w-full bg-primary">
-                <nav className="container mx-auto navbar w-full flex items-center justify-between py-4 px-6">
+                <nav className="container-fluid px-10 navbar w-full flex items-center justify-between py-4 px-6">
                     {/* Logo */}
                     <Link to={'/'} >
                         <Logo />
@@ -290,17 +290,24 @@ export const Navbar = () => {
                                                 {t('navbar.profile')}
                                             </button>
                                             <button
-                                                onClick={() => setShowConfirmModal(true)}
-                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
-                                            >
-                                                {t('navbar.logout')}
-                                            </button>
-                                            <button
                                                 onClick={() => navigate("/saved")}
                                                 className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
                                             >
                                                 {t('navbar.saved')}
                                             </button>
+                                            <button
+                                                onClick={() => navigate("/hosting")}
+                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
+                                            >
+                                                {t('navbar.partner')}
+                                            </button>
+                                            <button
+                                                onClick={() => setShowConfirmModal(true)}
+                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
+                                            >
+                                                {t('navbar.logout')}
+                                            </button>
+                                            
                                         </div>
                                     </div>
                                 )}

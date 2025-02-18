@@ -79,100 +79,95 @@ const HotelsList = () => {
   };
 
   return (
-    <div
-      className={`sticky top-20 md:top-0 left-0 bg-primary  z-40 transition-all duration-300 ${isAtTop ? " w-[80%] mx-auto" : "w-full"
-        }`}
-    >
-      <div className="rounded-lg shadow-sm p-2 w-full">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 w-full md:w-auto ">
-
-          {!showButton && (
-            <button
-              onClick={scrollToTop}
-              className=" w-10 h-10 bg-blue text-white p-3 rounded-full shadow-lg hover:bg-blue transition me-20 md:hidden"
-            >
-              Welecome
-            </button>
-          )}
-          {/* Add a "to top" button */}
-
-          {showButton && (
-
-            <div className="md:hidden ">
-              <Logo />
-
-            </div>
-           
-          )}
-
-          {showButton && (
-            <SearchMobile />
-          )}
-
-          {showButton && (
-            <button
-              onClick={scrollToTop}
-              className=" w-14 h-14  text-white p-3 rounded-xl shadow-lg bg-blue hover:bg-blue transition me-20 hidden  md:block "
-            >
-               Top ⬆️ 
-            </button>
-          )}
-
-
-
-          <div className="hidden md:block w-full">
-            <div className="flex  flex-row gap-2 sm:gap-4 overflow-x-auto pb-2 sm:pb-0 max-w-[calc(100%-100px)]    ">
-
-
-              {/* Add a "Show All" button */}
-              <button
-                onClick={() => handleChooseType("all")}
-                className="transition-all duration-200 ease-in-out border px-2 sm:px-4 py-1.5 rounded-lg border-gray-200 cursor-pointer flex items-center gap-1.5 text-[6px] sm:text-base flex-shrink-0 justify-center w-[90px] sm:w-[110px] bg-white text-gray-900 hover:bg-gray-100"
-              >
-                <FontAwesomeIcon icon={faArrowDownWideShort} className="text-base sm:text-lg" />
-                <span className="whitespace-nowrap">Tout afficher</span>
-              </button>
-
-              {/* Type buttons */}
-              {[
-                { type: "house", icon: faHouse, label: "Maison" },
-                { type: "penthouse", icon: faHouse, label: "Penthouse" },
-                { type: "studio", icon: faHouse, label: "Studio" },
-                { type: "duplex", icon: faHouse, label: "Deplux" },
-                { type: "apartment", icon: faHouseFlag, label: "Appartement" },
-                { type: "hotel", icon: faHotel, label: "Hôtel" },
-                { type: "villa", icon: faSwimmingPool, label: "Villa" },
-              ].map(({ type, icon, label }) => (
+    <div className="w-full ">
+      <div
+        className={` top-20 md:top-0 left-0 bg-white shadow-sm  transition-all duration-300 ${isAtTop ? "w-[90%] mx-auto rounded-xl z-30 sticky" : "w-full z-50 fixed"
+          }`}
+      >
+        <div className="container mx-auto px-4  ">
+          <div className="flex items-center justify-between gap-4">
+            {/* Mobile Logo and Back to Top */}
+            <div className="flex items-center md:hidden">
+              {showButton ? (
+                <Logo />
+              ) : (
                 <button
-                  key={type}
-                  onClick={() => handleChooseType(type)}
-                  className={`transition-all duration-200 ease-in-out bg-primary text-white  hover:bg-primary/90 px-2 sm:px-4 py-1.5 rounded-lg cursor-pointer flex  flex-col items-center gap-1.5 text-[6px] sm:text-base flex-shrink-0 justify-center w-auto ${hotels.some((hotel) => hotel.type === type)
-                    ? "bg-primary-dark hover:bg-primary-dark  border-b-4"
-                    : ""
-                    }`}
+                  onClick={scrollToTop}
+                  className="w-10 h-10 bg-primary text-white rounded-full shadow-md hover:bg-primary/90 transition flex items-center justify-center"
                 >
-                  <FontAwesomeIcon icon={icon} className="text-base sm:text-sm" />
-                  <span className="whitespace-nowrap">{label}</span>
+                  <span className="text-sm">Back</span>
                 </button>
-              ))}
+              )}
             </div>
+
+            {/* Mobile Search */}
+            {showButton && <SearchMobile />}
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:block flex-1">
+              <div className="flex items-center gap-3 overflow-x-auto py-2 scrollbar-hide">
+                <button
+                  onClick={() => handleChooseType("all")}
+                  className="min-w-[120px] px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 text-gray-700"
+                >
+                  <FontAwesomeIcon icon={faArrowDownWideShort} className="text-lg" />
+                  <span className="text-sm">Tout afficher</span>
+                </button>
+
+                {[
+                  { type: "house", icon: faHouse, label: "Maison" },
+                  { type: "penthouse", icon: faHouse, label: "Penthouse" },
+                  { type: "studio", icon: faHouse, label: "Studio" },
+                  { type: "duplex", icon: faHouse, label: "Duplex" },
+                  { type: "apartment", icon: faHouseFlag, label: "Appartement" },
+                  { type: "hotel", icon: faHotel, label: "Hôtel" },
+                  { type: "villa", icon: faSwimmingPool, label: "Villa" },
+                ].map(({ type, icon, label }) => (
+                  <button
+                    key={type}
+                    onClick={() => handleChooseType(type)} style={{lineHeight: "10px"}}
+                    className={` text-[8px] px-1 py-1 rounded-lg transition-all duration-200 flex flex-col items-center gap-2
+                    ${hotels.some((hotel) => hotel.type === type)
+                        ? "bg-primary text-white hover:bg-primary/90 border-b-2 border-primary-dark"
+                        : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      }`}
+                  >
+                    <FontAwesomeIcon icon={icon} className="text-[10px]" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Back to Top */}
+            {showButton && (
+              <button
+                onClick={scrollToTop}
+                className="hidden md:flex w-12 h-12 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition items-center justify-center"
+              >
+                <span>⬆️</span>
+              </button>
+            )}
+
+            {/* Filters Button */}
+            <button
+              onClick={() => setShowModel(true)}
+              className="px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 text-gray-700"
+            >
+              <FontAwesomeIcon icon={faSliders} className="text-lg" />
+              <span>Filtres</span>
+            </button>
           </div>
-
-          {/* Filters button */}
-          <button
-            onClick={() => setShowModel(true)}
-            className="transition-all duration-200 ease-in-out border px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-50 flex items-center gap-2 justify-center flex-shrink-0 border-gray-200 text-gray-700 text-sm sm:text-base bg-white min-w-[90px]"
-          >
-            <FontAwesomeIcon icon={faSliders} className="text-lg" />
-            <span>Filtres</span>
-          </button>
         </div>
+
+        {/* Filter module */}
+
       </div>
-
-
-      {/* Filter module */}
       {showModel && <FilterModule onClose={() => setShowModel(false)} />}
+
     </div>
+
+
   );
 };
 

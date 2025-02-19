@@ -43,8 +43,8 @@ export const Home = () => {
     }, [lastScrollY]);
 
     return (
-        <div className="home bg-blue/40 ">
-            <div className="fixed bg-blue/40  top-0 left-0 right-0 -z-10 max-h-screen"></div>
+        <div className="home bg-blue/50 ">
+            <div className="fixed bg-blue/90   top-0 left-0 right-0 -z-10 max-h-screen"></div>
 
             <div className="fixed bottom-20 right-[5%] z-50">
                 <button className='bg-black text-white p-2  text-xl rounded ' onClick={() => setShowHotelsMap(!showHotelsMap)}>

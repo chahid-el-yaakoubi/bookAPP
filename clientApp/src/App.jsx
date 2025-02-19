@@ -54,7 +54,7 @@ function App() {
     // <Provider store={store}>
     <TransContextProvider>
       <BrowserRouter>
-      <div  dir={`${t("dir")}`} >
+      <div dir={t('dir')}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/maps" element={<MapComponent />} />
@@ -80,9 +80,7 @@ function App() {
       </BrowserRouter>
     </TransContextProvider>
     // </Provider>
-  <caption>hello word 
-    
-  </caption>
+  )
 }
 
 export default App;

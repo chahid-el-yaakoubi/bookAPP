@@ -52,14 +52,15 @@ const HotelsList = () => {
   // Handle sorting
   const [isAtTop, setIsAtTop] = useState(true);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsAtTop(window.scrollY === 0);
-    };
+useEffect(() => {
+  const handleScroll = () => {
+    setIsAtTop(window.scrollY <= 200); // Changes state when scrolling past 200px
+  };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
 
 
   // btn go to top
@@ -81,7 +82,7 @@ const HotelsList = () => {
   return (
     <div className="w-full ">
       <div
-        className={` top-20 md:top-0 left-0 bg-white shadow-sm  transition-all duration-300 ${isAtTop ? "w-[90%] mx-auto rounded-xl z-30 sticky" : "w-full z-50 fixed"
+        className={` top-20 md:top-0 left-0 py-1  shadow-sm  transition-all duration-300 ${isAtTop ? "w-[84%] mx-auto rounded-xl  sticky bg-white" : "w-full z-50 fixed bg-primary"
           }`}
       >
         <div className="container mx-auto px-4  ">
@@ -91,12 +92,8 @@ const HotelsList = () => {
               {showButton ? (
                 <Logo />
               ) : (
-                <button
-                  onClick={scrollToTop}
-                  className="w-10 h-10 bg-primary text-white rounded-full shadow-md hover:bg-primary/90 transition flex items-center justify-center"
-                >
-                  <span className="text-sm">Back</span>
-                </button>
+                
+                  <span className="text-sm text-orange-500">Welcome</span>
               )}
             </div>
 

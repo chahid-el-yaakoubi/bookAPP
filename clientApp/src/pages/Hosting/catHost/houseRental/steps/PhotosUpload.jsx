@@ -1,26 +1,57 @@
 import { useState } from 'react';
-import imageCompression from 'browser-image-compression'; // You'll need to install this package
 
 const PhotosUpload = ({ propertyData, setPropertyData }) => {
     const [uploadError, setUploadError] = useState('');
     const MIN_PHOTOS = 5;
     const MAX_PHOTOS = 15;
     const MAX_FILE_SIZE_MB = 5;
-    
-    const compressImage = async (file) => {
-        const options = {
-            maxSizeMB: 1, // Compress to 1MB
-            maxWidthOrHeight: 1920, // Max dimension
-            useWebWorker: true
-        };
 
-        try {
-            const compressedFile = await imageCompression(file, options);
-            return compressedFile;
-        } catch (error) {
-            console.error('Error compressing image:', error);
-            throw new Error('Failed to compress image');
-        }
+    const compressImage = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const maxSize = 1920;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxSize) {
+                            height *= maxSize / width;
+                            width = maxSize;
+                        }
+                    } else {
+                        if (height > maxSize) {
+                            width *= maxSize / height;
+                            height = maxSize;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            resolve(blob);
+                        },
+                        'image/jpeg',
+                        0.7 // Adjust the quality here
+                    );
+                };
+                img.onerror = (error) => {
+                    reject(error);
+                };
+            };
+            reader.onerror = (error) => {
+                reject(error);
+            };
+        });
     };
 
     const validateFile = (file) => {
@@ -214,4 +245,4 @@ const PhotosUpload = ({ propertyData, setPropertyData }) => {
     );
 };
 
-export default PhotosUpload; 
+export default PhotosUpload;

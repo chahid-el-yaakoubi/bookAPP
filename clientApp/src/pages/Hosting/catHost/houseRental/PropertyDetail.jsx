@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
-import { FaArrowLeft, FaEdit, FaEye, FaCog, FaCalendarAlt, FaImage, FaDollarSign, FaHome, FaList, FaChartLine, FaBed, FaMapMarkerAlt, FaUserFriends, FaKey, FaClipboardList } from 'react-icons/fa';
+import { FaArrowLeft, FaEdit, FaEye, FaCog, FaCalendarAlt, FaImage, FaDollarSign, FaHome, FaList, FaChartLine, FaBed, FaMapMarkerAlt, FaUserFriends, FaKey, FaClipboardList, FaTimes } from 'react-icons/fa';
 
 const PropertyDetail = () => {
     const { id } = useParams();
@@ -23,13 +23,13 @@ const PropertyDetail = () => {
             price: 250,
             status: "active",
             description: "Beautiful beachfront villa with stunning ocean views",
-            amenities: ["WiFi", "Pool", "Beach Access", "Air Conditioning"],
+            amenities: ["WiFi", "Pool", "Beach Access", "Air Conditioning", "parking"],
             bedrooms: 3,
             bathrooms: 2,
             maxGuests: 6,
             images: [
-                "https://example.com/image1.jpg",
-                "https://example.com/image2.jpg"
+                "https://images.pexels.com/photos/2763964/pexels-photo-2763964.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                "https://images.pexels.com/photos/30694632/pexels-photo-30694632/free-photo-of-charmant-restaurant-en-bord-de-mer-a-malibu-californie.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             ]
         };
         setProperty(mockProperty);

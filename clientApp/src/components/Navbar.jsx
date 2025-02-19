@@ -180,7 +180,7 @@ export const Navbar = () => {
     return (
         <div className="relative w-full max-h-[100px]">
             <div className="shadow-xl w-full bg-primary">
-                <nav className="container-fluid px-10 navbar w-full flex items-center justify-between py-4 px-6">
+                <nav className="container-fluid px-10 lg:px-32 2xl:px-32 navbar w-full flex items-center justify-between py-4">
                     {/* Logo */}
                     <Link to={'/'} >
                         <Logo />

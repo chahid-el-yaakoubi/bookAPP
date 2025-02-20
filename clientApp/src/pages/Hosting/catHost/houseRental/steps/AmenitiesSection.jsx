@@ -1,107 +1,132 @@
-import { FiWifi, FiCoffee } from 'react-icons/fi';
+import React from 'react';
 import { 
-    MdPool, 
-    MdOutlineBalcony, 
-    MdLocalParking, 
-    MdKitchen, 
-    MdTv,
-    MdLocalLaundryService,
-    MdHeatPump,
-    MdElevator,
-    MdHotTub,
-    MdAcUnit
-} from 'react-icons/md';
+  FiWifi, FiTv, FiHome, 
+  FiCamera,
+  FiWind, FiBriefcase 
+} from 'react-icons/fi';
+import { 
+  BiSwim, BiBath, BiChair, BiDish,
+  BiDumbbell, BiWater, BiShower,
+  BiBarChart,
+  BiBaseball,
+  BiFirstPage
+} from 'react-icons/bi';
+import { 
+  AiOutlineSafety, 
+  AiOutlineMedicineBox,
+  AiOutlineFire,
+  AiOutlineAlert
+} from 'react-icons/ai';
+
+const AMENITIES = {
+  guest_favorites: [
+    { id: 'wifi', label: 'Wifi', icon: FiWifi },
+    { id: 'tv', label: 'TV', icon: FiTv },
+    { id: 'kitchen', label: 'Kitchen', icon: FiHome },
+    { id: 'washer', label: 'Washer', icon: FiCamera },
+    { id: 'free_parking', label: 'Free parking on premises', icon: FiCamera },
+    { id: 'paid_parking', label: 'Paid parking on premises', icon: FiCamera },
+    { id: 'air_conditioning', label: 'Air conditioning', icon: FiWind },
+    { id: 'workspace', label: 'Dedicated workspace', icon: FiBriefcase }
+  ],
+  standout_amenities: [
+    { id: 'pool', label: 'Pool', icon: BiSwim },
+    { id: 'hot_tub', label: 'Hot tub', icon: BiBath },
+    { id: 'patio', label: 'Patio', icon: BiChair },
+    { id: 'bbq_grill', label: 'BBQ grill', icon: BiBarChart },
+    { id: 'outdoor_dining', label: 'Outdoor dining area', icon: BiDish },
+    { id: 'fire_pit', label: 'Fire pit', icon: BiFirstPage },
+    { id: 'pool_table', label: 'Pool table', icon: BiDumbbell },
+    { id: 'indoor_fireplace', label: 'Indoor fireplace', icon: BiFirstPage },
+    { id: 'piano', label: 'Piano', icon: BiWater },
+    { id: 'exercise_equipment', label: 'Exercise equipment', icon: BiDumbbell },
+    { id: 'lake_access', label: 'Lake access', icon: BiWater },
+    { id: 'beach_access', label: 'Beach access', icon: BiBaseball},
+    { id: 'ski_in_out', label: 'Ski in/Ski out', icon: BiFirstPage },
+    { id: 'outdoor_shower', label: 'Outdoor shower', icon: BiShower }
+  ],
+  safety_items: [
+    { id: 'smoke_alarm', label: 'Smoke alarm', icon: AiOutlineSafety },
+    { id: 'first_aid', label: 'First aid kit', icon: AiOutlineMedicineBox },
+    { id: 'fire_extinguisher', label: 'Fire extinguisher', icon: AiOutlineFire },
+    { id: 'carbon_monoxide', label: 'Carbon monoxide alarm', icon: AiOutlineAlert }
+  ]
+};
 
 const AmenitiesSection = ({ propertyData, setPropertyData }) => {
-    const amenitiesList = [
-        { id: 'wifi', label: "WiFi", icon: <FiWifi className="w-5 h-5" /> },
-        { id: 'ac', label: "Air Conditioning", icon: <MdAcUnit className="w-5 h-5" /> },
-        { id: 'pool', label: "Private Pool", icon: <MdPool className="w-5 h-5" /> },
-        { id: 'terrace', label: "Terrace", icon: <MdOutlineBalcony className="w-5 h-5" /> },
-        { id: 'breakfast', label: "Breakfast Included", icon: <FiCoffee className="w-5 h-5" /> },
-        { id: 'parking', label: "Free Parking", icon: <MdLocalParking className="w-5 h-5" /> },
-        { id: 'kitchen', label: "Kitchen", icon: <MdKitchen className="w-5 h-5" /> },
-        { id: 'tv', label: "TV", icon: <MdTv className="w-5 h-5" /> },
-        { id: 'washing', label: "Washing Machine", icon: <MdLocalLaundryService className="w-5 h-5" /> },
-        { id: 'heating', label: "Heating", icon: <MdHeatPump className="w-5 h-5" /> },
-        { id: 'elevator', label: "Elevator", icon: <MdElevator className="w-5 h-5" /> },
-        { id: 'hottub', label: "Hot Tub", icon: <MdHotTub className="w-5 h-5" /> }
-    ];
+  const toggleAmenity = (amenityId) => {
+    setPropertyData(prev => {
+      const currentAmenities = prev.property_details.amenities || [];
+      const newAmenities = currentAmenities.includes(amenityId)
+        ? currentAmenities.filter(id => id !== amenityId)
+        : [...currentAmenities, amenityId];
 
-    const handleAmenityToggle = (amenityLabel) => {
-        const updatedAmenities = propertyData.property_details.amenities.includes(amenityLabel)
-            ? propertyData.property_details.amenities.filter(a => a !== amenityLabel)
-            : [...propertyData.property_details.amenities, amenityLabel];
+      return {
+        ...prev,
+        property_details: {
+          ...prev.property_details,
+          amenities: newAmenities
+        }
+      };
+    });
+  };
 
-        setPropertyData({
-            ...propertyData,
-            property_details: {
-                ...propertyData.property_details,
-                amenities: updatedAmenities
-            }
-        });
-    };
+  const AmenityButton = ({ amenity }) => {
+    const isSelected = (propertyData.property_details.amenities || []).includes(amenity.id);
+    const Icon = amenity.icon;
 
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">What amenities do you offer?</h2>
-            
-            {/* Selected Amenities Count */}
-            <div className="bg-blue-50 p-4 rounded-md mb-4">
-                <p className="text-sm font-medium">
-                    Selected amenities: {propertyData.property_details.amenities.length}
-                </p>
-                <p className="text-xs text-gray-600 mt-1">
-                    Select all the amenities available at your property
-                </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {amenitiesList.map((amenity) => (
-                    <div 
-                        key={amenity.id}
-                        onClick={() => handleAmenityToggle(amenity.label)}
-                        className={`
-                            flex items-center p-3 rounded-lg border-2 cursor-pointer
-                            transition-all duration-200 hover:border-blue
-                            ${propertyData.property_details.amenities.includes(amenity.label)
-                                ? 'border-blue bg-blue/5'
-                                : 'border-gray-200'
-                            }
-                        `}
-                    >
-                        <div className={`
-                            mr-3 transition-colors
-                            ${propertyData.property_details.amenities.includes(amenity.label)
-                                ? 'text-blue'
-                                : 'text-gray-500'
-                            }
-                        `}>
-                            {amenity.icon}
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-sm font-medium cursor-pointer">
-                                {amenity.label}
-                            </label>
-                        </div>
-                        <input
-                            type="checkbox"
-                            checked={propertyData.property_details.amenities.includes(amenity.label)}
-                            onChange={() => handleAmenityToggle(amenity.label)}
-                            className="h-4 w-4 text-blue border-gray-300 rounded focus:ring-blue"
-                        />
-                    </div>
-                ))}
-            </div>
-
-            {/* Helper Text */}
-            {propertyData.property_details.amenities.length === 0 && (
-                <p className="text-red-500 text-sm mt-2">
-                    Please select at least one amenity
-                </p>
-            )}
-        </div>
+      <button
+        onClick={() => toggleAmenity(amenity.id)}
+        className={`flex items-center p-4 border rounded-lg w-full text-left transition-colors ${
+          isSelected 
+            ? 'border-black bg-gray-50' 
+            : 'border-gray-300 hover:border-gray-400'
+        }`}
+      >
+        <Icon className="w-6 h-6 mr-4" />
+        <span>{amenity.label}</span>
+      </button>
     );
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-semibold">Tell guests what your place has to offer</h2>
+        <p className="text-gray-600 mt-2">You can add more amenities after you publish your listing.</p>
+      </div>
+
+      <div className="space-y-8">
+        <div>
+          <h3 className="text-lg font-medium mb-4">What about these guest favorites?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {AMENITIES.guest_favorites.map(amenity => (
+              <AmenityButton key={amenity.id} amenity={amenity} />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-medium mb-4">Do you have any standout amenities?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {AMENITIES.standout_amenities.map(amenity => (
+              <AmenityButton key={amenity.id} amenity={amenity} />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-medium mb-4">Do you have any of these safety items?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {AMENITIES.safety_items.map(amenity => (
+              <AmenityButton key={amenity.id} amenity={amenity} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AmenitiesSection; 

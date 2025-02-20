@@ -3,14 +3,23 @@ import Sidebar from './Sidebar';
 import { FaBars } from 'react-icons/fa';
 
 const HostLayout = ({ children }) => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+        const savedState = localStorage.getItem('sidebarState');
+        return savedState ? JSON.parse(savedState) : true;
+    });
     const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem('sidebarState', JSON.stringify(isSidebarOpen));
+    }, [isSidebarOpen]);
 
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768;
             setIsMobile(mobile);
-            setIsSidebarOpen(!mobile);
+            if (mobile) {
+                setIsSidebarOpen(false);
+            }
         };
 
         handleResize();

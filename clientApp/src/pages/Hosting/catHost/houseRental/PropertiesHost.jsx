@@ -44,6 +44,10 @@ const PropertiesHost = () => {
         { value: 'rejected', label: 'Rejected' }
     ];
 
+    const handleHouseClick = (houseId) => {
+        navigate(`/host/properties/${houseId}/details`);
+    };
+
     return (
         <HostLayout>
             <TopNavHost category="properties" />
@@ -88,7 +92,7 @@ const PropertiesHost = () => {
                     </div>
                     <button 
                         className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue/90 transition-colors"
-                        onClick={() => navigate('/host/properties/add')}
+                        onClick={() => navigate('/host/properties/welcome')}
                     >
                         Add Property
                     </button>
@@ -126,8 +130,8 @@ const PropertiesHost = () => {
                             {currentItems.map((house) => (
                                 <tr 
                                     key={house.id} 
-                                    onClick={() => navigate(`/host/properties/${house.id}`)}
-                                    className="cursor-pointer hover:bg-gray-50"
+                                    onClick={() => handleHouseClick(house.id)}
+                                    className="cursor-pointer hover:bg-gray-50 transition-colors"
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap">{house.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{house.location}</td>

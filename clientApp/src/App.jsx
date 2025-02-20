@@ -21,6 +21,8 @@ import ServicesHost from './pages/Hosting/catHost/serveces/ServicesHost';
 import ShopsHost from './pages/Hosting/catHost/shops/ShopsHost';
 import AddProperty from './pages/Hosting/catHost/houseRental/AddProperty';
 import PropertyDetail from './pages/Hosting/catHost/houseRental/PropertyDetail';
+import Details from './pages/Hosting/catHost/houseRental/Details/Details';
+import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 
 
 const property = {
@@ -66,8 +68,10 @@ function App() {
           <Route path="/hosting/login" element={<LoginHost />} />
           {/* properties */}
           <Route path="/host/properties" element={<PropertiesHost />} />
+          <Route path="/host/properties/welcome" element={<Welcome />} />
           <Route path="/host/properties/add" element={<AddProperty />} />
           <Route path="/host/properties/:id" element={<PropertyDetail />} />
+          <Route path="/host/properties/:id/details" element={<Details />} />
           
           {/* vehicles */}
           <Route path="/host/vehicles" element={<VehiclesHost />} />

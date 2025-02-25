@@ -5,8 +5,8 @@ const NavItem = ({ icon, text, active, onClick, showText = true }) => {
         <button
             onClick={onClick}
             className={`
-                w-full flex items-center px-4 py-3
-                ${active ? 'bg-blue ' : 'text-gray-600 hover:bg-gray-50'}
+                w-full flex items-center px-4 py-3 
+                ${active ? 'bg-blue ' : 'text-gray-300 hover:bg-gray-50 hover:text-gray-900'}
                 transition-colors duration-200
             `}
         >

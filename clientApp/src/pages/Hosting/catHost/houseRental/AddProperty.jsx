@@ -79,7 +79,7 @@ const AddProperty = () => {
     }, [propertyData]);
 
     const steps = [
-        { number: 0, title: "Basic Information" },
+        { number: 0, title: "Property Type" },
         { number: 1, title: "Location" },
         { number: 2, title: "Property Details" },
         { number: 3, title: "Amenities" },
@@ -284,7 +284,7 @@ const AddProperty = () => {
                     </div>
 
                     {/* Form Content */}
-                    <div className="bg-white rounded-lg shadow-lg p-6">
+                    <div className="bg-white rounded-lg shadow-lg p-6 ">
                         <h1 className="text-2xl font-semibold mb-6">
                             {steps[currentStep].title}
                         </h1>
@@ -292,7 +292,7 @@ const AddProperty = () => {
                         {renderStepContent()}
                         
                         {/* Navigation Buttons */}
-                        <div className="mt-6 flex justify-between items-center">
+                        <div className="fixed bottom-2 right-0 left-0 container mx-auto mt-6 flex justify-between items-center ">
                             <button
                                 onClick={() => setCurrentStep(prev => prev - 1)}
                                 className={`px-4 py-2 border rounded-md hover:bg-gray-50 transition-colors ${

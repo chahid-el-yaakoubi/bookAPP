@@ -47,36 +47,7 @@ const BasicInformation = ({ propertyData, setPropertyData }) => {
         </div>
       </div>
 
-      {/* Other basic information fields */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Property Title</label>
-          <input
-            type="text"
-            value={propertyData.title}
-            onChange={(e) => setPropertyData(prev => ({
-              ...prev,
-              title: e.target.value
-            }))}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Enter a catchy title for your property"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            value={propertyData.description}
-            onChange={(e) => setPropertyData(prev => ({
-              ...prev,
-              description: e.target.value
-            }))}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Describe your property..."
-          />
-        </div>
-      </div>
+    
     </div>
   );
 };

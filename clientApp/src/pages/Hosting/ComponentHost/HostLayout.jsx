@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import { FaBars } from 'react-icons/fa';
 
+
 const HostLayout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
         const savedState = localStorage.getItem('sidebarState');
@@ -28,7 +29,7 @@ const HostLayout = ({ children }) => {
     }, []);
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100" >
             <Sidebar 
                 isSidebarOpen={isSidebarOpen}
                 setIsSidebarOpen={setIsSidebarOpen}

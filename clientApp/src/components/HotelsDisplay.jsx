@@ -8,14 +8,17 @@ const HotelsDisplay = () => {
   const hotels = useSelector((state) => state.hotels.filteredHotels);
   const navigate = useNavigate();
   const [hoveredHotelId, setHoveredHotelId] = useState(null);
-
+  const hotelcs = [];
   return (
     <div className="container-fluid px-10 xl:px-20 py-20 ">
+
+<HotelCardGrid hotels={hotels} />
+
       {/* <h2 className="text-3xl font-bold mb-4">Welecome 😊 </h2> */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
 
 
-{hotels.map((hotel) => (
+{hotelcs?.map((hotel) => (
           <div
             key={hotel._id}
             className="relative rounded-md md:rounded-xl overflow-hidden cursor-pointer hover:shadow-lg shadow-md transition-all bg-white"
@@ -76,7 +79,7 @@ const HotelsDisplay = () => {
             </div>
           </div>
         ))}
-    {hotels.map((hotel) => (
+    {hotelcs?.map((hotel) => (
           <div
             key={hotel._id}
             className="relative rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-all bg-white"
@@ -136,7 +139,7 @@ const HotelsDisplay = () => {
           </div>
         ))}
 
-{hotels.map((hotel) => (
+{hotelcs?.map((hotel) => (
           <div
             key={hotel._id}
             className="relative rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-all bg-white"
@@ -201,3 +204,133 @@ const HotelsDisplay = () => {
 };
 
 export default HotelsDisplay;
+
+
+
+
+
+
+// Hotel Card Component
+const HotelCard = ({ hotel }) => {
+  const navigate = useNavigate();
+  
+  // Navigate to hotel details page when card is clicked
+  const handleClick = () => {
+    navigate(`/hotel/${hotel._id}`);
+  };
+
+  // Get the main photo URL, or use a placeholder if no photos
+  const mainPhotoUrl = hotel.property_details.photos && 
+    hotel.property_details.photos.length > 0 
+    ? hotel.property_details.photos[0].url 
+    : 'https://via.placeholder.com/300x200?text=No+Image';
+
+  // Format location
+  const location = [
+    hotel.location.neighborhood,
+    hotel.location.city,
+    hotel.location.country
+  ].filter(Boolean).join(', ');
+
+  return (
+    <div 
+      className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer bg-white"
+      onClick={handleClick}
+    >
+      {/* Image Container */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={mainPhotoUrl} 
+          alt={hotel.title || 'Hotel'} 
+          className="w-full h-full object-cover"
+        />
+        {hotel.type && hotel.type.listingType && (
+          <span className="absolute top-3 left-3 bg-white bg-opacity-90 px-2 py-1 text-xs font-semibold rounded">
+            {hotel.type.listingType}
+          </span>
+        )}
+      </div>
+
+      {/* Content Section */}
+      <div className="p-4">
+        <div className="flex justify-between items-start">
+          <h3 className="text-lg font-semibold text-gray-900 truncate">
+            {hotel.title || 'Unnamed Property'}
+          </h3>
+          <div className="flex items-center">
+            <span className="text-sm font-medium text-gray-800">
+              {hotel.property_details.max_guests} guests
+            </span>
+          </div>
+        </div>
+
+        <p className="text-sm text-gray-600 mt-1 truncate">{location}</p>
+
+        <div className="mt-2 flex flex-wrap gap-1">
+          {hotel.property_details.rooms && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              {hotel.property_details.rooms} rooms
+            </span>
+          )}
+          {hotel.property_details.bathrooms && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              {hotel.property_details.bathrooms} baths
+            </span>
+          )}
+          {hotel.type && hotel.type.type && (
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              {hotel.type.type}
+            </span>
+          )}
+        </div>
+
+        {/* Amenities Section */}
+        <div className="mt-3 flex flex-wrap gap-1">
+          {hotel.property_details.spaces && hotel.property_details.spaces.length > 0 && 
+            hotel.property_details.spaces.slice(0, 3).map((space, index) => (
+              <span key={index} className="text-xs text-gray-600">
+                {index > 0 ? ' · ' : ''}{space.type}
+              </span>
+            ))
+          }
+        </div>
+
+        {/* Price Section */}
+        <div className="mt-4 flex justify-between items-end">
+          <div>
+            {hotel.pricing && hotel.pricing.nightly_rate && (
+              <p className="font-semibold text-lg">
+                ${hotel.pricing.nightly_rate}
+                <span className="text-sm font-normal text-gray-600"> night</span>
+              </p>
+            )}
+          </div>
+          
+          {/* Status Badge */}
+          {hotel.status && (
+            <span className={`text-xs px-2 py-1 rounded capitalize ${
+              hotel.status.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+              hotel.status.status === 'approved' ? 'bg-green-100 text-green-800' : 
+              'bg-gray-100 text-gray-800'
+            }`}>
+              {hotel.status.status}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Hotel Card Grid Component to display multiple hotel cards
+const HotelCardGrid = ({ hotels }) => {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+      {hotels.map((hotel) => (
+        <HotelCard key={hotel._id.$oid} hotel={hotel} />
+      ))}
+    </div>
+  );
+};
+
+export { HotelCard, HotelCardGrid };

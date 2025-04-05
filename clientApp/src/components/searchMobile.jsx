@@ -18,7 +18,7 @@ const SearchMobile = () => {
                 <div className="flex items-center p-2 rounded-3xl bg-white shadow-lg" onClick={() => setSearchMobile(!searchMobile)}>
 
                     {/* <FontAwesomeIcon  icon={faSearch} /> */}
-                    <img src="../../public/imges/icons/search-home-icon.jpg" className='w-8 h-8' alt="" />
+                    <img src="../../public/imges/icons/search-home-icon.jpg" className='w-6 h-6' alt="" />
                     <p className='ps-4 pe-2'>search</p>
                 </div>
             </div>

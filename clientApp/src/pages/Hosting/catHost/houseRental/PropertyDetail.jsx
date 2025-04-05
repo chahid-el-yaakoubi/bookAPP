@@ -5,6 +5,8 @@ import TopNavHost from '../../ComponentHost/TopNavHost';
 import { FaArrowLeft, FaEdit, FaEye, FaCog, FaCalendarAlt, FaImage, FaDollarSign, FaHome, FaList, FaChartLine, FaBed, FaMapMarkerAlt, FaUserFriends, FaKey, FaClipboardList, FaTimes } from 'react-icons/fa';
 
 const PropertyDetail = () => {
+
+    
     const { id } = useParams();
     const navigate = useNavigate();
     const [property, setProperty] = useState(null);

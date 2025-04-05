@@ -1,111 +1,140 @@
-import { useState } from 'react';
-import { FaUser, FaBed, FaBath, FaCouch } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { useSelector, useDispatch } from 'react-redux';
 
 const Guests = () => {
-    const [maxGuests, setMaxGuests] = useState(1);
-    const [bedrooms, setBedrooms] = useState(1);
-    const [beds, setBeds] = useState(1);
-    const [bathrooms, setBathrooms] = useState(1);
-    const [allowInfants, setAllowInfants] = useState(true);
-    const [allowPets, setAllowPets] = useState(false);
+  const dispatch = useDispatch();
+  const selectedProperty = useSelector(state => state.property.selectedProperty);
 
-    const Counter = ({ value, onChange, min = 1, max = 50, label, icon: Icon }) => (
-        <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center gap-3">
-                <Icon className="w-5 h-5 text-gray-500" />
-                <span>{label}</span>
-            </div>
-            <div className="flex items-center gap-3">
-                <button
-                    onClick={() => onChange(Math.max(min, value - 1))}
-                    className="w-8 h-8 flex items-center justify-center border rounded-full hover:bg-gray-100"
-                    disabled={value <= min}
-                >
-                    -
-                </button>
-                <span className="w-8 text-center">{value}</span>
-                <button
-                    onClick={() => onChange(Math.min(max, value + 1))}
-                    className="w-8 h-8 flex items-center justify-center border rounded-full hover:bg-gray-100"
-                    disabled={value >= max}
-                >
-                    +
-                </button>
-            </div>
-        </div>
+  const [guestCount, setGuestCount] = useState(selectedProperty?.policies?.rules?.max_guests || 0);
+  const [peopleWidths, setPeopleWidths] = useState([]);
+  const maxGuests = 16;
+
+  // Generate random widths whenever guest count changes
+  useEffect(() => {
+    const newWidths = Array(guestCount).fill(0).map(() =>
+      8 + Math.floor(Math.random() * 6) // Width between 8-13px
     );
+    setPeopleWidths(newWidths);
+  }, [guestCount]);
 
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Guest Capacity</h2>
-            <p className="text-gray-600 mb-6">
-                Define how many guests your property can accommodate.
-            </p>
+  const handleGuestChange = (newValue) => {
+    const newCount = Math.min(Math.max(1, newValue), 16); // Allow up to 30 but display as 16+
+    setGuestCount(newCount);
 
-            <div className="space-y-4">
-                <Counter
-                    value={maxGuests}
-                    onChange={setMaxGuests}
-                    label="Maximum guests"
-                    icon={FaUser}
-                />
-                <Counter
-                    value={bedrooms}
-                    onChange={setBedrooms}
-                    label="Bedrooms"
-                    icon={FaBed}
-                />
-                <Counter
-                    value={beds}
-                    onChange={setBeds}
-                    label="Beds"
-                    icon={FaCouch}
-                />
-                <Counter
-                    value={bathrooms}
-                    onChange={setBathrooms}
-                    label="Bathrooms"
-                    icon={FaBath}
-                    min={0.5}
-                    max={10}
-                />
+    // Create updated property object with the new title
+    const updatedProperty = {
+      ...selectedProperty,
+      policies: {
+        ...selectedProperty.policies,
+        rules: {
+          ...selectedProperty.policies.rules,
+          max_guests: newCount
+        }
+      }
+    };
 
-                <div className="mt-6 space-y-4">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                            <h3 className="font-medium">Allow infants</h3>
-                            <p className="text-sm text-gray-500">Under 2 years</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={allowInfants}
-                                onChange={(e) => setAllowInfants(e.target.checked)}
-                                className="sr-only peer"
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue"></div>
-                        </label>
-                    </div>
 
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                            <h3 className="font-medium">Allow pets</h3>
-                            <p className="text-sm text-gray-500">Additional cleaning fees may apply</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={allowPets}
-                                onChange={(e) => setAllowPets(e.target.checked)}
-                                className="sr-only peer"
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue"></div>
-                        </label>
-                    </div>
-                </div>
+    
+          // Dispatch the update action
+          dispatch({
+            type: UPDATE_PROPERTY,
+            payload: { updatedProperty }
+          });
+      };
+
+      // Creates a person SVG with given color and random width
+      const PersonSvg = ({ color, height = 32, width, index }) => {
+        // Slight variation in heights for visual interest
+        const finalHeight = height - 2 + Math.floor(Math.random() * 4);
+
+        return (
+          <div key={index} className="mx-1 transition-all duration-300">
+            <svg width={width} height={finalHeight} viewBox="0 0 12 24" xmlns="http://www.w3.org/2000/svg">
+              {/* Head */}
+              <circle cx="6" cy="4" r="3.5" fill={color} />
+
+              {/* Body */}
+              <rect x="3" y="8" width="6" height="12" rx="3" fill={color} />
+
+              {/* Legs */}
+              <rect x="3" y="20" width="2" height="8" fill={color} />
+              <rect x="7" y="20" width="2" height="8" fill={color} />
+            </svg>
+          </div>
+        );
+      };
+
+      // Render people icons based on current count
+      const renderPeopleIcons = () => {
+        const colors = [
+          '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+          '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+          '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+          '#B366CC'
+        ];
+
+        // Limit display to max 16 icons
+        const displayCount = Math.min(guestCount, maxGuests);
+        const people = [];
+
+        // Add person icons with random widths
+        for (let i = 0; i < displayCount; i++) {
+          const color = colors[i % colors.length];
+          people.push(
+            <PersonSvg
+              key={i}
+              color={color}
+              height={24}
+              width={peopleWidths[i] || 12}
+              index={i}
+            />
+          );
+        }
+
+        return people;
+      };
+
+      return (
+        <div className="flex flex-col items-center justify-center p-6">
+          <div className="flex items-center justify-center mb-6 min-h-16">
+            {renderPeopleIcons()}
+          </div>
+
+          <div className="text-center mb-8">
+            <p className="text-gray-600">How many guests can fit comfortably in your space?</p>
+          </div>
+
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() => handleGuestChange(guestCount - 1)}
+              className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
+              aria-label="Decrease guests"
+              disabled={guestCount <= 1}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            <div className="mx-6 flex items-baseline">
+              <span className="text-6xl font-bold">{guestCount >= maxGuests ? '16' : guestCount}</span>
+              {guestCount >= maxGuests && <span className="text-6xl font-bold">+</span>}
             </div>
-        </div>
-    );
-};
 
-export default Guests; 
+            <button
+              onClick={() => handleGuestChange(guestCount + 1)}
+              className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
+              aria-label="Increase guests"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4V20M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    export default Guests;

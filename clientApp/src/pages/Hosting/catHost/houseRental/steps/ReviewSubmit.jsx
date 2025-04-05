@@ -1,4 +1,11 @@
+import axios from "axios";
+import { useEffect } from "react";
+
 const ReviewSubmit = ({ propertyData }) => {
+
+
+
+
     return (
         <div className="space-y-6">
             <h2 className="text-xl font-semibold mb-4">Review your listing</h2>
@@ -79,6 +86,7 @@ const ReviewSubmit = ({ propertyData }) => {
                     </div>
                 )}
             </div>
+           
         </div>
     );
 };

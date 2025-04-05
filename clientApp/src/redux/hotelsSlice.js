@@ -39,7 +39,10 @@ const hotelsSlice = createSlice({
   reducers: {
     setHotels: (state, action) => {
       state.hotels = action.payload;
-      state.filteredHotels = action.payload;
+      state.filteredHotels = action.payload.map(hotel => ({
+        ...hotel,
+        spaces: hotel.property_details.spaces || [],
+      }));
       saveToLocalStorage("hotels", action.payload);
     },
     setSelectedFilter: (state, action) => {
@@ -56,7 +59,7 @@ const hotelsSlice = createSlice({
       const { min, max } = action.payload;
       state.filters.priceRange = { min, max };
       state.filteredHotels = state.hotels.filter(
-        (hotel) => hotel.basePrice >= min && hotel.basePrice <= max
+        (hotel) => hotel.pricing.nightly_rate >= min && hotel.pricing.nightly_rate <= max
       );
       saveToLocalStorage("filters", state.filters);
     },

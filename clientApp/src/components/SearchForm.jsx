@@ -51,28 +51,36 @@ export const SearchForm = () => {
   useEffect(() => { localStorage.setItem('destination', destination); }, [destination]);
   useEffect(() => { localStorage.setItem('Options', JSON.stringify(options)); }, [options]);
 
+  // State for dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const cities = ["Nador", "Madrid", "Miami", "Casablanca", "Paris", "Berlin", "Dubai", "New York", "Casablanca", "Paris", "Berlin", "Dubai",];
+  const [filteredCities, setFilteredCities] = useState(cities);
+
   // Add useEffect for handling clicks outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (opendate || openoptions) {
-        const datePickerContainer = document.querySelector('.date-picker-container');
-        const optionsContainer = document.querySelector('.options-container');
-        const dateButton = document.querySelector('.date-button');
-        const optionsButton = document.querySelector('.options-button');
+      const datePickerContainer = document.querySelector('.date-picker-container');
+      const optionsContainer = document.querySelector('.options-container');
+      const dateButton = document.querySelector('.date-button');
+      const optionsButton = document.querySelector('.options-button');
+      const dropdown = document.querySelector('.city-dropdown'); // Add reference for city dropdown
 
-        if (
-          (datePickerContainer && !datePickerContainer.contains(event.target) && !dateButton.contains(event.target)) ||
-          (optionsContainer && !optionsContainer.contains(event.target) && !optionsButton.contains(event.target))
-        ) {
-          setOpendate(false);
-          setOpenOptions(false);
-        }
+      if (
+        (opendate && datePickerContainer && !datePickerContainer.contains(event.target) && !dateButton.contains(event.target)) ||
+        (openoptions && optionsContainer && !optionsContainer.contains(event.target) && !optionsButton.contains(event.target)) ||
+        (isDropdownOpen && dropdown && !dropdown.contains(event.target)) // Close city dropdown
+      ) {
+        setOpendate(false);
+        setOpenOptions(false);
+        setIsDropdownOpen(false); // Close city dropdown
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [opendate, openoptions]);
+  }, [opendate, openoptions, isDropdownOpen]); // Include `isDropdownOpen` in dependencies
+
+
 
   // Handlers
   const handleDateChange = (ranges) => setDateRange([ranges.selection]);
@@ -107,32 +115,58 @@ export const SearchForm = () => {
     setOpendate(false);
   };
 
+
+
   return (
     <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-40">
       <div className={`searchItem flex flex-col md:flex-row border-4 border-gray-500 text-black justify-between items-stretch md:items-center rounded-lg bg-white ${isRTL ? 'rtl' : 'ltr'}`}>
         {/* Destination Input */}
-        <div className={`searchComponent rounded bg-white test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full md:w-1/3`}>
-          <FontAwesomeIcon icon={faMagnifyingGlassLocation} className={isRTL ? 'ml-2' : 'mr-2'} />
-          <input 
-            type="search" 
-            className='placeholder:text-gray-600 w-full h-[50px] p-2  text-gray-900 outline-none ' 
-            placeholder={t('search.whereTo')}
-            value={destination} 
-            onChange={(e) => {
-              setDestination(e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1).toLowerCase());
-              setShowAlert(false);
-            }} 
-            dir={isRTL ? 'ltr' : 'ltr'}
-          />
-          {showAlert && (
-            <div className={`absolute ${isRTL ? 'right-0' : 'left-0'} top-12 bg-red-600 text-white px-3 rounded-md shadow-lg z-50 flex items-center space-x-2 alertInput`}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01m-6.938 1.687A9.956 9.956 0 0112 2.25c5.523 0 10 4.477 10 10s-4.477 10-10 10a9.956 9.956 0 01-7.938-3.937M9.75 15h4.5m0-4.5h-.011" />
-              </svg>
-              <span>{t('search.alertMessage')}</span>
+
+        <div className="relative w-full md:w-1/3">
+          <div className={`searchComponent rounded bg-white test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full`}>
+            <FontAwesomeIcon icon={faMagnifyingGlassLocation} className={isRTL ? 'ml-2' : 'mr-2'} />
+
+            {/* Search Input */}
+            <input
+              type="search"
+              className="placeholder:text-gray-600 w-full h-[50px] p-2 text-gray-900 outline-none"
+              placeholder={t('search.whereTo')}
+              value={destination}
+              onFocus={() => setIsDropdownOpen(true)} // Show dropdown on focus
+              onChange={(e) => {
+                const query = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1).toLowerCase();
+                setDestination(query);
+                setFilteredCities(cities.filter(city => city.toLowerCase().includes(query.toLowerCase())));
+                setIsDropdownOpen(true);
+              }}
+              dir={isRTL ? 'ltr' : 'ltr'}
+            />
+          </div>
+
+          {/* City Suggestions Dropdown */}
+          {isDropdownOpen && (
+            <div className="city-dropdown absolute top-full left-0 w-full bg-white shadow-lg rounded-md mt-1  max-h-80 overflow-auto z-50">
+              {filteredCities.length > 0 ? (
+                filteredCities.map((city, index) => (
+                  <div
+                    key={index}
+                    className="p-2 hover:bg-blue hover:text-white cursor-pointer"
+                    onClick={() => {
+                      setDestination(city);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {city}
+                  </div>
+                ))
+              ) : (
+                <div className="p-2 text-gray-600">{t('search.noResults')}</div>
+              )}
             </div>
           )}
         </div>
+
+
 
         {/* Date Range Picker */}
         <div className={`searchComponent border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} border-blue relative bg-white w-full md:w-1/3`}>
@@ -146,15 +180,15 @@ export const SearchForm = () => {
 
           {opendate && (
             <>
-              <div 
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" 
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
                 onClick={handleCloseDatePicker}
               ></div>
-              
+
               <div className="date-picker-container absolute top-14 left-0 md:-left-48  w-screen md:w-auto">
                 <div className="date-picker-header md:hidden flex justify-between items-center p-4 border-b">
                   <h2 className="text-lg font-semibold text-gray-800">{t('search.selectDates')}</h2>
-                  <button 
+                  <button
                     className="p-2 hover:bg-gray-100 rounded-full"
                     onClick={handleCloseDatePicker}
                   >
@@ -163,7 +197,7 @@ export const SearchForm = () => {
                     </svg>
                   </button>
                 </div>
-                
+
                 <DateRange
                   editableDateInputs
                   onChange={handleDateChange}
@@ -185,7 +219,7 @@ export const SearchForm = () => {
 
         {/* Options Selector */}
         <div className={`searchComponent test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} border-blue relative bg-white w-full md:w-1/3`}>
-          <div className="p-4 cursor-pointer text-sm md:text-base options-button" 
+          <div className="p-4 cursor-pointer text-sm md:text-base options-button"
             onClick={() => {
               setOpenOptions(!openoptions);
               if (opendate) setOpendate(false);
@@ -197,7 +231,9 @@ export const SearchForm = () => {
           </div>
 
           {openoptions && (
-            <div className={`options-container bg-white absolute top-14 ${isRTL ? 'right-0' : 'left-0'} md:left-auto rounded-lg shadow-lg z-50 w-screen md:w-auto`}>
+            <div
+              className={`options-container bg-white absolute top-14 ${isRTL ? 'right-0' : 'left-0'} md:left-auto rounded-lg shadow-lg z-50 w-full  `}
+            >
               <div className="p-4 space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
                 {/* Adults */}
                 <div className="option-item flex items-center justify-between">
@@ -207,7 +243,7 @@ export const SearchForm = () => {
                   </div>
                   <div className="option-counter flex items-center gap-3">
                     <button
-                      className="counter-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleClick('Adult', 'decrease', 1)}
                       disabled={options.Adult <= 1}
                     >
@@ -215,9 +251,9 @@ export const SearchForm = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </button>
-                    <span className="counter-number">{options.Adult}</span>
+                    <span className="font-semibold text-lg">{options.Adult}</span>
                     <button
-                      className="counter-btn"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition"
                       onClick={() => handleClick('Adult', 'increase', 1)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -235,7 +271,7 @@ export const SearchForm = () => {
                   </div>
                   <div className="option-counter flex items-center gap-3">
                     <button
-                      className="counter-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleClick('Children', 'decrease', 0)}
                       disabled={options.Children <= 0}
                     >
@@ -243,9 +279,9 @@ export const SearchForm = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </button>
-                    <span className="counter-number">{options.Children}</span>
+                    <span className="font-semibold text-lg">{options.Children}</span>
                     <button
-                      className="counter-btn"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition"
                       onClick={() => handleClick('Children', 'increase', 0)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -262,7 +298,7 @@ export const SearchForm = () => {
                   </div>
                   <div className="option-counter flex items-center gap-3">
                     <button
-                      className="counter-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleClick('room', 'decrease', 1)}
                       disabled={options.room <= 1}
                     >
@@ -270,9 +306,9 @@ export const SearchForm = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                       </svg>
                     </button>
-                    <span className="counter-number">{options.room}</span>
+                    <span className="font-semibold text-lg">{options.room}</span>
                     <button
-                      className="counter-btn"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-md hover:bg-gray-300 transition"
                       onClick={() => handleClick('room', 'increase', 1)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,15 +319,16 @@ export const SearchForm = () => {
                 </div>
               </div>
             </div>
+
           )}
         </div>
 
         {/* Search Button */}
-        <button 
-          className='bg-blue hover:bg-blue/80 m-1 h-full text-white p-3 rounded gap-2 md:py-auto flex items-center justify-center space-x-2 w- md:w-auto' 
+        <button
+          className='bg-blue hover:bg-blue/80 m-1 h-full text-white p-3 rounded gap-2 md:py-auto flex items-center justify-center space-x-2 w- md:w-auto'
           onClick={handleSearch}
         >
-          <FontAwesomeIcon icon={faSearch} /> 
+          <FontAwesomeIcon icon={faSearch} />
           <span className='text-sm md:text-base'>{t('search.search')}</span>
         </button>
       </div>

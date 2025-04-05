@@ -107,14 +107,9 @@ const ImgHotel = ({ hotelId , type}) => {
             setIsLoading(true);
             const formData = new FormData();
 
-            console.log(1)
-
             selectedFiles.forEach((file) => {
                 formData.append('images', file);
             });
-
-            console.log(2)
-
 
             const response = await axios.post(`/api/${api}/${hotelId}/upload`, formData, {
                 headers: {
@@ -122,20 +117,14 @@ const ImgHotel = ({ hotelId , type}) => {
                 }
             });
 
-            console.log(3)
-
-
             if (response.data.success) {
-            console.log(4)
 
                 // setImages(response.data.hotel.photos);
                 setShowModal(false);
                 setSelectedFiles([]);
                 setShowSuccess(true);
                 reFetch()
-
                 setTimeout(() => setShowSuccess(false), 3000);
-            console.log(5)
 
             } else {
                 throw new Error(response.data.message || 'Upload failed');

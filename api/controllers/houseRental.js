@@ -122,6 +122,7 @@ export const countByType = async (req, res, next) => {
 
 
 export const removeImgs = async (req, res, next) => {
+
     try {
         const houseId = req.params.houseId;
         const { images } = req.body; // Array of image URLs to be removed

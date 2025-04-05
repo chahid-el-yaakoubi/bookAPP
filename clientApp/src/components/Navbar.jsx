@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
 import Login from './Login/login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign, faChevronDown, faHouseUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
-import SearchMobile from './searchMobile'; 
+import SearchMobile from './searchMobile';
 
 
 export const Logo = () => {
@@ -32,7 +32,7 @@ export const Logo = () => {
 
 
 export const Navbar = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['translation', 'head']);
     const [loginForm, setLoginForm] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -180,14 +180,14 @@ export const Navbar = () => {
     return (
         <div className="relative w-full max-h-[100px]">
             <div className="shadow-xl w-full bg-primary">
-                <nav className="container-fluid px-10 lg:px-32 2xl:px-32 navbar w-full flex items-center justify-between py-4">
+                <nav className="container-fluid px-10 lg:px-32 2xl:px-32 navbar w-full flex items-center justify-between py-0 md:py-4">
                     {/* Logo */}
-                    <Link to={'/'} >
+                    <Link to={'/'} className='hidden md:block ' >
                         <Logo />
                     </Link>
 
                     {/* Mobile Navigation */}
-                    <SearchMobile/>
+                    {/* <SearchMobile/> */}
 
 
                     {/* Desktop Navigation */}
@@ -269,49 +269,55 @@ export const Navbar = () => {
 
                         {/* User Menu */}
                         {user ? (
-                            <div className="relative dropdown-container">
-                                <button
-                                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                                    className="flex items-center justify-center space-x-2 border border-white rounded-full py-2 px-4 text-white bg-gradient-to-r from-orange-500 via-orange-100 to-blue  hover:bg-gradient-to-l from-blue via-orange-200  transition-all duration-300"
-                                >
-                                    <div className="h-8  flex items-center justify-center w-[60px]">
-                                        <FontAwesomeIcon icon={faSliders} className='text-xl text-black' />
-                                        <FontAwesomeIcon icon={faUser} className='text-xl ms-4 text-black' />
-                                    </div>
-                                </button>
-
-                                {dropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-lg z-50">
-                                        <div className="py-2">
-                                            <button
-                                                onClick={() => navigate("/profile")}
-                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
-                                            >
-                                                {t('navbar.profile')}
-                                            </button>
-                                            <button
-                                                onClick={() => navigate("/saved")}
-                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
-                                            >
-                                                {t('navbar.saved')}
-                                            </button>
-                                            <button
-                                                onClick={() => navigate("/hosting")}
-                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
-                                            >
-                                                {t('navbar.partner')}
-                                            </button>
-                                            <button
-                                                onClick={() => setShowConfirmModal(true)}
-                                                className="block w-full px-4 py-3 text-left text-white hover:bg-[#333333]"
-                                            >
-                                                {t('navbar.logout')}
-                                            </button>
-                                            
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                           <div className="relative dropdown-container">
+                           <button
+                             onClick={() => setDropdownOpen(!dropdownOpen)}
+                             className="flex items-center justify-center space-x-2 border border-white rounded-full py-2 px-4 text-white bg-gradient-to-r from-orange-500 via-orange-100 to-blue hover:bg-gradient-to-l from-blue via-orange-200 transition-all duration-300"
+                           >
+                             <div className="h-8 flex items-center justify-center w-[60px]">
+                               <FontAwesomeIcon icon={faSliders} className="text-xl text-black" />
+                               <FontAwesomeIcon icon={faUser} className="text-xl ms-4 text-black" />
+                             </div>
+                           </button>
+                           
+                           {dropdownOpen && (
+                             <div className="absolute top-14 left-[-300px] mt-2 w-[400px] bg-primary-dark border border-gray-700 rounded-xl shadow-xl z-50">
+                               <div className="p-2 flex flex-col">
+                                 <button
+                                   onClick={() => setShowConfirmModal(true)}
+                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                 >
+                                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-3 text-lg" />
+                                   {t('translation:navbar.logout')}
+                                 </button>
+                                 
+                                 <button
+                                   onClick={() => navigate("/saved")}
+                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                 >
+                                   <FontAwesomeIcon icon={faHeart} className="mr-3 text-lg" />
+                                   {t('navbar.saved')}
+                                 </button>
+                                 
+                                 <button
+                                   onClick={() => navigate("/hosting")}
+                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                 >
+                                   <FontAwesomeIcon icon={faHouseUser} className="mr-3 text-lg" />
+                                   {t('navbar.partner')}
+                                 </button>
+                                 
+                                 <button
+                                   onClick={() => navigate("/profile")}
+                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                 >
+                                   <FontAwesomeIcon icon={faUser} className="mr-3 text-lg" />
+                                   {t('navbar.profile')}
+                                 </button>
+                               </div>
+                             </div>
+                           )}
+                         </div>
                         ) : (
                             <div className="space-x-2">
                                 <button
@@ -333,13 +339,15 @@ export const Navbar = () => {
 
             {/* Updated Mobile Navigation */}
             <div className={`fixed md:hidden bottom-0 left-0 right-0 w-full bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 transition-transform duration-300 z-50 
-                ${showMobileNav ? 'translate-y-0' : 'translate-y-full'} shadow-lg`}>
+    ${showMobileNav ? 'translate-y-0' : 'translate-y-full'} shadow-lg`}>
                 <div className="flex items-center justify-around py-3 px-4 safe-area-bottom">
+
+                    {/* Search Link */}
                     <Link
                         to="/"
                         className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'search'
-                                ? 'text-white bg-blue'
-                                : 'text-gray-100'
+                            ? 'text-white bg-blue'
+                            : 'text-gray-100'
                             } hover:bg-blue-100 active:scale-95 transition-all`}
                         onClick={() => setActiveTab('search')}
                     >
@@ -347,10 +355,11 @@ export const Navbar = () => {
                         {activeTab === 'search' && <span className="text-xs font-medium">{t('navbar.search')}</span>}
                     </Link>
 
+                    {/* Price Dropdown */}
                     <div
                         className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'price'
-                                ? 'text-white bg-blue'
-                                : 'text-gray-100'
+                            ? 'text-white bg-blue'
+                            : 'text-gray-100'
                             } hover:bg-blue-100 active:scale-95 transition-all`}
                         onClick={() => {
                             setActiveTab('price');
@@ -380,11 +389,12 @@ export const Navbar = () => {
                         )}
                     </div>
 
+                    {/* Language Dropdown */}
                     <div
                         className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'language'
-                                ? 'text-white bg-blue'
-                                : 'text-gray-100'
-                            } hover:bg-blue-100 active:scale-95 transition-all mobile-language-dropdown`}
+                            ? 'text-white bg-blue'
+                            : 'text-gray-100'
+                            } hover:bg-blue-100 active:scale-95 transition-all`}
                         onClick={() => {
                             setActiveTab('language');
                             setMobileLangDropdown(!mobileLangDropdown);
@@ -418,13 +428,14 @@ export const Navbar = () => {
                         )}
                     </div>
 
+                    {/* User Profile / Login/Register */}
                     {user ? (
                         <>
                             <Link
                                 to=""
                                 className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'saved'
-                                        ? 'text-white bg-blue'
-                                        : 'text-gray-100'
+                                    ? 'text-white bg-blue'
+                                    : 'text-gray-100'
                                     } hover:bg-blue-100 active:scale-95 transition-all`}
                                 onClick={() => setActiveTab('saved')}
                             >
@@ -434,13 +445,13 @@ export const Navbar = () => {
                             <Link
                                 to=""
                                 className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'count'
-                                        ? 'text-white bg-blue'
-                                        : 'text-gray-100'
+                                    ? 'text-white bg-blue'
+                                    : 'text-gray-100'
                                     } hover:bg-blue-100 active:scale-95 transition-all`}
                                 onClick={() => setActiveTab('count')}
                             >
                                 <FontAwesomeIcon icon={faUser} className="text-xl" />
-                                {activeTab === 'count' && <span className="text-xs font-medium">Count</span>}
+                                {activeTab === 'count' && <span className="text-xs font-medium">{t('navbar.profile')}</span>}
                             </Link>
                         </>
                     ) : (
@@ -460,6 +471,7 @@ export const Navbar = () => {
                     )}
                 </div>
             </div>
+
 
             {/* Modals */}
             {!user && loginForm && <LoginComponent setLoginForm={setLoginForm} />}

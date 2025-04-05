@@ -19,6 +19,10 @@ import { MapComponent } from '../maps/maps'
 
 
 export const Home = () => {
+
+
+
+
     const { t } = useTranslation();
     const [showHotelsMap, setShowHotelsMap] = React.useState(false);
 
@@ -72,8 +76,8 @@ export const Home = () => {
             {/* <Featured /> */}
 
 
-
-            {/* <div className="homeContainer container mx-auto px-4 lg:px-0">
+{/* 
+            <div className="homeContainer container mx-auto px-4 lg:px-0">
                 <Featured />
 
                 <div className="flex flex-col items-center justify-start w-full">
@@ -127,7 +131,7 @@ export const Home = () => {
                 <GuestFavorites />
 
                 <Maillist />
-            </div> */}
+            </div>  */}
             <HotelsDisplay />
             <Footer />
 

@@ -1,551 +1,446 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+// import { BookingProvider } from './context/BookingContext';
+import { ImageGallery } from './componentHotel/ImageGallery';
+import { BookingCard } from './componentHotel/BookingCard';
+import { MapView } from './componentHotel/Map';
+import { ThingsToKnow } from './componentHotel/ThingsToKnow';
+import { Share, Heart, Globe2 } from 'lucide-react';
+import { BookingProvider } from '../../contexts/BookingContext';
 import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
-
-import './Hotel.css';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch';
-import { SearchContext } from '../../contextApi/SearchContext';
-import { HotelBookingBox } from './componentHotel/HotelBookingBox';
-import { HotelHeader } from './componentHotel/HotelHeader';
-import { ImageGallery } from './componentHotel/ImageGallery';
-import { AreaInfo } from './componentHotel/AreaInfo';
-import { HotelFacilities } from './componentHotel/HotelFacilities';
-import { HouseRules } from '../../components/HouseRules';
-import Footer from '../../components/footer';
-import { FAQ } from '../../components/FAQ';
-import { FeaturedAmenities } from './componentHotel/FeaturedAmenities';
-import { ContactOwnersModule } from '../../components/ContactOwnersModule';
-import { HotelRooms } from './componentHotel/HotelRooms';
-import { PageReload } from '../../components/pageRealod/pageRealod';
-// import { hotelRoomsData } from '../../data/hotelRoomsData';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faInfoCircle, faLocationDot, faConciergeBell, faClipboardList, faFileAlt, faBars, faHome } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { TfiAngleLeft } from "react-icons/tfi";
+import { MdArrowRight } from 'react-icons/md';
+import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt } from "react-icons/fa";
 
-
-
-
-// Add this component for the navigation menu
-const HotelNavMenu = () => {
-  const [activeSection, setActiveSection] = useState('overview');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navRef = useRef(null);
-
-  // Enhanced menu items with icons
-  const menuItems = [
-    { label: "Aperçu", href: "#overview", icon: faHome },
-    { label: "Info & Prix", href: "#info", icon: faInfoCircle },
-    { label: "Localisation", href: "#area", icon: faLocationDot },
-    { label: "Équipements", href: "#facilities", icon: faConciergeBell },
-    { label: "Règlement", href: "#rules", icon: faClipboardList },
-    { label: "Détails", href: "#print", icon: faFileAlt }
-  ];
-
-  // Enhanced scroll spy with Intersection Observer
-  useEffect(() => {
-    const observerOptions = {
-      rootMargin: '-20% 0px -80% 0px', // Adjust these values to control when sections become "active"
-      threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, observerOptions);
-
-    // Observe all sections
-    menuItems.forEach(item => {
-      const element = document.getElementById(item.href.slice(1));
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Improved smooth scroll with offset calculation
-  const handleClick = (e, href) => {
-    e.preventDefault();
-    const element = document.querySelector(href);
-    if (!element) return;
-
-    const navHeight = navRef.current?.offsetHeight || 0;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - navHeight - 20; // Added extra offset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth"
-    });
-  };
-
-  // Toggle mobile menu visibility
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  return (
-    <div ref={navRef} className="border-b sticky left-0 right-0 top-0 bg-primary z-50 shadow-md w-full">
-            {/* <div className="backdrop-blur fixed top-0 left-0 right-0   -z-50 max-h-screen"></div> */}
-
-      <nav className="w-full mx-auto">
-        {/* Mobile Hamburger Icon */}
-        <div className="md:hidden flex justify-between items-center px-4 py-3">
-          <button onClick={toggleMobileMenu} className="text-white">
-            <FontAwesomeIcon icon={faBars} size="lg" />
-          </button>
-        </div>
-
-        {/* Navbar for desktop and mobile */}
-        <ul className="hidden md:flex items-center justify-between px-4 w-full">
-        {menuItems.map((item, index) => (
-          <li key={index} className="flex-shrink-0 min-w-fit">
-            <a
-              href={item.href}
-              onClick={(e) => handleClick(e, item.href)}
-              className={`inline-flex items-center px-3 py-3 text-sm font-medium
-                transition-all duration-200 border-b-2 whitespace-nowrap
-                hover:text-blue hover:border-blue/50
-                ${activeSection === item.href.slice(1)
-                  ? 'border-blue text-blue'
-                  : 'border-transparent text-gray-100 hover:text-gray-300'}`}
-            >
-              <FontAwesomeIcon icon={item.icon} className="mr-2" />
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      {/* Mode Mobile */}
-      {isMobileMenuOpen && (
-        <ul className="flex md:hidden flex-col items-start px-4 py-2 space-y-2 w-full">
-        
-        </ul>
-)}
-       
-       </nav>
-
-      {/* Mobile Dropdown menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-primary w-full px-4 py-3">
-          <ul className="flex flex-col items-center">
-            {menuItems.map((item, index) => (
-              <li key={index} className="flex-shrink-0 w-full">
-                <a
-                  href={item.href}
-                  onClick={(e) => handleClick(e, item.href)}
-                  className={`inline-flex items-center w-full px-3 py-3 text-sm font-medium
-                    transition-all duration-200 border-b-2 whitespace-nowrap
-                    hover:text-blue hover:border-blue/50
-                    ${activeSection === item.href.slice(1)
-                      ? 'border-blue text-blue'
-                      : 'border-transparent text-gray-100 hover:text-gray-300'}`}
-                >
-                  <FontAwesomeIcon icon={item.icon} className="mr-2" />
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Add the professional hotel data
-const professionalHotelData = {
-  id: "h123456",
-  name: "Le Grand Hôtel & Spa",
-  stars: 5,
-  rating: 9.2,
-  reviews: 584,
-  cheapestPrice: 500,
-  address: {
-    street: "123 Avenue de la Mer",
-    city: "Tanger",
-    country: "Maroc",
-    zipCode: "90000",
-    coordinates: {
-      latitude: 35.7595,
-      longitude: -5.8340
-    }
-  },
-  photos: [
-    {
-      id: 1,
-      url: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-      caption: "Façade de l'hôtel",
-      category: "exterior"
-    },
-    {
-      id: 2,
-      url: "https://images.unsplash.com/photo-1582719508461-905c673771fd",
-      caption: "Lobby",
-      category: "interior"
-    },
-    {
-      id: 3,
-      url: "https://images.unsplash.com/photo-1618773928121-c32242e63f39",
-      caption: "Piscine",
-      category: "amenities"
-    },
-    {
-      id: 4,
-      url: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
-      caption: "Restaurant",
-      category: "dining"
-    },
-    {
-      id: 5,
-      url: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461",
-      caption: "Suite Deluxe",
-      category: "rooms"
-    },
-    {
-      id: 6,
-      url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
-      caption: "Spa",
-      category: "wellness"
-    },
-    {
-      id: 7,
-      url: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-      caption: "Terrasse",
-      category: "exterior"
-    },
-    {
-      id: 8,
-      url: "https://images.unsplash.com/photo-1584132915807-fd1f5fbc078f",
-      caption: "Bar",
-      category: "dining"
-    }
+const mockListing = {
+  id: '1',
+  title: 'Bed & Breakfast in Abundant Paradise',
+  location: 'Almegíjar, Andalucía, Spain',
+  images: [
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1600607687120-9e4abefd7e44?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
   ],
-
-  rooms: [
-    'hroom45455',
-    'hroom45456',
-    'hroom45457',
-    'hroom45458',
-    'hroom45459',
+  price: 250,
+  description: 'La Catitera is a beautiful old inn, lovingly restored, nestled at the foothills of the Alpujarras, part of the Sierra Nevada mountain range.\n\nIt is the ideal place for relaxation and contemplation, bird and river song, reading, writing or painting. It sits in a popular walking and biking destination with spectacular mountain villages and is not far from the beach and from Granada ovingly restored, nestled at the foothills of the Alpujarras, part of the Sierra Nevada mountain range.\n\nIt is the ideal place for relaxation and contemplation, bird and river song, reading, writing or painting. It sits in a popular walking and biking destination with spectacular mountain villages and is not far from the beach and from Granada.',
+  host: {
+    name: 'Suzy',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80',
+    rating: 5.0,
+    reviewCount: 17,
+    responseRate: 60,
+    responseTime: 'within a day',
+    description: 'My work: Was once an arts festival co-ordinator but now I\'m engaged in creating a sustainable lifestyle',
+    languages: ['English', 'French', 'Spanish', 'Turkish'],
+    location: 'Lives in Sorvilán, Spain',
+    yearsHosting: 7
+  },
+  amenities: [
+    'Kitchen',
+    'Wifi',
+    'Free parking on premises',
+    'Pool',
+    'TV',
+    'Washer',
+    'Patio or balcony'
   ],
- 
-  amenities: {
-    general: [
-      "WiFi gratuit",
-      "Parking sécurisé",
-      "Réception 24/7",
-      "Conciergerie"
-    ],
-    wellness: [
-      "Spa",
-      "Salle de sport",
-      "Piscine extérieure chauffée",
-      "Hammam traditionnel"
-    ],
-    dining: [
-      "Restaurant gastronomique",
-      "Bar-lounge",
-      "Service en chambre 24/7",
-      "Petit-déjeuner buffet"
-    ]
+  coordinates: {
+    latitude: 36.9,
+    longitude: -3.2
   },
-  areaInfo: {
-    nearbyPlaces: [
-      { name: "Forbes Museum of Tangier", distance: "850 m" },
-      { name: "Jardin de la Mendoubia", distance: "1.9 km" },
-      { name: "Dar el Makhzen", distance: "1.9 km" },
-      { name: "Kasbah Museum", distance: "2 km" },
-      { name: "American Legation Museum", distance: "2.3 km" },
-      { name: "Place Ain Ktiouet", distance: "2.4 km" },
-      { name: "Parc Perdicaris", distance: "3.7 km" },
-      { name: "Cape Malabata", distance: "12 km" }
-    ],
-    restaurants: [
-      { name: "Cafe De Parque", type: "Cafe/Bar", distance: "1.2 km" },
-      { name: "Cafe Hanafta", type: "Cafe/Bar", distance: "1.2 km" },
-      { name: "Salon de the", type: "Cafe/Bar", distance: "1.2 km" }
-    ],
-    publicTransit: [
-      { name: "Tanger Ville", type: "Train", distance: "5 km" },
-      { name: "TGV Depot", type: "Train", distance: "7 km" }
-    ],
-    beaches: [
-      { name: "Tangier Municipal Beach", distance: "3.2 km" },
-      { name: "Malabata", distance: "5 km" },
-      { name: "Plage Ghandouri", distance: "6 km" },
-      { name: "Plage Mrisat", distance: "8 km" }
-    ],
-    airports: [
-      { name: "Tangier Ibn Battuta Airport", distance: "11 km" },
-      { name: "Sania Ramel Airport", distance: "66 km" },
-      { name: "Ceuta Heliport", distance: "78 km" }
-    ]
-  },
-  rules : {
-    TIMING: {
-      CHECK_IN: {
-        timeRange: {
-          from: "13:00",
-          to: "18:00"
-        },
-      },
-      CHECK_OUT: {
-        timeRange: {
-          from: "10:00",
-          to: "12:00"
-        },
-      }
-    },
-    POLICIES: {
-      DAMAGE: {
-        maxAmount: 150,
-      }
-    },
-    GUESTS: {
-      CHILDREN: {
-        isAllowed: true,
-      },
-      AGE_RESTRICTION: {
-        minimumAge: null
-      }
-    },
-    RESTRICTIONS: {
-      PETS: {
-        isAllowed: false
-      },
-      PARTIES: {
-        isAllowed: false
-      }
-    }
+  rating: 5.0,
+  reviewCount: 16,
+  rules: {
+    checkIn: '12:00 PM',
+    maxGuests: 3,
+    pets: false
   }
 };
 
+export function Hotel() {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-export const Hotel = () => {
-  const location = useLocation();
-  const id = location.pathname.split("/")[2];
-  const { data, loading, error } = useFetch(`/api/hotels/find/${id}`);
-
-  // Ensure rooms data is properly structured
-  const hotelData = {
-    ...data,
-    ...professionalHotelData,
-    rooms: data?.rooms?.length ? data.rooms : professionalHotelData.rooms || []
+  const categoryIcons = {
+    restaurants: <FaUtensils className="text-red-500 text-xl" />,
+    publicTransit: <FaTrain className="text-blue-500 text-xl" />,
+    airports: <FaPlane className="text-indigo-500 text-xl" />,
+    attractions: <FaMapMarkerAlt className="text-green-500 text-xl" />,
   };
+  const { data: hotel, error, loading, reFrech } = useFetch(`/api/hotels/find/${id}`);
+  const { data: roomsData, error: roomsError, loading: roomsLoading, reFrech: roomsRefRech } = useFetch(`/api/rooms/${id}/find`);
 
-  // Update the description to use professional data
-  const description = data?.description || `
-    ${hotelData.name} est un établissement de luxe ${hotelData.stars} étoiles situé à ${hotelData.address.city}. 
-    
-    Cet hôtel de prestige offre ${hotelData.rooms.length} chambres et suites élégamment aménagées, 
-    toutes équipées des dernières commodités pour assurer votre confort.
-    
-    Parmi nos installations, vous trouverez ${hotelData.amenities.wellness.join(', ')}.
-    
-    Notre établissement est idéalement situé à proximité des principales attractions de la ville,
-    offrant une expérience unique combinant luxe, confort et commodité.
-    
-    Note des voyageurs: ${hotelData.rating}/10 basée sur ${hotelData.reviews} avis.
-  `;
+  const [images, setImages] = useState([]);
+  const [location, setLocation] = useState({});
+  const [rooms, setRooms] = useState([]);
+  const [type, setType] = useState({});
+  const [policies, setPolicies] = useState({});
+  const [proximities, setProximities] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Update the photos handling
-  const photos = hotelData?.photos?.map(photo => photo.url) || [];
 
-  const { dates, options } = useContext(SearchContext);
-
-  const option_room = options?.rooms || 1;
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  function getNights(date1, date2) {
-    const timenight = Math.abs(date1.getTime() - date2.getTime());
-    const nights = Math.ceil(timenight / oneDay);
-    return nights;
-  }
-
-  const nights = dates?.[0] ? getNights(new Date(dates[0].startDate), new Date(dates[0].endDate)) : 1;
-
-  // console.log(nights); 
-
-  const [showFullDescription, setShowFullDescription] = useState(false);
-
-  // Update the getDisplayDescription function
-  const getDisplayDescription = () => {
-    const lines = description.split('\n').filter(line => line.trim());
-    if (showFullDescription) {
-      return description;
-    }
-    // For mobile, show only first 2 lines, for desktop show 5 lines
-    const lineLimit = window.innerWidth < 768 ? 2 : 5;
-    return lines.slice(0, lineLimit).join('\n');
-  };
-
-  // Add this useEffect to handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      // Force re-render when window is resized
-      setShowFullDescription(false);
+  
+   // Détection du mobile
+   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
     };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    
+    checkMobile(); // Vérification initiale
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Add state for selected rooms
-  const [selectedRooms, setSelectedRooms] = useState({});
+  useEffect(() => {
 
-  // Add handler for room selection
-  const handleRoomSelection = (roomId, quantity) => {
-    setSelectedRooms(prev => ({
-      ...prev,
-      [roomId]: quantity
-    }));
+    if (hotel && hotel.property_details && hotel.property_details.photos) {
+      setImages(hotel.property_details.photos);
+    };
+    if (hotel && hotel.location) {
+      setLocation(hotel.location);
+    };
+    if (hotel && hotel.type) {
+      setType(hotel.type);
+    };
+    if (hotel && hotel.proximities) {
+      setProximities(hotel.proximities);
+    };
+    if(hotel && hotel.policies) {
+      setPolicies(hotel.policies);
+    }
+  }, [hotel])
+
+  useEffect(() => {
+
+    if (roomsData.length > 0) {
+      setRooms(roomsData);
+    }
+  }, [roomsData])
+
+
+  function formatRooms(rooms) {
+    return rooms.map((room, index) => {
+      const { roomName, bedCounts } = room;
+
+      // Filter out beds with count > 0 and format them
+      const bedDetails = Object.entries(bedCounts)
+        .filter(([_, count]) => parseInt(count) > 0)
+        .map(([type, count]) => `${count} ${type}`)
+        .join(", ");
+
+      return `${roomName.charAt(0).toUpperCase() + roomName.slice(1)} ${index + 1} > ${bedDetails}`;
+    });
   };
 
-  // Update total calculation with professional pricing
-  const calculateTotal = () => {
-    return Object.entries(selectedRooms).reduce((total, [roomId, quantity]) => {
-      const room = hotelData.rooms.find(r => r.id === roomId);
-      if (room && quantity > 0) {
-        const priceAfterDiscount = room.price * (1 - (room.discount || 0) / 100);
-        return total + (priceAfterDiscount * nights * quantity);
-      }
-      return total;
-    }, 0);
-  };
+  console.log(formatRooms(rooms).join("\n"));
 
-  // Add ref for the contact section
-  const contactSectionRef = useRef(null);
 
-  // Add scroll handler
-  const scrollToContact = () => {
-    setShowContactModule(true);
-  };
 
-  // Move the showContactModule state near other state declarations
-  const [showContactModule, setShowContactModule] = useState(false);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  if (error) return <div>Une erreur s'est produite...</div>;
+  if (error) {
+    return <div>Error loading property details. Please try again later.</div>;
+  }
 
   return (
-    <div className="bg-blue/40 min-h-screen">
+    <>
 
-      {/* Show ContactOwnersModule conditionally */}
-      {showContactModule && (
-        <ContactOwnersModule onClose={() => setShowContactModule(false)} />
+      <div className='hidden md:block'>
+        <Navbar />
+        <Header />
+      </div>
 
-      )}
+      <BookingProvider >
+        <div className="bg-blue/10">
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8  md:pt-20">
 
-      <Navbar />
-      <Header type="list" />
-      <div className="container mx-auto bg-blue/48 px-0 md:px-4 ">
-        {loading ? (
-          
-          // <div className="flex justify-center items-center h-96">
-          //   <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue"></div>
-          //   <span className="ml-2">Chargement...</span>
-          // </div>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-semibold mb-1 hidden md:block">{hotel?.title}</h1>
 
-          <PageReload />
-        ) : (
-          <>
-            <div className="bg-transparent rounded-lg shadow-lg px-4 md:p-6 mb-8">
-              <div className="flex items-center gap-2 bg-primary p-0 md:p-4 rounded-t-lg">
-                <h6 className="text-blue p-1 text-sm">
-                  <a href="/">Accueil</a>/ <a href="/">Hébergement</a> / 
-                  <a href="/hotels/">Liste</a> / {hotelData?.name || "Nom de l'hôtel"}
-                </h6>
+              <button
+              onClick={()=>{navigate(-1)}}
+              className='flex items-center hap-2 justify-start shadow-lg p-2 rounded hover:bg-gray-100 md:hidden'>
+                <TfiAngleLeft className="w-4 h-4" />
+                <span className="underline ">Homes</span>
+              </button>
+
+
+              <div className="flex gap-4">
+
+                <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                  <Share className="w-4 h-4" />
+                  <span className="underline">Share</span>
+                </button>
+                <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                  <Heart className="w-4 h-4" />
+                  <span className="underline">Save</span>
+                </button>
               </div>
-              <HotelNavMenu />
+            </div>
 
-              {/* Sections with IDs */}
-              <div id="overview" className="scroll-mt-24">
-                <HotelHeader 
-                  hotelData={{
-                    ...hotelData,
-                    name: hotelData.name,
-                    rating: hotelData.rating,
-                    reviews: hotelData.reviews,
-                    address: hotelData.address
-                  }} 
+            <ImageGallery images={images} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-80 md:mt-10">
+              <div className="lg:col-span-2">
+                <h1 className="text-2xl font-semibold mb-1 md:hidden">{hotel?.title}</h1>
+
+                <div className="flex justify-between pb-6 border-b">
+                  <div>
+
+                    <h2 className="text-md md:text-lg flex items-start font-semibold mb-2 text-gray-900">
+                      {type.type ? type.type.charAt(0).toUpperCase() + type.type.slice(1).toLowerCase() : ''}
+                      <span className='px-1'> at </span>
+                      {location.country ? location.country.charAt(0).toUpperCase() + location.country.slice(1).toLowerCase() : ''}
+                      <MdArrowRight />
+                      {location.region ? location.region.charAt(0).toUpperCase() + location.region.slice(1).toLowerCase() : ''}
+                      <MdArrowRight />
+                      {location.city ? location.city.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase() : ''}
+                      <MdArrowRight />
+                      {location.neighborhood ? location.neighborhood.charAt(0).toUpperCase() + location.neighborhood.slice(1).toLowerCase() : ''}
+                    </h2>
+                    <div>
+                      {rooms.map((room, index) => {
+                        const { roomName, bedCounts, amenities } = room;
+
+                        // Check if "Path to room" exists in amenities
+                        const hasPathToRoom = amenities && amenities["Private bathroom"];
+
+                        // Filter beds with count > 0
+
+                        const bedDetails = Object.entries(bedCounts)
+                          .filter(([_, count]) => parseInt(count) > 0)
+                          .map(([type, count]) => `${count} ${type}`)
+                          .join(", ");
+
+                        return (
+                          <h5 key={index} className="text-lg ">
+                            {rooms?.length > 1 && `${roomName.charAt(0).toUpperCase() + roomName.slice(1)} ${index + 1} : `}
+
+                            {bedDetails}
+                            {hasPathToRoom && " + Private Bathroom"}
+                          </h5>
+                        );
+                      })}
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+
+                <div className="py-6 border-b">
+                  <h1 className='text-2xl font-semibold mb-4'>About this place</h1>
+                  <p className="whitespace-pre-line text-gray-700">
+                    {mockListing.description}
+                  </p>
+                </div>
+
+
+
+                <div className="py-6 border-b">
+                  <h2 className="text-2xl font-semibold mb-4">Where you'll sleep</h2>
+                  <div className="flex flex-wrap gap-4">
+                    {rooms.map((room, index) => {
+                      // Format bed details dynamically
+                      const bedDetails = Object.entries(room.bedCounts)
+                        .filter(([_, count]) => parseInt(count, 10) > 0)
+                        .map(([bedType, count]) => `${count} ${bedType}`)
+                        .join(", ");
+
+                      // Check if the room has a private bathroom
+                      const hasPrivateBathroom = room.amenities["Private bathroom"];
+
+                      return (
+                        <div key={room._id.$oid} className="border rounded-xl p-6 max-w-xs">
+                          <img
+                            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80"
+                            alt={room.roomName}
+                            className="rounded-lg w-full h-40 object-cover"
+                          />
+                          <h3 className="font-semibold mb-2">
+                            {room.roomName.charAt(0).toUpperCase() + room.roomName.slice(1)}{" "}
+                            {index + 1}
+                          </h3>
+                          <p className="text-gray-600">
+                            {bedDetails}
+                            {hasPrivateBathroom && " + Private Bathroom"}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+
+
+
+              </div>
+
+              <div className="lg:col-start-3">
+                <BookingCard
+                  pricePerNight={mockListing.price}
+                  rating={mockListing.rating}
+                  reviewCount={mockListing.reviewCount}
                 />
-                <ImageGallery photos={photos} />
               </div>
+            </div>
 
-              <div id="info" className="scroll-mt-24">
-                <div className="flex gap-2 md:gap-12">
-                  <div className="flex-[3]">
-                    <FeaturedAmenities amenities={hotelData.amenities} />
-                    <div className="mb-6">
-                      <h2 className="text-2xl font-semibold my-4">À propos de cet établissement</h2>
-                      <div className="relative bg-gray-100/70 rounded p-4">
-                        <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                          {getDisplayDescription()}
-                        </p>
-                        {description.split('\n').filter(line => line.trim()).length > 5 && (
-                          <button
-                            onClick={() => setShowFullDescription(!showFullDescription)}
-                            className="bg-blue text-white px-4 py-2 rounded-md font-medium mt-2 hover:bg-blue-600 transition-colors"
-                          >
-                            {showFullDescription ? 'Voir moins' : 'Lire plus'}
-                          </button>
-                        )}
-                      </div>
+            <div className="py-8 border-b">
+              <h2 className="text-2xl font-semibold mb-6">Nearby Places</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                {Object.entries(proximities).slice(0, isMobile ? 2 : 4).map(([category, places]) => (
+                  <div key={category} className="p-5 rounded-xl shadow-md">
+                    <div className="flex items-center gap-3 mb-4">
+                      {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
+                      <h3 className="text-lg font-semibold capitalize">
+                        {category.replace(/([A-Z])/g, " $1")}
+                      </h3>
+                    </div>
+                    <ul className="text-gray-700">
+                      {places.map((place) => (
+                        <li key={place.id} className="flex justify-between text-gray-600">
+                          <span className="font-medium">{place.name}</span>
+                          <span className="text-sm text-gray-500">{place.distance} km</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                {
+                isMobile &&
+                  <button 
+                  className="text-blue-500 underline" 
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Show All
+                </button>}
+              </div>
+            </div>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-20">
+                <div className="bg-white p-6 pt-10 w-full h-full z-50 rounded-lg shadow-lg relative animate-slide-up ">
+                <button 
+                      className="mt-4 absolute top-1 right-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" 
+                      onClick={() => setIsModalOpen(false)}
+                    >
+                      X
+                    </button>
+                  <h2 className="text-2xl font-semibold mb-4">All Nearby Places</h2>
+                  <div className="overflow-scroll h-full pb-20">
+                  {Object.entries(proximities).map(([category, places]) => (
+                  <div key={category} className="p-5 rounded-xl shadow-md ">
+                    <div className="flex items-center gap-3 mb-4">
+                      {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
+                      <h3 className="text-lg font-semibold capitalize">
+                        {category.replace(/([A-Z])/g, " $1")}
+                      </h3>
+                    </div>
+                    <ul className="text-gray-700">
+                      {places.map((place) => (
+                        <li key={place.id} className="flex justify-between text-gray-600">
+                          <span className="font-medium">{place.name}</span>
+                          <span className="text-sm text-gray-500">{place.distance} km</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                  </div>
+                  <div className="flex justify-between mt-4">
+                    
+                    
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="py-6 border-b">
+              <h2 className="text-2xl font-semibold mb-4">What this place offers</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {mockListing.amenities.map((amenity) => (
+                  <div key={amenity} className="flex items-center gap-4">
+                    <div className="w-8 h-8 flex items-center justify-center text-gray-600">
+                      ★
+                    </div>
+                    {amenity}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <ThingsToKnow data={policies} />
+ 
+
+            <div className="py-6">
+              <h2 className="text-2xl font-semibold mb-4">Where you'll be</h2>
+              <MapView
+                latitude={mockListing.coordinates.latitude}
+                longitude={mockListing.coordinates.longitude}
+              />
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2">{mockListing.location}</h3>
+                <p className="text-gray-600">
+                  The nearest airports to La Catitera are Granada which is 1:15 hours drive and Málaga which is 1:45 hours drive away. The house is set within a mountainous countryside landscape. There are beautiful walks in the area, interesting towns, villages and even vineyards to visit. Good restaurants are about a 20 minute drive away and the beach and Granada are both accessible. The nearest town is Torvizcon which is a five minute drive and 30 minute river walk...
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-8 border-t">
+              <h2 className="text-2xl font-semibold mb-6">Meet your host</h2>
+              <div className="flex gap-8">
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <img
+                    src={mockListing.host.avatar}
+                    alt={mockListing.host.name}
+                    className="w-20 h-20 rounded-full"
+                  />
+                  <h3 className="font-semibold">{mockListing.host.name}</h3>
+                  <p className="text-gray-600">Host</p>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex gap-8">
+                    <div>
+                      <p className="font-semibold">{mockListing.host.reviewCount}</p>
+                      <p className="text-gray-600">Reviews</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{mockListing.host.rating} ★</p>
+                      <p className="text-gray-600">Rating</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{mockListing.host.yearsHosting}</p>
+                      <p className="text-gray-600">Years hosting</p>
                     </div>
                   </div>
-
-                  {/* Booking Box - hidden on mobile */}
-                  <div className='hidden md:block flex-[1]'>
-                    <HotelBookingBox hotel={hotelData} contactModule={scrollToContact} nights={nights} options={options} dates={dates} />
+                  <p>{mockListing.host.description}</p>
+                  <div className="flex items-center gap-2">
+                    <Globe2 className="w-5 h-5" />
+                    <span>Speaks {mockListing.host.languages.join(', ')}</span>
                   </div>
+                  <p className="text-gray-600">{mockListing.host.location}</p>
+                  <button className="px-6 py-2 border border-black rounded-lg font-semibold hover:bg-gray-100">
+                    Message host
+                  </button>
                 </div>
-
-                {/* Mobile Booking Box - shown only on mobile at the bottom */}
-                <div className='md:hidden mt-6'>
-                  <HotelBookingBox hotel={hotelData} nights={nights} options={options} />
-                </div>
-                
-                <HotelRooms
-                  rooms={hotelData.rooms}
-                  nights={nights}
-                  selectedRooms={selectedRooms}
-                  handleRoomSelection={handleRoomSelection}
-                  calculateTotal={calculateTotal}
-                  scrollToContact={scrollToContact}
-                />
-
-                <div id="area">
-                  <AreaInfo className="scroll-mt-24" hotelData={hotelData} contactModule={scrollToContact} />
-                </div>
-                <div id='facilities' className='scroll-mt-24'>
-                  <HotelFacilities />
-                </div>
-                <div id='rules' className='scroll-mt-24'>
-                  <HouseRules hotelDataRules={hotelData.rules} propertyName={hotelData.name} />
-                </div>
-
-
-
               </div>
-
-
-
-              <div id="print" className="scroll-mt-24">
-                <FAQ hotelData={hotelData} />
-              </div>
-
-
-
             </div>
-          </>
-        )}
-      </div>
-      <div>
-        <Footer />
-      </div>
-    </div>
+          </div>
+        </div>
+      </BookingProvider >
+    </>
+
   );
-};
+}

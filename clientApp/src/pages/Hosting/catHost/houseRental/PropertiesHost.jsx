@@ -1,8 +1,10 @@
 import HostLayout from '../../ComponentHost/HostLayout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
+import axios from 'axios';
+import moment from 'moment'; // Import moment
 
 const PropertiesHost = () => {
     const [statusFilter, setStatusFilter] = useState('all');
@@ -11,16 +13,31 @@ const PropertiesHost = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const [houses, setHouses] = useState([]);
 
-    // Sample house data
-    const houses = [
-        { id: 1, name: "Beachfront Villa", location: "Miami Beach", price: 250, status: "active" },
-        { id: 2, name: "Mountain Cabin", location: "Aspen", price: 180, status: "pending" },
-        { id: 3, name: "City Apartment", location: "New York", price: 150, status: "active" },
-        { id: 4, name: "Lake House", location: "Lake Tahoe", price: 200, status: "rejected" },
-        { id: 5, name: "Country Cottage", location: "Vermont", price: 120, status: "pending" },
-        
-    ];
+    const getData = async () => {
+        try {
+            const response = await axios.get('/api/hotels');
+            const data = response.data.map(hotel => ({
+                id: hotel._id,
+                name: hotel.title,
+                location: hotel.location.city,
+                price: hotel.pricing.nightly_rate,
+                status: hotel.status.status,
+                createdAt: moment(new Date(hotel.createdAt.$date)).fromNow(), // Use moment for relative time
+                updatedAt: moment(new Date(hotel.updatedAt.$date)).fromNow()  // Use moment for relative time
+            }));
+            setHouses(data); // Update state with fetched data
+        } catch (error) {
+            console.error("Error fetching data:", error);
+
+        }
+    };
+
+    // Call getData when the component mounts
+    useEffect(() => {
+        getData();
+    }, []);
 
     const filteredHouses = houses
         .filter(house => statusFilter === 'all' ? true : house.status === statusFilter)
@@ -48,12 +65,21 @@ const PropertiesHost = () => {
         navigate(`/host/properties/${houseId}/details`);
     };
 
+    const deleteHouse = async (houseId) => {
+        try {
+            await axios.delete(`/api/hotels/${houseId}`);
+            setHouses(houses.filter(house => house.id !== houseId)); // Update state to remove deleted house
+        } catch (error) {
+            console.error("Error deleting house:", error);
+        }
+    };
+
     return (
         <HostLayout>
             <TopNavHost category="properties" />
-            <main className="flex-1 p-4 md:p-6 bg-blue/30">
+            <main className="flex-1  md:p-6 bg-blue/30 ">
                 {/* Header with Search and Add Property Button */}
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6 pt-16">
                     <div className="flex items-center gap-4">
                         <h1 className="text-2xl font-bold">Properties</h1>
                         <div className="relative">
@@ -63,7 +89,7 @@ const PropertiesHost = () => {
                             >
                                 <FaSearch className="w-5 h-5 text-gray-600" />
                             </button>
-                            <div className={`absolute left-0 top-full mt-2 z-10 transition-all duration-300 ease-in-out transform
+                            <div className={`absolute left-16 -top-2 mt-2 z-10 transition-all duration-300 ease-in-out transform
                                 ${showSearch ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                                 <div className="relative">
                                     <input
@@ -124,6 +150,9 @@ const PropertiesHost = () => {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price/Night</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -135,7 +164,7 @@ const PropertiesHost = () => {
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap">{house.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{house.location}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">${house.price}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">MAD {house.price}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                             ${house.status === 'active' ? 'bg-green-100 text-green-800' : 
@@ -143,6 +172,19 @@ const PropertiesHost = () => {
                                                 'bg-red-100 text-red-800'}`}>
                                             {house.status.charAt(0).toUpperCase() + house.status.slice(1)}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">Created {house.createdAt}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">Updated {house.updatedAt}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent row click
+                                                deleteHouse(house.id);
+                                            }}
+                                            className="text-red-600 hover:text-red-800"
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

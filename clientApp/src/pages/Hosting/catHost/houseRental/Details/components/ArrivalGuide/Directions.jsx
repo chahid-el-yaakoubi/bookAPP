@@ -1,167 +1,307 @@
 import { useState } from 'react';
-import { FaMapMarkerAlt, FaCar, FaPlane, FaTrain, FaBus, 
-         FaParking, FaImage, FaUpload } from 'react-icons/fa';
+import {
+    FaUtensils, FaSubway, FaPlane, FaHotel,
+    FaSave, FaUmbrellaBeach, FaShoppingCart, FaWalking,
+    FaTimes, FaPlus
+} from 'react-icons/fa';
+import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { useDispatch, useSelector } from 'react-redux';
 
 const Directions = () => {
-    const [address, setAddress] = useState('');
-    const [parkingInstructions, setParkingInstructions] = useState('');
-    const [transportationDetails, setTransportationDetails] = useState({
-        car: '',
-        publicTransport: '',
-        airport: ''
-    });
-    const [photos, setPhotos] = useState([]);
+    const dispatch = useDispatch();
+    const selectedProperty = useSelector(state => state.property.selectedProperty);
 
-    const handlePhotoUpload = (e) => {
-        const files = Array.from(e.target.files);
-        const newPhotos = files.map(file => ({
-            url: URL.createObjectURL(file),
-            file
+    // Initialize state with useState - expanded with new categories
+    const [nearbyItems, setNearbyItems] = useState({
+        restaurants: selectedProperty?.proximities?.restaurants || [],
+        publicTransit: selectedProperty?.proximities?.publicTransit || [],
+        airports: selectedProperty?.proximities?.airports || [],
+        attractions: selectedProperty?.proximities?.attractions || [],
+        beaches: selectedProperty?.proximities?.beaches || [],
+        bookingPlaces: selectedProperty?.proximities?.bookingPlaces || [],
+        walkingRoutes: selectedProperty?.proximities?.walkingRoutes || []
+    });
+    const [isSaving, setIsSaving] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
+
+    // Add a new item to a category
+    const addNearbyItem = (category) => {
+        setNearbyItems(prev => ({
+            ...prev,
+            [category]: [
+                ...prev[category],
+                {
+                    id: Date.now().toString(),
+                    name: '',
+                    distance: '',
+                    details: ''
+                }
+            ]
         }));
-        setPhotos([...photos, ...newPhotos]);
     };
 
-    const removePhoto = (index) => {
-        setPhotos(photos.filter((_, i) => i !== index));
+    // Update a field of an item
+    const updateNearbyItem = (category, id, field, value) => {
+        setNearbyItems(prev => ({
+            ...prev,
+            [category]: prev[category].map(item =>
+                item.id === id ? { ...item, [field]: value } : item
+            )
+        }));
+
+        // Clear any error for this field if it was previously set
+        if (formErrors[`${category}_${id}_${field}`]) {
+            setFormErrors(prev => {
+                const updated = { ...prev };
+                delete updated[`${category}_${id}_${field}`];
+                return updated;
+            });
+        }
+    };
+
+    // Remove an item based on item ID
+    const removeNearbyItem = (category, id) => {
+        const confirmDelete = window.confirm(`Remove this item from ${category}?`);
+        if (!confirmDelete) return;
+
+        setNearbyItems(prev => ({
+            ...prev,
+            [category]: prev[category].filter(item => item.id !== id)
+        }));
+
+        // Clear any errors associated with this item
+        setFormErrors(prev => {
+            const updated = { ...prev };
+            Object.keys(updated).forEach(key => {
+                if (key.includes(`${category}_${id}`)) {
+                    delete updated[key];
+                }
+            });
+            return updated;
+        });
+    };
+
+    // Validate form before saving
+    const validateForm = () => {
+        let isValid = true;
+        const errors = {};
+
+        // Check all items in all categories
+        Object.entries(nearbyItems).forEach(([category, items]) => {
+            items.forEach(item => {
+                if (!item.name || item.name.trim() === '') {
+                    errors[`${category}_${item.id}_name`] = 'Name is required';
+                    isValid = false;
+                }
+            });
+        });
+
+        setFormErrors(errors);
+        return isValid;
+    };
+
+    // Handle save
+    const handleSave = (e) => {
+        e.preventDefault();
+
+        // Validate the form first
+        if (!validateForm()) {
+            // Form has errors
+            return;
+        }
+
+        setIsSaving(true);
+
+        // Filter out items with empty names before saving
+        const filteredItems = Object.entries(nearbyItems).reduce((acc, [category, items]) => {
+            acc[category] = items.filter(item => item.name && item.name.trim() !== '');
+            return acc;
+        }, {});
+
+        // Update the property state
+        const updatedProperty = {
+            ...selectedProperty,
+            proximities: filteredItems
+        };
+
+        dispatch({
+            type: UPDATE_PROPERTY,
+            payload: { updatedProperty }
+        });
+
+        // Simulate API call delay
+        setTimeout(() => {
+            setIsSaving(false);
+            console.log('Saved property:', updatedProperty);
+        }, 1000);
+    };
+
+    // Helper function to render nearby items
+    const renderNearbyItems = (category, title, icon) => {
+        return (
+            <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-4 pb-2 border-b">
+                    <h4 className="text-lg font-medium flex items-center text-gray-800">
+                        <span className="mr-3 text-gray-600">{icon}</span>
+                        {title}
+                    </h4>
+                    <button
+                        type="button"
+                        onClick={() => addNearbyItem(category)}
+                        className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue transition-colors flex items-center text-sm font-medium"
+                    >
+                        <FaPlus className="mr-2" size={12} />
+                        Add Item
+                    </button>
+                </div>
+
+                {nearbyItems[category].length === 0 ? (
+                    <div className="py-6 text-center bg-gray-50 rounded-md">
+                        <p className="text-gray-500">No {title.toLowerCase()} added yet</p>
+                        <button
+                            onClick={() => addNearbyItem(category)}
+                            className="mt-2 text-blue hover:text-blue font-medium text-sm"
+                        >
+                            + Add your first item
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {nearbyItems[category].map((item) => (
+                            <div key={item.id} className="flex flex-col md:flex-row gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <div className="flex-1">
+                                    <label className="block text-xs font-medium text-gray-600 mb-1">Name*</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Central Park"
+                                        value={item.name}
+                                        onChange={(e) => updateNearbyItem(
+                                            category,
+                                            item.id,
+                                            'name',
+                                            e.target.value
+                                        )}
+                                        className={`w-full p-2 border ${formErrors[`${category}_${item.id}_name`] ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue focus:border-blue outline-none transition-all`}
+                                    />
+                                    {formErrors[`${category}_${item.id}_name`] && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {formErrors[`${category}_${item.id}_name`]}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="md:w-32">
+                                    <label className="block text-xs font-medium text-gray-600 mb-1">Distance</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. 2 km"
+                                        value={item.distance}
+                                        onChange={(e) => updateNearbyItem(
+                                            category,
+                                            item.id,
+                                            'distance',
+                                            e.target.value
+                                        )}
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue focus:border-blue outline-none transition-all"
+                                    />
+                                </div>
+
+                                <div className="flex-1">
+                                    <label className="block text-xs font-medium text-gray-600 mb-1">Details</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Open 24/7, Famous landmark"
+                                        value={item.details}
+                                        onChange={(e) => updateNearbyItem(
+                                            category,
+                                            item.id,
+                                            'details',
+                                            e.target.value
+                                        )}
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue focus:border-blue outline-none transition-all"
+                                    />
+                                </div>
+
+                                <div className="self-end mb-1 ml-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => removeNearbyItem(category, item.id)}
+                                        className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-full hover:bg-gray-200"
+                                        aria-label="Remove item"
+                                    >
+                                        <FaTimes size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // Define icon sizing and colors consistently
+    const iconProps = {
+        size: 20,
+        className: "min-w-5"
     };
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Directions</h2>
-            <p className="text-gray-600 mb-6">
-                Help guests find your property easily with detailed directions.
-            </p>
-
-            <div className="space-y-6">
-                {/* Property Address */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Property Address
-                    </label>
-                    <div className="relative">
-                        <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            className="w-full pl-10 p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
-                            placeholder="Full property address"
-                        />
-                    </div>
+        <div className="space-y-6 mb-24 max-w-6xl mx-auto">
+            {/* What's Nearby Section */}
+            <div className="pt-6">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">What's Nearby</h3>
+                    <p className="text-gray-600">
+                        Help guests discover the neighborhood and nearby amenities. Add important locations that guests might find useful during their stay.
+                    </p>
                 </div>
 
-                {/* Transportation Options */}
-                <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Transportation Details</h3>
-                    
-                    {/* By Car */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <FaCar className="inline-block mr-2" />
-                            Driving Directions
-                        </label>
-                        <textarea
-                            value={transportationDetails.car}
-                            onChange={(e) => setTransportationDetails({
-                                ...transportationDetails,
-                                car: e.target.value
-                            })}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue min-h-[100px]"
-                            placeholder="Provide detailed driving directions..."
-                        />
-                    </div>
+                {/* Restaurants & Cafes */}
+                {renderNearbyItems('restaurants', 'Restaurants & Cafes', <FaUtensils {...iconProps} className="text-orange-500" />)}
 
-                    {/* Public Transportation */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <FaBus className="inline-block mr-2" />
-                            Public Transportation
-                        </label>
-                        <textarea
-                            value={transportationDetails.publicTransport}
-                            onChange={(e) => setTransportationDetails({
-                                ...transportationDetails,
-                                publicTransport: e.target.value
-                            })}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue min-h-[100px]"
-                            placeholder="Describe public transportation options..."
-                        />
-                    </div>
+                {/* Beaches */}
+                {renderNearbyItems('beaches', 'Beaches (Plages)', <FaUmbrellaBeach {...iconProps} className="text-blue" />)}
+                
+                {/* Points of Interest */}
+                {renderNearbyItems('attractions', 'Points of Interest', <FaHotel {...iconProps} className="text-green-500" />)}
+                
+                {/* Booking Places */}
+                {renderNearbyItems('bookingPlaces', 'Booking Locations', <FaShoppingCart {...iconProps} className="text-purple-500" />)}
 
-                    {/* From Airport */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <FaPlane className="inline-block mr-2" />
-                            From Airport
-                        </label>
-                        <textarea
-                            value={transportationDetails.airport}
-                            onChange={(e) => setTransportationDetails({
-                                ...transportationDetails,
-                                airport: e.target.value
-                            })}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue min-h-[100px]"
-                            placeholder="Directions from nearest airport..."
-                        />
-                    </div>
-                </div>
+                {/* Walking Routes */}
+                {renderNearbyItems('walkingRoutes', 'Walking Routes', <FaWalking {...iconProps} className="text-green-700" />)}
 
-                {/* Parking Instructions */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaParking className="inline-block mr-2" />
-                        Parking Instructions
-                    </label>
-                    <textarea
-                        value={parkingInstructions}
-                        onChange={(e) => setParkingInstructions(e.target.value)}
-                        className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue min-h-[100px]"
-                        placeholder="Provide parking details and instructions..."
-                    />
-                </div>
+                {/* Public Transit */}
+                {renderNearbyItems('publicTransit', 'Public Transit', <FaSubway {...iconProps} className="text-blue" />)}
 
-                {/* Photo Upload */}
-                <div>
-                    <h3 className="text-lg font-medium mb-3">Location Photos</h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-center w-full">
-                            <label className="w-full flex flex-col items-center justify-center px-4 py-6 bg-white text-blue rounded-lg tracking-wide uppercase border border-dashed border-gray-400 cursor-pointer hover:bg-blue/5">
-                                <FaUpload className="w-8 h-8" />
-                                <span className="mt-2 text-base leading-normal">Upload photos</span>
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    multiple
-                                    accept="image/*"
-                                    onChange={handlePhotoUpload}
-                                />
-                            </label>
-                        </div>
+                {/* Airports */}
+                {renderNearbyItems('airports', 'Closest Airports', <FaPlane {...iconProps} className="text-gray-600" />)}
 
-                        {photos.length > 0 && (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {photos.map((photo, index) => (
-                                    <div key={index} className="relative group">
-                                        <img
-                                            src={photo.url}
-                                            alt={`Location photo ${index + 1}`}
-                                            className="w-full h-32 object-cover rounded-lg"
-                                        />
-                                        <button
-                                            onClick={() => removePhoto(index)}
-                                            className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                {/* Save Button */}
+                <div className="fixed bottom-6 right-6 z-10">
+                    <button
+                        onClick={handleSave}
+                        type="submit"
+                        disabled={isSaving}
+                        className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue shadow-lg flex items-center gap-2 transition-all disabled:opacity-70"
+                    >
+                        {isSaving ? (
+                            <>
+                                <span className="animate-spin mr-2">⟳</span>
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <FaSave size={16} />
+                                Save Changes
+                            </>
                         )}
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
 
-export default Directions; 
+export default Directions;

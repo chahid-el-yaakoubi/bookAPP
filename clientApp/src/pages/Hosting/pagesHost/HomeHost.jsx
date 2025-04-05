@@ -1,8 +1,19 @@
 import { FaSearch } from 'react-icons/fa';
 import StatCard from '../ComponentHost/StatCard';
 import HostLayout from '../ComponentHost/HostLayout';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const HomeHost = () => {
+
+
+    const ssza = async () => {
+        const data = await axios.get('/api/hotels');
+        console.log(data)
+    }
+    ssza()
+
+
     return (
         <HostLayout>
             <main className="flex-1 p-4 md:p-6 bg-blue/40">

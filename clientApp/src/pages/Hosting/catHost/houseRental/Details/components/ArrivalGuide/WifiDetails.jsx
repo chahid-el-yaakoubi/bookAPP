@@ -1,13 +1,18 @@
 import { useState } from 'react';
-import { FaWifi, FaEye, FaEyeSlash, FaCopy } from 'react-icons/fa';
+import { FaWifi, FaEye, FaEyeSlash, FaCopy, FaSave } from 'react-icons/fa';
+import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { useDispatch, useSelector } from 'react-redux';
 
 const WifiDetails = () => {
-    const [networkName, setNetworkName] = useState('');
-    const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const selectedProperty = useSelector(state => state.property.selectedProperty);
+
+    const [networkName, setNetworkName] = useState(selectedProperty?.wifi?.networkName || 'Enter network name');
+    const [password, setPassword] = useState(selectedProperty?.wifi?.password || '');
     const [showPassword, setShowPassword] = useState(false);
-    const [showQRCode, setShowQRCode] = useState(false);
-    const [additionalNetworks, setAdditionalNetworks] = useState([]);
-    const [notes, setNotes] = useState('');
+    const [additionalNetworks, setAdditionalNetworks] = useState(selectedProperty?.wifi?.additionalNetworks || []);
+    const [notes, setNotes] = useState(selectedProperty?.wifi?.notes || '');
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleCopyCredentials = () => {
         const credentials = `Network: ${networkName}\nPassword: ${password}`;
@@ -32,6 +37,31 @@ const WifiDetails = () => {
         setAdditionalNetworks(additionalNetworks.filter((_, i) => i !== index));
     };
 
+    const handleSave = (e) => {
+        setIsSaving(true);
+        e.preventDefault();
+
+        const updatedProperty = {
+            ...selectedProperty,
+            wifi: {
+                networkName,
+                password,
+                additionalNetworks,
+                notes
+            }
+        };
+
+        dispatch({
+            type: UPDATE_PROPERTY,
+            payload: { updatedProperty }
+        });
+
+        // Simulate API call delay
+        setTimeout(() => {
+            setIsSaving(false);
+        }, 1000);
+    };
+
     return (
         <div className="p-6">
             <h2 className="text-2xl font-semibold mb-4">WiFi Details</h2>
@@ -43,7 +73,7 @@ const WifiDetails = () => {
                 {/* Main Network */}
                 <div className="bg-white p-6 border rounded-lg space-y-4">
                     <h3 className="text-lg font-medium">Main Network</h3>
-                    
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Network Name (SSID)
@@ -89,23 +119,10 @@ const WifiDetails = () => {
                             <FaCopy />
                             Copy Credentials
                         </button>
-                        <button
-                            onClick={() => setShowQRCode(!showQRCode)}
-                            className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
-                        >
-                            <FaWifi />
-                            {showQRCode ? 'Hide QR Code' : 'Show QR Code'}
-                        </button>
+
                     </div>
 
-                    {showQRCode && (
-                        <div className="mt-4 flex justify-center">
-                            <div className="w-48 h-48 bg-gray-100 flex items-center justify-center">
-                                {/* QR Code would be generated here */}
-                                <FaWifi className="w-24 h-24 text-gray-400" />
-                            </div>
-                        </div>
-                    )}
+
                 </div>
 
                 {/* Additional Networks */}
@@ -180,9 +197,32 @@ const WifiDetails = () => {
                         placeholder="Add any additional information about internet access..."
                     />
                 </div>
+
+                {/* Save Button */}
+                <div className="mt-10 flex justify-end gap-4 bg-primary p-4 fixed bottom-10 right-[10%] rounded">
+
+                    <button
+                        onClick={handleSave}
+                        type="submit"
+                        disabled={isSaving}
+                        className="px-6 py-2 bg-blue text-white rounded-lg hover:bg-blue flex items-center gap-2"
+                    >
+                        {isSaving ? (
+                            <>
+                                <span className="animate-spin mr-2">⟳</span>
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <FaSave size={16} />
+                                Save Location
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );
 };
 
-export default WifiDetails; 
+export default WifiDetails;

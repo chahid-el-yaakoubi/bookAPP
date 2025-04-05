@@ -164,14 +164,14 @@ export const FilterModule = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
-      <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl">
+      <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl animate-slide-scale">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
             <FontAwesomeIcon icon={faXmark} className="text-lg" />
           </button>
           <span className="font-semibold">Filtres</span>
-          <div className="w-8" />
+          <div className="w-8" /> 
         </div>
 
         {/* Main Content */}

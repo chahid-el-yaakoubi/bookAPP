@@ -22,7 +22,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, isMobile }) => {
     if (isMobile) {
         return (
             <>
-                <div className="fixed top-0 left-0 right-0 bg-primary shadow-lg z-40 p-4">
+                <div className="fixed top-0 left-0 right-0 bg-primary shadow-lg z-40 p-4 ">
                     <div className="flex justify-between items-center">
                         <h2 className="font-bold text-xl text-blue"><Logo /></h2>
                         <button 
@@ -51,7 +51,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, isMobile }) => {
 
     return (
         <aside className={`
-            ${isSidebarOpen ? 'w-40' : 'w-14'}
+            ${isSidebarOpen ? 'w-64' : 'w-14'}
             fixed md:sticky
             top-0
             h-screen

@@ -2,10 +2,10 @@ import React from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
 const LIMITS = {
-  max_guests: 32,    // 16+16 guests
+  max_guests: 16,    // 16+16 guests
   rooms: 50,         // 50 bedrooms
   beds: 50,          // 50 beds
-  bathrooms: 35      // 35 bathrooms
+  bathrooms: 10      // 35 bathrooms
 };
 
 const PropertyDetails = ({ propertyData, setPropertyData }) => {

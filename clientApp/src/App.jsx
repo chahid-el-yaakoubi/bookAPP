@@ -23,32 +23,8 @@ import AddProperty from './pages/Hosting/catHost/houseRental/AddProperty';
 import PropertyDetail from './pages/Hosting/catHost/houseRental/PropertyDetail';
 import Details from './pages/Hosting/catHost/houseRental/Details/Details';
 import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
+import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
 
-
-const property = {
-  id: 1,
-  title: 'Luxury Apartment',
-  description: 'Beautiful apartment in downtown',
-  price: 200,
-  currency: 'USD',
-  location: {
-    lat: 40.7128,
-    lng: -74.0060,
-    address: '123 Main St',
-    city: 'New York',
-    country: 'USA'
-  },
-  amenities: ['wifi', 'parking', 'pool'],
-  images: ['url1', 'url2'],
-  capacity: {
-    guests: 4,
-    bedrooms: 2,
-    beds: 2,
-    bathrooms: 2
-  },
-  rating: 4.5,
-  reviews: []
-};
 
 function App() {
   const { t } = useTranslation();
@@ -56,30 +32,63 @@ function App() {
     // <Provider store={store}>
     <TransContextProvider>
       <BrowserRouter>
-      <div dir={t('dir')}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/maps" element={<MapComponent />} />
-          <Route path="/hotels/:city" element={<List />} />
-          <Route path="/hotel/:id" element={<Hotel />} />
-          <Route path="/login" element={<LoginRegister />} />
-          <Route path="/host" element={<WelcomePage />} />
-          <Route path="/hosting" element={<HomeHost />} />
-          <Route path="/hosting/login" element={<LoginHost />} />
-          {/* properties */}
-          <Route path="/host/properties" element={<PropertiesHost />} />
-          <Route path="/host/properties/welcome" element={<Welcome />} />
-          <Route path="/host/properties/add" element={<AddProperty />} />
-          <Route path="/host/properties/:id" element={<PropertyDetail />} />
-          <Route path="/host/properties/:id/details" element={<Details />} />
-          
-          {/* vehicles */}
-          <Route path="/host/vehicles" element={<VehiclesHost />} />
-          {/* services */}
-          <Route path="/host/services" element={<ServicesHost />} />
-          {/* shops */}
-          <Route path="/host/shops" element={<ShopsHost />} />
-        </Routes>
+        <div dir={t('dir')}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/maps" element={<MapComponent />} />
+            <Route path="/hotels/:city" element={<List />} />
+            <Route path="/hotel/:id" element={<Hotel />} />
+            <Route path="/login" element={<LoginRegister />} />
+            <Route path="/host" element={<WelcomePage />} />
+            <Route path="/hosting" element={<HomeHost />} />
+            <Route path="/hosting/login" element={<LoginHost />} />
+            {/* properties */}
+            <Route path="/host/properties" element={<PropertiesHost />} />
+            <Route path="/host/properties/welcome" element={<Welcome />} />
+            <Route path="/host/properties/add" element={<AddProperty />} />
+            <Route path="/host/properties/:id" element={<PropertyDetail />} />
+            <Route path="/host/properties/:id/details" element={<Details />} />
+
+
+          {/* Your Space section routes */}
+            <Route path="/host/properties/:id/details/photo-tour" element={<Details sectionPath="photo-tour" />} />
+            <Route path="/host/properties/:id/details/title" element={<Details sectionPath="title" />} />
+            <Route path="/host/properties/:id/details/property-type" element={<Details sectionPath="property-type" />} />
+            <Route path="/host/properties/:id/details/pricing" element={<Details sectionPath="pricing" />} />
+            <Route path="/host/properties/:id/details/availability" element={<Details sectionPath="availability" />} />
+            <Route path="/host/properties/:id/details/guests" element={<Details sectionPath="guests" />} />
+            <Route path="/host/properties/:id/details/description" element={<Details sectionPath="description" />} />
+            <Route path="/host/properties/:id/details/amenities" element={<Details sectionPath="amenities" />} />
+            <Route path="/host/properties/:id/details/propertyfeatures" element={<Details sectionPath="propertyfeatures" />} />
+            <Route path="/host/properties/:id/details/accessibility" element={<Details sectionPath="accessibility" />} />
+            <Route path="/host/properties/:id/details/location" element={<Details sectionPath="location" />} />
+            <Route path="/host/properties/:id/details/proximity" element={<Details sectionPath="proximity" />} />
+            <Route path="/host/properties/:id/details/host" element={<Details sectionPath="host" />} />
+            <Route path="/host/properties/:id/details/rooms" element={<Details sectionPath="rooms" job={""}/>} />
+            <Route path="/host/properties/:id/details/rooms/:edit/edit" element={<Details sectionPath="rooms" job={"edit"}/>} />
+            <Route path="/host/properties/:id/details/rooms/add" element={<Details sectionPath="rooms" job={"add"} />} />
+            <Route path="/host/properties/:id/details/rooms/:roomId" element={<Details sectionPath="rooms" job={"singleRoom"} />} />
+            <Route path="/host/properties/:id/details/rules" element={<Details sectionPath="rules" />} />
+            <Route path="/host/properties/:id/details/safety" element={<Details sectionPath="safety" />} />
+            <Route path="/host/properties/:id/details/cancellation" element={<Details sectionPath="cancellation" />} />
+            <Route path="/host/properties/:id/details/custom-link" element={<Details sectionPath="custom-link" />} />
+
+            {/* Arrival Guide section routes */}
+            <Route path="/host/properties/:id/details/check-in" element={<Details sectionPath="check-in" />} />
+            <Route path="/host/properties/:id/details/wifi" element={<Details sectionPath="wifi" />} />
+            <Route path="/host/properties/:id/details/manual" element={<Details sectionPath="manual" />} />
+            <Route path="/host/properties/:id/details/house-rules" element={<Details sectionPath="house-rules" />} />
+            <Route path="/host/properties/:id/details/checkout" element={<Details sectionPath="checkout" />} />
+
+            <Route path="/host/properties/:id/menu" element={<MobileMenuPage />} />
+
+            {/* vehicles */}
+            <Route path="/host/vehicles" element={<VehiclesHost />} />
+            {/* services */}
+            <Route path="/host/services" element={<ServicesHost />} />
+            {/* shops */}
+            <Route path="/host/shops" element={<ShopsHost />} />
+          </Routes>
         </div>
       </BrowserRouter>
     </TransContextProvider>

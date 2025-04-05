@@ -1,181 +1,347 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleArrowLeft,
-  faCircleArrowRight,
-  faCircleXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { CgMenuGridR } from "react-icons/cg";
 
-export const ImageGallery = ({ photos }) => {
-  const [slideNumber, setSlideNumber] = useState(0);
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = (i) => {
-    setSlideNumber(i);
-    setOpen(true);
-  };
-
-  const handleMove = (direction) => {
-    let newSlideNumber;
-    if (direction === "l") {
-      newSlideNumber = slideNumber === 0 ? photos.length - 1 : slideNumber - 1;
-    } else {
-      newSlideNumber = slideNumber === photos.length - 1 ? 0 : slideNumber + 1;
-    }
-    setSlideNumber(newSlideNumber);
-  };
-
-  const handleKeyDown = (e) => {
-    if (!open) return;
-
-    e.preventDefault();
-
-    switch (e.key) {
-      case 'ArrowLeft':
-        handleMove('l');
-        break;
-      case 'ArrowRight':
-        handleMove('r');
-        break;
-      case 'Escape':
-        setOpen(false);
-        break;
-      default:
-        break;
-    }
-  };
+export function ImageGallery({ images }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedType, setSelectedType] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [animating, setAnimating] = useState(false);
+  const imageContainerRef = useRef(null);
+  
+  // Détection du mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile(); // Vérification initiale
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Filter images by selected type
+  const filteredImages = selectedType 
+    ? images.filter(img => img.type === selectedType) 
+    : images;
 
   useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (showModal && !animating) {
+        if (event.key === 'ArrowLeft') {
+          previousImage();
+        } else if (event.key === 'ArrowRight') {
+          nextImage();
+        } else if (event.key === 'Escape') {
+          setShowModal(false);
+        }
+      }
+    };
+    
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [open, slideNumber]);
+  }, [showModal, filteredImages, animating]);
+  
+  const nextImage = () => {
+    if (animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % filteredImages.length);
+      setTimeout(() => {
+        setAnimating(false);
+      }, 300);
+    }, 300);
+  };
+
+  const previousImage = () => {
+    if (animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev - 1 + filteredImages.length) % filteredImages.length);
+      setTimeout(() => {
+        setAnimating(false);
+      }, 300);
+    }, 300);
+  };
+
+  // Gestion du défilement tactile
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!touchStart || animating) return;
+    
+    const touchEnd = e.touches[0].clientX;
+    const diff = touchStart - touchEnd;
+    
+    // Défilement horizontal pour mobile - un défilement vers la gauche = image suivante
+    if (diff > 50) {
+      nextImage();
+      setTouchStart(null);
+    } else if (diff < -50) {
+      previousImage();
+      setTouchStart(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStart(null);
+  };
+
+  // Count images by type
+  const typeCount = {};
+  images.forEach(img => {
+    if (img.type) {
+      typeCount[img.type] = (typeCount[img.type] || 0) + 1;
+    }
+  });
+
+  // Get unique types
+  const uniqueTypes = Array.from(new Set(images.map(img => img.type))).filter(Boolean);
+
+  // Handle type selection
+  const handleTypeClick = (type) => {
+    setSelectedType(type);
+    setCurrentIndex(0);
+  };
+  
+  // Reset current index when filtered images change
+  useEffect(() => {
+    if (currentIndex >= filteredImages.length) {
+      setCurrentIndex(0);
+    }
+  }, [filteredImages, currentIndex]);
+
+  // Gallery grid configuration based on device
+  const gridClassName = isMobile 
+    ? "relative grid grid-cols-2 gap-1 rounded-xl overflow-hidden bg h-[40vh]"
+    : "relative grid grid-cols-4 gap-2 rounded-xl overflow-hidden bg h-[54vh]";
+
+  // Types buttons row style for mobile
+  const typesContainerStyle = isMobile
+    ? "overflow-x-auto flex space-x-2 py-2 px-1 w-full"
+    : "flex space-x-2";
 
   return (
     <>
-      {/* Grid Gallery */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {photos.slice(0, 4).map((photo, i) => (
-          <div
-            key={i}
-            className={`${i === 0 ? 'col-span-2 row-span-2' : ''} overflow-hidden rounded-lg cursor-pointer aspect-[4/3]`}
-            onClick={() => handleOpen(i)}
+      {/* Type selector visible by default on mobile */}
+      {
+        isMobile && (
+          <div className='flex gap-2'>
+            <button
+          className={`px-3 py-1 text-sm whitespace-nowrap rounded-md transition-all duration-200 ${selectedType === null ? 'bg-blue text-white' : 'bg-gray-200'}`}
+          onClick={() => {
+            setSelectedType(null);
+            setCurrentIndex(0);
+          }}
+        >
+          All ({images.length})
+        </button>
+          <div className={typesContainerStyle}>
+            {uniqueTypes.map((type) => (
+              <button
+                key={type}
+            className={`p-2 rounded-full transition-colors duration-200 min-w-24 focus:outline-none ${selectedType === type ? 'bg-blue text-white' : 'bg-gray-200'}`}
+                onClick={() => handleTypeClick(type)}
+              >
+                {type} ({typeCount[type]})
+              </button>
+            ))}
+          </div>
+          </div>
+        )
+      }
+
+{/* <div className={typesContainerStyle}>
+        <button
+          className={`px-3 py-1 text-sm whitespace-nowrap rounded-md transition-all duration-200 ${selectedType === null ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          onClick={() => {
+            setSelectedType(null);
+            setCurrentIndex(0);
+          }}
+        >
+          All ({images.length})
+        </button>
+        {uniqueTypes.map((type, index) => (
+          <button
+            key={index}
+            className={`px-3 py-1 text-sm whitespace-nowrap rounded-md transition-all duration-200 ${selectedType === type ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleTypeClick(type)}
           >
+            {type} ({typeCount[type]})
+          </button>
+        ))}
+      </div> */}
+
+
+
+      {/* Version mobile : affichage direct sans modal */}
+      {isMobile && (
+        <div 
+          className="absolute left-0 right-0  w-full h-72 overflow-hidden mt-2 shadow-xl "
+          ref={imageContainerRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded z-10 text-sm">
+            {currentIndex + 1} / {filteredImages.length}
+          </div>
+          {filteredImages[currentIndex]?.type && (
+            <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded z-10 text-sm">
+              {filteredImages[currentIndex].type}
+            </div>
+          )}
+          
+          {/* Image container without animation */}
+          <div className={`w-full h-full relative`}>
             <img
-              src={photo}
-              alt=""
-              className="w-full h-full object-cover hover:scale-105 transition duration-300"
+              src={filteredImages[currentIndex]?.url}
+              alt={`Property ${currentIndex + 1}`}
+              className={`w-full h-full object-cover`}
             />
           </div>
-        ))}
-      </div>
 
-      {/* Modal */}
-      {open && (
-        <div
-          className="fixed inset-0 bg-gray-500/80 z-50 flex flex-col items-center justify-center"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="relative w-full h-screen flex flex-col  ">
-            {/* Close button and counter */}
-            <div className="absolute top-0 left-0 right-0 p-4 md:p-6 flex justify-between z-50">
-              <div className="text-white text-sm md:text-lg flex items-center gap-2 md:gap-4">
-                <span>{slideNumber + 1} / {photos.length}</span>
-                <div className="hidden md:flex text-gray-400 text-sm gap-4">
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-2 py-1 bg-gray-800 rounded">←</kbd>
-                    Previous
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-2 py-1 bg-gray-800 rounded">→</kbd>
-                    Next
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-2 py-1 bg-gray-800 rounded">Esc</kbd>
-                    Close
-                  </span>
-                </div>
-              </div>
-              <FontAwesomeIcon
-                icon={faCircleXmark}
-                className="text-white text-2xl md:text-4xl cursor-pointer hover:text-gray-300 transition"
-                onClick={() => setOpen(false)}
-                aria-label="Close gallery"
-              />
-            </div>
-
-            {/* Main image */}
-            <div className="flex-1 flex items-center justify-center relative">
-              <div className="relative px-4 md:px-[100px] w-full max-w-[1400px] mx-auto">
-                <div className="relative w-full h-full flex justify-center items-center rounded-lg bg-gray-100">
-                  <img
-                    src={photos[slideNumber]}
-                    alt={`Photo ${slideNumber + 1} of ${photos.length}`}
-                    className="w-full md:w-full h-auto md:h-[700px] object-contain max-h-[70vh] md:max-h-[80vh] rounded-lg"
-                  />
-                </div>
-
-                {/* Navigation buttons */}
-                <button
-                  className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-1 md:gap-2 cursor-pointer group"
-                  onClick={() => handleMove("l")}
-                  aria-label="Previous image"
-                >
-                  <FontAwesomeIcon
-                    icon={faCircleArrowLeft}
-                    className="text-white text-2xl md:text-4xl group-hover:text-gray-300 transition-all group-hover:scale-110"
-                  />
-                  <span className="hidden md:inline text-white text-base opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Previous
-                  </span>
-                </button>
-
-                <button
-                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-1 md:gap-2 cursor-pointer group"
-                  onClick={() => handleMove("r")}
-                  aria-label="Next image"
-                >
-                  <span className="hidden md:inline text-white text-base opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Next
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faCircleArrowRight}
-                    className="text-white text-2xl md:text-4xl group-hover:text-gray-300 transition-all group-hover:scale-110"
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Thumbnails */}
-            <div className="h-20 md:h-32 bg-black bg-opacity-90 flex justify-center items-center">
-              <div className="flex gap-2 md:gap-3 px-2 md:px-4 overflow-x-auto max-w-full">
-                {photos.map((photo, i) => (
-                  <div
-                    key={i}
-                    onClick={() => setSlideNumber(i)}
-                    className={`
-                      relative h-16 md:h-24 w-24 md:w-36 flex-shrink-0 cursor-pointer 
-                      transition-all duration-300 
-                      ${i === slideNumber ? 'border-2 border-white scale-105 md:scale-110' : 'opacity-50 hover:opacity-75'}
-                    `}
-                  >
-                    <img
-                      src={photo}
-                      alt=""
-                      className="h-full w-full object-cover "
-                    />
-                    {i === slideNumber && (
-                      <div className="absolute inset-0 border-2 border-white"></div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="absolute inset-x-0 bottom-2 flex justify-between px-2">
+            <button 
+              className="bg-black bg-opacity-50 text-white p-2 rounded-full transition-transform duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100"
+              onClick={previousImage}
+              disabled={animating}
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button 
+              className="bg-black bg-opacity-50 text-white p-2 rounded-full transition-transform duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100"
+              onClick={nextImage}
+              disabled={animating}
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
         </div>
       )}
+
+      {/* Version desktop : grille avec modal */}
+      {!isMobile && (
+        <>
+          <div className={gridClassName}>
+            <div className="col-span-2 row-span-2 relative overflow-hidden group bg">
+              <img
+                src={images[0]?.url}
+                alt="Main property"
+                className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
+                onClick={() => {
+                  setSelectedType(null);
+                  setCurrentIndex(0);
+                  setShowModal(true);
+                }}
+              />
+              {images[0]?.type && (
+                <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded">
+                  {images[0].type}
+                </div>
+              )}
+            </div>
+            {images?.slice(1, 5).map((image, index) => (
+              <div key={index} className="relative overflow-hidden group">
+                <img
+                  src={image?.url}
+                  alt={`Property ${index + 2}`}
+                  className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
+                  onClick={() => {
+                    setSelectedType(null);
+                    setCurrentIndex(index + 1);
+                    setShowModal(true);
+                  }}
+                />
+                {image?.type && (
+                  <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded">
+                    {image.type}
+                  </div>
+                )}
+              </div>
+            ))}
+            <button
+              className="absolute  flex items-center justify-normal gap-2 bottom-4 right-4 px-2 py-2 bg-blue/90 rounded-lg text-sm font-semibold hover:bg-blue/80 hover:scale-105 transition-all duration-200 hover:shadow-md"
+              onClick={() => {
+                setSelectedType(null);
+                setShowModal(true);
+              }}
+            >
+              <CgMenuGridR className='w-6 h-6' />
+              
+              <span>Show all photos</span>
+            </button>
+          </div>
+
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center transition-opacity duration-300">
+              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                <button
+                  className={`px-3 py-1 text-white rounded-md transition-all duration-200 ${selectedType === null ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                  onClick={() => {
+                    setSelectedType(null);
+                    setCurrentIndex(0);
+                  }}
+                >
+                  All ({images.length})
+                </button>
+                {uniqueTypes.map((type, index) => (
+                  <button
+                    key={index}
+                    className={`px-3 py-1 text-white rounded-md transition-all duration-200 ${selectedType === type ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    onClick={() => handleTypeClick(type)}
+                  >
+                    {type} ({typeCount[type]})
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                className="absolute top-4 left-4 text-white p-2 hover:bg-white/10 rounded-full transition-transform duration-200 hover:scale-110 active:scale-95"
+                onClick={() => setShowModal(false)}
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="absolute top-6 left-40 bg-black bg-opacity-70 text-white px-3 py-1 rounded-md">
+                {filteredImages[currentIndex]?.type || 'All'} - {currentIndex + 1}/{filteredImages.length}
+              </div>
+              
+              <button
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white p-2 hover:bg-white/10 rounded-full transition-transform duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100"
+                onClick={previousImage}
+                disabled={filteredImages.length <= 1 || animating}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              
+              <button
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white p-2 hover:bg-white/10 rounded-full transition-transform duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100"
+                onClick={nextImage}
+                disabled={filteredImages.length <= 1 || animating}
+              >
+                <ChevronRight size={24} />
+              </button>
+              
+              <div className="relative w-full flex justify-center items-center h-[80vh]">
+                <div className={`max-h-[80vh] max-w-[90vw] object-contain`}>
+                  <img
+                    src={filteredImages[currentIndex]?.url}
+                    alt={`Property ${currentIndex + 1}`}
+                    className={`max-h-[80vh] max-w-[90vw] object-contain`}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </>
   );
-}; 
+}

@@ -22,7 +22,6 @@ import SearchMobile from './searchMobile';
 const HotelsList = () => {
   const dispatch = useDispatch();
   const hotels = useSelector((state) => state.hotels.filteredHotels); // Use filteredHotels from Redux
-  console.log("hotels:", hotels);
   const [showModel, setShowModel] = useState(false);
 
   // Fetch hotels on component mount
@@ -52,14 +51,17 @@ const HotelsList = () => {
   // Handle sorting
   const [isAtTop, setIsAtTop] = useState(true);
 
-useEffect(() => {
-  const handleScroll = () => {
-    setIsAtTop(window.scrollY <= 200); // Changes state when scrolling past 200px
-  };
-
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollThreshold = window.innerWidth < 768 ? 20 : 200; // 20px for mobile, 200px for desktop
+      setIsAtTop(window.scrollY <= scrollThreshold);
+    };
+  
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  
 
 
 
@@ -82,23 +84,20 @@ useEffect(() => {
   return (
     <div className="w-full ">
       <div
-        className={` top-20 md:top-0 left-0 py-1  shadow-sm  transition-all duration-300 ${isAtTop ? "w-[84%] mx-auto rounded-xl  sticky bg-white" : "w-full z-50 fixed bg-primary"
+        className={`  py-1  shadow-sm  transition-all duration-300 mx-auto ${isAtTop ? "w-[84%]  rounded-b-xl md:rounded-xl  mt-20 md:mt-0   bg-primary md:bg-primary/30" : "w-[96%] md:w-full rounded-b-xl md:rounded-none right-0  z-40 fixed bg-primary top-20  md:top-0 left-0 "
           }`}
       >
         <div className="container mx-auto px-4  ">
           <div className="flex items-center justify-between gap-4">
             {/* Mobile Logo and Back to Top */}
             <div className="flex items-center md:hidden">
-              {showButton ? (
+            
                 <Logo />
-              ) : (
-                
-                  <span className="text-sm text-orange-500">Welcome</span>
-              )}
+              
             </div>
 
             {/* Mobile Search */}
-            {showButton && <SearchMobile />}
+            <SearchMobile />
 
             {/* Desktop Navigation */}
             <div className="hidden md:block flex-1">
@@ -140,7 +139,7 @@ useEffect(() => {
             {showButton && (
               <button
                 onClick={scrollToTop}
-                className="hidden md:flex w-12 h-12 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition items-center justify-center"
+                className="hidden md:flex w-12 h-12 bg-primary-dark text-white rounded-lg shadow-md hover:bg-primary/90 transition items-center justify-center"
               >
                 <span>⬆️</span>
               </button>

@@ -1,23 +1,36 @@
 const propertyTypes = [
-  { id: 'house', label: 'House', icon: '🏠' },
-  { id: 'apartment', label: 'Apartment', icon: '🏢' },
-  { id: 'barn', label: 'Barn', icon: '🏚' },
-  { id: 'bed_breakfast', label: 'Bed & breakfast', icon: '☕' },
-  { id: 'boat', label: 'Boat', icon: '⛵' },
-  { id: 'cabin', label: 'Cabin', icon: '🏡' },
-  { id: 'camper', label: 'Camper/RV', icon: '🚐' },
-  { id: 'casa_particular', label: 'Casa particular', icon: '🏘' },
-  { id: 'castle', label: 'Castle', icon: '🏰' },
-  { id: 'cave', label: 'Cave', icon: '⛰' },
-  { id: 'container', label: 'Container', icon: '📦' },
-  { id: 'cycladic', label: 'Cycladic home', icon: '🏺' },
-  { id: 'dammuso', label: 'Dammuso', icon: '🏘' },
-  { id: 'dome', label: 'Dome', icon: '🏗' },
-  { id: 'earth_home', label: 'Earth home', icon: '🌍' },
-  { id: 'farm', label: 'Farm', icon: '🌾' },
-  { id: 'guesthouse', label: 'Guesthouse', icon: '🏠' },
-  { id: 'hotel', label: 'Hotel', icon: '🏨' }
+  { id: 'hotel', label: 'فندق', icon: '🏨' },
+  { id: 'apartment', label: 'شقة', icon: '🏢' },
+  { id: 'resort', label: 'منتجع', icon: '🌴' },
+  { id: 'villa', label: 'فيلا', icon: '🏡' },
+  { id: 'guesthouse', label: 'دار ضيافة', icon: '🏠' },
+  { id: 'hostel', label: 'نزل', icon: '🛏️' },
+  { id: 'boutique', label: 'فندق بوتيك', icon: '✨' },
+  { id: 'rental-unit', label: 'شقة للإيجار اليومي', icon: '🏢' },
+  { id: 'studio', label: 'استوديو للإيجار اليومي', icon: '🏢' },
+  { id: 'penthouse', label: 'بنتهاوس للإيجار اليومي', icon: '🏢' },
+  { id: 'riad', label: 'رياض تقليدي للإيجار اليومي', icon: '🏡' },
+  { id: 'luxury-villa', label: 'فيلا فاخرة للإيجار اليومي', icon: '🏡' },
+  { id: 'boutique-hotel', label: 'فندق بوتيك', icon: '✨' }
 ];
+
+// const propertyTypes = [
+//   { id: 'hotel', label: 'Hotel', icon: '🏨' },
+//   { id: 'apartment', label: 'Apartment', icon: '🏢' },
+//   { id: 'villa', label: 'Villa', icon: '🏡' },
+//   { id: 'cabin', label: 'Cabin', icon: '🌲' },
+//   { id: 'guesthouse', label: 'Guesthouse', icon: '🏠' },
+//   { id: 'hostel', label: 'Hostel', icon: '🛏️' },
+//   { id: 'boutique', label: 'Boutique', icon: '✨' },
+//   { id: 'rental-unit', label: 'Daily Rental Apartment', icon: '🏢' },
+//   { id: 'studio', label: 'Daily Rental Studio', icon: '🏢' },
+//   { id: 'penthouse', label: 'Daily Rental Penthouse', icon: '🏢' },
+//   { id: 'riad', label: 'Daily Rental Traditional Riad', icon: '🏡' },
+//   { id: 'luxury-villa', label: 'Luxury Villa for Daily Rental', icon: '🏡' },
+//   { id: 'boutique-hotel', label: 'Boutique Hotel', icon: '✨' }
+// ];
+
+
 
 const BasicInformation = ({ propertyData, setPropertyData }) => {
   const handleTypeSelect = (typeId) => {
@@ -46,10 +59,8 @@ const BasicInformation = ({ propertyData, setPropertyData }) => {
           ))}
         </div>
       </div>
-
-    
     </div>
   );
 };
 
-export default BasicInformation; 
+export default BasicInformation;

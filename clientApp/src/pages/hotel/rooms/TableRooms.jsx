@@ -257,7 +257,7 @@ const HotelRoomsDisplay = () => {
               
               <div>
                 <h3 className="font-bold text-lg mb-2">Price Details</h3>
-                <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <div className="bg-blue p-4 rounded-lg mb-4">
                   <div className="text-xl font-bold">{formatPrice(room.price, room.currency || "$")}</div>
                   <div className="text-sm text-gray-600">+ taxes et frais: {formatPrice(125, room.currency || "$")}</div>
                   <div className="text-sm text-gray-600 mt-1">Total: {formatPrice(room.priceWithTax, room.currency || "$")}</div>
@@ -291,7 +291,7 @@ const HotelRoomsDisplay = () => {
                 
                 <div className="mt-6">
                   <button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded w-full"
+                    className="bg-blue- hover:bg-blue- text-white font-bold py-2 px-6 rounded w-full"
                     onClick={() => {
                       handleRoomSelection(room.id, 1);
                       closeRoomDetail();
@@ -395,7 +395,7 @@ const HotelRoomsDisplay = () => {
               Close
             </button>
             <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
+              className="bg-blue- hover:bg-blue- text-white font-bold py-2 px-6 rounded"
               onClick={() => {
                 handleRoomSelection(room.id, 1);
                 closeRoomDetail();
@@ -420,7 +420,7 @@ const HotelRoomsDisplay = () => {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse mb-6">
           <thead>
-            <tr className="bg-blue-600 text-white">
+            <tr className="bg-blue- text-black">
               <th className="p-4 text-left">Room Type</th>
               <th className="p-4 text-center">Capacity</th>
               <th className="p-4 text-center">Price for 6 nights</th>
@@ -440,7 +440,7 @@ const HotelRoomsDisplay = () => {
                 <tr className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
                   <td className="p-4 align-top border-l border-r border-gray-200">
                     <div 
-                      className="font-bold text-blue-600 cursor-pointer hover:underline"
+                      className="font-bold text-blue- cursor-pointer hover:underline"
                       onClick={() => openRoomDetail(room.id)}
                     >
                       {room.type}
@@ -482,7 +482,7 @@ const HotelRoomsDisplay = () => {
                     
                     {!expandedRooms[room.id] ? (
                       <button 
-                        className="mt-2 text-blue-600 text-sm hover:underline flex items-center"
+                        className="mt-2 text-blue- text-sm hover:underline flex items-center"
                         onClick={() => toggleRoomDetails(room.id)}
                       >
                         Show more details <span className="ml-1">▼</span>
@@ -525,7 +525,7 @@ const HotelRoomsDisplay = () => {
                         )}
                         
                         <button 
-                          className="mt-2 text-blue-600 text-sm hover:underline flex items-center"
+                          className="mt-2 text-blue- text-sm hover:underline flex items-center"
                           onClick={() => toggleRoomDetails(room.id)}
                         >
                           Show less <span className="ml-1">▲</span>
@@ -591,7 +591,7 @@ const HotelRoomsDisplay = () => {
                   
                   <td className="p-4 text-center align-top">
                     {selectedRooms[room.id] > 0 && (
-                      <div className="text-center font-bold text-blue-600">
+                      <div className="text-center font-bold text-blue-">
                         Selected
                       </div>
                     )}
@@ -604,13 +604,13 @@ const HotelRoomsDisplay = () => {
       </div>
       
       {getTotalPrice() > 0 && (
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="mt-4 p-4 bg-blue rounded-lg border border-blue-">
           <div className="flex justify-between items-center">
             <div className="font-bold text-lg">Total Price:</div>
-            <div className="font-bold text-xl text-blue-700">{formatPrice(getTotalPrice())}</div>
+            <div className="font-bold text-xl text-blue-">{formatPrice(getTotalPrice())}</div>
           </div>
           <div className="mt-4 flex justify-end">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+            <button className="bg-blue- hover:bg-blue- text-white font-bold py-2 px-6 rounded">
               Je réserve
             </button>
           </div>

@@ -38,6 +38,7 @@ import axios from 'axios';
 import { TfiAngleLeft } from "react-icons/tfi";
 import { MdArrowRight } from 'react-icons/md';
 import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt } from "react-icons/fa";
+import HotelRoomsDisplay from './rooms/TableRooms';
 
 const mockListing = {
   id: '1',
@@ -179,7 +180,7 @@ export function Hotel() {
   }
 
   return (
-    <>
+    <div >
 
       <div className='hidden md:block'>
         <Navbar />
@@ -187,7 +188,7 @@ export function Hotel() {
       </div>
 
       <BookingProvider >
-        <div className="bg-blue/10">
+        <div className="bg-blue/10 className='shadow-lg container mx-auto">
           <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8  md:pt-20">
 
             <div className="flex justify-between items-center mb-6">
@@ -277,11 +278,7 @@ export function Hotel() {
 
 
 
-                <div className="py-6 border-b">
-                  <h2 className="text-2xl font-semibold mb-4">Where you'll sleep</h2>
-
-                </div>
-
+                
 
 
 
@@ -295,6 +292,13 @@ export function Hotel() {
                 />
               </div>
             </div>
+
+            <div className="py-6 border-b">
+                  <h2 className="text-2xl font-semibold mb-4">Where you'll sleep</h2>
+
+                      <HotelRoomsDisplay />
+                </div>
+
 
             <div className="py-8 border-b">
               <h2 className="text-2xl font-semibold mb-6">Nearby Places</h2>
@@ -445,7 +449,7 @@ export function Hotel() {
           </div>
         </div>
       </BookingProvider >
-    </>
+    </div>
 
   );
 }

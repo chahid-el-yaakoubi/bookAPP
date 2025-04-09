@@ -14,26 +14,132 @@ import { faMapMarkerAlt, faHeart, faStar } from "@fortawesome/free-solid-svg-ico
 // });
 
 const HotelsDisplay = () => {
-  const hotels = useSelector((state) => state.hotels.filteredHotels);
+  const hotels = useSelector(state => state.hotels.filteredHotels);
 
   return (
-    <div className="  xl:px-20 py-20 ">
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-      <HotelCardGrid hotels={hotels} />
-    </div>
+    <>
+      {hotels.length > 0 ? <div className="  xl:px-20 py-20 ">
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+        <HotelCardGrid hotels={hotels} />
+      </div> :
+        <div className="container py-20">
+
+          <div className="flex flex-col items-center justify-center min-h-[40vh]">
+            {/* Cube */}
+            <div className="relative w-[100px] h-[100px] animate-spinCube [transform-style:preserve-3d]">
+              {["front", "back", "right", "left", "top", "bottom"].map((face, i) => (
+                <div
+                  key={face}
+                  className={`absolute w-full h-full ${i % 2 === 0 ? "bg-cyan-500" : "bg-orange-500"
+                    } border-2 border-white rounded shadow-[0_0_15px_white] face-${face}`}
+                />
+              ))}
+
+
+              <style>{`
+          @keyframes spinCube {
+            33% {
+              transform: rotateX(-36deg) rotateY(-405deg);
+            }
+            100% {
+              transform: rotateX(-36deg) rotateY(-405deg);
+            }
+          }
+
+          .animate-spinCube {
+            animation: spinCube 3s infinite cubic-bezier(0.16, 0.61, 0.49, 0.91);
+          }
+
+          .face-top {
+            transform: rotateX(90deg) translateZ(50px);
+            animation: shiftTop 3s infinite ease-out;
+          }
+
+          .face-bottom {
+            transform: rotateX(-90deg) translateZ(50px);
+            animation: shiftBottom 3s infinite ease-out;
+          }
+
+          .face-right {
+            transform: rotateY(90deg) translateZ(50px);
+            animation: shiftRight 3s infinite ease-out;
+          }
+
+          .face-left {
+            transform: rotateY(-90deg) translateZ(50px);
+            animation: shiftLeft 3s infinite ease-out;
+          }
+
+          .face-front {
+            transform: translateZ(50px);
+            animation: shiftFront 3s infinite ease-out;
+          }
+
+          .face-back {
+            transform: rotateY(-180deg) translateZ(50px);
+            animation: shiftBack 3s infinite ease-out;
+          }
+
+          @keyframes shiftTop {
+            33% { transform: rotateX(90deg) translateZ(50px); }
+            50%, 60% { transform: rotateX(90deg) translateZ(100px); }
+            75% { transform: rotateX(90deg) translateZ(50px); }
+          }
+
+          @keyframes shiftBottom {
+            33% { transform: rotateX(-90deg) translateZ(50px); }
+            50%, 60% { transform: rotateX(-90deg) translateZ(100px); }
+            75% { transform: rotateX(-90deg) translateZ(50px); }
+          }
+
+          @keyframes shiftRight {
+            33% { transform: rotateY(90deg) translateZ(50px); }
+            50%, 60% { transform: rotateY(90deg) translateZ(100px); }
+            75% { transform: rotateY(90deg) translateZ(50px); }
+          }
+
+          @keyframes shiftLeft {
+            33% { transform: rotateY(-90deg) translateZ(50px); }
+            50%, 60% { transform: rotateY(-90deg) translateZ(100px); }
+            75% { transform: rotateY(-90deg) translateZ(50px); }
+          }
+
+          @keyframes shiftFront {
+            33% { transform: translateZ(50px); }
+            50%, 60% { transform: translateZ(100px); }
+            75% { transform: translateZ(50px); }
+          }
+
+          @keyframes shiftBack {
+            33% { transform: rotateY(-180deg) translateZ(50px); }
+            50%, 60% { transform: rotateY(-180deg) translateZ(100px); }
+            75% { transform: rotateY(-180deg) translateZ(50px); }
+          }
+        `}</style>
+            </div>
+
+            {/* Loading Text */}
+            <p className="mt-6 text-black text-xl font-medium tracking-wide animate-pulse">
+              Loading...
+            </p>
+          </div>
+
+        </div>}
+
+    </>
   );
 };
 
@@ -166,4 +272,6 @@ export const HotelCardGrid = ({ hotels }) => {
     </div>
   );
 };
+
+
 

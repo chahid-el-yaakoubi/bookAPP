@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
+import dotenv from "dotenv";
 import { AuthContext } from "../../contextApi/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
-const api = "https://axistay-backend.onrender.com";
 
 const AuthForm = () => {
  

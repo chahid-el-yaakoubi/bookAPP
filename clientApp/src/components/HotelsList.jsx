@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Logo } from "./Navbar";
 import SearchMobile from './searchMobile';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 
 const HotelsList = () => {
@@ -28,7 +29,7 @@ const HotelsList = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await fetch("api/hotels");
+        const response = await fetch(`${apiUrl}/hotels`);
         if (!response.ok) throw new Error("Failed to fetch hotels");
         const data = await response.json();
         dispatch(setHotels(data)); // Store hotels in Redux state

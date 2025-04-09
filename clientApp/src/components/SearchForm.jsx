@@ -185,8 +185,8 @@ export const SearchForm = () => {
                 onClick={handleCloseDatePicker}
               ></div>
 
-              <div className="date-picker-container fixed md:absolute top-0 md:top-14 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-auto z-50 bg-emerald-900">
-                <div className="date-picker-header md:hidden flex justify-between items-center p-4 bg-white border-b sticky top-0 ">
+              <div className="date-picker-container fixed md:absolute top-0 md:top-14 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-auto z-50   bg-blue">
+                <div className="date-picker-header md:hidden flex justify-between items-center p-4 w-full bg-white border-b sticky top-0 ">
                   <h2 className="text-lg font-semibold text-gray-800">{t('search.selectDates')}</h2>
                   <button
                     className="p-2 hover:bg-gray-100 rounded-full"
@@ -207,7 +207,7 @@ export const SearchForm = () => {
                   maxDate={maxDate}
                   months={window.innerWidth > 768 ? 2 : 1}
                   direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
-                  className="date-range-wrapper bg-blue max-h-screen md:max-h-none overflow-auto w-full"
+                  className="date-range-wrapper  max-h-screen md:max-h-none overflow-auto w-screen"
                   rangeColors={['#2563eb']}
                   showMonthAndYearPickers={true}
                   monthDisplayFormat="MMMM yyyy"

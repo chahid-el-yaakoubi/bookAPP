@@ -1,24 +1,24 @@
 import React, { createContext, useReducer, useEffect } from "react";
 
-// Initial state
+// Default initial state
 const INITIAL_STATE = {
-  city: "undefined",
+  city: "",
   dates: [],
   options: {
     adult: 1,
-    children: 0,  // Fixed spelling issue here
+    children: 0,
     rooms: 1,
   },
 };
 
-// Create context
+// Create the context
 export const SearchContext = createContext(INITIAL_STATE);
 
-// Reducer function
+// Reducer to handle actions
 const SearchReducer = (state, action) => {
   switch (action.type) {
     case "NEW_SEARCH":
-      return action.payload; // Update state based on payload
+      return action.payload;
     case "RESET_SEARCH":
       return INITIAL_STATE;
     default:
@@ -26,14 +26,15 @@ const SearchReducer = (state, action) => {
   }
 };
 
-// Context provider
+// Provider component
 export const SearchContextProvider = ({ children }) => {
-  // Load initial state from localStorage or use default state
+  // Load safely from localStorage
   const loadFromLocalStorage = (key, defaultValue) => {
     try {
-      const savedValue = localStorage.getItem(key);
-      return savedValue ? JSON.parse(savedValue) : defaultValue;
-    } catch (error) {
+      const stored = localStorage.getItem(key);
+      return stored && stored !== "undefined" ? JSON.parse(stored) : defaultValue;
+    } catch (err) {
+      console.warn(`Error loading ${key} from localStorage`, err);
       return defaultValue;
     }
   };
@@ -46,7 +47,7 @@ export const SearchContextProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(SearchReducer, initialState);
 
-  // Save state to localStorage whenever it changes
+  // Save state to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("city", JSON.stringify(state.city));
     localStorage.setItem("dates", JSON.stringify(state.dates));
@@ -54,7 +55,14 @@ export const SearchContextProvider = ({ children }) => {
   }, [state]);
 
   return (
-    <SearchContext.Provider value={{ city: state.city, options: state.options, dates: state.dates, dispatch }}>
+    <SearchContext.Provider
+      value={{
+        city: state.city,
+        dates: state.dates,
+        options: state.options,
+        dispatch,
+      }}
+    >
       {children}
     </SearchContext.Provider>
   );

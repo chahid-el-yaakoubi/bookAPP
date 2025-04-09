@@ -1,8 +1,18 @@
 import React, { createContext, useEffect, useReducer } from "react";
 
+// Safely parse user from localStorage
+let storedUser = null;
+try {
+  const rawUser = localStorage.getItem("user");
+  storedUser = rawUser && rawUser !== "undefined" ? JSON.parse(rawUser) : null;
+} catch (error) {
+  console.error("Failed to parse 'user' from localStorage:", error);
+  storedUser = null;
+}
+
 // Initial state
 const INITIAL_STATE = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
+  user: storedUser,
   loading: false,
   error: null
 };
@@ -22,19 +32,19 @@ const AuthReducer = (state, action) => {
     case "LOGIN_SUCCESS":
       return {
         user: action.payload,
-        loading: false,  // Fixed typo here
+        loading: false,
         error: null
       };
     case "LOGIN_FAILED":
       return {
         ...state,
-        loading: false,  // Fixed typo here
+        loading: false,
         error: action.payload
       };
     case "LOGOUT":
       return {
         user: null,
-        loading: false, 
+        loading: false,
         error: null
       };
     default:
@@ -48,16 +58,20 @@ export const AuthContextProvider = ({ children }) => {
 
   // Sync user data with localStorage
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(state.user));
+    if (state.user !== undefined) {
+      localStorage.setItem("user", JSON.stringify(state.user));
+    }
   }, [state.user]);
 
   return (
-    <AuthContext.Provider value={{
-      user: state.user,
-      loading: state.loading,
-      error: state.error,
-      dispatch
-    }}>
+    <AuthContext.Provider
+      value={{
+        user: state.user,
+        loading: state.loading,
+        error: state.error,
+        dispatch
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

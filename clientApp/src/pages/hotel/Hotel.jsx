@@ -100,7 +100,7 @@ export function Hotel() {
     airports: <FaPlane className="text-indigo-500 text-xl" />,
     attractions: <FaMapMarkerAlt className="text-green-500 text-xl" />,
   };
-  const { data: hotel, error, loading, reFrech } = useFetch(`/api/hotels/find/${id}`);
+  const { data: hotel, error, loading, reFrech } = useFetch(`${apiUrl}/hotels/find/${id}`);
   const { data: roomsData, error: roomsError, loading: roomsLoading, reFrech: roomsRefRech } = useFetch(`${apiUrl}/rooms/${id}/find`);
 
   const [images, setImages] = useState([]);

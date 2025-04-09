@@ -74,7 +74,7 @@ export const Home = () => {
             </div>
             <Navbar />
             <Header />
-            <div className="mb-0 md:mb-14"> </div>
+            <div className="mb-10 md:mb-14"> </div>
             <HotelsList />
 
 

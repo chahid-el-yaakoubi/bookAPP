@@ -84,10 +84,17 @@ const HotelsList = () => {
 
   return (
     <div className="w-full ">
-      <div
-        className={`  py-1  shadow-sm  transition-all duration-300 mx-auto ${isAtTop ? "w-[100%]  rounded-b-xl md:rounded-xl  mt-[61px] md:mt-0   bg-primary md:bg-primary/30" : "w-[96%] md:w-full rounded-b-xl md:rounded-none right-0  z-40 fixed bg-primary top-[61px]  md:top-0 left-0 "
-          }`}
-      >
+<div
+  className={`
+    py-1 shadow-sm transition-all duration-300 mx-auto z-40
+    fixed top-[61px] left-0 right-0 bg-primary w-[96%] rounded-b-xl 
+
+    md:w-full
+    ${isAtTop 
+      ? "md:relative md:top-0 md:mt-0 md:bg-primary/30 md:rounded-xl"
+      : "md:fixed md:top-0 md:bg-primary md:rounded-none"}
+  `}
+>
         <div className="container mx-auto px-4  ">
           <div className="flex items-center justify-between gap-4">
             {/* Mobile Logo and Back to Top */}

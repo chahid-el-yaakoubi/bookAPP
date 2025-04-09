@@ -85,7 +85,7 @@ const HotelsList = () => {
   return (
     <div className="w-full ">
       <div
-        className={`  py-1  shadow-sm  transition-all duration-300 mx-auto ${isAtTop ? "w-[100%]  rounded-b-xl md:rounded-xl  mt-20 md:mt-0   bg-primary md:bg-primary/30" : "w-[96%] md:w-full rounded-b-xl md:rounded-none right-0  z-40 fixed bg-primary top-20  md:top-0 left-0 "
+        className={`  py-1  shadow-sm  transition-all duration-300 mx-auto ${isAtTop ? "w-[100%]  rounded-b-xl md:rounded-xl  mt-[61px] md:mt-0   bg-primary md:bg-primary/30" : "w-[96%] md:w-full rounded-b-xl md:rounded-none right-0  z-40 fixed bg-primary top-[61px]  md:top-0 left-0 "
           }`}
       >
         <div className="container mx-auto px-4  ">
@@ -149,9 +149,9 @@ const HotelsList = () => {
             {/* Filters Button */}
             <button
               onClick={() => setShowModel(true)}
-              className="px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 text-gray-700"
+              className="px-4 py-1 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 text-gray-700"
             >
-              <FontAwesomeIcon icon={faSliders} className="text-lg" />
+              <FontAwesomeIcon icon={faSliders} className="text-sm" />
               <span>Filtres</span>
             </button>
           </div>

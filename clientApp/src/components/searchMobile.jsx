@@ -40,13 +40,13 @@ const SearchMobile = () => {
       {/* Mobile Navigation */}
       <div className="md:hidden gap-2 flex items-center">
         <div 
-          className="flex items-center p-2 rounded-3xl bg-white shadow-lg transition-all hover:shadow-xl active:shadow-md cursor-pointer"
+          className="flex items-center p-2 rounded-3xl bg-white shadow-lg transition-all hover:shadow-xl active:shadow-md cursor-pointer gap-4"
           onClick={() => setSearchMobile(!searchMobile)}
           aria-label="Open search"
         >
           {/* Use FontAwesome icon for better scaling and consistency */}
-          <FontAwesomeIcon icon={faSearch} className="text-gray-600 w-6 h-6" />
-          <p className="ps-4 pe-2 text-gray-700">Search</p>
+          <FontAwesomeIcon icon={faSearch} className="text-gray-600 w-4 h-4" />
+          {/* <p className="text-gray-700 text-sm">Search</p> */}
         </div>
       </div>
 

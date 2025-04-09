@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
 import { changeLanguage } from '../i18n';  // Adjust the path based on your i18n.js location
 
-export const Header = ({ type }) => {
+export const Header = ({ type = "house_rental" }) => {
 
   const { t } = useTranslation();
   const { state } = useContext(TransContext);
@@ -127,61 +127,78 @@ export const Header = ({ type }) => {
     setShowOverlay(false);
   };
 
+  // Define class for active menu item based on type
+  const getMenuItemClass = (menuType) => {
+    const baseClass = "relative flex flex-col md:flex-row md:gap-3 items-center gap-1 py-1 px-1 md:p-3 cursor-pointer transition-all duration-300 rounded-xl";
+    
+    if (type === menuType) {
+      return `${baseClass} text-white bg-primary-dark group active:scale-95`;
+    }
+    return `${baseClass} text-white/80 bg-[rgba(18,156,190,0.226)] hover:text-white group`;
+  };
+
   return (
-    <div className="fixed md:relative top-0 flex justify-center z-40 md:z-30 bg-primary  md:pb-14 w-full">
-      <div className="container-fluid px-4  lg:px-16 xl:px-40  flex flex-col justify-center items-center w-full  md:ps-20">
+    <div className="fixed md:relative top-0 flex justify-center z-40 md:z-30 bg-primary md:pb-14 w-full">
+      <div className="container-fluid px-4 lg:px-16 xl:px-40 flex flex-col justify-center items-center w-full md:ps-20">
         <div className="w-full p-2 text-center rounded-b-lg overflow-x-auto">
           <div className="flex items-center justify-start gap-2 md:gap-10 mx-auto min-w-max">
             <Link to={'/'} className="min-w-[70px] md:min-w-[80px]">
-              <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white cursor-pointer transition-all duration-300 rounded-xl bg-primary-dark group active:scale-95">
+              <div className={getMenuItemClass("house_rental")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faBed} />
+                  <FontAwesomeIcon icon={faBed} className='text-sm md:text-lg' />
                 </div>
-                <span className="text-[11px] md:text-sm font-medium">{t('header.menu.home')}</span>
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                <span className="text-[10px] md:text-sm font-medium">{t('header.menu.home')}</span>
+                {type === "house_rental" && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                )}
               </div>
             </Link>
 
             <div className="min-w-[70px] md:min-w-[100px]">
-              <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white/80 cursor-pointer transition-all duration-300 rounded-xl   bg-[rgba(18,156,190,0.226)] hover:text-white group">
+              <div className={getMenuItemClass("explore")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faKey} />
                 </div>
-                <span className="text-[11px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.explore')}</span>
+                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.explore')}</span>
+                {type === "explore" && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                )}
               </div>
             </div>
 
-            
-
             <div className="min-w-[70px] md:min-w-[100px]">
-              <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white/80 cursor-pointer transition-all duration-300 rounded-xl bg-[rgba(18,156,190,0.226)] hover:text-white group">
+              <div className={getMenuItemClass("location")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faCar} />
                 </div>
-                <span className="text-[11px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.location')}</span>
+                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.location')}</span>
+                {type === "location" && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                )}
               </div>
             </div>
-            
 
             <div className="min-w-[70px] md:min-w-[100px]">
-              <div className="relative flex flex-col md:flex-row md:gap-3 items-center gap-1 p-2 md:p-3 text-white/80 cursor-pointer transition-all duration-300 rounded-xl bg-[rgba(18,156,190,0.226)] hover:text-white group">
+              <div className={getMenuItemClass("taxi")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faTaxi} />
                 </div>
-                <span className="text-[11px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.taxi')}</span>
+                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.taxi')}</span>
+                {type === "taxi" && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* search bar desctop */}
-        <div className="hidden md:block">
-        <SearchForm />
-        </div>
-
+        {/* search bar desktop */}
+        {(type === "house_rental" || type === "location") && (
+          <div className="hidden md:block">
+            <SearchForm />
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-

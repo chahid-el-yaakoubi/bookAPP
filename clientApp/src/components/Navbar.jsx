@@ -473,16 +473,12 @@ export const Navbar = () => {
                     ) : (
                         <div className="space-x-2 flex items-center">
                             <button
-                                className="px-4 py-2 hover:bg-gray-50 text-[10px] rounded-lg border border-white text-white transition"
+                                className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
                                 onClick={() => setLoginForm(true)}
                             >
                                 {t('navbar.login')}
                             </button>
-                            <Link to="/register">
-                                <button className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
-                                    {t('navbar.register')}
-                                </button>
-                            </Link>
+                             
                         </div>
                     )}
                 </div>

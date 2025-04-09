@@ -39,6 +39,7 @@ import { TfiAngleLeft } from "react-icons/tfi";
 import { MdArrowRight } from 'react-icons/md';
 import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt } from "react-icons/fa";
 import HotelRoomsDisplay from './rooms/TableRooms';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const mockListing = {
   id: '1',
@@ -100,7 +101,7 @@ export function Hotel() {
     attractions: <FaMapMarkerAlt className="text-green-500 text-xl" />,
   };
   const { data: hotel, error, loading, reFrech } = useFetch(`/api/hotels/find/${id}`);
-  const { data: roomsData, error: roomsError, loading: roomsLoading, reFrech: roomsRefRech } = useFetch(`/api/rooms/${id}/find`);
+  const { data: roomsData, error: roomsError, loading: roomsLoading, reFrech: roomsRefRech } = useFetch(`${apiUrl}/rooms/${id}/find`);
 
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState({});

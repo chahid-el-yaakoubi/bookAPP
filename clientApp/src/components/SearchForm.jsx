@@ -207,7 +207,7 @@ export const SearchForm = () => {
                   maxDate={maxDate}
                   months={window.innerWidth > 768 ? 2 : 1}
                   direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
-                  className="date-range-wrapper  max-h-screen md:max-h-none overflow-auto w-screen"
+                  className="date-range-wrapper  max-h-screen md:max-h-none  "
                   rangeColors={['#2563eb']}
                   showMonthAndYearPickers={true}
                   monthDisplayFormat="MMMM yyyy"

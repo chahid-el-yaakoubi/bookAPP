@@ -19,6 +19,20 @@ const HotelsDisplay = () => {
   return (
     <div className="  xl:px-20 py-20 ">
       <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
+      <HotelCardGrid hotels={hotels} />
     </div>
   );
 };

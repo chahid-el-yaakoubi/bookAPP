@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import { FaDollarSign, FaInfoCircle, FaSave, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
 const Pricing = ({ propertyData, setPropertyData }) => {
-
-
-    const [basePrice, setBasePrice] = useState(propertyData?.pricing?.nightly_rate || 0);
-    const [weekendPrice, setWeekendPrice] = useState(propertyData?.pricing?.Weekend_price || 0);
-    const [weeklyDiscount, setWeeklyDiscount] = useState(propertyData?.pricing?.discounts?.weekly_discount || 0);
-    const [monthlyDiscount, setMonthlyDiscount] = useState(propertyData?.pricing?.discounts?.monthly_discount || 0);
+    // Initialize state with property data or default values
+    const [basePrice, setBasePrice] = useState(propertyData?.pricing?.nightly_rate || null);
+    const [weekendPrice, setWeekendPrice] = useState(propertyData?.pricing?.Weekend_price || null);
+    const [weeklyDiscount, setWeeklyDiscount] = useState(propertyData?.pricing?.discounts?.weekly_discount || null);
+    const [monthlyDiscount, setMonthlyDiscount] = useState(propertyData?.pricing?.discounts?.monthly_discount || null);
     const [smartPricing, setSmartPricing] = useState(propertyData?.pricing?.smart_pricing?.enabled || false);
-    const [minPrice, setMinPrice] = useState(propertyData?.pricing?.smart_pricing?.min || 0);
-    const [maxPrice, setMaxPrice] = useState(propertyData?.pricing?.smart_pricing?.max || 0);
+    const [minPrice, setMinPrice] = useState(propertyData?.pricing?.smart_pricing?.min || null);
+    const [maxPrice, setMaxPrice] = useState(propertyData?.pricing?.smart_pricing?.max || null);
     const [isSaving, setIsSaving] = useState(false);
     const [errors, setErrors] = useState({
         weekly: '',
@@ -39,9 +38,33 @@ const Pricing = ({ propertyData, setPropertyData }) => {
         setErrors(newErrors);
     }, [weeklyDiscount, monthlyDiscount]);
 
-    
+    // Update parent component's propertyData whenever pricing fields change
+    useEffect(() => {
+        // Only update if there are no critical errors
+        if (!errors.weekly?.includes('Error:') && !errors.monthly?.includes('Error:') && Number(monthlyDiscount) <= 49) {
+            updatePropertyData();
+        }
+    }, [basePrice, weekendPrice, weeklyDiscount, monthlyDiscount, smartPricing, minPrice, maxPrice]);
 
-   
+    // Function to update the parent's propertyData
+    const updatePropertyData = () => {
+        setPropertyData(prevData => ({
+            ...prevData,
+            pricing: {
+                nightly_rate: basePrice ? Number(basePrice) : '',
+                Weekend_price: weekendPrice ? Number(weekendPrice) : '',
+                discounts: {
+                    weekly_discount: weeklyDiscount ? Number(weeklyDiscount) : '',
+                    monthly_discount: monthlyDiscount ? Number(monthlyDiscount) : ''
+                },
+                smart_pricing: {
+                    enabled: smartPricing,
+                    min: minPrice ? Number(minPrice) : 0,
+                    max: maxPrice ? Number(maxPrice) : 0
+                }
+            }
+        }));
+    };
 
     const toggleSmartPricing = () => {
         setSmartPricing(!smartPricing);
@@ -54,22 +77,22 @@ const Pricing = ({ propertyData, setPropertyData }) => {
     const calculateWeeklyAverage = () => {
         const nightlyRate = Number(basePrice);
         const weekendRate = Number(weekendPrice) || nightlyRate;
-        const weeklyDiscounta = Number(weeklyDiscount) / 100 || 0;
+        const weeklyDiscountPercent = Number(weeklyDiscount) / 100 || 0;
 
         // 5 weekdays + 2 weekend days
         const total = (nightlyRate * 5) + (weekendRate * 2);
-        const discountedTotal = total * (1 - weeklyDiscounta);
+        const discountedTotal = total * (1 - weeklyDiscountPercent);
         return Math.round(discountedTotal);
     };
 
     const calculateMonthlyAverage = () => {
         const nightlyRate = Number(basePrice);
         const weekendRate = Number(weekendPrice) || nightlyRate;
-        const monthlyDiscounta = Number(monthlyDiscount) / 100 || 0;
+        const monthlyDiscountPercent = Number(monthlyDiscount) / 100 || 0;
 
         // Simplified calculation: ~30 days, with ~8 weekend days
         const total = (nightlyRate * 22) + (weekendRate * 8);
-        const discountedTotal = total * (1 - monthlyDiscounta);
+        const discountedTotal = total * (1 - monthlyDiscountPercent);
         return Math.round(discountedTotal);
     };
 
@@ -77,7 +100,7 @@ const Pricing = ({ propertyData, setPropertyData }) => {
         if (type === 'weekly') {
             setWeeklyDiscount(prev => Math.min(Number(prev) + 1, 99));
         } else {
-            setMonthlyDiscount(prev => Math.min(Number(prev) + 1, 99));
+            setMonthlyDiscount(prev => Math.min(Number(prev) + 1, 49)); // Limit to 49%
         }
     };
 
@@ -94,16 +117,27 @@ const Pricing = ({ propertyData, setPropertyData }) => {
                Number(monthlyDiscount) > 49;
     };
 
+    // Calculate weekly and monthly averages
     const weeklyAverage = calculateWeeklyAverage();
     const monthlyAverage = calculateMonthlyAverage();
 
+    // Save button handler
+    const handleSave = () => {
+        if (hasErrors()) return;
+        
+        setIsSaving(true);
+        updatePropertyData();
+        
+        // Simulate API call
+        setTimeout(() => {
+            setIsSaving(false);
+        }, 1000);
+    };
+
     return (
-        <div className="p-6 max-w-4xl mx-auto">
+        <div className="p-6 max-w-4xl mx-auto min-h-[70vh] ">
             <h1 className="text-3xl font-bold mb-4">Pricing</h1>
-            <p className="text-gray-600 mb-6">
-                These settings apply to all nights, unless you customise them by date.
-                <a href="#" className="text-blue ml-1 hover:underline">Learn more</a>
-            </p>
+            
 
             <div className="space-y-8">
                 {/* Nightly price section */}
@@ -176,133 +210,11 @@ const Pricing = ({ propertyData, setPropertyData }) => {
                         </div>
                     )}
 
-                    {/* Weekend pricing */}
-                    <div className="mt-6">
-                        <div className="border rounded-lg p-4">
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium">Custom weekend price</span>
-                                <button
-                                    onClick={removeWeekendPrice}
-                                    className="text-gray-500 hover:text-gray-700"
-                                >
-                                    <FaTrash />
-                                </button>
-                            </div>
-                            <div className="relative mt-3">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span className="text-gray-500">MAD</span>
-                                </div>
-                                <input
-                                    type="number"
-                                    value={weekendPrice}
-                                    onChange={(e) => setWeekendPrice(e.target.value)}
-                                    className="pl-14 w-full p-4 border rounded-lg text-2xl focus:ring-2 focus:ring-blue focus:border-blue"
-                                    placeholder="0"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Discounts section */}
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">Discounts</h2>
-
-                    {/* Weekly discount */}
-                    <div className={`border rounded-lg p-4 mb-4 ${errors.weekly.includes('Error:') ? 'border-red-500' : ''}`}>
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <p className="font-medium">Weekly · For 7 nights or more</p>
-                                <div className="flex items-center mt-2">
-                                    <button 
-                                        onClick={() => decrementDiscount('weekly')}
-                                        className="bg-gray-200 hover:bg-gray-300 p-2 rounded-l-md"
-                                    >
-                                        <FaMinus />
-                                    </button>
-                                    <div className="relative px-2 flex items-center">
-                                        <input
-                                            type="number"
-                                            value={weeklyDiscount}
-                                            onChange={(e) => setWeeklyDiscount(e.target.value)}
-                                            className="w-16 p-2 text-2xl font-bold border-0 focus:ring-0 text-center"
-                                            placeholder="0"
-                                            max="100"
-                                        />
-                                        <span className="text-2xl font-bold">%</span>
-                                    </div>
-                                    <button 
-                                        onClick={() => incrementDiscount('weekly')}
-                                        className="bg-gray-200 hover:bg-gray-300 p-2 rounded-r-md"
-                                    >
-                                        <FaPlus />
-                                    </button>
-                                </div>
-                                {errors.weekly && (
-                                    <p className={`mt-2 text-sm ${errors.weekly.includes('Error:') ? 'text-red-600' : 'text-orange-500'}`}>
-                                        <FaInfoCircle className="inline mr-1" />
-                                        {errors.weekly}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="text-right">
-                                <span className="text-gray-600">Weekly average is MAD {weeklyAverage}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Monthly discount */}
-                    <div className={`border rounded-lg p-4 ${errors.monthly.includes('Error:') ? 'border-red-500' : ''}`}>
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <p className="font-medium">Monthly · For 28 nights or more</p>
-                                <div className="flex items-center mt-2">
-                                    <button 
-                                        onClick={() => decrementDiscount('monthly')}
-                                        className="bg-gray-200 hover:bg-gray-300 p-2 rounded-l-md"
-                                    >
-                                        <FaMinus />
-                                    </button>
-                                    <div className="relative px-2 flex items-center">
-                                        <input
-                                            type="number"
-                                            value={monthlyDiscount}
-                                            onChange={(e) => setMonthlyDiscount(e.target.value)}
-                                            className="w-16 p-2 text-2xl font-bold border-0 focus:ring-0 text-center"
-                                            placeholder="0"
-                                            max="100"
-                                        />
-                                        <span className="text-2xl font-bold">%</span>
-                                    </div>
-                                    <button 
-                                        onClick={() => incrementDiscount('monthly')}
-                                        className="bg-gray-200 hover:bg-gray-300 p-2 rounded-r-md"
-                                        disabled={Number(monthlyDiscount) >= 99}
-                                    >
-                                        <FaPlus />
-                                    </button>
-                                </div>
-                                {errors.monthly && (
-                                    <p className="mt-2 text-sm text-red-600">
-                                        <FaInfoCircle className="inline mr-1" />
-                                        {errors.monthly}
-                                    </p>
-                                )}
-                                {Number(monthlyDiscount) >= 50 && !errors.monthly && (
-                                    <p className="mt-2 text-sm text-red-600">
-                                        <FaInfoCircle className="inline mr-1" />
-                                        Error: Monthly discount cannot exceed 49%
-                                    </p>
-                                )}
-                            </div>
-                            <div className="text-right">
-                                <span className="text-gray-600">Monthly average is MAD {monthlyAverage}</span>
-                            </div>
-                        </div>
-                    </div>
+                  
                 </div>
  
-              
+
+                 
             </div>
         </div>
     );

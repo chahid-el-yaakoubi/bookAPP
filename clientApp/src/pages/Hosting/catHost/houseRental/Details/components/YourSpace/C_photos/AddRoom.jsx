@@ -8,20 +8,10 @@ import {
   FaCarAlt, FaUmbrellaBeach, FaLock, FaPhone, FaClock,
   FaFilm, FaBook, FaNetworkWired, FaPrint, FaUsb, FaPlug,
   FaPen, FaBlender, FaWater, FaWineGlass, FaTemperatureHigh,
-  FaWeight, FaCloudRain, FaChargingStation, FaTaxi, FaSubway,
-  FaMotorcycle, FaSwimmingPool, FaDumbbell, FaSpa, FaLeaf, FaArrowUp,
-  FaBuilding, FaSuitcase, FaUserClock, FaBriefcase,
-  FaUsers, FaWheelchair, FaToilet, FaHandsHelping, FaEye, FaExclamationTriangle, FaFireExtinguisher, FaMedkit,
-  FaCamera, FaUserShield, FaKey, FaBaby, FaChild, FaTree, FaUmbrella,
-  FaSkiing, FaHiking, FaTableTennis, FaGolfBall, FaSun, FaRecycle,
-  FaRobot, FaMicrophone, FaProjectDiagram, FaPaw, FaBed, FaDog,
-  FaHandHoldingHeart, FaBroom, FaConciergeBell, FaGlassMartini,
-  FaShoppingBasket, FaHandsWash, FaMap, FaExchangeAlt,
-  FaHatCowboy,
-  FaChevronDown,
-  FaPlus,
-  FaSave,
-  FaChevronUp,
+
+  FaBuilding, FaSuitcase,
+  FaCamera, FaKey,
+  FaRobot, FaMicrophone, FaProjectDiagram,
 
   FaTable,
   FaChessKing,
@@ -33,7 +23,8 @@ import { FcDvdLogo } from "react-icons/fc";
 import { MdCurtainsClosed, MdOutlineCleaningServices, MdSmokeFree } from 'react-icons/md';
 
 // Game Icons
-import { GiToaster , GiKnifeFork, 
+import {
+  GiToaster, GiKnifeFork,
 } from 'react-icons/gi';
 import { FaDoorOpen, FaEarListen, FaRadio, FaTreeCity } from "react-icons/fa6";
 
@@ -145,7 +136,10 @@ const categoryIcons = {
   'Technology': <FaRobot size={20} />
 };
 
-const RoomForm = ({ onSubmit, initialData, onCancel }) => {
+const hotelTypes = ['hotel', 'guesthouse', 'hostel', 'boutique-hotel'];
+
+
+const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const [formData, setFormData] = useState({
     type: '',
     price: 0,
@@ -158,7 +152,8 @@ const RoomForm = ({ onSubmit, initialData, onCancel }) => {
     bathrooms: [],
     floor: null,
     view: [],
-    categorizedAmenities: {}
+    categorizedAmenities: {},
+    roomTitle: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -261,20 +256,6 @@ const RoomForm = ({ onSubmit, initialData, onCancel }) => {
 
   const isAmenitySelected = (amenityId, category) => {
     return formData.categorizedAmenities?.[category]?.includes(amenityId) || false;
-  };
-
-  const addBed = () => {
-    setFormData((prev) => ({
-      ...prev,
-      beds: [...prev.beds, { type: 'Single Bed', count: 1 }],
-    }));
-  };
-
-  const removeBed = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      beds: prev.beds.filter((_, i) => i !== index),
-    }));
   };
 
   const toggleView = (view) => {
@@ -453,23 +434,27 @@ const RoomForm = ({ onSubmit, initialData, onCancel }) => {
                 </div>
               </div>
 
+              {
+            hotelTypes.includes(typeProperty) && (
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">Floor Number</label>
-                <input
-                  type="number"
-                  name="floor"
-                  value={formData.floor === null ? '' : formData.floor}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      floor: e.target.value === '' ? null : Number(e.target.value),
-                    }))
-                  }
-                  className="w-full px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
-                  min="0"
-                  placeholder="Floor number (optional)"
-                />
-              </div>
+              <label className="block text-lg font-medium text-gray-700 mb-2">Room Number/Title</label>
+              <input
+                type="text"
+                name="roomTitle"
+                value={formData.roomTitle || ''}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    roomTitle: e.target.value
+                  }))
+                }
+                className="w-full px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
+                placeholder="e.g. 101, 203, Suite A"
+              />
+            </div>
+            )
+          }
+             
             </div>
 
             <div className="mt-8">
@@ -710,13 +695,17 @@ const RoomForm = ({ onSubmit, initialData, onCancel }) => {
           </div>
 
           {/* bathrooms*/}
-          <BathroomAmenitiesSelector
-            bathrooms={formData.bathrooms}
-            onBathroomsChange={(bathrooms) => setFormData(prev => ({
-              ...prev,
-              bathrooms
-            }))}
-          />
+          {
+            hotelTypes.includes(typeProperty) && (
+              <BathroomAmenitiesSelector
+                bathrooms={formData.bathrooms}
+                onBathroomsChange={(bathrooms) => setFormData(prev => ({
+                  ...prev,
+                  bathrooms
+                }))}
+              />
+            )
+          }
 
           {/* Categorized Amenities Card */}
           <div className="bg-white rounded-xl shadow-lg p-8">
@@ -750,8 +739,8 @@ const RoomForm = ({ onSubmit, initialData, onCancel }) => {
                             key={amenity.id}
                             onClick={() => toggleAmenity(amenity.id, category)}
                             className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${isAmenitySelected(amenity.id, category)
-                                ? 'border-blue bg-blue/10'
-                                : 'border-gray-200 hover:border-blue'
+                              ? 'border-blue bg-blue/10'
+                              : 'border-gray-200 hover:border-blue'
                               }`}
                           >
                             <input

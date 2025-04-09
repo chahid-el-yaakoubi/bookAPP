@@ -14,6 +14,7 @@ const Location = () => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const [neighborhood, setNeighborhood] = useState('');
+    const [coordinateInput, setCoordinateInput] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -22,8 +23,20 @@ const Location = () => {
         if (initialLocation) {
             setCity(initialLocation.city || '');
             setRegion(initialLocation?.region || '');
-            setLatitude(initialLocation?.latitude ? initialLocation?.latitude.toString() : '');
-            setLongitude(initialLocation?.longitude ? initialLocation?.longitude.toString() : '');
+            
+            const lat = initialLocation?.latitude ? initialLocation.latitude.toString() : '';
+            const lng = initialLocation?.longitude ? initialLocation.longitude.toString() : '';
+            
+            setLatitude(lat);
+            setLongitude(lng);
+            
+            // Set coordinate input display format
+            if (lat && lng) {
+                setCoordinateInput(`${lat}, ${lng}`);
+            } else {
+                setCoordinateInput('');
+            }
+            
             setNeighborhood(initialLocation?.neighborhood || '');
         }
     }, [initialLocation]);
@@ -38,8 +51,8 @@ const Location = () => {
                 ...selectedProperty.location,
                 city: city,
                 region: region,
-                latitude: parseFloat(latitude) || 0,
-                longitude: parseFloat(longitude) || 0,
+                latitude: latitude ? parseFloat(latitude) : null,
+                longitude: longitude ? parseFloat(longitude) : null,
                 neighborhood: neighborhood
             }
         };
@@ -61,8 +74,11 @@ const Location = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    setLatitude(position.coords.latitude.toFixed(6));
-                    setLongitude(position.coords.longitude.toFixed(6));
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    setLatitude(lat);
+                    setLongitude(lng);
+                    setCoordinateInput(`${lat}, ${lng}`);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -74,15 +90,32 @@ const Location = () => {
         }
     };
 
+    // Improved coordinate handling
     const handleCoordinateChange = (e) => {
         const value = e.target.value;
-        const coords = value.split(',').map(coord => coord.trim());
+        setCoordinateInput(value);
         
-        if (coords.length >= 2) {
-            setLatitude(coords[0]);
-            setLongitude(coords[1]);
+        // If input is empty, clear both coordinates
+        if (!value.trim()) {
+            setLatitude('');
+            setLongitude('');
+            return;
+        }
+        
+        // If input contains a comma, try to parse as lat,lng pair
+        if (value.includes(',')) {
+            const coords = value.split(',').map(coord => coord.trim());
+            
+            if (coords.length >= 2) {
+                // Set values even if they're not perfectly formatted numbers
+                // (validation will happen during form submission)
+                setLatitude(coords[0]);
+                setLongitude(coords[1]);
+            }
         } else {
+            // If no comma, just update latitude field
             setLatitude(value);
+            setLongitude('');
         }
     };
 
@@ -97,24 +130,6 @@ const Location = () => {
             </p>
 
             <div className="space-y-6">
-                {/* <div className="bg-blue p-4 rounded-lg border border-blue flex items-start">
-                    <FaSearch className="text-blue mt-1 mr-3" />
-                    <div>
-                        <h3 className="font-medium text-blue">Search for Address</h3>
-                        <p className="text-sm text-blue">
-                            Use the search box below to automatically fill in address details or enter them manually.
-                        </p>
-                        <div className="mt-3 relative">
-                            <input
-                                type="text"
-                                placeholder="Search for an address..."
-                                className="w-full p-3 pr-10 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
-                            />
-                            <FaSearch className="absolute right-3 top-3.5 text-gray-400" />
-                        </div>
-                    </div>
-                </div> */}
-
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -171,13 +186,13 @@ const Location = () => {
                         </div>
                         <input
                             type="text"
-                            value={latitude && longitude ? `${latitude}, ${longitude}` : ''}
+                            value={coordinateInput}
                             onChange={handleCoordinateChange}
                             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
                             placeholder="e.g. 37.7749, -122.4194"
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                            Enter coordinates in decimal format (e.g. 37.7749, -122.4194)
+                            Enter coordinates in decimal format (e.g. 37.7749, -122.4194) or clear to remove location
                         </p>
                     </div>
 

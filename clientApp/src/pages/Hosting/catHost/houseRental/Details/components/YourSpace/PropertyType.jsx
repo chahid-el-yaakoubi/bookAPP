@@ -29,7 +29,6 @@ const PropertyTypeForm = () => {
         house: [
           { id: 'villa', label: 'Daily Rental Villa', icon: '🏡' },
           { id: 'riad', label: 'Daily Rental Traditional Riad', icon: '🏯' },
-          { id: 'cabin', label: 'Cabin', icon: '🌲' }
         ],
         hospitality: [
           { id: 'hotel', label: 'Hotel', icon: '🏨' },
@@ -56,9 +55,9 @@ const PropertyTypeForm = () => {
         selectedCategory: Object.keys(propertyTypes).find(key =>
             propertyTypes[key]?.some(type => type.id === selectedProperty?.type?.type)
         ) || 'apartment',
-        propertyType: selectedProperty?.type?.type || 'rental-unit',
-        propertyCategory: selectedProperty?.type?.category || 'apartment',
-        listingType: selectedProperty?.type?.listingType || 'Entire place',
+        propertyType: selectedProperty?.type?.type || '',
+        propertyCategory: selectedProperty?.type?.category || '',
+        listingType: selectedProperty?.type?.listingType || '',
         floors: selectedProperty?.type?.floors || 1,
         floorNumber: selectedProperty?.type?.floorNumber || 1,
         yearBuilt: selectedProperty?.type?.yearBuilt || '',
@@ -92,8 +91,10 @@ const PropertyTypeForm = () => {
     useEffect(() => {
         const typesForCategory = propertyTypes[selectedCategory] || [];
         if (typesForCategory.length > 0 && !typesForCategory.some(type => type.id === propertyType)) {
-            const newType = typesForCategory[0].id;
-            updateFormField('propertyType', newType);
+            // const newType = typesForCategory[0].id;
+            updateFormField('propertyType', '');
+            updateFormField('listingType', '');
+            updateFormField('viewType', '');
             
             // Intelligently update propertyCategory based on selected propertyType
             if (['apartment', 'luxury', 'hospitality', 'house'].includes(selectedCategory)) {
@@ -165,6 +166,7 @@ const PropertyTypeForm = () => {
         if (!propertyType) validationErrors.push("Property type");
         if (!propertyCategory) validationErrors.push("Property category");
         if (!listingType) validationErrors.push("Listing type");
+        if (!isHotelLike && !viewType) validationErrors.push("View type");
         
         if (validationErrors.length > 0) {
             alert(`Please fill in the following required fields: ${validationErrors.join(", ")}.`);
@@ -204,13 +206,13 @@ const PropertyTypeForm = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto bg-gradient-to-b from-gray-50 to-white rounded-xl shadow-2xl overflow-hidden">
+        <div className="mx-auto bg-gradient-to-b from-gray-50 to-white rounded-xl shadow-2xl overflow-hidden">
             {/* Hero header */}
             <div className="bg-gradient-to-r from-blue to-indigo-700 py-8 px-6">
                 <h1 className="text-3xl font-bold text-white flex items-center">
                     <FaHome className="mr-3" /> Property Details
                 </h1>
-                <p className="text-blue mt-2">Define the perfect space for your guests</p>
+                <p className="text-black mt-2">Define the perfect space for your guests</p>
             </div>
 
             {/* Success message */}
@@ -252,7 +254,7 @@ const PropertyTypeForm = () => {
 
                 {/* Property Type Selection - Hero Design */}
                 <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                    <label className="block text-lg font-semibold text-gray-800 mb-4">
+                    <label className={`block text-lg font-semibold mb-4 ${propertyType ? 'text-gray-800' : 'text-red-500'}`}>
                         Which is most like your place?
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -278,7 +280,9 @@ const PropertyTypeForm = () => {
 
                 {/* Listing Type - Hero Design */}
                 <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                    <label className="block text-lg font-semibold text-gray-800 mb-4">Listing Type</label>
+                    <label className={`block text-lg font-semibold mb-4 ${listingType ? 'text-gray-800' : 'text-red-500'}`}>
+                        Listing Type
+                    </label>
                     <div className="space-y-3">
                         {getFilteredListingTypes(selectedCategory).map(option => (
                             <button
@@ -306,7 +310,7 @@ const PropertyTypeForm = () => {
                 {!isHotelLike && (
                     <>
                         <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                            <label className="block text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <label className={`block text-lg font-semibold mb-4 flex items-center ${viewType ? 'text-gray-800' : 'text-red-500'}`}>
                                 <FaMapMarkerAlt className="mr-2 text-blue" /> View Type
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">

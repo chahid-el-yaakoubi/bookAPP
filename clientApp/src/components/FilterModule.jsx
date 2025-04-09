@@ -1,83 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  FaTimes, FaPaw, FaParking, FaUtensils, FaWifi, FaHouseUser,
+  FaBuilding, FaHotel, FaBolt, FaSearch, FaTrophy, FaStar,
+  FaHotTub, FaHome, FaTv, FaSnowflake, FaFire, FaBriefcase,
+  FaSwimmingPool, FaCoffee, FaUmbrellaBeach, FaWheelchair,
+  FaWater, FaShower, FaLock, FaLockOpen,
+  FaTshirt, FaTree, FaChair, FaDoorClosed, FaMountain,
+  FaCamera
+} from 'react-icons/fa';
 import {
-  faXmark,
-  faPaw,
-  faParking,
-  faKitchenSet,
-  faWifi,
-  faHouse,
-  faBuilding,
-  faHotel,
-  faBolt,
-  faMagnifyingGlass,
-  faTrophy,
-  faStar,
-  faHotTub,
-  faHome,
-  faTv,
-  faSnowflake,
-  faFire,
-  faBriefcase,
-  faSwimmingPool,
-  faCoffee,
-  faUmbrellaBeach,
-  faWheelchair,
-  faWater,
-  faHouseFlag,
-  faArrowUpFromWaterPump,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  setPriceRange,
+  // setSortByPrice,
   toggleAmenity,
   toggleBookingOption,
   toggleExceptionalProperty,
   togglePropertyType,
   clearFilters,
 } from '../redux/hotelsSlice';
+import { MdElevator } from 'react-icons/md';
+import { Flag } from 'lucide-react';
 
-const languages = [
-  { id: 'fr', label: 'Français' },
-  { id: 'en', label: 'Anglais' },
-  { id: 'es', label: 'Espagnol' },
-  { id: 'de', label: 'Allemand' },
-  { id: 'it', label: 'Italien' },
-  { id: 'pt', label: 'Portugais' },
-  { id: 'nl', label: 'Néerlandais' },
-  { id: 'zh', label: 'Chinois' },
-  { id: 'ar', label: 'Arabe' },
-  { id: 'ko', label: 'Coréen' },
-  { id: 'ja', label: 'Japonais' },
-];
 
 export const FilterModule = ({ onClose }) => {
   const dispatch = useDispatch();
   const { filters, filteredHotels } = useSelector((state) => state.hotels);
   
-  const MIN_PRICE = 0;
-  const MAX_PRICE = 2000;
-  const STEP = 10;
-  const MIN_GAP = 300;
+  // Price sort options
+  const priceSortOptions = [
+    { id: 'default', label: 'Recommandé' },
+    { id: 'low-to-high', label: 'Prix: croissant' },
+    { id: 'high-to-low', label: 'Prix: décroissant' }
+  ];
 
-  const handlePriceChange = (value, type) => {
-    const newValue = Math.max(MIN_PRICE, Math.min(parseInt(value), MAX_PRICE));
-    const currentRange = filters.priceRange;
-    
-    let newRange;
-    if (type === 'min') {
-      newRange = {
-        min: Math.min(newValue, currentRange.max - MIN_GAP),
-        max: currentRange.max
-      };
-    } else {
-      newRange = {
-        min: currentRange.min,
-        max: Math.max(newValue, currentRange.min + MIN_GAP)
-      };
-    }
-    
-    dispatch(setPriceRange(newRange));
+  const handlePriceSortChange = (sortOption) => {
+    // dispatch(setSortByPrice(sortOption));
   };
 
   const handleAmenityToggle = (id) => {
@@ -100,12 +56,18 @@ export const FilterModule = ({ onClose }) => {
     dispatch(clearFilters());
   };
 
-  const recommendations = [
-    { id: 'rec-pets', label: 'Animaux de compagnie', icon: faPaw },
-    { id: 'rec-jacuzzi', label: 'Jacuzzi', icon: faHotTub },
-    { id: 'rec-parking', label: 'Parking gratuit', icon: faParking },
-    { id: 'rec-kitchen', label: 'Cuisine', icon: faKitchenSet }
+  const propertyTypes = [
+    { id: 'hotel', label: 'Hôtel', icon: <FaHotel /> },
+    { id: 'apartment', label: 'Appartement', icon: <FaBuilding /> },
+    { id: 'resort', label: 'Resort', icon: <FaUmbrellaBeach /> },
+    { id: 'villa', label: 'Villa', icon: <FaHome /> },
+    { id: 'cabin', label: 'Cabane', icon: <FaMountain /> },
+    { id: 'guesthouse', label: 'Maison d\'hôtes', icon: <FaHouseUser /> },
+    { id: 'hostel', label: 'Auberge', icon: <Flag /> },
+    { id: 'boutique', label: 'Boutique', icon: <FaChair /> }
   ];
+
+ 
 
   const roomTypes = [
     { id: 'room-bedrooms', label: 'Chambres' },
@@ -117,47 +79,42 @@ export const FilterModule = ({ onClose }) => {
     {
       title: "Très demandés",
       items: [
-        { id: 'wifi', label: 'Wifi', icon: faWifi },
-        { id: 'tv', label: 'Télévision', icon: faTv },
-        { id: 'ac', label: 'Climatisation', icon: faSnowflake },
-        { id: 'heating', label: 'Chauffage', icon: faFire },
-        { id: 'washer', label: 'Lave-linge', icon: faWater },
+        { id: 'wifi', label: 'Wi-Fi / Internet', icon: <FaWifi /> },
+        { id: 'tv', label: 'Télévision', icon: <FaTv /> },
+        { id: 'ac', label: 'Climatisation', icon: <FaSnowflake /> },
+        { id: 'heating', label: 'Chauffage', icon: <FaFire /> },
+        { id: 'hot-water', label: 'Eau chaude', icon: <FaShower /> },
+        { id: 'parking', label: 'Parking / Garage', icon: <FaParking /> },
       ]
     },
     {
       title: "Produits et services de base",
       items: [
-        { id: 'kitchen', label: 'Cuisine', icon: faWater },
-        { id: 'dryer', label: 'Sèche-linge', icon: faWater },
-        { id: 'workspace', label: 'Espace de travail dédié', icon: faBriefcase },
-        { id: 'hairdryer', label: 'Sèche-cheveux', icon: faWater },
+        { id: 'kitchen', label: 'Cuisine', icon: <FaUtensils /> },
+        { id: 'washer', label: 'Lave-linge', icon: <FaTshirt /> },
+        { id: 'workspace', label: 'Espace de travail dédié', icon: <FaBriefcase /> },
+        { id: 'elevator', label: 'Ascenseur', icon: <MdElevator /> },
       ]
     },
     {
       title: "Caractéristiques",
       items: [
-        { id: 'pool', label: 'Piscine', icon: faSwimmingPool },
-        { id: 'jacuzzi', label: 'Jacuzzi', icon: faHotTub },
-        { id: 'parking', label: 'Parking gratuit', icon: faParking },
-        { id: 'ev-charging', label: 'Station de recharge pour véhicules électriques', icon: faWater },
-        { id: 'gym', label: 'Salle de sport', icon: faWater },
-        { id: 'bbq', label: 'Barbecue', icon: faWater },
-        { id: 'breakfast', label: 'Petit-déjeuner', icon: faCoffee },
+        { id: 'garden', label: 'Jardin', icon: <FaTree /> },
+        { id: 'pool', label: 'Piscine', icon: <FaSwimmingPool /> },
+        { id: 'terrace', label: 'Terrasse / Balcon', icon: <FaChair /> },
+        { id: 'jacuzzi', label: 'Jacuzzi', icon: <FaHotTub /> },
+        { id: 'bbq', label: 'Barbecue', icon: <FaFire /> },
+        { id: 'breakfast', label: 'Petit-déjeuner', icon: <FaCoffee /> },
       ]
-    },
-    {
-      title: "Emplacement",
-      items: [
-        { id: 'beachfront', label: 'Bord de mer', icon: faUmbrellaBeach },
-        { id: 'waterfront', label: 'Front de mer', icon: faWater },
-        { id: 'ski-access', label: 'Accessible à ski', icon: faWheelchair },
-      ]
-    },
+    }, 
     {
       title: "Sécurité",
       items: [
-        { id: 'smoke-detector', label: 'Détecteur de fumée', icon: faWater },
-        { id: 'carbon-detector', label: 'Détecteur de monoxyde de carbone', icon: faWater },
+        { id: 'smoke-detector', label: 'Détecteur de fumée', icon: <FaLockOpen /> },
+        { id: 'carbon-detector', label: 'Détecteur de monoxyde de carbone', icon: <FaLock /> },
+        { id: 'security', label: 'Sécurité 24h/24', icon: <FaLock /> },
+        { id: 'camera', label: ' Camera', icon: <FaCamera /> },
+
       ]
     },
   ];
@@ -168,7 +125,7 @@ export const FilterModule = ({ onClose }) => {
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
-            <FontAwesomeIcon icon={faXmark} className="text-lg" />
+            <FaTimes className="text-lg" />
           </button>
           <span className="font-semibold">Filtres</span>
           <div className="w-8" /> 
@@ -176,86 +133,43 @@ export const FilterModule = ({ onClose }) => {
 
         {/* Main Content */}
         <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 130px)' }}>
-          {/* Recommendations */}
+          {/* Property Types */}
           <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Recommandations</h3>
+            <h3 className="text-lg mb-4">Type de logement</h3>
             <div className="grid grid-cols-2 gap-3">
-              {recommendations.map(rec => (
+              {propertyTypes.map(type => (
                 <button
-                  key={rec.id}
-                  onClick={() => handleAmenityToggle(rec.id)}
+                  key={type.id}
+                  onClick={() => handlePropertyTypeToggle(type.id)}
                   className={`p-4 border rounded-xl flex items-center gap-3 transition-colors ${
-                    filters.amenities[rec.id] ? 'bg-black text-white' : 'hover:border-black'
+                    filters.propertyTypes[type.id] ? 'bg-black text-white' : 'hover:border-black'
                   }`}
                 >
-                  <FontAwesomeIcon icon={rec.icon} />
-                  <span>{rec.label}</span>
+                  {type.icon}
+                  <span>{type.label}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          {/* Price Range Section */}
+          {/* Price Sort Section */}
           <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Fourchette de prix</h3>
-            <div className="text-sm text-gray-500 mb-4">Prix par nuit · frais et taxes compris</div>
-            
-            <div className="px-4 space-y-6">
-              {/* Price Range Slider */}
-              <div className="relative h-24 bg-gray-100">
-                <div className="absolute inset-0 flex items-end">
-                  {[...Array(30)].map((_, i) => {
-                    const price = (i + 1) * (2000 / 30);
-                    const isInRange = price >= filters.priceRange.min && price <= filters.priceRange.max;
-                    return (
-                      <div
-                        key={i}
-                        className="flex-1 mx-[1px] transition-colors duration-200"
-                        style={{
-                          height: `${20 + Math.random() * 50}%`,
-                          backgroundColor: isInRange ? '#111112' : '#DDDDDD'
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-
-                {/* Range Inputs */}
-                <input
-                  type="range"
-                  min={MIN_PRICE}
-                  max={MAX_PRICE - MIN_GAP}
-                  step={STEP}
-                  value={filters.priceRange.min}
-                  onChange={(e) => handlePriceChange(e.target.value, 'min')}
-                  className="absolute cursor-pointer inset-0 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10"
-                />
-                <input
-                  type="range"
-                  min={MIN_PRICE + MIN_GAP}
-                  max={MAX_PRICE}
-                  step={STEP}
-                  value={filters.priceRange.max}
-                  onChange={(e) => handlePriceChange(e.target.value, 'max')}
-                  className="absolute cursor-pointer inset-0 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10"
-                />
-              </div>
-
-              {/* Price Display */}
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="text-sm text-gray-500">Minimum</label>
-                  <div className="mt-1 border rounded-lg p-2">
-                    MAD {filters.priceRange.min}
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <label className="text-sm text-gray-500">Maximum</label>
-                  <div className="mt-1 border rounded-lg p-2">
-                    MAD {filters.priceRange.max}
-                  </div>
-                </div>
-              </div>
+            <h3 className="text-lg mb-4">Tri par prix</h3>
+            <div className="space-y-3">
+              {priceSortOptions.map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => handlePriceSortChange(option.id)}
+                  className={`flex items-center justify-between w-full p-4 rounded-xl border transition-colors ${
+                    filters.sortByPrice === option.id ? 'bg-black text-white' : 'hover:border-black'
+                  }`}
+                >
+                  <span>{option.label}</span>
+                  {filters.sortByPrice === option.id && (
+                    <span className="h-4 w-4 rounded-full bg-white text-black flex items-center justify-center text-xs">✓</span>
+                  )}
+                </button>
+              ))}
             </div>
           </section>
 
@@ -272,70 +186,13 @@ export const FilterModule = ({ onClose }) => {
                       filters.amenities[item.id] ? 'bg-black text-white' : 'hover:border-black'
                     }`}
                   >
-                    <FontAwesomeIcon icon={item.icon} className="text-lg" />
+                    {item.icon}
                     <span>{item.label}</span>
                   </button>
                 ))}
               </div>
             </section>
           ))}
-
-          {/* Booking Options */}
-          <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Options de réservation</h3>
-            <div className="space-y-4">
-              {['instant-book', 'self-checkin'].map(option => (
-                <button 
-                  key={option}
-                  onClick={() => handleBookingOptionToggle(option)}
-                  className={`w-full p-4 border rounded-xl flex items-center gap-3 transition-colors ${
-                    filters.bookingOptions[option] ? 'bg-black text-white' : 'hover:border-black'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={option === 'instant-book' ? faBolt : faMagnifyingGlass} />
-                  <div className="text-left">
-                    <div>{option === 'instant-book' ? 'Réservation instantanée' : 'Arrivée autonome'}</div>
-                    {option === 'instant-book' && (
-                      <div className={`text-sm ${filters.bookingOptions[option] ? 'text-white' : 'text-gray-500'}`}>
-                        Réservez sans attendre de validation
-                      </div>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* Exceptional Properties */}
-          <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Logements exceptionnels</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {['top-rated', 'luxe'].map(property => (
-                <button 
-                  key={property}
-                  onClick={() => handleExceptionalPropertyToggle(property)}
-                  className={`p-4 border rounded-xl transition-colors ${
-                    filters.exceptionalProperties[property] ? 'bg-black text-white' : 'hover:border-black'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <FontAwesomeIcon icon={property === 'top-rated' ? faTrophy : faStar} />
-                    <span className="font-medium">
-                      {property === 'top-rated' ? 'Coup de cœur voyageurs' : 'Luxe'}
-                    </span>
-                  </div>
-                  <span className={`text-sm ${
-                    filters.exceptionalProperties[property] ? 'text-white' : 'text-gray-500'
-                  }`}>
-                    {property === 'top-rated' 
-                      ? 'Les logements les plus appréciés sur Airbnb'
-                      : 'Une sélection de logements exceptionnels'
-                    }
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
         </div>
 
         {/* Footer */}
@@ -356,4 +213,4 @@ export const FilterModule = ({ onClose }) => {
       </div>
     </div>
   );
-}; 
+};

@@ -60,7 +60,7 @@ export const RoomTable = ({ room, onEdit, onDelete, onClick }) => {
 };
 
 // Main component with display toggle
-export const RoomDisplay = ({ data, handleSingleRoom, handleEditRoom, handleDelete }) => {
+export const RoomDisplay = ({ data, handleSingleRoom, handleEditRoom, handleDelete, openConfirmDelete , setOpenConfirmDelete}) => {
     const [displayMode, setDisplayMode] = useState(() => {
         const savedMode = localStorage.getItem('roomDisplayMode');
         return savedMode || 'grid';
@@ -70,7 +70,6 @@ export const RoomDisplay = ({ data, handleSingleRoom, handleEditRoom, handleDele
       }, [displayMode]);
 
     const [roomDataID, setRoomDataID] = useState(null);
-    const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
 
     const show = (roomId) => {
         setRoomDataID(roomId);

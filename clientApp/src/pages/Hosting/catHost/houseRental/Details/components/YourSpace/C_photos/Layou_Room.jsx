@@ -1,35 +1,36 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import RoomForm from "./AddRoom";
 import axios from "axios";
 import useFetch from "../../../../../../../../hooks/useFetch";
 import { RoomDisplay } from "./ItemTableRoom";
 import { RoomDetail } from "./DetailRoom";
+import { useSelector } from "react-redux";
 
 const RoomLayout = ({ job }) => {
     const { id } = useParams();
     const location = useLocation();
     const newPath = location.pathname;
     const navigate = useNavigate();
+    const selectedProperty = useSelector(state => state.property.selectedProperty);
 
+    
+
+    console.log(selectedProperty)
     const [openConfirmDelete, setopenConfirmDelete] = useState(false);
     const [dataRoomEdit, setDataRoomEdit] = useState({});
-    const [roomDataID, setRoomDataID] = useState(null);
+    const [typeProperty, settypeProperty] = useState('');
+
+    useEffect(()=>{
+        if(selectedProperty){
+            settypeProperty(selectedProperty?.type?.type)
+        }
+    }, [selectedProperty])
 
 
     const { data, error, reFetch } = useFetch(`/api/rooms/${id}/find`)
-
-    console.log(data);
-
-    const initialRoomData = data[15] || [];
-
-    const roomId = initialRoomData?._id
-
-
-
-
-
+ 
 
     const handleAddRoom = async () => {
         navigate(newPath + `/add`)
@@ -76,6 +77,8 @@ const RoomLayout = ({ job }) => {
         }
     };
 
+ 
+
     const handleDelete = async (roomId) => {
         console.log('Deleting Room with ID:', roomId);
         // Here you would typically send a DELETE request to your backend
@@ -85,8 +88,8 @@ const RoomLayout = ({ job }) => {
         if (response.status === 200) {
             // Successfully deleted room
             reFetch()
-            close();
             alert('Room deleted successfully');
+            setopenConfirmDelete(false)
 
         }
     }
@@ -104,12 +107,11 @@ const RoomLayout = ({ job }) => {
         reFetch();
     }
     const show = (id) => {
-        setRoomDataID(id);
+        handleDelete(id);
         setopenConfirmDelete(true)
+
     }
-    const close = () => {
-        setopenConfirmDelete(false)
-    }
+
     return (
         <>
             {job === "singleRoom" ? (
@@ -117,7 +119,7 @@ const RoomLayout = ({ job }) => {
             ) : (
                 <div>
                     {job === "add" ? (
-                        <RoomForm onSubmit={handleSubmit} onCancel={handleBack} />
+                        <RoomForm onSubmit={handleSubmit} onCancel={handleBack} typeProperty={typeProperty} />
                     ) : job === "edit" ? (
                         <RoomForm
                             onSubmit={handleUpdate}
@@ -140,6 +142,9 @@ const RoomLayout = ({ job }) => {
                                     handleSingleRoom={handleSingleRoom}
                                     handleEditRoom={handleEditRoom}
                                     handleDelete={show}
+                                    openConfirmDelete ={openConfirmDelete}
+                                    setOpenConfirmDelete={setopenConfirmDelete}
+
                                 />
                             </div>
                             

@@ -414,7 +414,7 @@ const Amenities = ({ mode }) => {
     const { title, description } = getComponentInfo();
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="w-full  mx-auto p-6 bg-white rounded-lg shadow-md">
             <div className="mb-6 text-center">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
                 <p className="text-gray-600">{description}</p>
@@ -443,7 +443,7 @@ const Amenities = ({ mode }) => {
                             {expandedCategories[category] ? <FaChevronUp className="text-gray-600" /> : <FaChevronDown className="text-gray-600" />}
                         </div>
                         {expandedCategories[category] && (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-4 bg-white">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 p-4 bg-white">
                                 {items.map(item => (
                                     <div
                                         key={item.id}

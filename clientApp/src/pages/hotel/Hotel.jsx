@@ -1,4 +1,27 @@
 // import { BookingProvider } from './context/BookingContext';
+
+import React from 'react';
+
+const MapIframe = () => {
+  const embedLink = "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d740.2628554265848!2d-5.353500794964029!3d35.57215546645905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzXCsDM0JzE5LjYiTiA1wrAyMScxMC42Ilc!5e1!3m2!1sfr!2sde!4v1744208309979!5m2!1sfr!2sde"; // paste the one from Google
+
+  return (
+    <iframe
+      src={embedLink}
+      width="350"
+      height="450"
+      style={{ border: 0 }}
+      allowFullScreen=""
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      title="Google Maps"
+    ></iframe>
+  );
+};
+
+export default MapIframe;
+
+
 import { ImageGallery } from './componentHotel/ImageGallery';
 import { BookingCard } from './componentHotel/BookingCard';
 import { MapView } from './componentHotel/Map';
@@ -88,13 +111,13 @@ export function Hotel() {
   const [isMobile, setIsMobile] = useState(false);
 
 
-  
-   // Détection du mobile
-   useEffect(() => {
+
+  // Détection du mobile
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile(); // Vérification initiale
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -114,7 +137,7 @@ export function Hotel() {
     if (hotel && hotel.proximities) {
       setProximities(hotel.proximities);
     };
-    if(hotel && hotel.policies) {
+    if (hotel && hotel.policies) {
       setPolicies(hotel.policies);
     }
   }, [hotel])
@@ -131,13 +154,15 @@ export function Hotel() {
     return rooms.map((room, index) => {
       const { roomName, bedCounts } = room;
 
-      // Filter out beds with count > 0 and format them
-      const bedDetails = Object.entries(bedCounts)
-        .filter(([_, count]) => parseInt(count) > 0)
-        .map(([type, count]) => `${count} ${type}`)
-        .join(", ");
+      const bedDetails = bedCounts
+        ? Object.entries(bedCounts)
+          .filter(([_, count]) => parseInt(count) > 0)
+          .map(([type, count]) => `${count} ${type}`)
+          .join(", ")
+        : '';
 
-      return `${roomName.charAt(0).toUpperCase() + roomName.slice(1)} ${index + 1} > ${bedDetails}`;
+
+      return `${roomName?.charAt(0)?.toUpperCase() + roomName?.slice(1)} ${index + 1} > ${bedDetails}`;
     });
   };
 
@@ -169,8 +194,8 @@ export function Hotel() {
               <h1 className="text-2xl font-semibold mb-1 hidden md:block">{hotel?.title}</h1>
 
               <button
-              onClick={()=>{navigate(-1)}}
-              className='flex items-center hap-2 justify-start shadow-lg p-2 rounded hover:bg-gray-100 md:hidden'>
+                onClick={() => { navigate(-1) }}
+                className='flex items-center hap-2 justify-start shadow-lg p-2 rounded hover:bg-gray-100 md:hidden'>
                 <TfiAngleLeft className="w-4 h-4" />
                 <span className="underline ">Homes</span>
               </button>
@@ -191,7 +216,7 @@ export function Hotel() {
 
             <ImageGallery images={images} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-80 md:mt-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-6 md:mt-10">
               <div className="lg:col-span-2">
                 <h1 className="text-2xl font-semibold mb-1 md:hidden">{hotel?.title}</h1>
 
@@ -218,14 +243,17 @@ export function Hotel() {
 
                         // Filter beds with count > 0
 
-                        const bedDetails = Object.entries(bedCounts)
-                          .filter(([_, count]) => parseInt(count) > 0)
-                          .map(([type, count]) => `${count} ${type}`)
-                          .join(", ");
+                        const bedDetails = bedCounts
+                          ? Object.entries(bedCounts)
+                            .filter(([_, count]) => parseInt(count) > 0)
+                            .map(([type, count]) => `${count} ${type}`)
+                            .join(", ")
+                          : '';
+
 
                         return (
                           <h5 key={index} className="text-lg ">
-                            {rooms?.length > 1 && `${roomName.charAt(0).toUpperCase() + roomName.slice(1)} ${index + 1} : `}
+                            {rooms?.length > 1 && `${roomName?.charAt(0)?.toUpperCase() + roomName?.slice(1)} ${index + 1} : `}
 
                             {bedDetails}
                             {hasPathToRoom && " + Private Bathroom"}
@@ -251,36 +279,7 @@ export function Hotel() {
 
                 <div className="py-6 border-b">
                   <h2 className="text-2xl font-semibold mb-4">Where you'll sleep</h2>
-                  <div className="flex flex-wrap gap-4">
-                    {rooms.map((room, index) => {
-                      // Format bed details dynamically
-                      const bedDetails = Object.entries(room.bedCounts)
-                        .filter(([_, count]) => parseInt(count, 10) > 0)
-                        .map(([bedType, count]) => `${count} ${bedType}`)
-                        .join(", ");
 
-                      // Check if the room has a private bathroom
-                      const hasPrivateBathroom = room.amenities["Private bathroom"];
-
-                      return (
-                        <div key={room._id.$oid} className="border rounded-xl p-6 max-w-xs">
-                          <img
-                            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80"
-                            alt={room.roomName}
-                            className="rounded-lg w-full h-40 object-cover"
-                          />
-                          <h3 className="font-semibold mb-2">
-                            {room.roomName.charAt(0).toUpperCase() + room.roomName.slice(1)}{" "}
-                            {index + 1}
-                          </h3>
-                          <p className="text-gray-600">
-                            {bedDetails}
-                            {hasPrivateBathroom && " + Private Bathroom"}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
 
 
@@ -319,49 +318,49 @@ export function Hotel() {
                   </div>
                 ))}
                 {
-                isMobile &&
-                  <button 
-                  className="text-blue-500 underline" 
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Show All
-                </button>}
+                  isMobile &&
+                  <button
+                    className="text-blue-500 underline"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Show All
+                  </button>}
               </div>
             </div>
 
             {isModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-20">
                 <div className="bg-white p-6 pt-10 w-full h-full z-50 rounded-lg shadow-lg relative animate-slide-up ">
-                <button 
-                      className="mt-4 absolute top-1 right-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" 
-                      onClick={() => setIsModalOpen(false)}
-                    >
-                      X
-                    </button>
+                  <button
+                    className="mt-4 absolute top-1 right-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    X
+                  </button>
                   <h2 className="text-2xl font-semibold mb-4">All Nearby Places</h2>
                   <div className="overflow-scroll h-full pb-20">
-                  {Object.entries(proximities).map(([category, places]) => (
-                  <div key={category} className="p-5 rounded-xl shadow-md ">
-                    <div className="flex items-center gap-3 mb-4">
-                      {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
-                      <h3 className="text-lg font-semibold capitalize">
-                        {category.replace(/([A-Z])/g, " $1")}
-                      </h3>
-                    </div>
-                    <ul className="text-gray-700">
-                      {places.map((place) => (
-                        <li key={place.id} className="flex justify-between text-gray-600">
-                          <span className="font-medium">{place.name}</span>
-                          <span className="text-sm text-gray-500">{place.distance} km</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                    {Object.entries(proximities).map(([category, places]) => (
+                      <div key={category} className="p-5 rounded-xl shadow-md ">
+                        <div className="flex items-center gap-3 mb-4">
+                          {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
+                          <h3 className="text-lg font-semibold capitalize">
+                            {category.replace(/([A-Z])/g, " $1")}
+                          </h3>
+                        </div>
+                        <ul className="text-gray-700">
+                          {places.map((place) => (
+                            <li key={place.id} className="flex justify-between text-gray-600">
+                              <span className="font-medium">{place.name}</span>
+                              <span className="text-sm text-gray-500">{place.distance} km</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                   <div className="flex justify-between mt-4">
-                    
-                    
+
+
                   </div>
                 </div>
               </div>
@@ -382,14 +381,20 @@ export function Hotel() {
             </div>
 
             <ThingsToKnow data={policies} />
- 
+
 
             <div className="py-6">
-              <h2 className="text-2xl font-semibold mb-4">Where you'll be</h2>
-              <MapView
+              {/* <MapView
                 latitude={mockListing.coordinates.latitude}
                 longitude={mockListing.coordinates.longitude}
-              />
+              /> */}
+
+              <div className="w-full h-[400px]">
+
+                <MapIframe />
+
+              </div>
+
               <div className="mt-4">
                 <h3 className="font-semibold mb-2">{mockListing.location}</h3>
                 <p className="text-gray-600">

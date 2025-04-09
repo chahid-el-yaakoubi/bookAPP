@@ -181,12 +181,12 @@ export const SearchForm = () => {
           {opendate && (
             <>
               <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
+                className="fixed inset-0 bg-black bg-opacity-0 z-50"
                 onClick={handleCloseDatePicker}
               ></div>
 
-              <div className="date-picker-container absolute top-14 left-0 md:-left-48  w-screen md:w-auto">
-                <div className="date-picker-header md:hidden flex justify-between items-center p-4 border-b">
+              <div className="date-picker-container fixed md:absolute top-0 md:top-14 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-auto z-50 bg-emerald-900">
+                <div className="date-picker-header md:hidden flex justify-between items-center p-4 bg-white border-b sticky top-0 ">
                   <h2 className="text-lg font-semibold text-gray-800">{t('search.selectDates')}</h2>
                   <button
                     className="p-2 hover:bg-gray-100 rounded-full"
@@ -205,18 +205,26 @@ export const SearchForm = () => {
                   ranges={dateRange}
                   minDate={today}
                   maxDate={maxDate}
-                  months={2}
+                  months={window.innerWidth > 768 ? 2 : 1}
                   direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
-                  className="date-range-wrapper bg-white"
+                  className="date-range-wrapper bg-blue max-h-screen md:max-h-none overflow-auto w-full"
                   rangeColors={['#2563eb']}
                   showMonthAndYearPickers={true}
                   monthDisplayFormat="MMMM yyyy"
                 />
+
+                <div className="md:hidden flex justify-end p-4 bg-white border-t sticky bottom-0">
+                  <button
+                    className="px-4 py-2 bg-blue text-black rounded-md"
+                    onClick={handleCloseDatePicker}
+                  >
+                    {t('common.apply')}
+                  </button>
+                </div>
               </div>
             </>
           )}
         </div>
-
         {/* Options Selector */}
         <div className={`searchComponent test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} border-blue relative bg-white w-full md:w-1/3`}>
           <div className="p-4 cursor-pointer text-sm md:text-base options-button"

@@ -157,7 +157,7 @@ const MoroccoCancellation = () => {
     }, [daysBeforeCheckIn, bookingAmount, selectedPolicyType]);
 
     return (
-        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
+        <div className="p-10 mx-auto bg-white shadow-xl rounded-xl overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue to-amber-700 px-6 py-5">
 

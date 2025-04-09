@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import HotelsDisplay from '../../components/HotelsDisplay'
 import HotelsList from '../../components/HotelsList'
 import { MapComponent } from '../maps/maps'
+import { FaMap } from 'react-icons/fa'
 // import { MoroccanExperiences } from '../../components/moroccanExperiences/MoroccanExperiences'
 
 
@@ -50,9 +51,13 @@ export const Home = () => {
         <div className="home bg-blue/50 ">
             <div className="fixed bg-blue/90   top-0 left-0 right-0 -z-10 max-h-screen"></div>
 
-            <div className="fixed bottom-20 right-[5%] z-50">
-                <button className='bg-black text-white p-2  text-xl rounded ' onClick={() => setShowHotelsMap(!showHotelsMap)}>
-                    show maps
+            <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+                <button
+                    className="bg-black text-white px-5 py-3 text-base md:text-lg lg:text-xl rounded-xl flex items-center gap-2 md:gap-4"
+                    onClick={() => setShowHotelsMap(!showHotelsMap)}
+                >
+                    Show Maps
+                    <FaMap />
                 </button>
             </div>
 
@@ -76,7 +81,7 @@ export const Home = () => {
             {/* <Featured /> */}
 
 
-{/* 
+            {/* 
             <div className="homeContainer container mx-auto px-4 lg:px-0">
                 <Featured />
 

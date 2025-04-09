@@ -7,7 +7,8 @@ const BathroomSchema = new mongoose.Schema({
       type: Map,
       of: Boolean,
       default: {}
-    }
+    },
+    type: { type: String },
   });
 
 // Room Schema
@@ -25,6 +26,7 @@ const roomSchema = new mongoose.Schema({
         count: { type: Number,   }   
     }], 
     floor: Number, // Example:
+    roomTitle : [{ type: String }],
     capacity: Number, 
     bathrooms: [BathroomSchema],
 

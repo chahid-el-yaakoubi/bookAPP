@@ -26,6 +26,7 @@
         "availability": "التوافر",
         "rooms": "عن الغرف",
         "safety": "السلامة",
+        "bathrooms" : "الحمام",
         "backToMenu": "العودة إلى القائمة",
         "backButton": "رجوع",
         "emptyDiv": " "

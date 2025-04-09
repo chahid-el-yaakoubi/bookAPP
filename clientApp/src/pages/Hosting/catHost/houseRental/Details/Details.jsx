@@ -36,6 +36,7 @@ import TopNavHost from '../../../ComponentHost/TopNavHost';
 import { useTranslation } from 'react-i18next';
 import RoomLayout from './components/YourSpace/C_photos/Layou_Room';
 import Amenities from './components/YourSpace/Amenities';
+import { Bathrooms } from './components/YourSpace/Bathrooms';
 
 const Details = ({ sectionPath, job }) => {
 
@@ -61,7 +62,7 @@ const Details = ({ sectionPath, job }) => {
         'accessibility': { tab: 'your-space', section: 'accessibility' },
         'location': { tab: 'your-space', section: 'location' },
         'host': { tab: 'your-space', section: 'host' },
-        'rooms': { tab: 'your-space', section: 'rooms' },
+        'bathrooms': { tab: 'your-space', section: 'bathrooms' },
         'rules': { tab: 'your-space', section: 'rules' },
         'safety': { tab: 'your-space', section: 'safety' },
         'cancellation': { tab: 'your-space', section: 'cancellation' },
@@ -133,6 +134,7 @@ const Details = ({ sectionPath, job }) => {
         { id: 'title', label: t('properties:menu.title'), icon: FaHome },
         { id: 'photo-tour', label: t('properties:menu.photoTour'), icon: FaCamera },
         { id: 'rooms', label: t('properties:menu.rooms'), icon: FaBed },
+        { id: 'bathrooms', label: t('properties:menu.bathrooms'), icon: FaBed },
         { id: 'property-type', label: t('properties:menu.propertyType'), icon: FaHome },
         { id: 'pricing', label: t('properties:menu.pricing'), icon: FaDollarSign },
         { id: 'availability', label: t('properties:menu.availability'), icon: FaCalendarAlt },
@@ -156,7 +158,9 @@ const Details = ({ sectionPath, job }) => {
       ? filteredCategories.filter(category => 
           category.id !== 'guests' &&
           category.id !== 'pricing' &&
-          category.id !== 'amenities'
+          category.id !== 'amenities' &&
+          category.id !== 'bathrooms' 
+
         )
       : filteredCategories;
     
@@ -210,6 +214,7 @@ const Details = ({ sectionPath, job }) => {
                 case 'location': return <Location />;
                 case 'host': return <Host />;
                 case 'rooms': return <RoomLayout job={job} />;
+                case 'bathrooms': return <Bathrooms />;
                 case 'rules': return <HouseRules />;
                 case 'safety': return <GuestSafety />;
                 case 'cancellation': return <Cancellation />;

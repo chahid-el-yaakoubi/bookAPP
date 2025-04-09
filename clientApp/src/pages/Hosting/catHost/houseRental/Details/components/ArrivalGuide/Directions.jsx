@@ -247,7 +247,7 @@ const Directions = () => {
     };
 
     return (
-        <div className="space-y-6 mb-24 max-w-6xl mx-auto">
+        <div className="space-y-6 mb-24 shadow-xl p-8 mx-auto">
             {/* What's Nearby Section */}
             <div className="pt-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">

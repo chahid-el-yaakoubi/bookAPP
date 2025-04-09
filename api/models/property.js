@@ -64,10 +64,20 @@ const spaceSchema = new Schema({
     photos: { type: [String], default: [] }, // Array of photo URLs
 });
 
+
+const BathroomSchema = new mongoose.Schema({
+    id: { type: Number, required: true },
+    amenities: {
+      type: Map,
+      of: Boolean,
+      default: {}
+    },
+    type: { type: String },
+  });
+  
 // Update the property_details schema to include spaces
 const PropertyDetailsSchema = new Schema({
     rooms: { type: Number },
-    bathrooms: { type: Number },
     max_guests: { type: Number },
     size_sqm: { type: Number },
     amenities: {
@@ -88,17 +98,13 @@ const PropertyDetailsSchema = new Schema({
         ],
         default: []
     },
-    bathroom: [{
-        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-        type: { type: String },
-        amenities: { type: [String], default: [] },
-        photos: { type: [String], default: [] },
-    }],
+    bathrooms: [BathroomSchema ],
     spaces: [spaceSchema], // New field for spaces
 });
 
+
 const HotelSchema = new mongoose.Schema({
-    owner_name: { type: String },
+    created_by: { type: String, require : true },
     title: { type: String },
     type: {
         type: {
@@ -150,7 +156,7 @@ const HotelSchema = new mongoose.Schema({
     },
     property_details: PropertyDetailsSchema,
     pricing: {
-        nightly_rate: { type: Number, required: true },
+        nightly_rate: { type: Number, required: false },
         Weekend_price: { type: Number, required: false },
         discounts: {
             weekly_discount: { type: Number, required: false },

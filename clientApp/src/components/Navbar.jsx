@@ -55,6 +55,18 @@ export const Navbar = () => {
         MAD: { symbol: 'د.م', label: 'MAD' },
     };
 
+    useEffect(() => {
+        if (mobileLangDropdown) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [mobileLangDropdown]);
 
 
     const languages = {
@@ -136,16 +148,16 @@ export const Navbar = () => {
     }, []);
 
     // Add this effect to handle clicking outside mobile language dropdown
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (!event.target.closest('.mobile-language-dropdown')) {
-                setMobileLangDropdown(false);
-            }
-        };
+    // useEffect(() => {
+    //     const handleClickOutside = (event) => {
+    //         if (!event.target.closest('.mobile-language-dropdown')) {
+    //             // setMobileLangDropdown(false);
+    //         }
+    //     };
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    //     document.addEventListener('mousedown', handleClickOutside);
+    //     return () => document.removeEventListener('mousedown', handleClickOutside);
+    // }, []);
 
     // Add new useEffect for price dropdowns
     useEffect(() => {
@@ -174,7 +186,7 @@ export const Navbar = () => {
         transDispatch({ type: "CHANGE_LANGUAGE", payload: lng });
         setCurrentLanguage(lng);
         setLanguageDropdown(false);
-        setMobileLangDropdown(false);
+        // setMobileLangDropdown(false);
     };
 
     return (
@@ -182,9 +194,9 @@ export const Navbar = () => {
             <div className="shadow-xl w-full bg-primary">
                 <nav className="container-fluid px-10 lg:px-32 2xl:px-32 navbar w-full flex items-center justify-between py-0 md:py-4">
                     {/* Logo */}
-                    <Link to={'/'} className='hidden md:block ' >
+                    <div className='hidden md:block ' >
                         <Logo />
-                    </Link>
+                    </div>
 
                     {/* Mobile Navigation */}
                     {/* <SearchMobile/> */}
@@ -193,7 +205,7 @@ export const Navbar = () => {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
                         {/* Currency Dropdown */}
-                        <div className="price-dropdown-container relative">
+                        {/* <div className="price-dropdown-container relative">
                             <div
                                 className="price cursor-pointer hover:bg-black/80 shadow-xl h-10 rounded-lg px-4 py-2 text-white flex items-center gap-2  "
                                 onClick={() => setPriceDropdown(!priceDropdown)}
@@ -223,7 +235,7 @@ export const Navbar = () => {
                                     </div>
                                 </div>
                             )}
-                        </div>
+                        </div> */}
 
                         {/* Language Dropdown */}
                         <div className="language-dropdown-container relative">
@@ -269,55 +281,55 @@ export const Navbar = () => {
 
                         {/* User Menu */}
                         {user ? (
-                           <div className="relative dropdown-container">
-                           <button
-                             onClick={() => setDropdownOpen(!dropdownOpen)}
-                             className="flex items-center justify-center space-x-2 border border-white rounded-full py-2 px-4 text-white bg-gradient-to-r from-orange-500 via-orange-100 to-blue hover:bg-gradient-to-l from-blue via-orange-200 transition-all duration-300"
-                           >
-                             <div className="h-8 flex items-center justify-center w-[60px]">
-                               <FontAwesomeIcon icon={faSliders} className="text-xl text-black" />
-                               <FontAwesomeIcon icon={faUser} className="text-xl ms-4 text-black" />
-                             </div>
-                           </button>
-                           
-                           {dropdownOpen && (
-                             <div className="absolute top-14 left-[-300px] mt-2 w-[400px] bg-primary-dark border border-gray-700 rounded-xl shadow-xl z-50">
-                               <div className="p-2 flex flex-col">
-                                 <button
-                                   onClick={() => setShowConfirmModal(true)}
-                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
-                                 >
-                                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-3 text-lg" />
-                                   {t('translation:navbar.logout')}
-                                 </button>
-                                 
-                                 <button
-                                   onClick={() => navigate("/saved")}
-                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
-                                 >
-                                   <FontAwesomeIcon icon={faHeart} className="mr-3 text-lg" />
-                                   {t('navbar.saved')}
-                                 </button>
-                                 
-                                 <button
-                                   onClick={() => navigate("/hosting")}
-                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
-                                 >
-                                   <FontAwesomeIcon icon={faHouseUser} className="mr-3 text-lg" />
-                                   {t('navbar.partner')}
-                                 </button>
-                                 
-                                 <button
-                                   onClick={() => navigate("/profile")}
-                                   className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
-                                 >
-                                   <FontAwesomeIcon icon={faUser} className="mr-3 text-lg" />
-                                   {t('navbar.profile')}
-                                 </button>
-                               </div>
-                             </div>
-                           )}
-                         </div>
+                            <div className="relative dropdown-container">
+                                <button
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                    className="flex items-center justify-center space-x-2 border border-white rounded-full py-2 px-4 text-white bg-gradient-to-r from-orange-500 via-orange-100 to-blue hover:bg-gradient-to-l from-blue via-orange-200 transition-all duration-300"
+                                >
+                                    <div className="h-8 flex items-center justify-center w-[60px]">
+                                        <FontAwesomeIcon icon={faSliders} className="text-xl text-black" />
+                                        <FontAwesomeIcon icon={faUser} className="text-xl ms-4 text-black" />
+                                    </div>
+                                </button>
+
+                                {dropdownOpen && (
+                                    <div className="absolute top-14 left-[-300px] mt-2 w-[400px] bg-primary-dark border border-gray-700 rounded-xl shadow-xl z-50">
+                                        <div className="p-2 flex flex-col">
+                                            <button
+                                                onClick={() => setShowConfirmModal(true)}
+                                                className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                            >
+                                                <FontAwesomeIcon icon={faSignOutAlt} className="mr-3 text-lg" />
+                                                {t('translation:navbar.logout')}
+                                            </button>
+
+                                            <button
+                                                onClick={() => navigate("/saved")}
+                                                className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                            >
+                                                <FontAwesomeIcon icon={faHeart} className="mr-3 text-lg" />
+                                                {t('navbar.saved')}
+                                            </button>
+
+                                            <button
+                                                onClick={() => navigate("/hosting")}
+                                                className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                            >
+                                                <FontAwesomeIcon icon={faHouseUser} className="mr-3 text-lg" />
+                                                {t('navbar.partner')}
+                                            </button>
+
+                                            <button
+                                                onClick={() => navigate("/profile")}
+                                                className="flex items-center w-full px-4 py-3 text-left text-white rounded-lg hover:bg-gray-700 transition duration-200"
+                                            >
+                                                <FontAwesomeIcon icon={faUser} className="mr-3 text-lg" />
+                                                {t('navbar.profile')}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <div className="space-x-2">
                                 <button
@@ -349,14 +361,17 @@ export const Navbar = () => {
                             ? 'text-white bg-blue'
                             : 'text-gray-100'
                             } hover:bg-blue-100 active:scale-95 transition-all`}
-                        onClick={() => setActiveTab('search')}
+                        onClick={() => {
+                            setActiveTab('search');
+                            setMobileLangDropdown(false)
+                        }}
                     >
                         <FontAwesomeIcon icon={faSearch} className="text-xl" />
                         {activeTab === 'search' && <span className="text-xs font-medium">{t('navbar.search')}</span>}
                     </Link>
 
                     {/* Price Dropdown */}
-                    <div
+                    {/* <div
                         className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'price'
                             ? 'text-white bg-blue'
                             : 'text-gray-100'
@@ -387,31 +402,31 @@ export const Navbar = () => {
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Language Dropdown */}
                     <div
                         className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'language'
                             ? 'text-white bg-blue'
                             : 'text-gray-100'
-                            } hover:bg-blue-100 active:scale-95 transition-all`}
+                            } hover:bg-blue-100      transition-all`}
                         onClick={() => {
                             setActiveTab('language');
-                            setMobileLangDropdown(!mobileLangDropdown);
+                            setMobileLangDropdown(true);
                         }}
                     >
                         <FontAwesomeIcon icon={faGlobe} className="text-xl" />
                         {activeTab === 'language' && <span className="text-xs font-medium">{t('navbar.language')}</span>}
                         {mobileLangDropdown && (
-                            <div className="fixed bottom-16 left-0 right-0 mx-auto w-[90%] max-w-[300px] bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg overflow-hidden safe-area-bottom">
-                                <div className="py-2 w-full max-h-[400px] overflow-y-auto">
+                            <div className="fixed bottom-14 left-0 right-0 mx-auto bg-gradient-to-b from-[#1a1a1a] to-primary border border-[#333333] rounded-t-xl h-[80vh] animate-slide-up shadow-lg overflow-hidden safe-area-bottom  ">
+                                <div className="py-2 w-full overflow-y-auto">
                                     {Object.entries(languages).map(([code, { flag, label }]) => (
                                         <button
                                             key={code}
                                             className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${currentLanguage === code ? 'bg-[#333333]' : ''
                                                 }`}
                                             onClick={(e) => {
-                                                e.stopPropagation(); // Prevent event bubbling
+                                                e.stopPropagation();
                                                 changeLanguage(code);
                                             }}
                                         >
@@ -426,6 +441,7 @@ export const Navbar = () => {
                                 </div>
                             </div>
                         )}
+
                     </div>
 
                     {/* User Profile / Login/Register */}

@@ -63,6 +63,7 @@ function App() {
             <Route path="/host/properties/:id/details/accessibility" element={<Details sectionPath="accessibility" />} />
             <Route path="/host/properties/:id/details/location" element={<Details sectionPath="location" />} />
             <Route path="/host/properties/:id/details/proximity" element={<Details sectionPath="proximity" />} />
+            <Route path="/host/properties/:id/details/bathrooms" element={<Details sectionPath="bathrooms"/>} />
             <Route path="/host/properties/:id/details/host" element={<Details sectionPath="host" />} />
             <Route path="/host/properties/:id/details/rooms" element={<Details sectionPath="rooms" job={""}/>} />
             <Route path="/host/properties/:id/details/rooms/:edit/edit" element={<Details sectionPath="rooms" job={"edit"}/>} />

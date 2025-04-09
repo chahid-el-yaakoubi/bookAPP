@@ -91,7 +91,7 @@ const Description = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row h-[84vh] bg-white">
+        <div className="w-full bg-gray-100 rounded">
             {/* Notification */}
             {notification.show && (
                 <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-md shadow-md ${notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
@@ -99,12 +99,25 @@ const Description = () => {
                 </div>
             )}
 
+            {/* Hero Section */}
+            <div className="text-gray-900 py-12 px-6 mb-8 rounded-lg shadow-lg">
+                <div className="max-w-4xl mx-auto">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-4">Property Description</h1>
+                    <p className="text-lg opacity-90">Create a compelling description that highlights the unique features and selling points of your property.</p>
+                </div>
+            </div>
 
+            {/* Main Content */}
+            <div className="max-w-4xl mx-auto px-4 pb-12">
+                <div className="mb-6 p-4 bg-gray-100 rounded-lg shadow-sm border border-blue">
+                    <p className="text-blue">A great description can significantly increase interest in your property. Be detailed and highlight what makes your property special.</p>
+                </div>
 
-            {/* Right Panel - Details */}
-            <div className="w-full md:max-w-4xl mx-auto p-6">
-                <div>
-                    <h2 className="text-xl font-medium mb-4">Listing Description</h2>
+                <div className="mb-8 p-6 border rounded-lg shadow-md bg-white">
+                    <div className="flex justify-between items-center mb-5 pb-3 border-b">
+                        <h2 className="text-xl font-bold text-gray-800">Listing Description</h2>
+                    </div>
+
                     <div className="mb-2">
                         <span className="text-sm text-gray-500">
                             {1000 - charCount} characters available
@@ -113,26 +126,27 @@ const Description = () => {
                     <textarea
                         value={formData.listingDescription}
                         onChange={handleInputChange}
-                        className="w-full p-3 border rounded-md min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 border rounded-md min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue"
                         maxLength={1000}
                         placeholder="Describe your property..."
                     />
-                    <div className="mt-8 flex justify-between">
-                        <button
-                            className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50"
-                            onClick={handleCancel}
-                            disabled={!isFormChanged}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className={`px-4 py-2 rounded-md ${isFormChanged ? 'bg-gray-800 text-white hover:bg-gray-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-                            onClick={handleSubmit}
-                            disabled={!isFormChanged}
-                        >
-                            Save
-                        </button>
-                    </div>
+                </div>
+
+                <div className="flex justify-between">
+                    <button
+                        className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-50"
+                        onClick={handleCancel}
+                        disabled={!isFormChanged}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className={`px-4 py-3 rounded-lg shadow-md ${isFormChanged ? 'bg-blue text-white hover:bg-blue transition' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                        onClick={handleSubmit}
+                        disabled={!isFormChanged}
+                    >
+                        Save Description
+                    </button>
                 </div>
             </div>
         </div>

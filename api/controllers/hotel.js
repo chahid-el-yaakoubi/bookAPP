@@ -2,7 +2,7 @@
 import Hotel from '../models/property.js';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
-// import { console } from 'inspector';
+import { console } from 'inspector';
 dotenv.config();
 
 // Configure cloudinary
@@ -155,7 +155,7 @@ export const getHotels = async (req, res, next) => {
     const city = other.city;
     const condition = city ? { "city": city } : {};
     try {
-        const hotels = await Hotel.find(condition).skip(4) ; //
+        const hotels = await Hotel.find(condition) ; //.skip(4)
         res.status(200).json(hotels);
     } catch (err) {
         next(err);

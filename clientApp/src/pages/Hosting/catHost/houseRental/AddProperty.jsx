@@ -1,332 +1,356 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import HostLayout from '../../ComponentHost/HostLayout';
 import BasicInformation from './steps/BasicInformation';
 import LocationInfo from './steps/LocationInfo';
-import PropertyDetails from './steps/PropertyDetails';
-import AmenitiesSection from './steps/AmenitiesSection';
-import PhotosUpload from './steps/PhotosUpload';
-import PricingSection from './steps/PricingSection';
-import BookingRules from './steps/BookingRules';
-import ReviewSubmit from './steps/ReviewSubmit';
-import Welcome from './steps/Welcome';
 import TitleProperty from './steps/Title';
+import BookingRules from './steps/BookingRules';
+import PricingSection from './steps/PricingSection';
 import { AuthContext } from '../../../../contextApi/AuthContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { createProperty } from '../../../../redux/actions/propertyActions';
-import ListingType from './steps/Listingtype';
-
-
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 const STORAGE_KEY = 'property_draft';
 
 const AddProperty = () => {
-    const { user } = useContext(AuthContext);
-    const owner_id = user._id;
-    const dispatch = useDispatch();
-    const properties = useSelector(state => state.property.properties);
+  const { user } = useContext(AuthContext);
+  const owner_id = user?._id;
 
+  // alert(owner_id)
+  const dispatch = useDispatch();
 
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState('info'); // 'success', 'error', 'info', 'warning'
+  
+  const [propertyData, setPropertyData] = useState(() => {
+    // Try to get saved data from localStorage on initial load
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      if (savedData) {
+        return JSON.parse(savedData);
+      }
+    } catch (err) {
+      console.error("Error loading saved property data:", err);
+    }
 
-
-    const [currentStep, setCurrentStep] = useState(0);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState(null);
-    const [propertyData, setPropertyData] = useState(() => {
-        // Try to get saved data from localStorage on initial load
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        if (savedData) {
-            return JSON.parse(savedData);
+    // Default initial state if no saved data
+    return {
+      title: '',
+      created_by : owner_id || '',
+      type: {
+        type: '',
+        category: '',
+        listingType: 'Entire place',
+        viewType: ''
+      },
+      location: {
+        city: '',
+        country: 'morocco',
+        region: '',
+        postal_code: '',
+        latitude: '',
+        longitude: '',
+        neighborhood : ''
+      },
+      property_details: {
+        amenities: {
+          standard: [],
+          custom: []
         }
-
-
-        // Default initial state if no saved data
-        const initialState = {
-            owner_name: owner_id || '45225',
-            title: '',
-            type: '',
-            listing_type: '',
-            description: '',
-            location: {
-                country: 'morocco',
-                city: '',
-                region: '',
-                neighborhood: '',
-                latitude: '',
-                longitude: '',
-            },
-            property_details: {
-                rooms: '',
-                bathrooms: '',
-                beds: '',
-                max_guests: '',
-                size_sqm: '',
-                amenities: [],
-                photos: []
-            },
-            pricing: {
-                nightly_rate: '',
-                currency: 'MAD',
-                cleaning_fee: '',
-                service_fee: '',
-                discounts: {
-                    weekly_discount: '',
-                    monthly_discount: ''
-                }
-            },
-            booking_policy: {
-                cancellation_policy: 'Flexible',
-                check_in: '14:00',
-                check_out: '11:00',
-                pets_allowed: false,
-                smoking_allowed: false,
-            },
-        };
-
-        return initialState;
-
-    });
-
-
-
-    // Debounced save to localStorage
-    useEffect(() => {
-        setIsSaving(true);
-        const saveTimeout = setTimeout(() => {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(propertyData));
-            setIsSaving(false);
-        }, 1000);
-
-        return () => clearTimeout(saveTimeout);
-    }, [propertyData]);
-
-    const handleSubmit = async () => {
-        if (!window.confirm('Are you sure you want to submit this property listing? This action cannot be undone.')) {
-            return;
+      },
+      pricing: {
+        nightly_rate: '',
+        Weekend_price: '',
+        discounts: {
+          weekly_discount: '',
+          monthly_discount: ''
+        },
+        smart_pricing : {
+          enabled : false,
+          min : null,
+          max : null
         }
-
-        setIsSubmitting(true);
-        setError(null);
-
-        try {
-            console.log(propertyData);
-            await dispatch(createProperty(propertyData));
-
-            // localStorage.removeItem(STORAGE_KEY);
-            window.location.href = '/host/properties';
-        } catch (error) {
-            console.error('Error submitting property:', error);
-            setError(error.message || 'An unexpected error occurred.');
-        } finally {
-            setIsSubmitting(false);
+      },
+      policies: {
+        rules: {
+          max_guests: 2,
+          smoking: 'no',
+          pets: {
+            allowed: false,
+            maxCount: 0
+          },
+          additionalRules: []
         }
+      }
     };
+  });
 
+  // Custom notification handler
+  const showNotification = (message, type = 'info') => {
+    setNotificationMessage(message);
+    setNotificationType(type);
+    
+    // Auto-hide notification after 3 seconds
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 3000);
+  };
 
-    const steps = [
-        { number: 0, title: "Property Type" },
-        { number: 1, title: "listing_type" },
-        { number: 2, title: "Location" },
-        // { number: 3, title: "Amenities" },
-        // { number: 4, title: "Property Details" },
-        { number: 3, title: `Now, let's choose a title for "${propertyData?.type}" ` },
-        // { number: 5, title: "Pricing" },
-        { number: 6, title: "Booking Rules" },
-        { number: 7, title: "Review & Submit" }
-    ];
-
-
-
-    const handleSaveAndExit = () => {
-        // Save current progress to localStorage
+  // Save to localStorage with debounce
+  useEffect(() => {
+    const saveTimeout = setTimeout(() => {
+      try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(propertyData));
-        // Redirect to the host dashboard or properties page
+      } catch (err) {
+        console.error("Error saving property data:", err);
+      }
+    }, 1000);
+
+    return () => clearTimeout(saveTimeout);
+  }, [propertyData]);
+
+  const handleSubmit = async () => {
+    if (!window.confirm('Are you sure you want to submit this property listing? This action cannot be undone.')) {
+      return;
+    }
+
+    // Final validation check
+    if (!validateAllData()) {
+      showNotification("Please complete all required fields before submitting", "error");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await axios.post(`/api/hotels`, propertyData);
+
+      if (res.status === 200) {
+        showNotification("Property created successfully!", "success");
+        // localStorage.removeItem(STORAGE_KEY);
         window.location.href = '/host/properties';
-    };
+      }
+    } catch (error) {
+      console.error('Error submitting property:', error);
+      const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';
+      setError(errorMsg);
+      showNotification(errorMsg, "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    const renderStepContent = () => {
-        switch (currentStep) {
-            case 0:
-                return <BasicInformation propertyData={propertyData} setPropertyData={setPropertyData} />;
-            case 1:
-                return <ListingType propertyData={propertyData} setPropertyData={setPropertyData} />;
+  const steps = [
+    { number: 0, title: "Property Type", key: "type" },
+    { number: 1, title: "Location", key: "location" },
+    { number: 2, title: "Title", key: "title" },
+    { number: 3, title: "Rules", key: "rules" },
+    { number: 4, title: "Pricing", key: "pricing" },
+  ];
 
-            case 2:
-                return <LocationInfo propertyData={propertyData} setPropertyData={setPropertyData} />;
+  const handleSaveAndExit = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(propertyData));
+      showNotification("Progress saved successfully", "success");
+      window.location.href = '/host/properties';
+    } catch (err) {
+      showNotification("Failed to save progress", "error");
+    }
+  };
 
-            // case 3:
-            //     return <AmenitiesSection propertyData={propertyData} setPropertyData={setPropertyData} />;
-            // // case 4:
-            //     return <PropertyDetails propertyData={propertyData} setPropertyData={setPropertyData} />;
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0:
+        return <BasicInformation propertyData={propertyData} setPropertyData={setPropertyData} />;
+      case 1:
+        return <LocationInfo propertyData={propertyData} setPropertyData={setPropertyData} />;
+      case 2:
+        return <TitleProperty propertyData={propertyData} setPropertyData={setPropertyData} />;
+      case 3:
+        return <BookingRules propertyData={propertyData} setPropertyData={setPropertyData} />;
+      case 4:
+        return <PricingSection propertyData={propertyData} setPropertyData={setPropertyData} />;
+      default:
+        return null;
+    }
+  };
 
-            case 3:
-                return <TitleProperty propertyData={propertyData} setPropertyData={setPropertyData} />;
-            // case 5:
-            //     return <PricingSection propertyData={propertyData} setPropertyData={setPropertyData} />;
-            case 6:
-                return <BookingRules propertyData={propertyData} setPropertyData={setPropertyData} />;
-            case 7:
-                return <ReviewSubmit propertyData={propertyData} handleSubmit={handleSubmit} />;
-            default:
-                return null;
-        }
-    };
+  const validateStepData = (stepNumber) => {
+    switch (stepNumber) {
+      case 0: // Property Type
+        return propertyData?.type?.type !== '' && 
+               propertyData?.type?.category !== '';
+      
+      case 1: // Location
+        return propertyData?.location?.city?.trim() !== '' && 
+               propertyData?.location?.country?.trim() !== '' &&
+              //  propertyData?.location?.longitude !== null &&
+              //  propertyData?.location?.latitude !== null &&
+               propertyData?.location?.neighborhood !== '' &&
+               propertyData?.location?.region?.trim() !== '' ;
+      
+      case 2: // Title
+        return propertyData?.title?.trim() !== '';
+      
+      case 3: // Rules
+        return propertyData?.policies?.rules?.max_guests > 0;
+      
+      case 4: // Pricing
+        return propertyData?.pricing?.nightly_rate !== '' && 
+               parseFloat(propertyData?.pricing?.nightly_rate) > 0 || ( propertyData?.pricing?.smart_pricing?.enabled === true && propertyData?.pricing?.smart_pricing?.max > propertyData?.pricing?.smart_pricing?.min);
+      
+      default: 
+        return false;
+    }
+  };
+  
+  const validateAllData = () => {
+    // Check all steps are valid
+    for (let i = 0; i < steps.length; i++) {
+      if (!validateStepData(i)) {
+        return false;
+      }
+    }
+    return true;
+  };
 
-    // console.log('propertyData:', propertyData);
+  const handleNextStep = () => {
+    if (currentStep === steps.length - 1) {
+      handleSubmit();
+      return;
+    }
 
-    const validateStep = (stepNumber) => {
-        switch (stepNumber) {
+    if (validateStepData(currentStep)) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      showNotification('Please fill in all required fields before proceeding.', 'warning');
+    }
+  };
 
-            case 0: // Basic Information
-                return (
-                    // propertyData?.title?.trim() !== '' 
-                    propertyData?.type !== ''
-                    // propertyData?.description?.trim() !== ''
-                );
+  const handlePrevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
 
-            case 1: // Location
-            return true;
-            case 2: // Property Details
-            return true;
+  // Get notification style based on type
+  const getNotificationStyle = () => {
+    switch (notificationType) {
+      case 'success':
+        return 'bg-green-600 text-white';
+      case 'error':
+        return 'bg-red-600 text-white';
+      case 'warning':
+        return 'bg-yellow-500 text-white';
+      default:
+        return 'bg-blue text-white';
+    }
+  };
 
-            case 3: // Amenities
-            return true;
-            case 4: // title
-            return true;
+  return (
+    <HostLayout>
+      <main className="flex-1 p-4 md:p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-semibold">
+              {steps[currentStep].title}
+            </h1>
+            <button
+              onClick={handleSaveAndExit}
+              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              disabled={isSubmitting}
+            >
+              Save & exit
+            </button>
+          </div>
 
-            case 5: // Pricing
-            return true;
+          {/* Custom Notification */}
+          {notificationMessage && (
+            <div className={`fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg text-sm z-50 ${getNotificationStyle()}`}>
+              {notificationMessage}
+            </div>
+          )}
 
-            case 6: // Booking Rules
-            return true;
+         
 
-            case 7: // Review
-                return true; // No validation needed for review step
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
+              {error}
+            </div>
+          )}
 
-            default:
-                return false;
-        }
-    };
-
-    const handleNextStep = () => {
-        if (currentStep === steps.length - 1) {
-            handleSubmit();
-            return;
-        }
-
-        if (validateStep(currentStep)) {
-            setCurrentStep(prev => prev + 1);
-        } else {
-            alert('Please fill in all required fields before proceeding.');
-        }
-    };
-
-    return (
-        <HostLayout>
-            <main className="flex-1 p-4 md:p-6">
-                <div className="max-w-3xl mx-auto">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-2xl font-semibold">
-                            {steps[currentStep].title}
-                        </h1>
-                        <button
-                            onClick={handleSaveAndExit}
-                            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                        >
-                            Save & exit
-                        </button>
+          {/* Progress Bar */}
+          <div className="mb-8">
+            <div className="flex justify-between mb-2 ">
+              {steps.map((step) => (
+                <div
+                  key={step.number}
+                  className={`flex-1 text-center ${
+                    step.number === currentStep ? 'text-blue' :
+                    step.number < currentStep ? 'text-green-500' :
+                    'text-gray-300'
+                  }`}
+                >
+                  <div className="relative">
+                    <div 
+                      className={`w-6 h-6 mx-auto rounded-full border-2 flex items-center justify-center ${
+                        step.number === currentStep ? 'border-blue bg-white' :
+                        step.number < currentStep ? 'border-green-500 bg-green-500 text-white' :
+                        'border-gray-300 bg-white'
+                      }`}
+                    >
+                      {step.number < currentStep ? '✓' : step.number + 1}
                     </div>
-
-                    {/* Saving Indicator */}
-                    {isSaving && (
-                        <div className="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg text-sm">
-                            Saving changes...
-                        </div>
-                    )}
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Progress Bar */}
-                    <div className="mb-8">
-                        <div className="flex justify-between mb-2">
-                            {steps.map((step) => (
-                                <div
-                                    key={step.number}
-                                    className={`flex-1 text-center ${step.number === currentStep ? 'text-blue' :
-                                        step.number < currentStep ? 'text-gray-500' :
-                                            'text-gray-300'
-                                        }`}
-                                >
-                                    <div className="relative">
-                                        <div className={`w-6 h-6 mx-auto rounded-full border-2 ${step.number === currentStep ? 'border-blue bg-white' :
-                                            step.number < currentStep ? 'border-gray-500 bg-gray-500' :
-                                                'border-gray-300 bg-white'
-                                            }`}>
-                                            {step.number}
-                                        </div>
-                                    </div>
-                                    <div className="mt-2 text-sm hidden md:block">{step.title}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="relative">
-                            <div className="absolute top-0 h-1 bg-gray-200 w-full"></div>
-                            <div
-                                className="absolute top-0 h-1 bg-blue transition-all duration-500"
-                                style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-                            ></div>
-                        </div>
-                    </div>
-
-                    {/* Form Content */}
-                    <div className="bg-white rounded-lg shadow-lg p-6 ">
-                        <h1 className="text-2xl font-semibold mb-6">
-                            {steps[currentStep].title}
-                        </h1>
-
-                        {renderStepContent()}
-
-                        {/* Navigation Buttons */}
-                        <div className="fixed bottom-2 right-0 left-0 container mx-auto mt-6 flex justify-between items-center ">
-                            <button
-                                onClick={() => setCurrentStep(prev => prev - 1)}
-                                className={`px-4 py-2 border rounded-md hover:bg-gray-50 transition-colors ${currentStep === 0 ? 'invisible' : ''
-                                    }`}
-                                disabled={isSubmitting}
-                            >
-                                Back
-                            </button>
-                            <button
-                                onClick={handleNextStep}
-                                className={`px-6 py-2 text-white rounded-md transition-colors flex items-center ${validateStep(currentStep) && !isSubmitting
-                                    ? 'bg-blue hover:bg-blue'
-                                    : 'bg-gray-400 cursor-not-allowed'
-                                    }`}
-                                disabled={!validateStep(currentStep) || isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <>
-                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Submitting...
-                                    </>
-                                ) : (
-                                    currentStep === steps.length - 1 ? 'Save or Create' : 'Continue'
-                                )}
-                            </button>
-                        </div>
-                    </div>
+                  </div>
+                  <div className="mt-2 text-sm hidden md:block">{step.title}</div>
                 </div>
-            </main>
-        </HostLayout>
-    );
+              ))}
+            </div>
+            <div className="relative ">
+              <div className="absolute top-0 h-1 bg-gray-200 w-full"></div>
+              <div
+                className="absolute top-0 h-1 bg-blue transition-all duration-500"
+                style={{ width: `${((currentStep) / (steps.length - 1)) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Form Content */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            {renderStepContent()}
+
+       
+          </div>
+
+          {/* Bottom fixed navigation for mobile */}
+          <div className="md:ps-72 fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 border-t flex justify-between">
+            <button
+              onClick={handlePrevStep}
+              className={`px-4 py-2 border rounded-md ${currentStep === 0 ? 'invisible' : ''}`}
+              disabled={isSubmitting || currentStep === 0}
+            >
+              Back
+            </button>
+            <button
+              onClick={handleNextStep}
+              className={`px-6 py-2 text-white rounded-md ${
+                validateStepData(currentStep) && !isSubmitting
+                  ? 'bg-blue'
+                  : 'bg-gray-400'
+              }`}
+              disabled={!validateStepData(currentStep) || isSubmitting}
+            >
+              {isSubmitting ? 'Processing...' : currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+            </button>
+          </div>
+        </div>
+      </main>
+    </HostLayout>
+  );
 };
 
-export default AddProperty; 
+export default AddProperty;

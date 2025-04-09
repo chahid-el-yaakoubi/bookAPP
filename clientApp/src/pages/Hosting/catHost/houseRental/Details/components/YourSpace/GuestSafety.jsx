@@ -74,7 +74,7 @@ const SafetySecurityFeatures = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div className="shadow-xl  mx-auto p-10 bg-white rounded-lg">
       <div className="mb-6 border-b pb-4">
         <h2 className="text-2xl font-bold mb-2">Safety & Security Features</h2>
         <p className="text-gray-600">

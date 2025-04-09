@@ -27,6 +27,7 @@
         "rooms": "Rooms",
         "safety": "Safety",
         "backToMenu": "Back to Menu",
+        "bathrooms" : "bathrooms",
         "backButton": "Back",
         "emptyDiv": " "
     },

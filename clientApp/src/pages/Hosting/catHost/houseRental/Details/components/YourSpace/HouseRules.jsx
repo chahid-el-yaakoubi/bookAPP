@@ -204,7 +204,7 @@ const HouseRules = () => {
 
     // Main view
     return (
-        <div className="max-w-3xl mx-auto p-6 mb-10">
+        <div className="shadow-xl md:p-20 mx-auto  mb-10">
             <h1 className="text-2xl font-bold mb-4">House rules</h1>
             <p className="text-gray-600 mb-6">
                 Guests are expected to follow your rules and may be removed from Airbnb if they don't.

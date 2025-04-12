@@ -4,6 +4,7 @@ import { LuCircleArrowLeft } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
 import axios from 'axios';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const ChangePassword = () => {
     const { user } = useContext(AuthContext);
@@ -95,7 +96,7 @@ export const ChangePassword = () => {
             // Only make the API call if we're actually sending the code
             if (!codeSent) {
                 await axios.post(
-                    `/api/users/email-verification`,
+                    `${apiUrl}/users/email-verification`,
                     { email: formData.email },
                     {
                         headers: {
@@ -133,13 +134,13 @@ export const ChangePassword = () => {
                     oldPassword: formData.currentPassword,
                     newPassword: formData.newPassword
                 };
-                endpoint = `/api/users/${user._id}/password`;
+                endpoint = `${apiUrl}/users/${user._id}/password`;
             } else if (mode === 'verification') {
                 payload = {
                     code: formData.verificationCode,
                     newPassword: formData.newPassword
                 };
-                endpoint = `/api/users/${user._id}/verify-code`;
+                endpoint = `${apiUrl}/users/${user._id}/verify-code`;
             }
 
             const headers = { Authorization: `Bearer ${user.token}` };

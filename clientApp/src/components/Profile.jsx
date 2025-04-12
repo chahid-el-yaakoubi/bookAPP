@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { User, Camera, Lock, Save, Edit, X } from 'lucide-react';
 import axios from 'axios'; // Add axios import
+const apiUrl = import.meta.env.VITE_API_URL;
 
 import { Navbar } from './Navbar'
 import { Header } from './Header'
@@ -12,7 +13,7 @@ import { LuCircleArrowLeft } from 'react-icons/lu';
 
 export const Profile = () => {
     const { user } = useContext(AuthContext);
-    const { data, loading, error, reFetch } = useFetch(`/api/users/${user._id}`);
+    const { data, loading, error, reFetch } = useFetch(`${apiUrl}/users/${user._id}`);
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
         id: '',
@@ -75,7 +76,7 @@ export const Profile = () => {
 
         try {
             // Send the update request to the backend
-            const response = await axios.put(`/api/users/${user._id}`, formData);
+            const response = await axios.put(`${apiUrl}/users/${user._id}`, formData);
 
             // Update local state with the response data
             setUserData(response.data);

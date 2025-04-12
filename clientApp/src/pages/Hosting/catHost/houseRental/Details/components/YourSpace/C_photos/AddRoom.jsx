@@ -142,13 +142,13 @@ const hotelTypes = ['hotel', 'guesthouse', 'hostel', 'boutique-hotel'];
 const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const [formData, setFormData] = useState({
     type: '',
-    price: 0,
+    price: null,
     description: '',
     amenities: [],
     roomFeatures: [],
     capacity: 2,
     beds: [],
-    size: { value: 0, unit: 'sq_m' },
+    size: { value: null, unit: 'sq_m' },
     bathrooms: [],
     floor: null,
     view: [],
@@ -184,7 +184,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
       newErrors.type = 'Room type is required';
     }
 
-    if (formData.price <= 0) {
+    if ( hotelTypes.includes(typeProperty) && formData.price <= 0) {
       newErrors.price = 'Price must be greater than 0';
     }
 
@@ -298,12 +298,12 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
           <input
             type="checkbox"
             name={item.id}
-            className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded"
+            className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded "
             checked={isChecked}
             onChange={() => { }} // Prevent native change handler since the click on div handles it
           />
           {item.icon && <item.icon className="ml-2 mr-2 text-gray-800" size={20} />}
-          <label htmlFor={item.id} className="ml-1 block text-lg text-gray-700">{item.label}</label>
+          <label htmlFor={item.id} className="ml-1 block text-sm  text-gray-700">{item.label}</label>
         </div>
       );
     });
@@ -382,21 +382,28 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                 />
               </div>
 
-              <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">Price per Night</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3 text-xl text-gray-500">$</span>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
-                    required
-                    min="0"
-                  />
-                </div>
-              </div>
+              {
+                hotelTypes.includes(typeProperty) && (
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 mb-2">Price per Night</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-3 text-xl text-gray-500">$</span>
+                      <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        placeholder='0'
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
+                        required
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                )
+
+              }
+
 
               <div>
                 <label className="block text-lg font-medium text-gray-700 mb-2">Room Size</label>
@@ -435,26 +442,26 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
               </div>
 
               {
-            hotelTypes.includes(typeProperty) && (
-              <div>
-              <label className="block text-lg font-medium text-gray-700 mb-2">Room Number/Title</label>
-              <input
-                type="text"
-                name="roomTitle"
-                value={formData.roomTitle || ''}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    roomTitle: e.target.value
-                  }))
-                }
-                className="w-full px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
-                placeholder="e.g. 101, 203, Suite A"
-              />
-            </div>
-            )
-          }
-             
+                hotelTypes.includes(typeProperty) && (
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 mb-2">Room Number/Title</label>
+                    <input
+                      type="text"
+                      name="roomTitle"
+                      value={formData.roomTitle || ''}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          roomTitle: e.target.value
+                        }))
+                      }
+                      className="w-full px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
+                      placeholder="e.g. 101, 203, Suite A"
+                    />
+                  </div>
+                )
+              }
+
             </div>
 
             <div className="mt-8">
@@ -697,132 +704,141 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
           {/* bathrooms*/}
           {
             hotelTypes.includes(typeProperty) && (
-              <BathroomAmenitiesSelector
-                bathrooms={formData.bathrooms}
-                onBathroomsChange={(bathrooms) => setFormData(prev => ({
-                  ...prev,
-                  bathrooms
-                }))}
-              />
+
+              <>
+
+                <BathroomAmenitiesSelector
+                  bathrooms={formData.bathrooms}
+                  onBathroomsChange={(bathrooms) => setFormData(prev => ({
+                    ...prev,
+                    bathrooms
+                  }))}
+                />
+
+                <div className="bg-white rounded-xl shadow-lg p-8">
+                  <div className="flex items-center mb-6">
+                    <Droplet className="text-blue mr-4" size={28} />
+                    <h2 className="text-2xl font-bold text-gray-800">Categorized Amenities</h2>
+                  </div>
+
+                  <div className="space-y-8">
+                    {AMENITY_CATEGORIES.map(category => (
+                      <div key={category} className="border-2 border-gray-100 rounded-lg overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(category)}
+                          className="flex items-center justify-between w-full p-4 bg-gray-50 hover:bg-gray-100 transition"
+                        >
+                          <div className="flex items-center">
+                            <span className="mr-3 text-blue">
+                              {categoryIcons[category]}
+                            </span>
+                            <span className="font-medium text-lg">{category}</span>
+                          </div>
+                          <span>{expandedCategories[category] ? '−' : '+'}</span>
+                        </button>
+
+                        {expandedCategories[category] && (
+                          <div className="p-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                              {AMENITIES.filter(amenity => amenity.category === category).map(amenity => (
+                                <div
+                                  key={amenity.id}
+                                  onClick={() => toggleAmenity(amenity.id, category)}
+                                  className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${isAmenitySelected(amenity.id, category)
+                                    ? 'border-blue bg-blue/10'
+                                    : 'border-gray-200 hover:border-blue'
+                                    }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isAmenitySelected(amenity.id, category)}
+                                    onChange={() => { }}
+                                    className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded mr-2"
+                                  />
+                                  {amenity.icon && <amenity.icon className="mr-2 text-gray-600" size={20} />}
+                                  <label className="text-md cursor-pointer select-none">
+                                    {amenity.label}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Amenities Card */}
+                <div className="bg-white rounded-xl shadow-lg p-8">
+                  <div className="flex items-center mb-6">
+                    <Droplet className="text-blue mr-4" size={28} />
+                    <h2 className="text-2xl font-bold text-gray-800">Custom Amenities</h2>
+                  </div>
+
+                  <div>
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
+                      <input
+                        type="text"
+                        value={amenity}
+                        onChange={(e) => setAmenity(e.target.value)}
+                        className="flex-grow px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
+                        placeholder="Add a custom amenity"
+                      />
+                      <button
+                        type="button"
+                        onClick={addAmenity}
+                        className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue transition flex items-center gap-2"
+                      >
+                        <Plus size={20} />
+                        <span>Add</span>
+                      </button>
+                    </div>
+                    <div className="p-6 bg-gray-50 rounded-lg">
+                      <h3 className="text-lg font-medium text-gray-700 mb-4">Current Custom Amenities</h3>
+                      {formData.amenities.length === 0 ? (
+                        <p className="text-gray-500">No custom amenities added yet</p>
+                      ) : (
+                        <div className="flex flex-col md:flex-row gap-3">
+                          {formData.amenities.map((amenity, index) => (
+                            <span
+                              key={index}
+                              className="inline-flex items-center px-4 py-2 rounded-lg text-md bg-white border-2 border-gray-200 shadow-sm"
+                            >
+                              {amenity}
+                              <button
+                                type="button"
+                                onClick={() => removeAmenity(index)}
+                                className="ml-2 text-gray-500 hover:text-red-500"
+                              >
+                                <X size={18} />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Add error display */}
+                {Object.keys(errors).length > 0 && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    {Object.values(errors).map((error, index) => (
+                      <p key={index}>{error}</p>
+                    ))}
+                  </div>
+                )}
+              </>
+
+
+
             )
           }
 
           {/* Categorized Amenities Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex items-center mb-6">
-              <Droplet className="text-blue mr-4" size={28} />
-              <h2 className="text-2xl font-bold text-gray-800">Categorized Amenities</h2>
-            </div>
 
-            <div className="space-y-8">
-              {AMENITY_CATEGORIES.map(category => (
-                <div key={category} className="border-2 border-gray-100 rounded-lg overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => toggleCategory(category)}
-                    className="flex items-center justify-between w-full p-4 bg-gray-50 hover:bg-gray-100 transition"
-                  >
-                    <div className="flex items-center">
-                      <span className="mr-3 text-blue">
-                        {categoryIcons[category]}
-                      </span>
-                      <span className="font-medium text-lg">{category}</span>
-                    </div>
-                    <span>{expandedCategories[category] ? '−' : '+'}</span>
-                  </button>
-
-                  {expandedCategories[category] && (
-                    <div className="p-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                        {AMENITIES.filter(amenity => amenity.category === category).map(amenity => (
-                          <div
-                            key={amenity.id}
-                            onClick={() => toggleAmenity(amenity.id, category)}
-                            className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${isAmenitySelected(amenity.id, category)
-                              ? 'border-blue bg-blue/10'
-                              : 'border-gray-200 hover:border-blue'
-                              }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isAmenitySelected(amenity.id, category)}
-                              onChange={() => { }}
-                              className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded mr-2"
-                            />
-                            {amenity.icon && <amenity.icon className="mr-2 text-gray-600" size={20} />}
-                            <label className="text-md cursor-pointer select-none">
-                              {amenity.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Custom Amenities Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex items-center mb-6">
-              <Droplet className="text-blue mr-4" size={28} />
-              <h2 className="text-2xl font-bold text-gray-800">Custom Amenities</h2>
-            </div>
-
-            <div>
-              <div className="flex flex-col md:flex-row gap-4 mb-4">
-                <input
-                  type="text"
-                  value={amenity}
-                  onChange={(e) => setAmenity(e.target.value)}
-                  className="flex-grow px-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
-                  placeholder="Add a custom amenity"
-                />
-                <button
-                  type="button"
-                  onClick={addAmenity}
-                  className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue transition flex items-center gap-2"
-                >
-                  <Plus size={20} />
-                  <span>Add</span>
-                </button>
-              </div>
-              <div className="p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-700 mb-4">Current Custom Amenities</h3>
-                {formData.amenities.length === 0 ? (
-                  <p className="text-gray-500">No custom amenities added yet</p>
-                ) : (
-                  <div className="flex flex-col md:flex-row gap-3">
-                    {formData.amenities.map((amenity, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-4 py-2 rounded-lg text-md bg-white border-2 border-gray-200 shadow-sm"
-                      >
-                        {amenity}
-                        <button
-                          type="button"
-                          onClick={() => removeAmenity(index)}
-                          className="ml-2 text-gray-500 hover:text-red-500"
-                        >
-                          <X size={18} />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Add error display */}
-          {Object.keys(errors).length > 0 && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              {Object.values(errors).map((error, index) => (
-                <p key={index}>{error}</p>
-              ))}
-            </div>
-          )}
 
           {/* Submit Button */}
           <div className="flex justify-end mt-8">

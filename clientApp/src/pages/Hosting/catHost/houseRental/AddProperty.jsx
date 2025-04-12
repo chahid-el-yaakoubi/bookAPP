@@ -9,6 +9,7 @@ import { AuthContext } from '../../../../contextApi/AuthContext';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 
+
 const STORAGE_KEY = 'property_draft';
 
 const AddProperty = () => {

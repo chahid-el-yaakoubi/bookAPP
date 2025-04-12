@@ -24,6 +24,12 @@ import PropertyDetail from './pages/Hosting/catHost/houseRental/PropertyDetail';
 import Details from './pages/Hosting/catHost/houseRental/Details/Details';
 import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
+import { Profile } from './components/Profile';
+import { ChangePassword } from './components/ChangePassword';
+import {SavedRentalsPage} from './components/SaveClient';
+import AuthForm from './components/Login/login';
+import RegisterForm from './components/Login/Register';
+import PasswordReset from './components/Login/ResetPassword';
 
 
 function App() {
@@ -35,6 +41,13 @@ function App() {
         <div dir={t('dir')}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Login" element={<AuthForm />} />
+            <Route path="/Register" element={<RegisterForm />} />
+            <Route path="/Forgetpass" element={<PasswordReset/>} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/change-pass" element={<Profile />} />
+            <Route path="/saved" element={<SavedRentalsPage />} />
+            
             <Route path="/maps" element={<MapComponent />} />
             <Route path="/hotels/:city" element={<List />} />
             <Route path="/hotel/:id" element={<Hotel />} />

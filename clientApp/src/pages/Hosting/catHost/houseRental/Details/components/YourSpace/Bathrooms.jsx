@@ -18,12 +18,11 @@ export const Bathrooms = () => {
       const handleSave = async () => {
         try {
           const updateProperty = {
-            ...selectedProperty,
-            property_details: {
-              ...selectedProperty?.property_details,
-              bathrooms: formData.bathrooms  // ✅ Corrected: nested under property_details
-            }
+             'property_details.bathrooms': formData.bathrooms
           };
+
+             
+          
       
           const res = await axios.put(`/api/hotels/${id}`, updateProperty);
       

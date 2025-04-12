@@ -9,7 +9,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'https://axistay-backend.onrender.com', // Replace with your backend server URL
+      '/api': 'http://localhost:18099', // Replace with your backend server URL
     },
     hmr: {
       overlay: true,

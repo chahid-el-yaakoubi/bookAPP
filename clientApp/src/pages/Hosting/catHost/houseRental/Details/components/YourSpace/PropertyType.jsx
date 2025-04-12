@@ -1,60 +1,45 @@
 import { useState, useEffect, useMemo } from 'react';
-import { 
-    FaPlus, 
-    FaMinus, 
-    FaHome, 
-    FaBuilding, 
-    FaHotel, 
-    FaCrown,
-    FaCheckCircle,  // Added for success icon
-    FaMapMarkerAlt, // For view type
-    FaCalendar,     // For year built
-    FaRulerCombined // For property size
+import {
+    FaPlus,
+    FaMinus,
+    FaCheckCircle,
+    FaMapMarkerAlt,
+    FaCalendar,
+    FaRulerCombined
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty } from '../../../../../../../redux/actions/propertyActions';
+import axios from 'axios';
 
 const PropertyTypeForm = () => {
     const dispatch = useDispatch();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
 
-    // Enhanced property categories and types with improved organization and more icon variety
-    const propertyTypes = useMemo(() => ({
-        apartment: [
-          { id: 'rental-unit', label: 'Daily Rental Apartment', icon: '🏢' },
-          { id: 'studio', label: 'Daily Rental Studio', icon: '🏠' },
-          { id: 'penthouse', label: 'Daily Rental Penthouse', icon: '🏙️' },
-          { id: 'apartment', label: 'Apartment', icon: '🏢' }
-        ],
-        house: [
-          { id: 'villa', label: 'Daily Rental Villa', icon: '🏡' },
-          { id: 'riad', label: 'Daily Rental Traditional Riad', icon: '🏯' },
-        ],
-        hospitality: [
-          { id: 'hotel', label: 'Hotel', icon: '🏨' },
-          { id: 'guesthouse', label: 'Guesthouse', icon: '🏠' },
-          { id: 'hostel', label: 'Hostel', icon: '🛏️' }
-        ],
-        luxury: [
-          { id: 'luxury-villa', label: 'Luxury Villa for Daily Rental', icon: '✨' },
-          { id: 'boutique-hotel', label: 'Boutique Hotel', icon: '🏰' },
-          { id: 'boutique', label: 'Boutique', icon: '💎' }
-        ]
-    }), []);
-
-    // Group property types by category for dropdown organization with icons
-    const groupedPropertyTypes = useMemo(() => [
-        { label: 'Apartments', id: 'apartment', icon: <FaBuilding /> },
-        { label: 'Houses', id: 'house', icon: <FaHome /> },
-        { label: 'Hospitality', id: 'hospitality', icon: <FaHotel /> },
-        { label: 'Luxury', id: 'luxury', icon: <FaCrown /> }
+    // All property types in a flat array with category tags
+    const allPropertyTypes = useMemo(() => [
+        { id: 'rental-unit', label: 'Daily Rental Apartment', icon: '🏠', category: 'apartment' },
+        { id: 'studio', label: 'Daily Rental Studio', icon: '🏙️', category: 'apartment' },
+        { id: 'villa', label: 'Daily Rental Villa', icon: '🏡', category: 'house' },
+        { id: 'house', label: 'Daily Rental House', icon: '🏡', category: 'house' },
+        { id: 'riad', label: 'Daily Rental Traditional Riad', icon: '🏯', category: 'house' },
+        { id: 'guesthouse', label: 'Guesthouse (Maison d’hôtes)', icon: '🏠', category: 'hospitality' },
+        { id: 'hotel', label: 'Hotel (Hôtel)', icon: '🏨', category: 'hospitality' },
+        { id: 'hostel', label: 'Hostel / Auberge', icon: '🛏️', category: 'hospitality' },
+        { id: 'boutique-hotel', label: 'Boutique Hotel', icon: '🏰💎', category: 'hospitality' }
     ], []);
 
-    // Optimized state initialization with custom hook pattern
+    // Categories for filtering
+    const categories = useMemo(() => [
+        { id: 'all', label: 'All Property Types' },
+        { id: 'apartment', label: 'Apartments' },
+        { id: 'house', label: 'Houses' },
+        { id: 'hospitality', label: 'Hospitality' },
+    ], []);
+
+
+    // Initialize form state
     const [formState, setFormState] = useState({
-        selectedCategory: Object.keys(propertyTypes).find(key =>
-            propertyTypes[key]?.some(type => type.id === selectedProperty?.type?.type)
-        ) || 'apartment',
+        activeFilter: 'all',
         propertyType: selectedProperty?.type?.type || '',
         propertyCategory: selectedProperty?.type?.category || '',
         listingType: selectedProperty?.type?.listingType || '',
@@ -68,79 +53,70 @@ const PropertyTypeForm = () => {
         successTimeout: null
     });
 
-    // Destructure state for easier access
+    // Destructure state
     const {
-        selectedCategory, propertyType, propertyCategory, listingType,
+        activeFilter, propertyType, propertyCategory, listingType,
         floors, floorNumber, yearBuilt, propertySize, sizeUnit, viewType,
         showSuccess, successTimeout
     } = formState;
 
-    // Helper function to update specific form fields
+    // Helper function to update form fields
     const updateFormField = (field, value) => {
         setFormState(prev => ({ ...prev, [field]: value }));
     };
 
-    // Cleanup timeout on unmount
+    // Cleanup timeout
     useEffect(() => {
         return () => {
             if (successTimeout) clearTimeout(successTimeout);
         };
     }, [successTimeout]);
 
-    // Smart update algorithm: Update property type based on category selection with optimized logic
-    useEffect(() => {
-        const typesForCategory = propertyTypes[selectedCategory] || [];
-        if (typesForCategory.length > 0 && !typesForCategory.some(type => type.id === propertyType)) {
-            // const newType = typesForCategory[0].id;
-            updateFormField('propertyType', '');
-            updateFormField('listingType', '');
-            updateFormField('viewType', '');
-            
-            // Intelligently update propertyCategory based on selected propertyType
-            if (['apartment', 'luxury', 'hospitality', 'house'].includes(selectedCategory)) {
-                updateFormField('propertyCategory', selectedCategory);
-            }
-        }
-    }, [selectedCategory, propertyType, propertyTypes]);
+    // Update category when selecting property type
+    const selectPropertyType = (type) => {
+        updateFormField('propertyType', type.id);
+        updateFormField('propertyCategory', type.category);
+    };
 
-    // Advanced algorithms for filtering listing types based on property category
+    // Filtered property types based on active filter
+    const filteredPropertyTypes = useMemo(() => {
+        if (activeFilter === 'all') {
+            return allPropertyTypes;
+        }
+        return allPropertyTypes.filter(type => type.category === activeFilter);
+    }, [activeFilter, allPropertyTypes]);
+
+    // Get listing types based on property category
     const getFilteredListingTypes = useMemo(() => (category) => {
-        // Enhanced algorithm with optimized filtering logic
         const baseTypes = [
             { id: 'Entire place', label: 'Entire place' },
             { id: 'Private room', label: 'Private room' },
             { id: 'Shared room', label: 'Shared room' },
         ];
-        
+
         if (category === 'hospitality') {
             return [
                 { id: 'Hotel room', label: 'Hotel room' },
-                ...baseTypes.slice(0, 2) // Only use first two options from base types
+                ...baseTypes.slice(0, 2)
             ];
         }
         return baseTypes;
     }, []);
 
-    // Intelligent view type algorithm based on property category with optimized caching
+    // Get view types based on property category
     const getFilteredViewTypes = useMemo(() => (category) => {
-        // Enhanced algorithm with view ranking based on property type
-        const allViewTypes = {
-            'cityView': { id: 'cityView', label: 'City view', score: { apartment: 5, house: 3, luxury: 3 } },
-            'oceanView': { id: 'oceanView', label: 'Ocean view', score: { apartment: 4, house: 4, luxury: 5 } },
-            'mountainView': { id: 'mountainView', label: 'Mountain view', score: { apartment: 3, house: 4, luxury: 4 } },
-            'gardenView': { id: 'gardenView', label: 'Garden view', score: { apartment: 2, house: 5, luxury: 3 } },
-            'parkView': { id: 'parkView', label: 'Park view', score: { apartment: 4, house: 2, luxury: 2 } },
-            'poolView': { id: 'poolView', label: 'Pool view', score: { apartment: 3, house: 3, luxury: 5 } },
-            'valleyView': { id: 'valleyView', label: 'Valley view', score: { apartment: 1, house: 5, luxury: 4 } },
-            'noView': { id: 'noView', label: 'No special view', score: { apartment: 1, house: 1, luxury: 0 } }
-        };
-        
-        // Filter and sort views based on relevance score for the property category
-        const relevantViews = Object.values(allViewTypes)
-            .filter(view => view.score[category] > 0)
-            .sort((a, b) => b.score[category] - a.score[category]);
-            
-        return relevantViews;
+        const allViewTypes = [
+            { id: 'cityView', label: 'City view' },
+            { id: 'oceanView', label: 'Ocean view' },
+            { id: 'mountainView', label: 'Mountain view' },
+            { id: 'gardenView', label: 'Garden view' },
+            { id: 'parkView', label: 'Park view' },
+            { id: 'poolView', label: 'Pool view' },
+            { id: 'valleyView', label: 'Valley view' },
+            { id: 'noView', label: 'No special view' }
+        ];
+
+        return allViewTypes;
     }, []);
 
     // Check if property is hotel-like
@@ -149,7 +125,7 @@ const PropertyTypeForm = () => {
         return hotelTypes.includes(propertyType) || listingType === 'Hotel room';
     }, [propertyType, listingType]);
 
-    // Optimized success message handler with debouncing
+    // Show success message 
     const showSuccessMessage = () => {
         updateFormField('showSuccess', true);
         if (successTimeout) clearTimeout(successTimeout);
@@ -157,28 +133,27 @@ const PropertyTypeForm = () => {
         updateFormField('successTimeout', timeout);
     };
 
-    // Enhanced save handler with validation
-    const handleSave = (e) => {
+    // Save handler with validation
+    const handleSave = async (e) => {
         e.preventDefault();
-        
-        // Comprehensive validation
+
+        // Validate form
         const validationErrors = [];
         if (!propertyType) validationErrors.push("Property type");
         if (!propertyCategory) validationErrors.push("Property category");
         if (!listingType) validationErrors.push("Listing type");
         if (!isHotelLike && !viewType) validationErrors.push("View type");
-        
+
         if (validationErrors.length > 0) {
             alert(`Please fill in the following required fields: ${validationErrors.join(", ")}.`);
             return;
         }
-        
-        // Build updated property object, skipping hotel-specific fields for hotel properties
+
+        // Build property object
         const updatedProperty = {
-            ...selectedProperty,
             type: {
                 type: propertyType,
-                category: selectedCategory,
+                category: propertyCategory,
                 listingType: listingType,
                 ...(isHotelLike ? {} : {
                     floors,
@@ -189,143 +164,96 @@ const PropertyTypeForm = () => {
                     viewType
                 })
             }
+
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
 
+        const res = await axios.put(`/api/hotels/${selectedProperty?._id}`, updatedProperty)
+
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
+
+        }
         showSuccessMessage();
     };
 
-    // Helper function to get property type label
-    const getPropertyTypeLabel = (id) => {
-        const type = propertyTypes[selectedCategory]?.find(type => type.id === id);
-        return type ? type.label : id;
-    };
-
     return (
-        <div className="mx-auto bg-gradient-to-b from-gray-50 to-white rounded-xl shadow-2xl overflow-hidden">
-            {/* Hero header */}
-            <div className="bg-gradient-to-r from-blue to-indigo-700 py-8 px-6">
-                <h1 className="text-3xl font-bold text-white flex items-center">
-                    <FaHome className="mr-3" /> Property Details
-                </h1>
-                <p className="text-black mt-2">Define the perfect space for your guests</p>
+        <div className="mx-auto bg-white rounded-lg shadow-md">
+            {/* Header */}
+            <div className="bg-blue py-4 px-4">
+                <h1 className="text-xl font-medium text-white">Property Details</h1>
             </div>
 
             {/* Success message */}
             {showSuccess && (
-                <div className="m-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md animate-pulse">
+                <div className="fixed top-10 right-20 m-4 bg-green-500 border-l-4 border-blue text-gray-100 p-3 rounded z-50">
                     <div className="flex items-center">
-                        <FaCheckCircle className="h-6 w-6 text-green-500 mr-4" />
-                        <div>
-                            <p className="font-bold">Success!</p>
-                            <p className="text-sm">Property details have been updated successfully.</p>
-                        </div>
+                        <FaCheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                        <p className="text-sm">Property details saved successfully.</p>
                     </div>
                 </div>
             )}
 
-            <div className="p-8 space-y-8">
-                {/* Property Category Selection - Hero Design */}
-                <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                    <label className="block text-lg font-semibold text-gray-800 mb-4">Property Category</label>
-                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {groupedPropertyTypes.map(group => (
+            <div className="p-4 space-y-6">
+                {/* Filter tabs */}
+                <div className="border-b border-gray-200">
+                    <div className="flex flex-nowrap overflow-x-auto pb-1 gap-2">
+                        {categories.map(category => (
                             <button
-                                key={group.id}
-                                onClick={() => updateFormField('selectedCategory', group.id)}
-                                className={`flex items-center justify-center p-4 rounded-lg transition-all ${
-                                    selectedCategory === group.id 
-                                    ? 'bg-blue text-white shadow-lg transform scale-105' 
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
+                                key={category.id}
+                                onClick={() => updateFormField('activeFilter', category.id)}
+                                className={`px-4 py-2 whitespace-nowrap text-sm font-medium rounded-t-lg ${activeFilter === category.id
+                                    ? 'bg-blue text-white'
+                                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                                    }`}
                             >
-                                <div className="flex flex-col items-center">
-                                    <span className="text-2xl mb-2">{group.icon}</span>
-                                    <span className="font-medium">{group.label}</span>
-                                </div>
+                                {category.label}
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Property Type Selection - Hero Design */}
-                <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                    <label className={`block text-lg font-semibold mb-4 ${propertyType ? 'text-gray-800' : 'text-red-500'}`}>
+                {/* Property Type Selection - Simple grid */}
+                <div>
+                    <label className={`block text-base font-medium mb-3 ${propertyType ? 'text-gray-700' : 'text-red-500'}`}>
                         Which is most like your place?
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(propertyTypes[selectedCategory] || []).map(type => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {filteredPropertyTypes.map(type => (
                             <button
                                 key={type.id}
-                                onClick={() => {
-                                    updateFormField('propertyType', type.id);
-                                    updateFormField('propertyCategory', selectedCategory);
-                                }}
-                                className={`flex items-center p-4 rounded-lg transition-all ${
-                                    propertyType === type.id 
-                                    ? 'bg-blue text-white shadow-md' 
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
+                                onClick={() => selectPropertyType(type)}
+                                className={`flex items-center p-3 rounded-lg ${propertyType === type.id
+                                    ? 'bg-blue text-white'
+                                    : 'bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100'
+                                    }`}
                             >
-                                <span className="text-2xl mr-3">{type.icon}</span>
-                                <span className="font-medium">{type.label}</span>
+                                <span className="text-xl mr-3">{type.icon}</span>
+                                <span>{type.label}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Listing Type - Hero Design */}
-                <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                    <label className={`block text-lg font-semibold mb-4 ${listingType ? 'text-gray-800' : 'text-red-500'}`}>
-                        Listing Type
-                    </label>
-                    <div className="space-y-3">
-                        {getFilteredListingTypes(selectedCategory).map(option => (
-                            <button
-                                key={option.id}
-                                onClick={() => updateFormField('listingType', option.id)}
-                                className={`w-full flex items-center justify-between p-4 rounded-lg transition-all ${
-                                    listingType === option.id 
-                                    ? 'bg-blue text-white shadow-md' 
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                <span className="font-medium">{option.label}</span>
-                                {listingType === option.id && (
-                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                    <p className="text-sm text-gray-500 mt-3">Specify how guests will use your property.</p>
-                </div>
-                
-                {/* Only display additional fields if not a hotel-type property */}
-                {!isHotelLike && (
+                {propertyType && (
                     <>
-                        <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                            <label className={`block text-lg font-semibold mb-4 flex items-center ${viewType ? 'text-gray-800' : 'text-red-500'}`}>
-                                <FaMapMarkerAlt className="mr-2 text-blue" /> View Type
+                        {/* Listing Type */}
+                        <div>
+                            <label className={`block text-base font-medium mb-3 ${listingType ? 'text-gray-700' : 'text-red-500'}`}>
+                                Listing Type
                             </label>
-                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {getFilteredViewTypes(selectedCategory).map(option => (
+                            <div className="space-y-2">
+                                {getFilteredListingTypes(propertyCategory).map(option => (
                                     <button
                                         key={option.id}
-                                        onClick={() => updateFormField('viewType', option.id)}
-                                        className={`w-full flex items-center justify-between p-4 rounded-lg transition-all ${
-                                            viewType === option.id 
-                                            ? 'bg-blue text-white shadow-md' 
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
+                                        onClick={() => updateFormField('listingType', option.id)}
+                                        className={`w-full flex items-center justify-between p-3 rounded-lg ${listingType === option.id
+                                            ? 'bg-blue text-white'
+                                            : 'bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100'
+                                            }`}
                                     >
-                                        <span className="font-medium">{option.label}</span>
-                                        {viewType === option.id && (
+                                        <span>{option.label}</span>
+                                        {listingType === option.id && (
                                             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                             </svg>
@@ -333,129 +261,148 @@ const PropertyTypeForm = () => {
                                     </button>
                                 ))}
                             </div>
-                            <p className="text-sm text-gray-500 mt-3">Select the type of view available from your property.</p>
                         </div>
 
-                        {['apartment', 'house', 'hospitality'].includes(selectedCategory) && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Floors in Building */}
-                                <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                                    <label className="block text-lg font-semibold text-gray-800 mb-4">Building Floors</label>
-                                    <div className="flex items-center justify-between">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                if (floors > 1) {
-                                                    const newFloors = floors - 1;
-                                                    updateFormField('floors', newFloors);
-                                                    // If the current floor number is now greater than the building floors, adjust it
-                                                    if (floorNumber > newFloors) {
-                                                        updateFormField('floorNumber', newFloors);
-                                                    }
-                                                }
-                                            }}
-                                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue transition-all"
-                                        >
-                                            <FaMinus className="text-xl" />
-                                        </button>
-                                        <span className="text-3xl font-bold text-gray-700">{floors}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => updateFormField('floors', floors + 1)}
-                                            className="bg-blue hover:bg-blue text-white rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue transition-all"
-                                        >
-                                            <FaPlus className="text-xl" />
-                                        </button>
+                        {/* Additional fields for non-hotel properties */}
+                        {!isHotelLike && (
+                            <>
+                                <div>
+                                    <label className={`block text-base font-medium mb-3 flex items-center ${viewType ? 'text-gray-700' : 'text-red-500'}`}>
+                                        <FaMapMarkerAlt className="mr-2 text-blue" /> View Type
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {getFilteredViewTypes(propertyCategory).map(option => (
+                                            <button
+                                                key={option.id}
+                                                onClick={() => updateFormField('viewType', option.id)}
+                                                className={`w-full flex items-center justify-between p-3 rounded-lg ${viewType === option.id
+                                                    ? 'bg-blue text-white'
+                                                    : 'bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100'
+                                                    }`}
+                                            >
+                                                <span>{option.label}</span>
+                                                {viewType === option.id && (
+                                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
 
-                                {/* Floor Number */}
-                                <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                                    <label className="block text-lg font-semibold text-gray-800 mb-4">Listing Floor</label>
-                                    <div className="flex items-center justify-between">
-                                        <button
-                                            type="button"
-                                            onClick={() => floorNumber > 1 && updateFormField('floorNumber', floorNumber - 1)}
-                                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue transition-all"
-                                        >
-                                            <FaMinus className="text-xl" />
-                                        </button>
-                                        <span className="text-3xl font-bold text-gray-700">{floorNumber}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                // Ensure floor number doesn't exceed total floors
-                                                if (floorNumber < floors) {
-                                                    updateFormField('floorNumber', floorNumber + 1);
-                                                }
-                                            }}
-                                            className={`${floorNumber < floors ? 'bg-blue hover:bg-blue text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'} rounded-full w-12 h-12 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue transition-all`}
-                                        >
-                                            <FaPlus className="text-xl" />
-                                        </button>
+                                {['apartment', 'house', 'hospitality'].includes(propertyCategory) && (
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* Floors in Building */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Building Floors</label>
+                                            <div className="flex items-center justify-between">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (floors > 1) {
+                                                            const newFloors = floors - 1;
+                                                            updateFormField('floors', newFloors);
+                                                            if (floorNumber > newFloors) {
+                                                                updateFormField('floorNumber', newFloors);
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-8 h-8 flex items-center justify-center"
+                                                >
+                                                    <FaMinus />
+                                                </button>
+                                                <span className="text-xl font-medium text-gray-700">{floors}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => updateFormField('floors', floors + 1)}
+                                                    className="bg-blue hover:bg-blue text-white rounded-full w-8 h-8 flex items-center justify-center"
+                                                >
+                                                    <FaPlus />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Floor Number */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Listing Floor</label>
+                                            <div className="flex items-center justify-between">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => floorNumber > 1 && updateFormField('floorNumber', floorNumber - 1)}
+                                                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-8 h-8 flex items-center justify-center"
+                                                >
+                                                    <FaMinus />
+                                                </button>
+                                                <span className="text-xl font-medium text-gray-700">{floorNumber}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (floorNumber < floors) {
+                                                            updateFormField('floorNumber', floorNumber + 1);
+                                                        }
+                                                    }}
+                                                    className={`${floorNumber < floors ? 'bg-blue hover:bg-blue text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'} rounded-full w-8 h-8 flex items-center justify-center`}
+                                                >
+                                                    <FaPlus />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
+                                )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Year Built */}
-                            <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                                <label className="block text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                    <FaCalendar className="mr-2 text-blue" /> Year Built
-                                </label>
-                                <input
-                                    type="text"
-                                    value={yearBuilt}
-                                    onChange={(e) => updateFormField('yearBuilt', e.target.value)}
-                                    placeholder="When was the property built?"
-                                    className="w-full py-4 px-4 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue text-lg transition-all"
-                                />
-                            </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {/* Year Built */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                            <FaCalendar className="mr-2 text-blue" /> Year Built
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={yearBuilt}
+                                            onChange={(e) => updateFormField('yearBuilt', e.target.value)}
+                                            placeholder="e.g. 2010"
+                                            className="w-full py-2 px-3 border border-gray-300 rounded-lg"
+                                        />
+                                    </div>
 
-                            {/* Property Size */}
-                            <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
-                                <label className="block text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                    <FaRulerCombined className="mr-2 text-blue" /> Property Size
-                                </label>
-                                <div className="flex">
-                                    <input
-                                        type="text"
-                                        value={propertySize}
-                                        onChange={(e) => updateFormField('propertySize', e.target.value)}
-                                        placeholder="Size"
-                                        className="block w-2/3 py-4 px-4 border border-gray-300 bg-white rounded-l-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue text-lg transition-all"
-                                    />
-                                    <div className="relative w-1/3">
-                                        <select
-                                            value={sizeUnit}
-                                            onChange={(e) => updateFormField('sizeUnit', e.target.value)}
-                                            className="block w-full h-full py-4 px-4 border border-gray-300 bg-white rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue text-lg appearance-none transition-all"
-                                        >
-                                            <option value="sq ft">sq ft</option>
-                                            <option value="sq m">sq m</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
-                                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                                            </svg>
+                                    {/* Property Size */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                            <FaRulerCombined className="mr-2 text-blue" /> Property Size
+                                        </label>
+                                        <div className="flex">
+                                            <input
+                                                type="text"
+                                                value={propertySize}
+                                                onChange={(e) => updateFormField('propertySize', e.target.value)}
+                                                placeholder="Size"
+                                                className="block w-2/3 py-2 px-3 border border-gray-300 rounded-l-lg"
+                                            />
+                                            <select
+                                                value={sizeUnit}
+                                                onChange={(e) => updateFormField('sizeUnit', e.target.value)}
+                                                className="block w-1/3 py-2 px-3 border border-gray-300 rounded-r-lg appearance-none bg-white"
+                                            >
+                                                <option value="sq ft">sq ft</option>
+                                                <option value="sq m">sq m</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-sm text-gray-500 mt-3">The amount of indoor space available to guests.</p>
-                            </div>
-                        </div>
+                            </>
+                        )}
                     </>
                 )}
 
-                {/* Save Button - Hero Style */}
-                <div className="mt-10 flex justify-end">
+                {/* Save Button */}
+                <div className="mt-6">
                     <button
                         type="button"
                         onClick={handleSave}
-                        className="px-8 py-4 bg-gradient-to-r from-blue to-indigo-700 text-white text-lg font-bold rounded-lg hover:from-blue hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue shadow-lg transform transition-all hover:scale-105 hover:shadow-xl"
+                        className="w-full py-3 bg-blue text-white font-medium rounded-lg hover:bg-blue"
                     >
-                        Save Property Details
+                        Save
                     </button>
                 </div>
             </div>

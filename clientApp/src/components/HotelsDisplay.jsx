@@ -20,20 +20,7 @@ const HotelsDisplay = () => {
     <>
       {hotels.length > 0 ? <div className="  xl:px-20 py-20 ">
         <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
-        <HotelCardGrid hotels={hotels} />
+       
       </div> :
         <div className="container py-20">
 

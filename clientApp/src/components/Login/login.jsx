@@ -1,22 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import dotenv from "dotenv";
 import { AuthContext } from "../../contextApi/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { LuCircleArrowLeft } from "react-icons/lu";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-
 const AuthForm = () => {
- 
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    country: "US", // Default country code
   });
-  const [isRegistering, setIsRegistering] = useState(false); // State to toggle between login and register
-  const { loading, error, dispatch, user } = useContext(AuthContext); // Include user context
+  const { loading, error, dispatch, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Redirect if the user is already logged in
@@ -34,7 +29,7 @@ const AuthForm = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post("https://axistay-backend.onrender.com/api/auth/login", credentials);
+      const res = await axios.post(`${apiUrl}/auth/login`, credentials);
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
       navigate("/");
     } catch (err) {
@@ -42,131 +37,128 @@ const AuthForm = () => {
     }
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    if (credentials.password !== credentials.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    dispatch({ type: "LOGIN_START" });
-    try {
-      const res = await axios.post("/api/auth/register", credentials); // Replace with your registration API endpoint
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-      navigate("/");
-    } catch (err) {
-      dispatch({ type: "LOGIN_FAILED", payload: err.response?.data?.message || "An error occurred" });
-    }
-  };
 
   return (
-    <div className="w-full max-w-xl p-8 space-y-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center text-gray-800">
-        {isRegistering ? "Register" : "Login"}
-      </h2>
+    <div className="h-screen w-full bg-cover bg-center" style={{ backgroundImage: "url('https://img.freepik.com/photos-premium/effets-lumineux-brillants-bleu-picton-sombre-conception-fond-abstraite_851755-198657.jpg?w=996')" }}>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full md:w-3/4  md:h-4/5 bg-white shadow-2xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
+          {/* Left side - Background Image */}
+          <div className="hidden lg:block p-4">
+            <div
+              className="bg-cover bg-center h-full rounded-md"
+              style={{ backgroundImage: "url('https://img.freepik.com/vecteurs-libre/illustration-du-concept-connexion_114360-739.jpg?t=st=1744465201~exp=1744468801~hmac=65340cf6e8c94ea03d2af0e6a3c97d7f73ca1fc27a211fd17d84b348168bcfae&w=740')" }}
+            />
+          </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+          {/* Right side - Form */}
+          <div className="bg-indigo-800 flex flex-col h-full">
+            <button
+              onClick={() => navigate('/')}
+              className="bg-blue hover:bg-blue/80 p-2 rounded-full w-24 gap-2 ms-2 mt-2 flex"
+            >
+              <LuCircleArrowLeft className="w-6 h-6 text-white" />
+              back
 
-      {/* Display either Login or Register Form */}
-      <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={credentials.username}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mt-1 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={credentials.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mt-1 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+            </button>
 
-        {isRegistering && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={credentials.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2 mt-1 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
+            <div className="flex flex-col items-center mt-10">
+              <div className="bg-white rounded-full p-2 flex items-center justify-center w-10 h-10">
+                {/* Simple Lock Icon SVG */}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold text-white mt-2">
+                Sign In
+              </h1>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-              <div className="flex items-center space-x-2">
-                <select
-                  id="country"
-                  value={credentials.country}
-                  onChange={handleChange}
-                  className="w-1/4 px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="US">+1 (US)</option>
-                  <option value="GB">+44 (UK)</option>
-                  <option value="FR">+33 (France)</option>
-                  <option value="MA">+212 (Morocco)</option>
-                  {/* Add more country options here */}
-                </select>
+            {error && (
+              <div className="mx-12 mt-4 p-2 bg-red-500 text-white rounded-md text-sm">
+                {error}
+              </div>
+            )}
+
+            <form
+              onSubmit={handleLogin}
+              className="mt-6 mx-12 flex flex-col gap-4"
+            >
+              <div>
                 <input
-                  id="phoneNumber"
+                  id="username"
                   type="text"
-                  value={credentials.phoneNumber}
+                  value={credentials.username}
                   onChange={handleChange}
-                  placeholder="Your phone number"
-                  className="w-3/4 px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Username"
+                  className="w-full px-4 py-2 bg-indigo-700 text-white rounded-md placeholder-indigo-300 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   required
                 />
               </div>
-            </div>
-          </>
-        )}
 
-        <button
-          type="submit"
-          className={`w-full px-4 py-2 font-semibold text-white bg-blue rounded-md focus:outline-none hover:bg-blue ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          disabled={loading}
-        >
-          {loading ? "Loading..." : isRegistering ? "Register" : "Login"}
-        </button>
-      </form>
+              <div>
+                <input
+                  id="password"
+                  type="password"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className="w-full px-4 py-2 bg-indigo-700 text-white rounded-md placeholder-indigo-300 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  required
+                />
+              </div>
 
-      <p className="text-sm text-center text-gray-600">
-        {isRegistering ? (
-          <>
-            Already have an account?{" "}
-            <button
-              onClick={() => setIsRegistering(false)}
-              className="text-blue hover:underline"
-            >
-              Login here
-            </button>
-          </>
-        ) : (
-          <>
-            Don’t have an account?{" "}
-            <button
-              onClick={() => setIsRegistering(true)}
-              className="text-blue hover:underline"
-            >
-              Sign up
-            </button>
-          </>
-        )}
-      </p>
+
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember" className="ml-2 block text-sm text-indigo-200">
+                    Remember me
+                  </label>
+                </div>
+                <span
+                  onClick={() => {
+                    navigate('/Forgetpass')
+                  }}
+                  className="text-sm text-indigo-200 hover:text-white cursor-pointer">
+                  Forgot password?
+                </span>
+              </div>
+
+              <div className="mx-8 mt-4">
+                <button
+                  type="submit"
+                  className="w-full px-4 py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Sign in"}
+                </button>
+              </div>
+
+              <div className="text-center mt-4">
+                <p className="text-indigo-200">
+
+                  <>
+                    Not registered yet?{" "}
+                    <span
+                      onClick={() => {
+                        navigate('/Register')
+                      }}
+                      className="text-indigo-300 hover:text-white cursor-pointer"
+                    >
+                      Create an Account
+                    </span>
+                  </>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

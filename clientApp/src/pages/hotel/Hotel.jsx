@@ -31,7 +31,7 @@ import { BookingProvider } from '../../contexts/BookingContext';
 import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -39,7 +39,11 @@ import { TfiAngleLeft } from "react-icons/tfi";
 import { MdArrowRight } from 'react-icons/md';
 import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt } from "react-icons/fa";
 import HotelRoomsDisplay from './rooms/TableRooms';
+import { SharePropertyModal } from './componentHotel/Share.jsx';
+import { toggleReservation } from '../../redux/SaveClient.js';
+
 const apiUrl = import.meta.env.VITE_API_URL;
+
 
 const mockListing = {
   id: '1',
@@ -93,6 +97,7 @@ const mockListing = {
 export function Hotel() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const categoryIcons = {
     restaurants: <FaUtensils className="text-red-500 text-xl" />,
@@ -112,6 +117,18 @@ export function Hotel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+
+
+  // save action
+  const dispatch = useDispatch();
+  const reservations = useSelector((state) => state.save.reservations);
+  console.log(reservations)
+  const exists = reservations.find((r) => r.hotelId === id);
+
+  const handleClick = () => {
+    const date = new Date().toISOString();
+    dispatch(toggleReservation(id, 'userId', date));
+  };
 
 
   // Détection du mobile
@@ -205,13 +222,26 @@ export function Hotel() {
 
               <div className="flex gap-4">
 
-                <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                <button
+                  onClick={(() => {
+                    setIsShareModalOpen(true)
+                  })}
+                  className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
                   <Share className="w-4 h-4" />
                   <span className="underline">Share</span>
                 </button>
-                <button className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                <SharePropertyModal
+                  isOpen={isShareModalOpen}
+                  onClose={() => setIsShareModalOpen(false)}
+                  property={[]}
+                />
+                <button
+                onClick={handleClick}
+                 className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
                   <Heart className="w-4 h-4" />
-                  <span className="underline">Save</span>
+                  <span className="underline">
+                    {exists ? 'usaved' : 'save'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -278,11 +308,6 @@ export function Hotel() {
                 </div>
 
 
-
-                
-
-
-
               </div>
 
               <div className="lg:col-start-3">
@@ -295,47 +320,52 @@ export function Hotel() {
             </div>
 
             <div className="py-6 border-b">
-                  <h2 className="text-2xl font-semibold mb-4">Where you'll sleep</h2>
+              {roomsData &&
+                <HotelRoomsDisplay roomsData={roomsData} propertyType={'hotel'} />
 
-                      <HotelRoomsDisplay />
-                </div>
+              }
+            </div>
 
-
+            {/* Nearby Places Section */}
             <div className="py-8 border-b">
               <h2 className="text-2xl font-semibold mb-6">Nearby Places</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                {Object.entries(proximities).slice(0, isMobile ? 2 : 4).map(([category, places]) => (
-                  <div key={category} className="p-5 rounded-xl shadow-md">
-                    <div className="flex items-center gap-3 mb-4">
-                      {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
-                      <h3 className="text-lg font-semibold capitalize">
-                        {category.replace(/([A-Z])/g, " $1")}
-                      </h3>
+                {Object.entries(proximities)
+                  .filter(([category, places]) => category !== null && places && places.length > 0)
+                  .slice(0, isMobile ? 2 : 6)
+                  .map(([category, places]) => (
+                    <div key={category} className="p-5 rounded-xl shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
+                        <h3 className="text-lg font-semibold capitalize">
+                          {category.replace(/([A-Z])/g, " $1")}
+                        </h3>
+                      </div>
+                      <ul className="text-gray-700">
+                        {places.map((place) => (
+                          <li key={place.id} className="flex justify-between text-gray-600">
+                            <span className="font-medium">{place.name}</span>
+                            <span className="text-sm text-gray-500">{place.distance} km</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="text-gray-700">
-                      {places.map((place) => (
-                        <li key={place.id} className="flex justify-between text-gray-600">
-                          <span className="font-medium">{place.name}</span>
-                          <span className="text-sm text-gray-500">{place.distance} km</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-                {
-                  isMobile &&
+                  ))}
+                {isMobile && (
                   <button
                     className="text-blue-500 underline"
                     onClick={() => setIsModalOpen(true)}
                   >
                     Show All
-                  </button>}
+                  </button>
+                )}
               </div>
             </div>
 
+            {/* Modal for Mobile View */}
             {isModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-20">
-                <div className="bg-white p-6 pt-10 w-full h-full z-50 rounded-lg shadow-lg relative animate-slide-up ">
+                <div className="bg-white p-6 pt-10 w-full h-full z-50 rounded-lg shadow-lg relative animate-slide-up">
                   <button
                     className="mt-4 absolute top-1 right-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                     onClick={() => setIsModalOpen(false)}
@@ -344,29 +374,28 @@ export function Hotel() {
                   </button>
                   <h2 className="text-2xl font-semibold mb-4">All Nearby Places</h2>
                   <div className="overflow-scroll h-full pb-20">
-                    {Object.entries(proximities).map(([category, places]) => (
-                      <div key={category} className="p-5 rounded-xl shadow-md ">
-                        <div className="flex items-center gap-3 mb-4">
-                          {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
-                          <h3 className="text-lg font-semibold capitalize">
-                            {category.replace(/([A-Z])/g, " $1")}
-                          </h3>
+                    {Object.entries(proximities)
+                      .filter(([category, places]) => category !== null && places && places.length > 0)
+                      .map(([category, places]) => (
+                        <div key={category} className="p-5 rounded-xl shadow-md">
+                          <div className="flex items-center gap-3 mb-4">
+                            {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
+                            <h3 className="text-lg font-semibold capitalize">
+                              {category.replace(/([A-Z])/g, " $1")}
+                            </h3>
+                          </div>
+                          <ul className="text-gray-700">
+                            {places.map((place) => (
+                              <li key={place.id} className="flex justify-between text-gray-600">
+                                <span className="font-medium">{place.name}</span>
+                                <span className="text-sm text-gray-500">{place.distance} km</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
-                        <ul className="text-gray-700">
-                          {places.map((place) => (
-                            <li key={place.id} className="flex justify-between text-gray-600">
-                              <span className="font-medium">{place.name}</span>
-                              <span className="text-sm text-gray-500">{place.distance} km</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                      ))}
                   </div>
-                  <div className="flex justify-between mt-4">
-
-
-                  </div>
+                  <div className="flex justify-between mt-4"></div>
                 </div>
               </div>
             )}

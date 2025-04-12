@@ -63,14 +63,7 @@ const CheckInOut = ({ onclose, help }) => {
         setCheckInStartTime(time);
         setShowStartTimeOptions(false);
 
-        // If "Flexible" is selected, set the flag
-        if (time === "Flexible") {
-            setIsStartTimeFlexible(true);
-            console.log("Start time set to Flexible.");
-        } else {
-            setIsStartTimeFlexible(false);
-            console.log(`Start time set to: ${time}`);
-        }
+       
     };
 
     // Handle end time selection
@@ -92,22 +85,12 @@ const CheckInOut = ({ onclose, help }) => {
     const handleCheckoutTimeSelection = (time) => {
         setCheckoutTime(time);
         setShowCheckoutTimeOptions(false);
-        console.log(`Checkout time set to: ${time}`);
     };
 
     // Handle save with dispatch
     const handleSave = () => {
-        const timesData = {
-            checkInWindow: {
-                startTime: checkInStartTime,
-                endTime: checkInEndTime,
-                isFlexibleStart: isStartTimeFlexible,
-                isFlexibleEnd: isEndTimeFlexible
-            },
-            checkoutTime: checkoutTime
-        };
+      
 
-        console.log("Saving check-in/checkout times:", timesData);
 
         setIsSaving(true);
 

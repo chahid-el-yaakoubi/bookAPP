@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
 import Login from './Login/login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign
 import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
 import SearchMobile from './searchMobile';
+import { NavbarMobel } from './NavbarMobile';
 
 
 export const Logo = () => {
@@ -42,6 +43,7 @@ export const Navbar = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
     const [languageDropdown, setLanguageDropdown] = useState(false);
     const [mobileLangDropdown, setMobileLangDropdown] = useState(false);
+    const [mobileProfileDropdown, setMobileProfileDropdown] = useState(false); // New state for mobile profile dropdown
     const [priceDropdown, setPriceDropdown] = useState(false);
     const [mobilePriceDropdown, setMobilePriceDropdown] = useState(false);
     const [activeTab, setActiveTab] = useState('search'); // Default active tab
@@ -56,7 +58,7 @@ export const Navbar = () => {
     };
 
     useEffect(() => {
-        if (mobileLangDropdown) {
+        if (mobileLangDropdown || mobileProfileDropdown) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
@@ -66,7 +68,7 @@ export const Navbar = () => {
         return () => {
             document.body.style.overflow = '';
         };
-    }, [mobileLangDropdown]);
+    }, [mobileLangDropdown, mobileProfileDropdown]);
 
 
     const languages = {
@@ -102,6 +104,8 @@ export const Navbar = () => {
         setCurrentCurrency(currency);
         setPriceDropdown(false);
         setMobilePriceDropdown(false);
+        // Reset activeTab to search when currency is changed
+        setActiveTab('search');
         // Here you would typically dispatch an action or call a function
         // to update prices throughout your application
     };
@@ -147,17 +151,20 @@ export const Navbar = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Add this effect to handle clicking outside mobile language dropdown
-    // useEffect(() => {
-    //     const handleClickOutside = (event) => {
-    //         if (!event.target.closest('.mobile-language-dropdown')) {
-    //             // setMobileLangDropdown(false);
-    //         }
-    //     };
+    // Add new useEffect for profile dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.profile-dropdown-trigger') && !event.target.closest('.mobile-profile-dropdown')) {
+                setMobileProfileDropdown(false);
+                if (activeTab === 'profile') {
+                    setActiveTab('search');
+                }
+            }
+        };
 
-    //     document.addEventListener('mousedown', handleClickOutside);
-    //     return () => document.removeEventListener('mousedown', handleClickOutside);
-    // }, []);
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [activeTab]);
 
     // Add new useEffect for price dropdowns
     useEffect(() => {
@@ -165,14 +172,17 @@ export const Navbar = () => {
             if (!event.target.closest('.price-dropdown-container')) {
                 setPriceDropdown(false);
             }
-            if (!event.target.closest('.mobile-price-dropdown')) {
+            if (!event.target.closest('.mobile-price-dropdown') && !event.target.closest(`.price-tab-trigger`)) {
                 setMobilePriceDropdown(false);
+                if (activeTab === 'price') {
+                    setActiveTab('search');
+                }
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [activeTab]);
 
     const handleLogout = () => {
         dispatch({ type: "LOGOUT" });
@@ -186,8 +196,15 @@ export const Navbar = () => {
         transDispatch({ type: "CHANGE_LANGUAGE", payload: lng });
         setCurrentLanguage(lng);
         setLanguageDropdown(false);
-        // setMobileLangDropdown(false);
+        setMobileLangDropdown(false);
+        // Reset activeTab to search when language is changed
+        setActiveTab('search');
     };
+
+
+    const location = useLocation();
+
+
 
     return (
         <div className="relative w-full max-h-[100px]">
@@ -332,12 +349,11 @@ export const Navbar = () => {
                             </div>
                         ) : (
                             <div className="space-x-2">
-                                <button
+                                <Link to={'Login'}
                                     className="px-4 py-2 text-white hover:bg-[#333333] rounded-full transition"
-                                    onClick={() => setLoginForm(true)}
                                 >
                                     {t('navbar.login')}
-                                </button>
+                                </Link>
                                 <Link to="/register">
                                     <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
                                         {t('navbar.register')}
@@ -349,144 +365,10 @@ export const Navbar = () => {
                 </nav>
             </div>
 
-            {/* Updated Mobile Navigation */}
-            <div className={`fixed md:hidden bottom-0 left-0 right-0 w-full bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 transition-transform duration-300 z-50 
-    ${showMobileNav ? 'translate-y-0' : 'translate-y-full'} shadow-lg`}>
-                <div className="flex items-center justify-around py-3 px-4 safe-area-bottom">
-
-                    {/* Search Link */}
-                    <Link
-                        to="/"
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'search'
-                            ? 'text-white bg-blue'
-                            : 'text-gray-100'
-                            } hover:bg-blue-100 active:scale-95 transition-all`}
-                        onClick={() => {
-                            setActiveTab('search');
-                            setMobileLangDropdown(false)
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faSearch} className="text-xl" />
-                        {activeTab === 'search' && <span className="text-xs font-medium">{t('navbar.search')}</span>}
-                    </Link>
-
-                    {/* Price Dropdown */}
-                    {/* <div
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'price'
-                            ? 'text-white bg-blue'
-                            : 'text-gray-100'
-                            } hover:bg-blue-100 active:scale-95 transition-all`}
-                        onClick={() => {
-                            setActiveTab('price');
-                            setMobilePriceDropdown(!mobilePriceDropdown);
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faDollarSign} className="text-xl" />
-                        {activeTab === 'price' && <span className="text-xs font-medium">{t('currency.current')}</span>}
-                        {mobilePriceDropdown && (
-                            <div className="fixed bottom-16 left-0 right-0 mx-auto w-[90%] max-w-[300px] bg-gradient-to-b from-[#1a1a1a] to-blue border border-[#333333] rounded-xl shadow-lg overflow-hidden safe-area-bottom">
-                                <div className="py-2 w-full max-h-[400px] overflow-y-auto">
-                                    {Object.entries(currencies).map(([code, { symbol, label }]) => (
-                                        <button
-                                            key={code}
-                                            className={`block w-full px-4 py-3 text-left text-white hover:bg-[#333333] flex items-center gap-3 ${currentCurrency === code ? 'bg-[#333333]' : ''
-                                                }`}
-                                            onClick={() => handleCurrencyChange(code)}
-                                        >
-                                            <span className='text-2xl text-bold text-black bg-gradient-to-r from-orange-500 via-orange-100 to-blue h-10 w-10 rounded-full flex items-center justify-center'>
-                                                {symbol}
-                                            </span>
-                                            <span>{label} ({t(`currency.${code}`)})</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div> */}
-
-                    {/* Language Dropdown */}
-                    <div
-                        className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'language'
-                            ? 'text-white bg-blue'
-                            : 'text-gray-100'
-                            } hover:bg-blue-100      transition-all`}
-                        onClick={() => {
-                            setActiveTab('language');
-                            setMobileLangDropdown(true);
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faGlobe} className="text-xl" />
-                        {activeTab === 'language' && <span className="text-xs font-medium">{t('navbar.language')}</span>}
-                        {mobileLangDropdown && (
-                            <div className="fixed bottom-14 left-0 right-0 mx-auto bg-gradient-to-b from-[#1a1a1a] to-primary border border-[#333333] rounded-t-xl h-[80vh] animate-slide-up shadow-lg overflow-hidden safe-area-bottom  ">
-                                <div className="py-2 w-full overflow-y-auto">
-                                    {Object.entries(languages).map(([code, { flag, label }]) => (
-                                        <button
-                                            key={code}
-                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left text-white hover:bg-[#333333] transition-colors duration-200 ${currentLanguage === code ? 'bg-[#333333]' : ''
-                                                }`}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                changeLanguage(code);
-                                            }}
-                                        >
-                                            <img
-                                                src={flag}
-                                                alt={`${code} flag`}
-                                                className="w-10 h-10 rounded-full object-cover"
-                                            />
-                                            <span className="font-medium">{label}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                    </div>
-
-                    {/* User Profile / Login/Register */}
-                    {user ? (
-                        <>
-                            <Link
-                                to=""
-                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'saved'
-                                    ? 'text-white bg-blue'
-                                    : 'text-gray-100'
-                                    } hover:bg-blue-100 active:scale-95 transition-all`}
-                                onClick={() => setActiveTab('saved')}
-                            >
-                                <FontAwesomeIcon icon={faHeart} className="text-xl" />
-                                {activeTab === 'saved' && <span className="text-xs font-medium">{t('navbar.saved')}</span>}
-                            </Link>
-                            <Link
-                                to=""
-                                className={`flex flex-row items-center gap-1 rounded-full px-4 py-2 ${activeTab === 'count'
-                                    ? 'text-white bg-blue'
-                                    : 'text-gray-100'
-                                    } hover:bg-blue-100 active:scale-95 transition-all`}
-                                onClick={() => setActiveTab('count')}
-                            >
-                                <FontAwesomeIcon icon={faUser} className="text-xl" />
-                                {activeTab === 'count' && <span className="text-xs font-medium">{t('navbar.profile')}</span>}
-                            </Link>
-                        </>
-                    ) : (
-                        <div className="space-x-2 flex items-center">
-                            <button
-                                className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
-                                onClick={() => setLoginForm(true)}
-                            >
-                                {t('navbar.login')}
-                            </button>
-                             
-                        </div>
-                    )}
-                </div>
-            </div>
+          <NavbarMobel />
 
 
             {/* Modals */}
-            {!user && loginForm && <LoginComponent setLoginForm={setLoginForm} />}
             {showConfirmModal && (
                 <ConfirmLogoutModal
                     onConfirm={handleLogout}
@@ -527,25 +409,3 @@ const ConfirmLogoutModal = ({ onConfirm, onCancel }) => {
         </div>
     );
 };
-
-const LoginComponent = ({ setLoginForm }) => {
-    return (
-        <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-70 z-50">
-            <div className="mt-20 w-full max-w-xl bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-lg p-6 shadow-lg relative">
-                <button
-                    onClick={() => setLoginForm(false)}
-                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                >
-
-                    <FontAwesomeIcon icon={faMultiply} className='text-white text-xl bg-red-600 p-2 rounded-sm' />
-
-                </button>
-                <Login />
-            </div>
-        </div >
-    );
-};
-
-
-
-

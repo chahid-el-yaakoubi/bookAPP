@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { User, Camera, Lock, Save, Edit, X } from 'lucide-react';
 import axios from 'axios'; // Add axios import
 const apiUrl = import.meta.env.VITE_API_URL;
 
-import { Navbar } from './Navbar'
-import { Header } from './Header'
+import { Navbar } from './Navbar';
+import { Header } from './Header';
 import { ChangePassword } from './ChangePassword';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
@@ -13,8 +13,7 @@ import { LuCircleArrowLeft } from 'react-icons/lu';
 
 export const Profile = () => {
     const { user } = useContext(AuthContext);
-    const { data, loading, error, reFetch } = useFetch(`${apiUrl}/users/${user._id}`);
-    const navigate = useNavigate();
+
     const [userData, setUserData] = useState({
         id: '',
         fullName: '',
@@ -27,40 +26,60 @@ export const Profile = () => {
         updatedAt: ''
     });
 
-    const avatarUrl = `https://static.vecteezy.com/system/resources/previews/002/275/847/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg`
-
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(userData);
-    const [avatarPreview, setAvatarPreview] = useState(avatarUrl);
+    const [avatarPreview, setAvatarPreview] = useState(userData.avatarUrl);
     const [showAvatarModal, setShowAvatarModal] = useState(false);
     const [updateLoading, setUpdateLoading] = useState(false); // Add loading state for update
     const [updateError, setUpdateError] = useState(null); // Add error state for update
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        if (!loading) {
-            setUserData({
-                id: data._d,
-                fullName: data.fullName,
-                email: data.email,
-                phone: data.phone,
-                username: data.username,
-                city: data.city,
-                avatarUrl: `https://static.vecteezy.com/system/resources/previews/002/275/847/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg`,
-                createdAt: data.createdAt,
-                updatedAt: data.updatedAt
-            });
-            // setAvatarPreview(data.avatarUrl || userData.avatarUrl);
+        const fetchUserData = async () => {
+            try {
+                const res = await axios.post(
+                    `${apiUrl}/users/${user._id}`,
+                    {}, // empty body
+                    {
+                        withCredentials: true,
+                    }
+                );
+                const data = res.data;
+                console.log("User data:", data);
 
-            setFormData(userData)
-        }
-    }, [data]);
+                // Update the state with fetched data
+                setUserData({
+                    id: data._id,
+                    fullName: data.fullName,
+                    email: data.email,
+                    phone: data.phone,
+                    username: data.username,
+                    city: data.city,
+                    avatarUrl: data.avatarUrl || userData.avatarUrl, // Use avatar URL from data if available
+                    createdAt: data.createdAt,
+                    updatedAt: data.updatedAt
+                });
 
-    const city = useLocation().pathname;
+                setFormData({
+                    id: data._id,
+                    fullName: data.fullName,
+                    email: data.email,
+                    phone: data.phone,
+                    username: data.username,
+                    city: data.city,
+                    avatarUrl: data.avatarUrl || userData.avatarUrl,
+                    createdAt: data.createdAt,
+                    updatedAt: data.updatedAt
+                });
 
-    // Generate 20 placeholder avatars
-    const avatarOptions = Array.from({ length: 1 }, (_, i) =>
-        `https://static.vecteezy.com/system/resources/previews/002/275/847/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg`
-    );
+            } catch (err) {
+                console.error("Error fetching user data:", err.response?.data?.message || err.message);
+            }
+        };
+
+        fetchUserData(); // Call fetchUserData function on component mount
+    }, [user._id]); // Run this effect when user._id changes
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -75,16 +94,11 @@ export const Profile = () => {
         setUpdateError(null);
 
         try {
-            // Send the update request to the backend
-            const response = await axios.put(`${apiUrl}/users/${user._id}`, formData);
-
-            // Update local state with the response data
-            setUserData(response.data);
+            const response = await axios.put(`${apiUrl}/users/${user._id}`, formData, {
+                withCredentials: true,
+            });
+            setUserData(response.data); // Update userData after a successful update
             setIsEditing(false);
-
-            // Refresh the data
-            reFetch();
-
             console.log('Profile updated successfully:', response.data);
         } catch (err) {
             setUpdateError(err.response?.data?.message || 'Failed to update profile');
@@ -98,7 +112,6 @@ export const Profile = () => {
     const toggleEdit = () => {
         if (isEditing) {
             setFormData(userData); // Reset form if canceling
-            // setAvatarPreview(userData.avatarUrl);
         }
         setIsEditing(!isEditing);
     };
@@ -110,7 +123,6 @@ export const Profile = () => {
 
     // Select avatar from modal
     const selectAvatar = (avatarUrl) => {
-        // setAvatarPreview(avatarUrl);
         setFormData(prev => ({ ...prev, avatarUrl }));
         setShowAvatarModal(false);
     };
@@ -119,202 +131,172 @@ export const Profile = () => {
         <>
             <Navbar />
 
-            {(city.includes('change-pass')) ?
-                <ChangePassword /> :
-                (
-                    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg  mb-20 min-h-[80vh] shadow-xl">
+            {(useLocation().pathname.includes('change-pass')) ? (
+                <ChangePassword />
+            ) : (
+                <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg mb-20 min-h-[80vh] shadow-xl">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="bg-blue hover:bg-blue/80 p-2 rounded-full mb-8 mt-5"
+                    >
+                        <LuCircleArrowLeft className="w-6 h-6 text-white" />
+                    </button>
+
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-bold text-gray-800 flex items-center">
+                            <User className="mr-2" size={28} />
+                            {userData.username}
+                        </h1>
                         <button
-                            onClick={() => navigate(-1)}
-                            className="bg-blue hover:bg-blue/80 p-2 rounded-full mb-8 mt-5"
+                            onClick={toggleEdit}
+                            className="flex items-center px-4 py-2 bg-blue text-white rounded-md hover:bg-blue transition-colors"
+                            disabled={updateLoading}
                         >
-                            <LuCircleArrowLeft className="w-6 h-6 text-white" />
-                        </button>
-                        <div className="flex justify-between items-center mb-6">
-                            <h1 className="text-2xl font-bold text-gray-800 flex items-center">
-                                <User className="mr-2" size={28} />
-                                {userData.username}
-                            </h1>
-                            <button
-                                onClick={toggleEdit}
-                                className="flex items-center px-4 py-2 bg-blue text-white rounded-md hover:bg-blue transition-colors"
-                                disabled={updateLoading}
-                            >
-                                {isEditing ? (
-                                    <>
-                                        <X size={18} className="mr-1" /> Cancel
-                                    </>
-                                ) : (
-                                    <>
-                                        <Edit size={18} className="mr-1" /> Edit Profile
-                                    </>
-                                )}
-                            </button>
-                        </div>
-
-                        {updateError && (
-                            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-                                {updateError}
-                            </div>
-                        )}
-
-                        <div className="mb-8 flex flex-col items-center">
-                            <div className="relative mb-4">
-                                <img
-                                    src={avatarPreview}
-                                    alt="User avatar"
-                                    className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
-                                />
-                                {isEditing && (
-                                    <button
-                                        onClick={openAvatarModal}
-                                        className="absolute bottom-0 right-0 bg-blue p-2 rounded-full text-white hover:bg-blue transition-colors"
-                                    >
-                                        <Edit size={18} />
-                                    </button>
-                                )}
-                            </div>
-                            <h2 className="text-xl font-semibold text-gray-800">{userData.name}</h2>
-                            <p className="text-gray-500">
-                                Member since {userData.createdAt?.split("T")[0]}
-                            </p>
-                            <p className="text-gray-500">
-                                Last Updated At {userData.updatedAt?.split("T")[0]}
-                            </p>
-
-                        </div>
-
-                        {!isEditing && (
-                            <div className="mb-6  ">
-                                <Link to='change-pass'
-                                    className="flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition-colors w-48"
-                                >
-                                    <Lock size={18} className="mr-2" /> Change Password
-                                </Link>
-
-                                 
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            name="fullName"
-                                            value={formData.fullName || ''}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        />
-                                    ) : (
-                                        <p className="text-gray-800">{userData.fullName}</p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    {isEditing ? (
-                                        <input
-                                            readOnly
-                                            type="email"
-                                            name="email"
-                                            value={formData.email || ''}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border border-gray-300 rounded-md"
-                                            required
-                                        />
-                                    ) : (
-                                        <p className="text-gray-800">{userData.email}</p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                                    {isEditing ? (
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone || ''}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border border-gray-300 rounded-md"
-                                        />
-                                    ) : (
-                                        <p className="text-gray-800">{userData.phone}</p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                                    {isEditing ? (
-                                        <input
-                                            type="text"
-                                            name="city"
-                                            value={formData.city || ''}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border border-gray-300 rounded-md"
-                                        />
-                                    ) : (
-                                        <p className="text-gray-800">{userData.city}</p>
-                                    )}
-                                </div>
-                            </div>
-
-
-
-                            {isEditing && (
-                                <div className="flex justify-end">
-                                    <button
-                                        type="submit"
-                                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                                        disabled={updateLoading}
-                                    >
-                                        {updateLoading ? (
-                                            <span className="mr-2">Updating...</span>
-                                        ) : (
-                                            <>
-                                                <Save size={18} className="mr-2" /> Save Changes
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
+                            {isEditing ? (
+                                <>
+                                    <X size={18} className="mr-1" /> Cancel
+                                </>
+                            ) : (
+                                <>
+                                    <Edit size={18} className="mr-1" /> Edit Profile
+                                </>
                             )}
-                        </form>
+                        </button>
                     </div>
-                )
-            }
 
-            {/* Avatar Selection Modal */}
-            {showAvatarModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-screen overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">Select an Avatar</h2>
-                            <button
-                                onClick={() => setShowAvatarModal(false)}
-                                className="text-gray-500 hover:text-gray-700"
-                            >
-                                <X size={24} />
-                            </button>
+                    {updateError && (
+                        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                            {updateError}
                         </div>
+                    )}
 
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {avatarOptions.map((avatar, index) => (
-                                <div
-                                    key={index}
-                                    className="cursor-pointer hover:opacity-80 transition-opacity"
-                                    onClick={() => selectAvatar(avatar)}
+                    <div className="mb-8 flex flex-col items-center">
+                        <div className="relative mb-4">
+                            <img
+                                src={avatarPreview}
+                                alt="User avatar"
+                                className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                            />
+                            {isEditing && (
+                                <button
+                                    onClick={openAvatarModal}
+                                    className="absolute bottom-0 right-0 bg-blue p-2 rounded-full text-white hover:bg-blue transition-colors"
                                 >
-                                    <img
-                                        src={avatar}
-                                        alt={`Avatar option ${index + 1}`}
-                                        className="w-full h-auto rounded-full aspect-square object-cover border-2 border-gray-200 hover:border-blue"
-                                    />
-                                </div>
-                            ))}
+                                    <Edit size={18} />
+                                </button>
+                            )}
                         </div>
+                        <h2 className="text-xl font-semibold text-gray-800">{userData.fullName}</h2>
+                        <p className="text-gray-500">
+                            Member since {userData.createdAt?.split("T")[0]}
+                        </p>
+                        <p className="text-gray-500">
+                            Last Updated At {userData.updatedAt?.split("T")[0]}
+                        </p>
                     </div>
+
+                    {!isEditing && (
+                        <div className="mb-6">
+                            <Link to='change-pass' className="flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition-colors w-48">
+                                <Lock size={18} className="mr-2" /> Change Password
+                            </Link>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="fullName"
+                                        value={formData.fullName || ''}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        required
+                                    />
+                                ) : (
+                                    <p className="text-gray-800">{userData.fullName}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                {isEditing ? (
+                                    <input
+                                        readOnly
+                                        type="email"
+                                        name="email"
+                                        value={formData.email || ''}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        required
+                                    />
+                                ) : (
+                                    <p className="text-gray-800">{userData.email}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                {isEditing ? (
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone || ''}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <p className="text-gray-800">{userData.phone}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        value={formData.username || ''}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        required
+                                    />
+                                ) : (
+                                    <p className="text-gray-800">{userData.username}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={formData.city || ''}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <p className="text-gray-800">{userData.city}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        {isEditing && (
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={updateLoading}
+                                    className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue/80 transition-colors"
+                                >
+                                    {updateLoading ? "Updating..." : "Save Changes"}
+                                </button>
+                            </div>
+                        )}
+                    </form>
                 </div>
             )}
         </>

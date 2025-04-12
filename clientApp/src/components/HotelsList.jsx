@@ -29,7 +29,7 @@ const HotelsList = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await fetch(`${apiUrl}/hotels`);
+        const response = await fetch(`/api/hotels`);
         if (!response.ok) throw new Error("Failed to fetch hotels");
         const data = await response.json();
         dispatch(setHotels(data)); // Store hotels in Redux state

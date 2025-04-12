@@ -1,6 +1,7 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default defineConfig({
   plugins: [react()],
@@ -9,7 +10,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:18099', // Replace with your backend server URL
+      '/api': apiUrl, // Replace with your backend server URL
     },
     hmr: {
       overlay: true,

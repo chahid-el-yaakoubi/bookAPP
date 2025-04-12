@@ -162,7 +162,7 @@ export const login = async (req, res, next) => {
       tokenExpiry = '30d';
       cookieMaxAge = 1000 * 60 * 60 * 24 * 30;
     } else {
-      tokenExpiry = '12h';
+      tokenExpiry = '6h';
       cookieMaxAge = 1000 * 60 * 60 * 6;
     }
 

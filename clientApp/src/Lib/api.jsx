@@ -20,9 +20,14 @@ export const login = async (username, password) => {
   return response.data;
 };
 
-export const register = async (username, password) => {
-  const response = await api.post('/api/auth/register', { username, password });
-  return response.data;
+export const register = async (formdata) => {
+  const response = await api.post('/api/auth/register', formdata);
+  return response;
+};
+
+export const CheckUsername = async (username) => {
+  const response = await api.post('/api/auth/check-username', { username });
+  return response;
 };
 
 // Add other endpoints like getProperties, createProperty, etc. if needed

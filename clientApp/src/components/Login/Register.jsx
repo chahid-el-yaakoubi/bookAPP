@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuCircleArrowLeft } from "react-icons/lu";
+import { CheckUsername, login, register } from "../../Lib/api";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
@@ -46,14 +47,12 @@ const RegisterForm = () => {
                 .toLowerCase()
                 .replace(/\s+/g, "");
 
-            const res = await axios.post(`${apiUrl}/auth/check-username`, {
-                username: baseUsername,
-            });
+            const res = await CheckUsername(formData.username);
 
             if (res.data.available) {
                 setFormData((prev) => ({ ...prev, username: baseUsername }));
             } else {
-                const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+                const randomSuffix = Math.floor(10 + Math.random() * 90);
                 const newUsername = `${baseUsername}${randomSuffix}`;
                 setFormData((prev) => ({ ...prev, username: newUsername }));
             }
@@ -80,16 +79,15 @@ const RegisterForm = () => {
         }
 
         try {
-            console.log(formData)
-            const res = await axios.post(`${apiUrl}/auth/register`, formData);
+            const res = await register(formData);
             if (res.status === 200) {
                 dispatch({ type: "LOGIN_START" });
                 try {
-                    const loginRes = await axios.post(`${apiUrl}/auth/login`, {
-                        username: formData.username,
-                        password: formData.password,
-                    });
-                    dispatch({ type: "LOGIN_SUCCESS", payload: loginRes.data.details });
+                    const loginRes = await login(formData.username, formData.password);
+                    dispatch({ type: "LOGIN_SUCCESS", payload: {
+                        user: loginRes.user,
+                        token: loginRes.token,
+                      }, });
                     navigate("/");
                 } catch (err) {
                     dispatch({

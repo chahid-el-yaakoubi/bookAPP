@@ -1,77 +1,65 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useReducer, useEffect } from "react";
 
-// Safely parse user from localStorage
-let storedUser = null;
-try {
-  const rawUser = localStorage.getItem("user");
-  storedUser = rawUser && rawUser !== "undefined" ? JSON.parse(rawUser) : null;
-} catch (error) {
-  console.error("Failed to parse 'user' from localStorage:", error);
-  storedUser = null;
-}
-
-// Initial state
-const INITIAL_STATE = {
-  user: storedUser,
+// Initial State
+const initialState = {
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
   loading: false,
-  error: null
+  error: null,
 };
 
-// Create context
-export const AuthContext = createContext(INITIAL_STATE);
-
-// Reducer function
+// Reducer Function
 const AuthReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_START":
       return {
-        user: null,
+        ...state,
         loading: true,
-        error: null
+        error: null,
       };
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload,
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
         loading: false,
-        error: null
+        error: null,
       };
     case "LOGIN_FAILED":
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
       };
     case "LOGOUT":
       return {
+        ...state,
         user: null,
+        token: null,
         loading: false,
-        error: null
+        error: null,
       };
     default:
       return state;
   }
 };
 
-// Context provider
-export const AuthContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+// Context
+export const AuthContext = createContext();
 
-  // Sync user data with localStorage
+// AuthContextProvider Component
+export const AuthContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(AuthReducer, initialState);
+
   useEffect(() => {
-    if (state.user !== undefined) {
+    if (state.user && state.token) {
       localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("token", state.token);
     }
-  }, [state.user]);
+  }, [state.user, state.token]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user: state.user,
-        loading: state.loading,
-        error: state.error,
-        dispatch
-      }}
-    >
+    <AuthContext.Provider value={{ state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

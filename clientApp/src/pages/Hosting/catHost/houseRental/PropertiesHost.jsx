@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
-import axios from 'axios';
 import moment from 'moment'; // Import moment
+import { deleteProperty, getProperties } from '../../../../Lib/api';
 
 const PropertiesHost = () => {
     const [statusFilter, setStatusFilter] = useState('all');
@@ -17,7 +17,7 @@ const PropertiesHost = () => {
 
     const getData = async () => {
         try {
-            const response = await axios.get('/api/hotels');
+            const response = await getProperties();
             const data = response.data.map(hotel => ({
                 id: hotel._id,
                 name: hotel.title,
@@ -67,7 +67,7 @@ const PropertiesHost = () => {
 
     const deleteHouse = async (houseId) => {
         try {
-            await axios.delete(`/api/hotels/${houseId}`);
+            await deleteProperty(houseId) ;
             setHouses(houses.filter(house => house.id !== houseId)); // Update state to remove deleted house
         } catch (error) {
             console.error("Error deleting house:", error);

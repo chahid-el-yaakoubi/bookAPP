@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
-import Login from './Login/login';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign, faChevronDown, faHouseUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +36,8 @@ export const Navbar = () => {
     const [loginForm, setLoginForm] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const { user, dispatch } = useContext(AuthContext);
+    const { state: userState, dispatch } = useContext(AuthContext);
+    const user = userState.user;
     const navigate = useNavigate();
     const [showMobileNav, setShowMobileNav] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -183,11 +183,19 @@ export const Navbar = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [activeTab]);
-
     const handleLogout = () => {
+        // Dispatch the LOGOUT action to reset state
         dispatch({ type: "LOGOUT" });
+
+        // Clear user data from localStorage
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+
+        // Hide any modals or forms
         setShowConfirmModal(false);
         setLoginForm(false);
+
+        // Navigate to the home page or another route
         navigate("/");
     };
 
@@ -202,7 +210,6 @@ export const Navbar = () => {
     };
 
 
-    const location = useLocation();
 
 
 
@@ -365,7 +372,7 @@ export const Navbar = () => {
                 </nav>
             </div>
 
-          <NavbarMobel />
+            <NavbarMobel />
 
 
             {/* Modals */}

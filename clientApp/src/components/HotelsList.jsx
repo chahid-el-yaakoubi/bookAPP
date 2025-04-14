@@ -10,14 +10,11 @@ import {
   faHouseFlag,
   faStar,
   faSwimmingPool,
-  faWifi,
-  faCar,
-  faUtensils,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { Logo } from "./Navbar";
 import SearchMobile from './searchMobile';
-const apiUrl = import.meta.env.VITE_API_URL;
+import { getProperties } from "../Lib/api";
 
 
 const HotelsList = () => {
@@ -29,10 +26,8 @@ const HotelsList = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await fetch(`${apiUrl}/hotels`);
-        if (!response.ok) throw new Error("Failed to fetch hotels");
-        const data = await response.json();
-        dispatch(setHotels(data)); // Store hotels in Redux state
+        const response = await getProperties();
+        dispatch(setHotels(response.data)); // Store hotels in Redux state
       } catch (error) {
         console.error("Error fetching hotels:", error);
       }

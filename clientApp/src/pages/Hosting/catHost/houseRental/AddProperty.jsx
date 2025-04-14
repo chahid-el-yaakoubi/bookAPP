@@ -8,6 +8,7 @@ import PricingSection from './steps/PricingSection';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import { createProperty } from '../../../../Lib/api';
 
 
 const STORAGE_KEY = 'property_draft';
@@ -127,7 +128,9 @@ const AddProperty = () => {
     setError(null);
 
     try {
-      const res = await axios.post(`/api/hotels`, propertyData);
+      const res =  await createProperty(propertyData);
+
+      console.log(res.status);
 
       if (res.status === 200) {
         showNotification("Property created successfully!", "success");

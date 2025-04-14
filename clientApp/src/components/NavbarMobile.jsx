@@ -11,23 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
 
 // Logo Component
-export const Logo = () => {
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    return (
-        <Link to="/" onClick={scrollToTop}>
-            <div className="flex items-center">
-                <span className="text-3xl font-extrabold tracking-tight">
-                    <span className="text-blue text-3xl transition-colors duration-300 hover:text-[blue]">Axi</span>
-                    <span className="text-orange-500 text-3xl transition-colors duration-300 hover:text-orange-600">Stay</span>
-                </span>
-            </div>
-        </Link>
-    );
-};
-
+ 
 // Mobile Logo Component
 export const MobileLogo = () => {
     const scrollToTop = () => {
@@ -214,7 +198,8 @@ export const NavbarMobel = () => {
     const [currentLanguage, setCurrentLanguage] = useState('en');
     const [currentCurrency, setCurrentCurrency] = useState('USD');
     
-    const { user, dispatch } = useContext(AuthContext);
+    const { state: userState, dispatch } = useContext(AuthContext);
+    const user = userState.user;
     const { state, dispatch: transDispatch } = useContext(TransContext);
     const navigate = useNavigate();
     const location = useLocation();
@@ -347,10 +332,20 @@ export const NavbarMobel = () => {
 
     // Handle logout
     const handleLogout = () => {
+        // Dispatch the LOGOUT action to reset state
         dispatch({ type: "LOGOUT" });
+      
+        // Clear user data from localStorage
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      
+        // Hide any modals or forms
         setShowConfirmModal(false);
+        setLoginForm(false);
+      
+        // Navigate to the home page or another route
         navigate("/");
-    };
+      };
 
     // Toggle dropdown helpers
     const toggleLanguageDropdown = () => {

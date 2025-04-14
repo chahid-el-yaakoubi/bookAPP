@@ -8,7 +8,6 @@ import {
   faHotel,
   faHouse,
   faHouseFlag,
-  faStar,
   faSwimmingPool,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
@@ -81,7 +80,7 @@ const HotelsList = () => {
     <div className="w-full ">
 <div
   className={`
-    py-1 shadow-sm transition-all duration-300 mx-auto z-40
+    py-1 shadow-sm transition-all duration-300 mx-auto z-20
     fixed top-[61px] left-0 right-0 bg-primary w-[96%] rounded-b-xl 
 
     md:w-full
@@ -116,8 +115,8 @@ const HotelsList = () => {
                 {[
                   { type: "house", icon: faHouse, label: "Maison" },
                   { type: "penthouse", icon: faHouse, label: "Penthouse" },
-                  { type: "studio", icon: faHouse, label: "Studio" },
-                  { type: "duplex", icon: faHouse, label: "Duplex" },
+                  // { type: "studio", icon: faHouse, label: "Studio" },
+                  // { type: "duplex", icon: faHouse, label: "Duplex" },
                   { type: "apartment", icon: faHouseFlag, label: "Appartement" },
                   { type: "hotel", icon: faHotel, label: "Hôtel" },
                   { type: "villa", icon: faSwimmingPool, label: "Villa" },

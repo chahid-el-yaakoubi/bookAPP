@@ -7,7 +7,10 @@ import axios from 'axios';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const ChangePassword = () => {
-    const { user } = useContext(AuthContext);
+    const { state } = useContext(AuthContext);
+  const token = localStorage.getItem('token');
+
+    const user = state.user;
 
     const [formData, setFormData] = useState({
         currentPassword: '',
@@ -96,11 +99,11 @@ export const ChangePassword = () => {
             // Only make the API call if we're actually sending the code
             if (!codeSent) {
                 await axios.post(
-                    `${apiUrl}/users/email-verification`,
+                    `${apiUrl}/api/users/email-verification`,
                     { email: formData.email },
                     {
                         headers: {
-                            Authorization: `Bearer ${user.token}`,
+                            Authorization: `Bearer ${token}`,
                         },
                     }
                 );
@@ -134,16 +137,16 @@ export const ChangePassword = () => {
                     oldPassword: formData.currentPassword,
                     newPassword: formData.newPassword
                 };
-                endpoint = `${apiUrl}/users/${user._id}/password`;
+                endpoint = `${apiUrl}/api/users/${user.id}/password`;
             } else if (mode === 'verification') {
                 payload = {
                     code: formData.verificationCode,
                     newPassword: formData.newPassword
                 };
-                endpoint = `${apiUrl}/users/${user._id}/verify-code`;
+                endpoint = `${apiUrl}/api/users/${user.id}/verify-code`;
             }
 
-            const headers = { Authorization: `Bearer ${user.token}` };
+            const headers = { Authorization: `Bearer ${token}` };
 
             const res = await axios.put(endpoint, payload, { headers });
 

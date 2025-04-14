@@ -19,7 +19,7 @@ router.put('/:id', verifyUser ,updateUser)
 // DELETE
 router.delete('/:id',verifyUser, deleteUser)
 // GET
-router.post('/:id', verifyUser, getUser)
+router.get('/:id', verifyUser, getUser)
 // GET ALL
 router.get('/', verifyAdmin, getUsers)
 router.get('/count/users', verifyAdmin, countByUser)

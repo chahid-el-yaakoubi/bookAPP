@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { User, Camera, Lock, Save, Edit, X } from 'lucide-react';
-import axios from 'axios'; // Add axios import
 
 import { Navbar } from './Navbar'
-import { Header } from './Header'
-import { ChangePassword } from './ChangePassword';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contextApi/AuthContext';
-import useFetch from '../hooks/useFetch';
 import { LuCircleArrowLeft } from 'react-icons/lu';
 import { useSelector } from 'react-redux';
 import { HotelCardGrid } from './HotelsDisplay';
 
 export const SavedRentalsPage = () => {
-    const { user } = useContext(AuthContext);
-    const { data, loading, error, reFetch } = useFetch(`/api/users/${user._id}`);
     const navigate = useNavigate();
     const hotels = useSelector(state => state.hotels.filteredHotels);
   const reservations = useSelector((state) => state.save.reservations);

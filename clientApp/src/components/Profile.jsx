@@ -10,9 +10,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contextApi/AuthContext';
 import useFetch from '../hooks/useFetch';
 import { LuCircleArrowLeft } from 'react-icons/lu';
+import { getUserById, updateUser } from '../Lib/api';
 
 export const Profile = () => {
-    const { user } = useContext(AuthContext);
+    const { state } = useContext(AuthContext);
+    const idUser = state?.user?.id;
 
     const [userData, setUserData] = useState({
         id: '',
@@ -28,7 +30,7 @@ export const Profile = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(userData);
-    const [avatarPreview, setAvatarPreview] = useState(userData.avatarUrl);
+    const [avatarPreview, setAvatarPreview] = useState(`https://static.vecteezy.com/system/resources/previews/002/275/847/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg`);
     const [showAvatarModal, setShowAvatarModal] = useState(false);
     const [updateLoading, setUpdateLoading] = useState(false); // Add loading state for update
     const [updateError, setUpdateError] = useState(null); // Add error state for update
@@ -38,15 +40,8 @@ export const Profile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await axios.post(
-                    `${apiUrl}/users/${user._id}`,
-                    {}, // empty body
-                    {
-                        withCredentials: true,
-                    }
-                );
-                const data = res.data;
-                console.log("User data:", data);
+                 
+                const data = await getUserById(idUser);
 
                 // Update the state with fetched data
                 setUserData({
@@ -56,7 +51,6 @@ export const Profile = () => {
                     phone: data.phone,
                     username: data.username,
                     city: data.city,
-                    avatarUrl: data.avatarUrl || userData.avatarUrl, // Use avatar URL from data if available
                     createdAt: data.createdAt,
                     updatedAt: data.updatedAt
                 });
@@ -68,7 +62,6 @@ export const Profile = () => {
                     phone: data.phone,
                     username: data.username,
                     city: data.city,
-                    avatarUrl: data.avatarUrl || userData.avatarUrl,
                     createdAt: data.createdAt,
                     updatedAt: data.updatedAt
                 });
@@ -79,7 +72,7 @@ export const Profile = () => {
         };
 
         fetchUserData(); // Call fetchUserData function on component mount
-    }, [user._id]); // Run this effect when user._id changes
+    }, [idUser]); // Run this effect when user._id changes
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -94,12 +87,9 @@ export const Profile = () => {
         setUpdateError(null);
 
         try {
-            const response = await axios.put(`${apiUrl}/users/${user._id}`, formData, {
-                withCredentials: true,
-            });
+            const response = await updateUser(idUser, formData);
             setUserData(response.data); // Update userData after a successful update
             setIsEditing(false);
-            console.log('Profile updated successfully:', response.data);
         } catch (err) {
             setUpdateError(err.response?.data?.message || 'Failed to update profile');
             console.error('Error updating profile:', err);
@@ -145,7 +135,7 @@ export const Profile = () => {
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold text-gray-800 flex items-center">
                             <User className="mr-2" size={28} />
-                            {userData.username}
+                            {userData?.username}
                         </h1>
                         <button
                             onClick={toggleEdit}
@@ -186,12 +176,12 @@ export const Profile = () => {
                                 </button>
                             )}
                         </div>
-                        <h2 className="text-xl font-semibold text-gray-800">{userData.fullName}</h2>
+                        <h2 className="text-xl font-semibold text-gray-800">{userData?.fullName}</h2>
                         <p className="text-gray-500">
-                            Member since {userData.createdAt?.split("T")[0]}
+                            Member since {userData?.createdAt?.split("T")[0]}
                         </p>
                         <p className="text-gray-500">
-                            Last Updated At {userData.updatedAt?.split("T")[0]}
+                            Last Updated At {userData?.updatedAt?.split("T")[0]}
                         </p>
                     </div>
 
@@ -217,7 +207,7 @@ export const Profile = () => {
                                         required
                                     />
                                 ) : (
-                                    <p className="text-gray-800">{userData.fullName}</p>
+                                    <p className="text-gray-800">{userData?.fullName}</p>
                                 )}
                             </div>
 
@@ -234,7 +224,7 @@ export const Profile = () => {
                                         required
                                     />
                                 ) : (
-                                    <p className="text-gray-800">{userData.email}</p>
+                                    <p className="text-gray-800">{userData?.email}</p>
                                 )}
                             </div>
 
@@ -249,7 +239,7 @@ export const Profile = () => {
                                         className="w-full p-2 border border-gray-300 rounded-md"
                                     />
                                 ) : (
-                                    <p className="text-gray-800">{userData.phone}</p>
+                                    <p className="text-gray-800">{userData?.phone}</p>
                                 )}
                             </div>
 
@@ -265,7 +255,7 @@ export const Profile = () => {
                                         required
                                     />
                                 ) : (
-                                    <p className="text-gray-800">{userData.username}</p>
+                                    <p className="text-gray-800">{userData?.username}</p>
                                 )}
                             </div>
 
@@ -280,7 +270,7 @@ export const Profile = () => {
                                         className="w-full p-2 border border-gray-300 rounded-md"
                                     />
                                 ) : (
-                                    <p className="text-gray-800">{userData.city}</p>
+                                    <p className="text-gray-800">{userData?.city}</p>
                                 )}
                             </div>
                         </div>

@@ -70,7 +70,7 @@ export const getUserById = async (id) => {
 
 export const updateUser = async (id, userData) => {
   const response = await api.put(`/api/users/${id}`, userData);
-  return response.data;
+  return response;
 };
 
 export const deleteUser = async (id) => {

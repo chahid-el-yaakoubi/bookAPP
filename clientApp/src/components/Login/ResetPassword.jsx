@@ -91,7 +91,7 @@ const PasswordReset = () => {
 
             // API call to send verification code
             await axios.post(
-                `${apiUrl}/users/email-verification`,
+                `${apiUrl}/api/users/email-verification`,
                 { email: formData.email }
             );
 
@@ -124,9 +124,9 @@ const PasswordReset = () => {
                 email: formData.email
             };
 
-            const res = await axios.post(`${apiUrl}/auth/reset-password`, payload);
+            const res = await axios.post(`${apiUrl}/api/auth/reset-password`, payload);
 
-            console.log('Password reset successful:', res.data);
+            // console.log('Password reset successful:', res.data);
             setSuccess(true);
             setFormData({
                 newPassword: '',

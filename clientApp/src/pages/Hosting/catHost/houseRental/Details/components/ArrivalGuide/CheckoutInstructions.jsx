@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { FaTrash, FaBroom, FaThermometerHalf, 
          FaLightbulb, FaDoorClosed, FaSave } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
          
 
 const CheckoutInstructions = () => {
@@ -81,7 +82,7 @@ const CheckoutInstructions = () => {
         ));
     };
 
-    const handleSave = (e) => {
+    const handleSave =  async (e) => {
         e.preventDefault();
         setIsSaving(true);
         
@@ -92,28 +93,22 @@ const CheckoutInstructions = () => {
             enabled: task.enabled
         }));
         
-        console.log({
-            checkout_instructions: {
-                tasks: simplifiedTasks,
-            }
-        });
-        
+       
         const updatedProperty = {
-            ...selectedProperty,
             checkout_instructions: {
                 tasks: simplifiedTasks,
             }
         };
         
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
-        
-        // Simulate API call delay
-        setTimeout(() => {
+       
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
-        }, 1000);
+
+        }
+
     };
 
     return (

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { FaChevronDown, FaSave } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { LuCircleArrowLeft } from 'react-icons/lu';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 
 const CheckInOut = ({ onclose, help }) => {
@@ -88,14 +89,14 @@ const CheckInOut = ({ onclose, help }) => {
     };
 
     // Handle save with dispatch
-    const handleSave = () => {
+    const handleSave = async () => {
       
 
 
         setIsSaving(true);
 
-        // Format the data according to the property schema
-        const formattedData = {
+        // Create updated property data
+        const updatedProperty = {
             policies: {
                 ...selectedProperty?.policies,
                 checkInOutTimes: {
@@ -110,22 +111,20 @@ const CheckInOut = ({ onclose, help }) => {
             }
         };
 
-        // Create updated property data
-        const updatedProperty = {
-            ...selectedProperty,
-            ...formattedData
-        };
+      
 
-        // Dispatch update action
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
+            setIsSaving(false);
+
+        }
+
+        
 
         // Simulate saving process delay
         setTimeout(() => {
-            setIsSaving(false);
-
             if (help) {
                 onclose(false);
             }

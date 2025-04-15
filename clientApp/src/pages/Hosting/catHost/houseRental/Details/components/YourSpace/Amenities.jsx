@@ -40,6 +40,7 @@ import { IoMdBusiness } from 'react-icons/io';
 import { ImSpoonKnife } from 'react-icons/im';
 import { BsPrinter } from 'react-icons/bs';
 import { TbAirConditioning, TbIroning } from 'react-icons/tb';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 /**
  * Universal Amenities Component
@@ -385,20 +386,19 @@ const Amenities = ({ mode }) => {
                 }
             };
 
-            const updateData = {
-                ...selectedProperty,
+            const updatedProperty = {
                 property_details: {
                    ...selectedProperty.property_details,
                     [mode === 'amenities' ? 'amenities' : 'propertyFeatures']: payload[mode === 'amenities' ? 'amenities' : 'propertyFeatures']
                 }
             }
 
-            console.log(updateData)
+            const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-            const response = await axios.put(`/api/hotels/${id}`, updateData);
-
-            // Update redux store
-            dispatch(selectProperty(response.data));
+            if (res.status === 200) {
+              dispatch(selectProperty(res.data));
+        
+            }
 
             // Optional: Show success toast
             // toast.success('Amenities updated successfully');

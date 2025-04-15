@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProperty } from '../../../../../../../redux/actions/propertyActions';
 import axios from 'axios';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const PropertyTypeForm = () => {
     const dispatch = useDispatch();
@@ -17,15 +18,12 @@ const PropertyTypeForm = () => {
 
     // All property types in a flat array with category tags
     const allPropertyTypes = useMemo(() => [
-        { id: 'rental-unit', label: 'Daily Rental Apartment', icon: '🏠', category: 'apartment' },
-        { id: 'studio', label: 'Daily Rental Studio', icon: '🏙️', category: 'apartment' },
-        { id: 'villa', label: 'Daily Rental Villa', icon: '🏡', category: 'house' },
-        { id: 'house', label: 'Daily Rental House', icon: '🏡', category: 'house' },
-        { id: 'riad', label: 'Daily Rental Traditional Riad', icon: '🏯', category: 'house' },
-        { id: 'guesthouse', label: 'Guesthouse (Maison d’hôtes)', icon: '🏠', category: 'hospitality' },
-        { id: 'hotel', label: 'Hotel (Hôtel)', icon: '🏨', category: 'hospitality' },
-        { id: 'hostel', label: 'Hostel / Auberge', icon: '🛏️', category: 'hospitality' },
-        { id: 'boutique-hotel', label: 'Boutique Hotel', icon: '🏰💎', category: 'hospitality' }
+        { id: 'studio', label: 'Studio', icon: '🏙️', category: 'apartment' },
+        { id: 'apartment', label: 'Apartment', icon: '🏙️', category: 'apartment' },
+        { id: 'villa', label: 'Villa', icon: '🏡', category: 'house' },
+        { id: 'house', label: 'House', icon: '🏡', category: 'house' },
+        { id: 'guesthouse', label: 'Guesthouse (Maison d’hôtes)', icon: '🏠', category: 'hotel' },
+        { id: 'hotel', label: 'Hotel', icon: '🏨', category: 'hotel' },
     ], []);
 
     // Categories for filtering
@@ -33,7 +31,7 @@ const PropertyTypeForm = () => {
         { id: 'all', label: 'All Property Types' },
         { id: 'apartment', label: 'Apartments' },
         { id: 'house', label: 'Houses' },
-        { id: 'hospitality', label: 'Hospitality' },
+        { id: 'hotel', label: 'Hotels' },
     ], []);
 
 
@@ -94,7 +92,7 @@ const PropertyTypeForm = () => {
             { id: 'Shared room', label: 'Shared room' },
         ];
 
-        if (category === 'hospitality') {
+        if (category === 'hotel') {
             return [
                 { id: 'Hotel room', label: 'Hotel room' },
                 ...baseTypes.slice(0, 2)
@@ -167,8 +165,7 @@ const PropertyTypeForm = () => {
 
         };
 
-
-        const res = await axios.put(`/api/hotels/${selectedProperty?._id}`, updatedProperty)
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
         if (res.status === 200) {
             dispatch(selectProperty(res.data));
@@ -180,7 +177,7 @@ const PropertyTypeForm = () => {
     return (
         <div className="mx-auto bg-white rounded-lg shadow-md">
             {/* Header */}
-            <div className="bg-blue py-4 px-4">
+            <div className="bg-primary py-4 px-4">
                 <h1 className="text-xl font-medium text-white">Property Details</h1>
             </div>
 
@@ -203,7 +200,7 @@ const PropertyTypeForm = () => {
                                 key={category.id}
                                 onClick={() => updateFormField('activeFilter', category.id)}
                                 className={`px-4 py-2 whitespace-nowrap text-sm font-medium rounded-t-lg ${activeFilter === category.id
-                                    ? 'bg-blue text-white'
+                                    ? 'bg-orange-500 text-white'
                                     : 'bg-white text-gray-600 hover:bg-gray-100'
                                     }`}
                             >
@@ -270,7 +267,7 @@ const PropertyTypeForm = () => {
                                     <label className={`block text-base font-medium mb-3 flex items-center ${viewType ? 'text-gray-700' : 'text-red-500'}`}>
                                         <FaMapMarkerAlt className="mr-2 text-blue" /> View Type
                                     </label>
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                         {getFilteredViewTypes(propertyCategory).map(option => (
                                             <button
                                                 key={option.id}
@@ -291,7 +288,7 @@ const PropertyTypeForm = () => {
                                     </div>
                                 </div>
 
-                                {['apartment', 'house', 'hospitality'].includes(propertyCategory) && (
+                                {['apartment', 'house', 'hotel'].includes(propertyCategory) && (
                                     <div className="grid grid-cols-2 gap-4">
                                         {/* Floors in Building */}
                                         <div>

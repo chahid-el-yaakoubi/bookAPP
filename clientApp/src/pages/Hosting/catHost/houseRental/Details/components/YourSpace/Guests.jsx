@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useSelector, useDispatch } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Guests = () => {
   const dispatch = useDispatch();
@@ -18,13 +19,12 @@ const Guests = () => {
     setPeopleWidths(newWidths);
   }, [guestCount]);
 
-  const handleGuestChange = (newValue) => {
+  const handleGuestChange = async (newValue) => {
     const newCount = Math.min(Math.max(1, newValue), 16); // Allow up to 30 but display as 16+
     setGuestCount(newCount);
 
     // Create updated property object with the new title
     const updatedProperty = {
-      ...selectedProperty,
       policies: {
         ...selectedProperty.policies,
         rules: {
@@ -35,106 +35,107 @@ const Guests = () => {
     };
 
 
-    
-          // Dispatch the update action
-          dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-          });
-      };
 
-      // Creates a person SVG with given color and random width
-      const PersonSvg = ({ color, height = 32, width, index }) => {
-        // Slight variation in heights for visual interest
-        const finalHeight = height - 2 + Math.floor(Math.random() * 4);
+    const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        return (
-          <div key={index} className="mx-1 transition-all duration-300">
-            <svg width={width} height={finalHeight} viewBox="0 0 12 24" xmlns="http://www.w3.org/2000/svg">
-              {/* Head */}
-              <circle cx="6" cy="4" r="3.5" fill={color} />
+    if (res.status === 200) {
+      dispatch(selectProperty(res.data));
 
-              {/* Body */}
-              <rect x="3" y="8" width="6" height="12" rx="3" fill={color} />
+    }
+  };
 
-              {/* Legs */}
-              <rect x="3" y="20" width="2" height="8" fill={color} />
-              <rect x="7" y="20" width="2" height="8" fill={color} />
-            </svg>
-          </div>
-        );
-      };
+  // Creates a person SVG with given color and random width
+  const PersonSvg = ({ color, height = 32, width, index }) => {
+    // Slight variation in heights for visual interest
+    const finalHeight = height - 2 + Math.floor(Math.random() * 4);
 
-      // Render people icons based on current count
-      const renderPeopleIcons = () => {
-        const colors = [
-          '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
-          '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
-          '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
-          '#B366CC'
-        ];
+    return (
+      <div key={index} className="mx-1 transition-all duration-300">
+        <svg width={width} height={finalHeight} viewBox="0 0 12 24" xmlns="http://www.w3.org/2000/svg">
+          {/* Head */}
+          <circle cx="6" cy="4" r="3.5" fill={color} />
 
-        // Limit display to max 16 icons
-        const displayCount = Math.min(guestCount, maxGuests);
-        const people = [];
+          {/* Body */}
+          <rect x="3" y="8" width="6" height="12" rx="3" fill={color} />
 
-        // Add person icons with random widths
-        for (let i = 0; i < displayCount; i++) {
-          const color = colors[i % colors.length];
-          people.push(
-            <PersonSvg
-              key={i}
-              color={color}
-              height={24}
-              width={peopleWidths[i] || 12}
-              index={i}
-            />
-          );
-        }
+          {/* Legs */}
+          <rect x="3" y="20" width="2" height="8" fill={color} />
+          <rect x="7" y="20" width="2" height="8" fill={color} />
+        </svg>
+      </div>
+    );
+  };
 
-        return people;
-      };
+  // Render people icons based on current count
+  const renderPeopleIcons = () => {
+    const colors = [
+      '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+      '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+      '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+      '#B366CC'
+    ];
 
-      return (
-        <div className="flex flex-col items-center justify-center p-6">
-          <div className="flex items-center justify-center mb-6 min-h-16">
-            {renderPeopleIcons()}
-          </div>
+    // Limit display to max 16 icons
+    const displayCount = Math.min(guestCount, maxGuests);
+    const people = [];
 
-          <div className="text-center mb-8">
-            <p className="text-gray-600">How many guests can fit comfortably in your space?</p>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <button
-              onClick={() => handleGuestChange(guestCount - 1)}
-              className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
-              aria-label="Decrease guests"
-              disabled={guestCount <= 1}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </button>
-
-            <div className="mx-6 flex items-baseline">
-              <span className="text-6xl font-bold">{guestCount >= maxGuests ? '16' : guestCount}</span>
-              {guestCount >= maxGuests && <span className="text-6xl font-bold">+</span>}
-            </div>
-
-            <button
-              onClick={() => handleGuestChange(guestCount + 1)}
-              className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
-              aria-label="Increase guests"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4V20M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-
-            </button>
-          </div>
-        </div>
+    // Add person icons with random widths
+    for (let i = 0; i < displayCount; i++) {
+      const color = colors[i % colors.length];
+      people.push(
+        <PersonSvg
+          key={i}
+          color={color}
+          height={24}
+          width={peopleWidths[i] || 12}
+          index={i}
+        />
       );
-    };
+    }
 
-    export default Guests;
+    return people;
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center p-6">
+      <div className="flex items-center justify-center mb-6 min-h-16">
+        {renderPeopleIcons()}
+      </div>
+
+      <div className="text-center mb-8">
+        <p className="text-gray-600">How many guests can fit comfortably in your space?</p>
+      </div>
+
+      <div className="flex items-center justify-center">
+        <button
+          onClick={() => handleGuestChange(guestCount - 1)}
+          className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
+          aria-label="Decrease guests"
+          disabled={guestCount <= 1}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        <div className="mx-6 flex items-baseline">
+          <span className="text-6xl font-bold">{guestCount >= maxGuests ? '16' : guestCount}</span>
+          {guestCount >= maxGuests && <span className="text-6xl font-bold">+</span>}
+        </div>
+
+        <button
+          onClick={() => handleGuestChange(guestCount + 1)}
+          className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-gray-400"
+          aria-label="Increase guests"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V20M20 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Guests;

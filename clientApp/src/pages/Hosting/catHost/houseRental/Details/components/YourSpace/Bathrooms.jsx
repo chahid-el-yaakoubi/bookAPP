@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { selectProperty } from '../../../../../../../redux/actions/propertyActions';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 
 export const Bathrooms = () => {
@@ -17,14 +18,15 @@ export const Bathrooms = () => {
       
       const handleSave = async () => {
         try {
-          const updateProperty = {
+          const updatedProperty = {
              'property_details.bathrooms': formData.bathrooms
           };
 
              
           
       
-          const res = await axios.put(`/api/hotels/${id}`, updateProperty);
+          const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
       
           if (res.status === 200) {
             dispatch(selectProperty(res.data));  // ✅ Be careful: you're overwriting selectedProperty

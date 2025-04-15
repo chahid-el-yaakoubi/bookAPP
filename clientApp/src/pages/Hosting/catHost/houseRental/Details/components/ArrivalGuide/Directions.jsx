@@ -4,8 +4,9 @@ import {
     FaSave, FaUmbrellaBeach, FaShoppingCart, FaWalking,
     FaTimes, FaPlus
 } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Directions = () => {
     const dispatch = useDispatch();
@@ -101,7 +102,7 @@ const Directions = () => {
     };
 
     // Handle save
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
 
         // Validate the form first
@@ -120,20 +121,18 @@ const Directions = () => {
 
         // Update the property state
         const updatedProperty = {
-            ...selectedProperty,
             proximities: filteredItems
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        // Simulate API call delay
-        setTimeout(() => {
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
-            console.log('Saved property:', updatedProperty);
-        }, 1000);
+
+        }
+ 
+        
     };
 
     // Helper function to render nearby items

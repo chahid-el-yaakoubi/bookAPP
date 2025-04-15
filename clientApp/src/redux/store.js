@@ -1,14 +1,16 @@
 // src/redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import hotelsReducer from "./hotelsSlice";
+import filtersReducer from "./filtersSlice";
 import propertyReducer from "./reducers/propertyReducer";
-import saveReducer from "./SaveClient"; // 👈 your new reducer
+import saveReducer from "./SaveClient";
 
 const store = configureStore({
   reducer: {
     hotels: hotelsReducer,
+    filters: filtersReducer, // Add the filters reducer
     property: propertyReducer,
-    save: saveReducer, // 👈 add it to the store
+    save: saveReducer,
   },
 });
 

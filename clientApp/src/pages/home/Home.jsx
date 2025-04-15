@@ -12,8 +12,8 @@ import { MoroccanExperiences } from '../../components/moroccanExperiences/Morocc
 import { faBed, faHome, faMapLocation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTranslation } from 'react-i18next'
-import HotelsDisplay from '../../components/HotelsDisplay'
-import HotelsList from '../../components/HotelsList'
+import HotelsDisplay from '../list/listItem/HotelsDisplay'
+import HotelsList from '../list/listItem/HotelsList'
 import { MapComponent } from '../maps/maps'
 import { FaMap } from 'react-icons/fa'
 // import { MoroccanExperiences } from '../../components/moroccanExperiences/MoroccanExperiences'
@@ -73,9 +73,9 @@ export const Home = () => {
 
             </div>
             <Navbar />
-            <Header />
+            <Header type = {"house_rental"}  />
             <div className="mb-10 md:mb-14"> </div>
-            <HotelsList />
+            <HotelsList  />
 
 
             {/* <Featured /> */}

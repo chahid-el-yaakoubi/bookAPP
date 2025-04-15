@@ -5,8 +5,9 @@ import {
     FaLightbulb, FaTimes, FaCheck, FaSpinner
 } from 'react-icons/fa';
 
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Accessibility = () => {
     const dispatch = useDispatch();
@@ -94,7 +95,7 @@ const Accessibility = () => {
     // Update features when selectedProperty changes
     useEffect(() => {
         if (selectedProperty?.accessibility_features) {
-            setFeatures(prevFeatures => 
+            setFeatures(prevFeatures =>
                 prevFeatures.map(feature => ({
                     ...feature,
                     enabled: selectedProperty.accessibility_features[feature.id] || false
@@ -114,23 +115,23 @@ const Accessibility = () => {
         return () => clearTimeout(timer);
     }, [saveSuccess]);
 
-    const toggleFeature = (id) => {
+    const toggleFeature =  (id) => {
         // Update features state immediately for responsive UI
         setFeatures(features.map(feature =>
             feature.id === id ? { ...feature, enabled: !feature.enabled } : feature
         ));
-        
+
         // Show saving indicator
         setSavingFeatureId(id);
-        
+
         // Prepare the form data
-        const updatedFeatures = features.map(feature => 
+        const updatedFeatures = features.map(feature =>
             feature.id === id ? { ...feature, enabled: !feature.enabled } : feature
         );
-        
+
         // Save to Redux immediately
         saveFormData(updatedFeatures);
-        
+
         // Simulate network delay of 3 seconds
         setTimeout(() => {
             setSavingFeatureId(null);
@@ -143,21 +144,22 @@ const Accessibility = () => {
     };
 
     // Function to save the form data to Redux
-    const saveFormData = (updatedFeatures) => {
+    const saveFormData = async (updatedFeatures) => {
         const accessibilityFeatures = updatedFeatures.reduce((acc, item) => {
             acc[item.id] = item.enabled;
             return acc;
         }, {});
-        
+
         const updatedProperty = {
-            ...selectedProperty,
             accessibility_features: accessibilityFeatures
         };
-        
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
+
+        }
     };
 
     return (

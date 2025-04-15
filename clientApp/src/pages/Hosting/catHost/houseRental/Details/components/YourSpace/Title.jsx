@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useTranslation } from 'react-i18next';
-import { Camera } from 'lucide-react';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Title = () => {
     const { t } = useTranslation(['properties']);
-    const dispatch = useDispatch();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
     
     const [title, setTitle] = useState('');
@@ -37,7 +35,7 @@ const Title = () => {
         }
     };
     
-    const handleSave = () => {
+    const handleSave = async () => {
         if (error) {
             return; // Don't save if there are validation errors
         }
@@ -51,26 +49,25 @@ const Title = () => {
         
         // Create updated property object with the new title
         const updatedProperty = {
-            ...selectedProperty,
             title: title
         };
         
         // Dispatch the update action
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
         
         // Show success message and reset saving state
-        setTimeout(() => {
+        if(res.status === 200){
             setIsSaving(false);
             setSaveMessage(t('titleUpdateSuccess'));
-            
             // Clear the success message after a few seconds
             setTimeout(() => {
                 setSaveMessage('');
             }, 3000);
-        }, 500);
+        }else{
+            (err)=>{
+                console.error(err)
+            }
+        }
     };
 
     // Get property image from selectedProperty or use a placeholder
@@ -78,40 +75,7 @@ const Title = () => {
 
     return (
         <div className="space-y-8">
-            {/* Hero Section */}
-            <div className="relative w-full h-80 rounded-xl overflow-hidden">
-                <div 
-                    className="absolute inset-0 bg-cover bg-center" 
-                    style={{ 
-                        backgroundImage: `url(${propertyImage})`,
-                        filter: 'brightness(0.7)'
-                    }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                
-                {/* Property title overlay with edit capability */}
-                <div className="absolute bottom-0 left-0 w-full p-6">
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={handleTitleChange}
-                        placeholder={t('titlePlaceholder')}
-                        className="w-full bg-transparent text-white text-4xl font-bold border-0 focus:ring-0 focus:outline-none placeholder-white/60"
-                        maxLength={50}
-                    />
-                    <div className="mt-2 flex justify-between">
-                        <span className="text-red-300 text-sm">{error}</span>
-                        <span className="text-white/80 text-sm">
-                            {title.length}/50 {t('characters')}
-                        </span>
-                    </div>
-                </div>
-                
-                {/* Change image button */}
-                {/* <button className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 p-2 rounded-full text-white">
-                    <Camera size={20} />
-                </button> */}
-            </div>
+            
             
             {/* Content Section */}
             <div className="p-6 bg-white rounded-lg shadow-sm">

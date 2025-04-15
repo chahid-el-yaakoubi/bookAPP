@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaSave, FaSearch, FaLocationArrow } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Location = () => {
     const dispatch = useDispatch();
@@ -41,12 +42,11 @@ const Location = () => {
         }
     }, [initialLocation]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSaving(true);
 
         const updatedProperty = {
-            ...selectedProperty,
             location: {
                 ...selectedProperty.location,
                 city: city,
@@ -57,17 +57,17 @@ const Location = () => {
             }
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        // Simulate API call delay
-        setTimeout(() => {
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 3000);
-        }, 2000);
+
+        }
+
+         
     };
 
     const handleGetCurrentLocation = () => {

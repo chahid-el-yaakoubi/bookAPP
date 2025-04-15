@@ -1,7 +1,5 @@
 import express from 'express';
 const router = express.Router();
-import { addNewSpace, updateSpace, deleteSpace } from '../models/property.js'; // Adjust the import based on your file structure
-
 
 import { creatHotel, getHotel, getHotels, updateHotel, deleteHotel, countByCity, countByType, uploadImgs, removeImgs , getAdminHotels, getHotelPhotos, updatePhotoType} from '../controllers/hotel.js';
 import { verifyAdmin } from '../utils/verifyToken.js';

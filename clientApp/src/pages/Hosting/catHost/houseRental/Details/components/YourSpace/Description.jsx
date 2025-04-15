@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Description = () => {
     const dispatch = useDispatch();
@@ -37,33 +38,36 @@ const Description = () => {
     };
 
     // Handle form submission
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         try {
             const updatedProperty = {
-                ...selectedProperty,
                 description: {
                     listingDescription: formData.listingDescription,
                 },
             };
 
-            dispatch({
-                type: UPDATE_PROPERTY,
-                payload: { updatedProperty }
-            });
+            const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-            setIsFormChanged(false);
+            if (res.status === 200) {
+                dispatch(selectProperty(res.data));
 
-            // Show success notification
-            setNotification({
-                show: true,
-                message: 'Property description updated successfully!',
-                type: 'success'
-            });
+                setIsFormChanged(false);
 
-            // Hide notification after 3 seconds
-            setTimeout(() => {
-                setNotification(prev => ({ ...prev, show: false }));
-            }, 3000);
+                // Show success notification
+                setNotification({
+                    show: true,
+                    message: 'Property description updated successfully!',
+                    type: 'success'
+                });
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    setNotification(prev => ({ ...prev, show: false }));
+                }, 3000);
+            }
+
+
+
+
         } catch (error) {
             // Show error notification
             setNotification({

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   FaTimes, FaPaw, FaParking, FaUtensils, FaWifi, FaHouseUser,
@@ -10,20 +10,38 @@ import {
   FaCamera
 } from 'react-icons/fa';
 import {
-  // setSortByPrice,
   toggleAmenity,
   toggleBookingOption,
   toggleExceptionalProperty,
   togglePropertyType,
   clearFilters,
-} from '../redux/hotelsSlice';
+  setPriceRange,
+  setSortByPrice
+} from '../redux/filtersSlice';
+import { applyFilters } from '../redux/hotelsSlice';
 import { MdElevator } from 'react-icons/md';
 import { Flag } from 'lucide-react';
 
-
 export const FilterModule = ({ onClose }) => {
   const dispatch = useDispatch();
-  const { filters, filteredHotels } = useSelector((state) => state.hotels);
+  
+  // Get filters from filtersSlice with proper default values
+  const filters = useSelector((state) => state.filters) || {
+    priceRange: { min: 200, max: 2000 },
+    amenities: {},
+    bookingOptions: {},
+    exceptionalProperties: {},
+    propertyTypes: {},
+    sortByPrice: 'default'
+  };
+  
+  // Get filtered hotels with fallback
+  const { filteredHotels = [] } = useSelector((state) => state.hotels || {});
+  
+  // Make sure filters are applied when component mounts
+  useEffect(() => {
+    dispatch(applyFilters(filters));
+  }, [dispatch, filters]);
   
   // Price sort options
   const priceSortOptions = [
@@ -32,42 +50,74 @@ export const FilterModule = ({ onClose }) => {
     { id: 'high-to-low', label: 'Prix: décroissant' }
   ];
 
+  // Create a generic toggle handler to reduce repetition
+  const handleToggle = (toggleAction, itemId) => {
+    dispatch(toggleAction(itemId));
+    
+    // Apply filters after state update
+    // We'll let the useEffect handle filter application after state change
+  };
+
   const handlePriceSortChange = (sortOption) => {
-    // dispatch(setSortByPrice(sortOption));
+    dispatch(setSortByPrice(sortOption));
+    // The useEffect will handle filter application
   };
 
-  const handleAmenityToggle = (id) => {
-    dispatch(toggleAmenity(id));
-  };
-
-  const handleBookingOptionToggle = (id) => {
-    dispatch(toggleBookingOption(id));
-  };
-
-  const handleExceptionalPropertyToggle = (id) => {
-    dispatch(toggleExceptionalProperty(id));
-  };
-
-  const handlePropertyTypeToggle = (id) => {
-    dispatch(togglePropertyType(id));
-  };
+  const handleAmenityToggle = (id) => handleToggle(toggleAmenity, id);
+  const handleBookingOptionToggle = (id) => handleToggle(toggleBookingOption, id);
+  const handleExceptionalPropertyToggle = (id) => handleToggle(toggleExceptionalProperty, id);
+  const handlePropertyTypeToggle = (id) => handleToggle(togglePropertyType, id);
 
   const handleClearFilters = () => {
+    // Clear all filters
     dispatch(clearFilters());
+    // The useEffect will handle filter application
+  };
+
+  const handleApplyFilters = () => {
+    // Final application of all filters
+    dispatch(applyFilters(filters));
+    onClose();
+  };
+
+  // Handle price range changes with debounce
+  let priceRangeDebounceTimer;
+  const handlePriceRangeChange = (type, value) => {
+    clearTimeout(priceRangeDebounceTimer);
+    
+    const newValue = parseInt(value);
+    let newPriceRange;
+    
+    if (type === 'min') {
+      newPriceRange = { 
+        min: newValue, 
+        max: Math.max(filters.priceRange?.max || 2000, newValue) 
+      };
+    } else {
+      newPriceRange = { 
+        min: Math.min(filters.priceRange?.min || 100, newValue),
+        max: newValue 
+      };
+    }
+    
+    dispatch(setPriceRange(newPriceRange));
+    
+    // Debounce the filter application for better performance
+    priceRangeDebounceTimer = setTimeout(() => {
+      dispatch(applyFilters({
+        ...filters,
+        priceRange: newPriceRange
+      }));
+    }, 300);
   };
 
   const propertyTypes = [
     { id: 'hotel', label: 'Hôtel', icon: <FaHotel /> },
     { id: 'apartment', label: 'Appartement', icon: <FaBuilding /> },
-    { id: 'resort', label: 'Resort', icon: <FaUmbrellaBeach /> },
     { id: 'villa', label: 'Villa', icon: <FaHome /> },
-    { id: 'cabin', label: 'Cabane', icon: <FaMountain /> },
+    { id: 'house', label: 'House', icon: <FaHome /> },
     { id: 'guesthouse', label: 'Maison d\'hôtes', icon: <FaHouseUser /> },
-    { id: 'hostel', label: 'Auberge', icon: <Flag /> },
-    { id: 'boutique', label: 'Boutique', icon: <FaChair /> }
   ];
-
- 
 
   const roomTypes = [
     { id: 'room-bedrooms', label: 'Chambres' },
@@ -113,21 +163,57 @@ export const FilterModule = ({ onClose }) => {
         { id: 'smoke-detector', label: 'Détecteur de fumée', icon: <FaLockOpen /> },
         { id: 'carbon-detector', label: 'Détecteur de monoxyde de carbone', icon: <FaLock /> },
         { id: 'security', label: 'Sécurité 24h/24', icon: <FaLock /> },
-        { id: 'camera', label: ' Camera', icon: <FaCamera /> },
-
+        { id: 'camera', label: 'Camera', icon: <FaCamera /> },
       ]
     },
   ];
+  
+  // Calculate if any filters are applied
+  const hasActiveFilters = () => {
+    const propertyTypesActive = filters.propertyTypes && Object.values(filters.propertyTypes).some(value => value);
+    const amenitiesActive = filters.amenities && Object.values(filters.amenities).some(value => value);
+    const bookingOptionsActive = filters.bookingOptions && Object.values(filters.bookingOptions).some(value => value);
+    const exceptionalPropertiesActive = filters.exceptionalProperties && Object.values(filters.exceptionalProperties).some(value => value);
+    const priceRangeActive = filters.priceRange?.min !== 200 || filters.priceRange?.max !== 2000;
+    const sortActive = filters.sortByPrice !== 'default';
+    
+    return propertyTypesActive || amenitiesActive || bookingOptionsActive || 
+           exceptionalPropertiesActive || priceRangeActive || sortActive;
+  };
+
+  // Check if a specific filter is active
+  const isFilterActive = (type, id) => {
+    if (!filters[type]) return false;
+    return !!filters[type][id];
+  };
+
+  // Reusable button component for better consistency
+  const FilterButton = ({ type, id, children, className, isActive, onClick }) => (
+    <button
+      onClick={onClick}
+      className={`border transition-all ${
+        isActive 
+          ? 'bg-black text-white border-black font-medium' 
+          : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+      } ${className}`}
+    >
+      {children}
+    </button>
+  );
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
-      <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl animate-slide-scale">
+      <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+          <button 
+            onClick={onClose} 
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Fermer"
+          >
             <FaTimes className="text-lg" />
           </button>
-          <span className="font-semibold">Filtres</span>
+          <span className="font-semibold text-lg">Filtres</span>
           <div className="w-8" /> 
         </div>
 
@@ -135,40 +221,83 @@ export const FilterModule = ({ onClose }) => {
         <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 130px)' }}>
           {/* Property Types */}
           <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Type de logement</h3>
+            <h3 className="text-lg font-medium mb-4">Type de logement</h3>
             <div className="grid grid-cols-2 gap-3">
               {propertyTypes.map(type => (
-                <button
+                <FilterButton
                   key={type.id}
+                  type="propertyTypes"
+                  id={type.id}
+                  isActive={isFilterActive('propertyTypes', type.id)}
                   onClick={() => handlePropertyTypeToggle(type.id)}
-                  className={`p-4 border rounded-xl flex items-center gap-3 transition-colors ${
-                    filters.propertyTypes[type.id] ? 'bg-black text-white' : 'hover:border-black'
-                  }`}
+                  className="p-4 rounded-xl flex items-center gap-3"
                 >
-                  {type.icon}
+                  <span className={isFilterActive('propertyTypes', type.id) ? 'text-white' : 'text-gray-700'}>
+                    {type.icon}
+                  </span>
                   <span>{type.label}</span>
-                </button>
+                </FilterButton>
               ))}
+            </div>
+          </section>
+
+          {/* Price Range Section */}
+          <section className="p-4 border-b">
+            <h3 className="text-lg font-medium mb-4">Fourchette de prix</h3>
+            <div className="space-y-6">
+              {/* Display current price range */}
+              <div className="flex justify-between items-center px-2">
+                <span className="font-medium text-lg">${filters.priceRange?.min || 200}</span>
+                <span className="text-gray-500">à</span>
+                <span className="font-medium text-lg">${filters.priceRange?.max || 2000}</span>
+              </div>
+              
+              {/* Min price slider */}
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600 font-medium">Prix minimum</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="2000" 
+                  step="50"
+                  value={filters.priceRange?.min || 200}
+                  onChange={(e) => handlePriceRangeChange('min', e.target.value)}
+                  className="w-full cursor-pointer"
+                />
+              </div>
+              
+              {/* Max price slider */}
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600 font-medium">Prix maximum</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="2000" 
+                  step="50"
+                  value={filters.priceRange?.max || 2000}
+                  onChange={(e) => handlePriceRangeChange('max', e.target.value)}
+                  className="w-full cursor-pointer"
+                />
+              </div>
             </div>
           </section>
 
           {/* Price Sort Section */}
           <section className="p-4 border-b">
-            <h3 className="text-lg mb-4">Tri par prix</h3>
+            <h3 className="text-lg font-medium mb-4">Tri par prix</h3>
             <div className="space-y-3">
               {priceSortOptions.map(option => (
-                <button
+                <FilterButton
                   key={option.id}
+                  isActive={filters.sortByPrice === option.id}
                   onClick={() => handlePriceSortChange(option.id)}
-                  className={`flex items-center justify-between w-full p-4 rounded-xl border transition-colors ${
-                    filters.sortByPrice === option.id ? 'bg-black text-white' : 'hover:border-black'
-                  }`}
+                  className="flex items-center justify-between w-full p-4 rounded-xl"
                 >
                   <span>{option.label}</span>
                   {filters.sortByPrice === option.id && (
-                    <span className="h-4 w-4 rounded-full bg-white text-black flex items-center justify-center text-xs">✓</span>
+                    <span className="h-5 w-5 rounded-full bg-white text-black flex items-center justify-center text-xs">✓</span>
                   )}
-                </button>
+                </FilterButton>
               ))}
             </div>
           </section>
@@ -176,19 +305,22 @@ export const FilterModule = ({ onClose }) => {
           {/* Amenities Sections */}
           {amenityCategories.map(category => (
             <section key={category.title} className="p-4 border-b">
-              <h3 className="text-lg mb-4">{category.title}</h3>
+              <h3 className="text-lg font-medium mb-4">{category.title}</h3>
               <div className="flex flex-wrap gap-2">
                 {category.items.map(item => (
-                  <button
+                  <FilterButton
                     key={item.id}
+                    type="amenities"
+                    id={item.id}
+                    isActive={isFilterActive('amenities', item.id)}
                     onClick={() => handleAmenityToggle(item.id)}
-                    className={`flex items-center gap-2 px-4 py-2 border rounded-full transition-colors ${
-                      filters.amenities[item.id] ? 'bg-black text-white' : 'hover:border-black'
-                    }`}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full"
                   >
-                    {item.icon}
+                    <span className={isFilterActive('amenities', item.id) ? 'text-white' : 'text-gray-700'}>
+                      {item.icon}
+                    </span>
                     <span>{item.label}</span>
-                  </button>
+                  </FilterButton>
                 ))}
               </div>
             </section>
@@ -199,13 +331,14 @@ export const FilterModule = ({ onClose }) => {
         <div className="sticky bottom-0 border-t p-4 flex justify-between items-center bg-white rounded-b-2xl">
           <button 
             onClick={handleClearFilters}
-            className="text-sm font-semibold underline"
+            className={`text-sm font-semibold underline ${hasActiveFilters() ? 'opacity-100' : 'opacity-50'}`}
+            disabled={!hasActiveFilters()}
           >
             Tout effacer
           </button>
           <button 
-            onClick={onClose}
-            className="px-6 py-3 bg-black text-white rounded-lg"
+            onClick={handleApplyFilters}
+            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
           >
             Afficher {filteredHotels.length} logements
           </button>

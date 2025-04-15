@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { selectProperty } from "../../../redux/actions/propertyActions";
 import { useDispatch } from "react-redux";
+import { addPhotosProperty } from "../../../Lib/api";
 
 const ImgHotel = ({ hotelId, type, showModal, setShowModal, path, refrech, reFetch }) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -68,11 +69,7 @@ const ImgHotel = ({ hotelId, type, showModal, setShowModal, path, refrech, reFet
 
             formData.append('type', type);
 
-            const response = await axios.post(`/api/${api}/${hotelId}/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            });
+            const response = await addPhotosProperty(hotelId, api, formData); 
 
             if (response.data.success) {
                 reFetch?.();

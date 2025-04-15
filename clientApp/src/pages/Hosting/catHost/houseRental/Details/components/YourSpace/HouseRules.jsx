@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { FaChevronRight, FaMinus, FaPlus, FaCheck, FaTimes, FaSave } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useDispatch, useSelector } from 'react-redux';
 
 const HouseRules = () => {
     const dispatch = useDispatch();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
-    
+
     const [isSaving, setIsSaving] = useState(false);
     const [ruleStates, setRuleStates] = useState({
         pets: false,
@@ -39,7 +39,7 @@ const HouseRules = () => {
     useEffect(() => {
         if (selectedProperty?.policies?.rules) {
             const rules = selectedProperty.policies.rules;
-            
+
             // Initialize rule states safely
             setRuleStates({
                 pets: rules?.pets?.allowed ?? false,
@@ -48,12 +48,12 @@ const HouseRules = () => {
                 quietHours: rules?.quietHours?.pending ?? false,
                 commercial: rules?.commercial === 'allowed' ?? false
             });
-            
+
             // Initialize max pets if it exists
             if (rules?.pets?.maxCount) {
                 setMaxPets(rules.pets.maxCount);
             }
-            
+
             // Initialize quiet hours if they exist
             if (rules?.quietHours?.startTime && rules?.quietHours?.endTime) {
                 setQuietHours({
@@ -61,13 +61,13 @@ const HouseRules = () => {
                     endTime: rules.quietHours.endTime
                 });
             }
-            
+
             // Initialize additional rules if they exist
             if (Array.isArray(rules?.additionalRules)) {
                 setAdditionalRules(rules.additionalRules);
             }
         }
-        
+
         // Initialize check-in/checkout times
         if (selectedProperty?.policies?.checkInOutTimes) {
             const times = selectedProperty.policies.checkInOutTimes;
@@ -79,7 +79,7 @@ const HouseRules = () => {
                 checkoutTime: times?.checkoutTime ?? '11:00AM'
             });
         }
-        
+
         // Initialize guest count
         if (selectedProperty?.policies?.rules?.max_guests) {
             setGuestCount(selectedProperty?.policies.rules.max_guests);
@@ -136,9 +136,9 @@ const HouseRules = () => {
     };
 
     // Get all rules data (for saving)
-    const getAllRulesData = () => {
+    const getAllRulesData = async () => {
         // Format the data according to the MongoDB schema
-        const formattedData = {
+        const updatedProperty = {
             policies: {
                 checkInOutTimes: {
                     checkInWindow: {
@@ -164,33 +164,28 @@ const HouseRules = () => {
                     additionalRules: additionalRules
                 }
             },
-          
+
         };
 
         setIsSaving(true);
 
-        // Create updated property data
-        const updatedProperty = {
-            ...selectedProperty,
-            ...formattedData
-        };
         
-        // Dispatch update action
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
 
-        // Simulate saving process delay
-        setTimeout(() => {
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
-        }, 2000);
+
+        }
+
+     
     };
 
     // Render different views based on activeView state
     if (activeView === 'checkInOut') {
         return (
-             <CheckInOut onclose={setActiveView} help={true} />
+            <CheckInOut onclose={setActiveView} help={true} />
         );
     }
 
@@ -498,7 +493,7 @@ export const CheckInCheckoutTimes = ({ onBack, onSave }) => {
 
     return (
         <div className="max-w-3xl mx-auto p-6  ">
-            <div  className="flex items-center mb-6 ">
+            <div className="flex items-center mb-6 ">
                 <button
                     onClick={onBack}
                     className="mr-4 text-gray-600"
@@ -602,6 +597,7 @@ export const CheckInCheckoutTimes = ({ onBack, onSave }) => {
 // rules
 import { FaPaw, FaDog, FaCat, FaFeather, FaFish } from 'react-icons/fa';
 import CheckInOut from '../ArrivalGuide/CheckInOut';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 export const PetRulesInfo = ({ onBack }) => {
     const petPolicies = [

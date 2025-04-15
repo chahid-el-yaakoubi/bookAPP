@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { X, Trash2, Plus, Filter, Check, Save, Edit2 } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import useFetch from '../../../hooks/useFetch';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import ImgHotel from './imgHotel';
+import { deletePhotosProperty, updatePhotosProperty } from '../../../Lib/api';
 
 const ImageGallery = () => {
   const { id } = useParams();
@@ -91,11 +90,11 @@ const ImageGallery = () => {
   const removeSelectedImages = async () => {
     const confirmRemove = confirm('Are you sure you want to remove selected images from the list of  selected images ?');
     if (imagesToDelete.length === 0 || !confirmRemove) return;
-
+    const formdata = {
+      data: { images: imagesToDelete }
+    };
     try {
-      const response = await axios.delete(`/api/hotels/${id}/delete_photos`, {
-        data: { images: imagesToDelete }
-      });
+      const response = await deletePhotosProperty(id, formdata) ;
 
       if (response.data.success) {
         setImagesToDelete([]);
@@ -143,10 +142,11 @@ const ImageGallery = () => {
     }
 
     try {
-      const response = await axios.put(`/api/hotels/${id}/update_photo`, {
+      const formdata = {
         photoUrl: selectedImageData.url,  // Ensure this matches the server's expected field
         newType: imageTypeToSave          // Send the custom type or selected type
-      });
+      };
+      const response = await updatePhotosProperty(id, formdata );
 
       if (response.status === 200) {  // Corrected to check response.status
         setEditingType(false);

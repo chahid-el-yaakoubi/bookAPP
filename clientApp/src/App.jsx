@@ -31,6 +31,7 @@ import PropertyDetail from './pages/Hosting/catHost/houseRental/PropertyDetail';
 import Details from './pages/Hosting/catHost/houseRental/Details/Details';
 import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
+import { HomeCars } from './pages/cars/HomeCars';
 
 function App() {
   const { t } = useTranslation();
@@ -62,6 +63,13 @@ function App() {
             <Route path="/maps" element={<MapComponent />} />
             <Route path="/hotels/:city" element={<List />} />
             <Route path="/hotel/:id" element={<Hotel />} />
+
+
+
+
+            <Route path="/cars" element={<HomeCars />} />
+
+            
 
             {/* Protected Hosting Routes */}
             <Route element={<ProtectedRoute />}>

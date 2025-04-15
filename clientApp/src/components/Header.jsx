@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
 import { changeLanguage } from '../i18n';  // Adjust the path based on your i18n.js location
 
-export const Header = ({ type = "house_rental" }) => {
+export const Header = ({ type }) => {
 
   const { t } = useTranslation();
   const { state } = useContext(TransContext);
@@ -130,7 +130,7 @@ export const Header = ({ type = "house_rental" }) => {
   // Define class for active menu item based on type
   const getMenuItemClass = (menuType) => {
     const baseClass = "relative flex flex-col md:flex-row md:gap-3 items-center gap-1 py-1 px-1 md:p-3 cursor-pointer transition-all duration-300 rounded-xl";
-    
+
     if (type === menuType) {
       return `${baseClass} text-white bg-primary-dark group active:scale-95`;
     }
@@ -154,7 +154,7 @@ export const Header = ({ type = "house_rental" }) => {
               </div>
             </Link>
 
-            <div className="min-w-[70px] md:min-w-[100px]">
+            {/* <div className="min-w-[70px] md:min-w-[100px]">
               <div className={getMenuItemClass("explore")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faKey} />
@@ -164,19 +164,23 @@ export const Header = ({ type = "house_rental" }) => {
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
                 )}
               </div>
-            </div>
+            </div> */}
 
-            <div className="min-w-[70px] md:min-w-[100px]">
-              <div className={getMenuItemClass("location")}>
-                <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
-                  <FontAwesomeIcon icon={faCar} />
+            <Link to={'/cars'} className="min-w-[70px] md:min-w-[80px]">
+
+              <div className="min-w-[70px] md:min-w-[100px]">
+                <div className={getMenuItemClass("location")}>
+                  <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
+                    <FontAwesomeIcon icon={faCar} />
+                  </div>
+                  <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.location')}</span>
+                  {type === "location" && (
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
+                  )}
                 </div>
-                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.location')}</span>
-                {type === "location" && (
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
-                )}
               </div>
-            </div>
+            </Link>
+
 
             <div className="min-w-[70px] md:min-w-[100px]">
               <div className={getMenuItemClass("taxi")}>

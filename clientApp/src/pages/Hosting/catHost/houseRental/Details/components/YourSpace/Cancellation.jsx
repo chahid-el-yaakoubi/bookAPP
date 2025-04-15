@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Percent, InfoIcon, MapPin, Check, AlertTriangle, RefreshCw, ChevronRight, Save } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const MoroccoCancellation = () => {
     const dispatch = useDispatch();
@@ -121,7 +122,7 @@ const MoroccoCancellation = () => {
     };
 
     // Save cancellation policy to Redux
-    const handleSavePolicy = (e) => {
+    const handleSavePolicy =  async (e) => {
         e.preventDefault();
         setIsSaving(true);
 
@@ -129,7 +130,6 @@ const MoroccoCancellation = () => {
         const currentPolicyTiers = policyTiersMappings[selectedPolicyType];
 
         const updatedProperty = {
-            ...selectedProperty,
             cancellation: {
                 policyType: selectedPolicyType, // Ensure it's a valid ObjectId
                 policyDetails: {
@@ -140,15 +140,14 @@ const MoroccoCancellation = () => {
             }
         }; 
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        // Simulate API call completion
-        setTimeout(() => {
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
-        }, 1000);
+
+        }
+        
     };
 
     // Recalculate when inputs change or policy type changes
@@ -248,88 +247,12 @@ const MoroccoCancellation = () => {
                     </div>
                 </div>
 
-                {/* Refund Calculator */}
-                <div className="border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                        <Percent className="mr-2 text-amber-600" size={20} />
-                        Refund Calculator
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Days before check-in
-                            </label>
-                            <input
-                                type="number"
-                                min="0"
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                                placeholder="Enter days"
-                                value={daysBeforeCheckIn}
-                                onChange={(e) => setDaysBeforeCheckIn(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Booking amount (MAD)
-                            </label>
-                            <input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                                placeholder="Enter amount"
-                                value={bookingAmount}
-                                onChange={(e) => setBookingAmount(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Refund amount
-                            </label>
-                            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
-                                <span className="font-semibold text-gray-800">MAD {refundAmount.toFixed(2)}</span>
-                                
-                                {refundAmount > 0 && bookingAmount && (
-                                    <span className={`text-xs px-2 py-1 rounded-full ${
-                                        refundAmount === parseFloat(bookingAmount) ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
-                                    }`}>
-                                        {refundAmount === parseFloat(bookingAmount) ? "Full refund" : "Partial refund"}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* Responsive Refund Status */}
-                    {(daysBeforeCheckIn !== '' && bookingAmount !== '') && (
-                        <div className="mt-4 p-3 rounded-lg flex items-center gap-2 bg-gray-50 border border-gray-200">
-                            {refundAmount > 0 ? (
-                                <Check size={18} className="text-green-500" />
-                            ) : (
-                                <AlertTriangle size={18} className="text-red-500" />
-                            )}
-                            <p className="text-sm text-gray-700">
-                                {refundAmount > 0 
-                                    ? `${refundAmount === parseFloat(bookingAmount) ? 'Full' : 'Partial'} refund of MAD ${refundAmount.toFixed(2)} is available using the ${
-                                        policyTypes.find(p => p.id === selectedPolicyType).name
-                                    }`
-                                    : 'No refund is available for this cancellation period'}
-                            </p>
-                        </div>
-                    )}
-                </div>
-
+               
                
 
                 {/* Action Buttons */}
                 <div className="flex justify-end space-x-3 pt-4 border-t">
-                    <button 
-                        onClick={resetForm}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center"
-                    >
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Reset Calculator
-                    </button>
+                    
                     <button 
                         onClick={handleSavePolicy}
                         disabled={isSaving}

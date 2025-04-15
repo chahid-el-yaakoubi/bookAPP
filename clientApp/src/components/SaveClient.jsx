@@ -5,7 +5,7 @@ import { Navbar } from './Navbar'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LuCircleArrowLeft } from 'react-icons/lu';
 import { useSelector } from 'react-redux';
-import { HotelCardGrid } from './HotelsDisplay';
+import { HotelCardGrid } from '../pages/list/listItem/HotelsDisplay';
 
 export const SavedRentalsPage = () => {
     const navigate = useNavigate();

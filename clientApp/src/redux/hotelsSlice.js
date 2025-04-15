@@ -3,8 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 // Function to load state from local storage
 const loadFromLocalStorage = (key, defaultValue) => {
   try {
-    const storedState = localStorage.getItem(key);
-    return storedState ? JSON.parse(storedState) : defaultValue;
+    if (typeof window !== 'undefined') {
+      const storedState = localStorage.getItem(key);
+      return storedState ? JSON.parse(storedState) : defaultValue;
+    }
+    return defaultValue;
   } catch (error) {
     console.error("Error loading from localStorage", error);
     return defaultValue;
@@ -14,7 +17,9 @@ const loadFromLocalStorage = (key, defaultValue) => {
 // Function to save state to local storage
 const saveToLocalStorage = (key, value) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   } catch (error) {
     console.error("Error saving to localStorage", error);
   }
@@ -24,108 +29,127 @@ const initialState = {
   hotels: [],
   filteredHotels: [],
   selectedFilter: null,
-  filters: loadFromLocalStorage("filters", {
-    priceRange: { min: 200, max: 2000 },
-    amenities: {},
-    bookingOptions: {},
-    exceptionalProperties: {},
-    propertyTypes: {},
-  }),
 };
 
 const hotelsSlice = createSlice({
   name: "hotels",
-  initialState,
+  initialState: loadFromLocalStorage("hotels-state", initialState),
   reducers: {
     setHotels: (state, action) => {
       state.hotels = action.payload;
       state.filteredHotels = action.payload.map(hotel => ({
         ...hotel,
-        spaces: hotel.property_details.spaces || [],
+        spaces: hotel.property_details?.spaces || [],
       }));
-      saveToLocalStorage("hotels", action.payload);
+      saveToLocalStorage("hotels-data", action.payload); // Save just the data
     },
+    
     setSelectedFilter: (state, action) => {
       state.selectedFilter = action.payload;
+      
       if (action.payload) {
         state.filteredHotels = state.hotels.filter((hotel) =>
-          hotel.type.toLowerCase() === action.payload.toLowerCase()
+          hotel.type?.type?.toLowerCase() === action.payload.toLowerCase()
         );
       } else {
         state.filteredHotels = state.hotels;
       }
+      
+      saveToLocalStorage("hotels-state", {
+        ...state,
+        filteredHotels: [] // Don't store filtered results in localStorage to save space
+      });
     },
-    setPriceRange: (state, action) => {
-      const { min, max } = action.payload;
-      state.filters.priceRange = { min, max };
-      state.filteredHotels = state.hotels.filter(
-        (hotel) => hotel.pricing.nightly_rate >= min && hotel.pricing.nightly_rate <= max
-      );
-      saveToLocalStorage("filters", state.filters);
-    },
-    toggleAmenity: (state, action) => {
-      const amenityId = action.payload;
-      state.filters.amenities[amenityId] = !state.filters.amenities[amenityId];
-      state.filteredHotels = state.hotels.filter((hotel) =>
-        Object.entries(state.filters.amenities).every(
-          ([id, isSelected]) => (isSelected ? hotel.amenities?.[id] : true)
-        )
-      );
-      saveToLocalStorage("filters", state.filters);
-    },
-    toggleBookingOption: (state, action) => {
-      const optionId = action.payload;
-      state.filters.bookingOptions[optionId] = !state.filters.bookingOptions[optionId];
-      state.filteredHotels = state.hotels.filter((hotel) =>
-        Object.entries(state.filters.bookingOptions).every(
-          ([id, isSelected]) => (isSelected ? hotel.bookingOptions?.includes(id) : true)
-        )
-      );
-      saveToLocalStorage("filters", state.filters);
-    },
-    toggleExceptionalProperty: (state, action) => {
-      const propertyId = action.payload;
-      state.filters.exceptionalProperties[propertyId] = !state.filters.exceptionalProperties[propertyId];
-      state.filteredHotels = state.hotels.filter((hotel) =>
-        Object.entries(state.filters.exceptionalProperties).every(
-          ([id, isSelected]) => (isSelected ? hotel.exceptionalProperties?.includes(id) : true)
-        )
-      );
-      saveToLocalStorage("filters", state.filters);
-    },
-    togglePropertyType: (state, action) => {
-      const type = action.payload;
-      state.filters.propertyTypes[type] = !state.filters.propertyTypes[type];
-      state.filteredHotels = state.hotels.filter((hotel) =>
-        Object.entries(state.filters.propertyTypes).some(
-          ([id, isSelected]) => isSelected && hotel.type === id
-        )
-      );
-      saveToLocalStorage("filters", state.filters);
-    },
-    clearFilters: (state) => {
-      state.filters = {
-        priceRange: { min: 200, max: 2000 },
-        amenities: {},
-        bookingOptions: {},
-        exceptionalProperties: {},
-        propertyTypes: {},
-      };
-      state.filteredHotels = state.hotels;
-      saveToLocalStorage("filters", state.filters);
-    },
+    
+    applyFilters: (state, action) => {
+      const filters = action.payload;
+      
+      // First filter the hotels with efficient single-pass filtering
+      let filtered = state.hotels.filter((hotel) => {
+        // Apply price filter
+        const price = hotel.pricing?.nightly_rate || hotel.price || 0;
+        const priceMatch = price >= filters.priceRange.min && 
+                          price <= filters.priceRange.max;
+        if (!priceMatch) return false;
+        
+        // Apply amenities filter - handle both object and array data structures
+        const amenitiesMatch = Object.entries(filters.amenities).every(
+          ([id, isSelected]) => {
+            if (!isSelected) return true; // Skip if not selected
+            
+            // Check if amenities is an object with boolean flags
+            if (hotel.amenities && typeof hotel.amenities === 'object' && !Array.isArray(hotel.amenities)) {
+              return hotel.amenities[id];
+            }
+            
+            // Or if it's an array of strings
+            return Array.isArray(hotel.amenities) && hotel.amenities.includes(id);
+          }
+        );
+        if (!amenitiesMatch) return false;
+        
+        // Apply booking options filter
+        const bookingOptionsMatch = Object.entries(filters.bookingOptions).every(
+          ([id, isSelected]) => !isSelected || 
+            (Array.isArray(hotel.bookingOptions) && hotel.bookingOptions.includes(id))
+        );
+        if (!bookingOptionsMatch) return false;
+        
+        // Apply exceptional properties filter
+        const exceptionalPropertiesMatch = Object.entries(filters.exceptionalProperties).every(
+          ([id, isSelected]) => !isSelected || 
+            (Array.isArray(hotel.exceptionalProperties) && hotel.exceptionalProperties.includes(id))
+        );
+        if (!exceptionalPropertiesMatch) return false;
+        
+        // Apply property types filter
+        const propertyTypesSelected = Object.values(filters.propertyTypes).some(isSelected => isSelected);
+        const propertyTypeMatch = !propertyTypesSelected || 
+                                (hotel.type?.type && filters.propertyTypes[hotel.type.type.toLowerCase()]);
+        if (!propertyTypeMatch) return false;
+        
+        return true;
+      });
+      
+      // If there's a selected type filter, apply that too
+      if (state.selectedFilter) {
+        filtered = filtered.filter((hotel) =>
+          hotel.type?.type?.toLowerCase() === state.selectedFilter.toLowerCase()
+        );
+      }
+      
+      // Then apply sorting
+      if (filters.sortByPrice) {
+        switch (filters.sortByPrice) {
+          case 'low-to-high':
+            filtered.sort((a, b) => {
+              const priceA = a.pricing?.nightly_rate || a.price || 0;
+              const priceB = b.pricing?.nightly_rate || b.price || 0;
+              return priceA - priceB;
+            });
+            break;
+          case 'high-to-low':
+            filtered.sort((a, b) => {
+              const priceA = a.pricing?.nightly_rate || a.price || 0;
+              const priceB = b.pricing?.nightly_rate || b.price || 0;
+              return priceB - priceA;
+            });
+            break;
+          // Default - leave as is (default sort)
+          default:
+            break;
+        }
+      }
+      
+      state.filteredHotels = filtered;
+    }
   },
 });
 
 export const {
   setHotels,
   setSelectedFilter,
-  setPriceRange,
-  toggleAmenity,
-  toggleBookingOption,
-  toggleExceptionalProperty,
-  togglePropertyType,
-  clearFilters,
+  applyFilters
 } = hotelsSlice.actions;
 
 export default hotelsSlice.reducer;

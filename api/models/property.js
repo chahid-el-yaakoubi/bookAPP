@@ -55,15 +55,6 @@ const TaskSchema = new Schema({
     }
 });
 
-// Define the schema for spaces
-const spaceSchema = new Schema({
-    _id: { type: mongoose.Schema.Types.ObjectId, auto: true }, // Auto-generated unique ID
-    type: { type: String,  }, // Type of space (e.g., 'Art Studio', 'Backyard')
-    amenities: { type: [String], default: [] }, // Array of amenities
-    privateInfo: { type: [String], default: [] }, // Array of amenities
-    photos: { type: [String], default: [] }, // Array of photo URLs
-});
-
 
 const BathroomSchema = new mongoose.Schema({
     id: { type: Number, required: true },
@@ -77,9 +68,6 @@ const BathroomSchema = new mongoose.Schema({
   
 // Update the property_details schema to include spaces
 const PropertyDetailsSchema = new Schema({
-    rooms: { type: Number },
-    max_guests: { type: Number },
-    size_sqm: { type: Number },
     amenities: {
         standard: { type: [String], default: [] },
         custom: { type: [String], default: [] }
@@ -99,7 +87,6 @@ const PropertyDetailsSchema = new Schema({
         default: []
     },
     bathrooms: [BathroomSchema ],
-    spaces: [spaceSchema], // New field for spaces
 });
 
 
@@ -152,7 +139,6 @@ const HotelSchema = new mongoose.Schema({
         latitude: { type: Number },
         longitude: { type: Number },
         neighborhood: { type: String },
-        nearby_landmarks: { type: [String] },
     },
     property_details: PropertyDetailsSchema,
     pricing: {
@@ -184,23 +170,7 @@ const HotelSchema = new mongoose.Schema({
         listingDescription: {
             type: String,
             trim: true,
-            default: 'fix',
-        },
-        yourProperty: {
-            type: String,
-            trim: true,
-        },
-        guestAccess: {
-            type: String,
-            trim: true,
-        },
-        interactionWithGuests: {
-            type: String,
-            trim: true,
-        },
-        otherDetails: {
-            type: String,
-            trim: true,
+            default: 'no description yet',
         }
     },
     proximities: {
@@ -284,7 +254,6 @@ const HotelSchema = new mongoose.Schema({
             tiers: { type: Array, default: [] },
         },
         customRules: { type: Array, default: [] },
-        lastUpdated: { type: String, default: () => new Date().toISOString() },
     },
     wifi: {
         networkName: {
@@ -301,10 +270,6 @@ const HotelSchema = new mongoose.Schema({
             type: String,
             trim: true
         },
-        lastUpdated: {
-            type: Date,
-            default: Date.now
-        }
     },
     rooms: { type: [String], default: [] },
 }, {
@@ -317,78 +282,3 @@ const Hotel = mongoose.model('Hotel', HotelSchema);
 
 
 export default Hotel;
-
-export const addNewSpace = async (propertyId, newSpaceData) => {
-    try {
-        const property = await Hotel.findById(propertyId);
-        if (!property) {
-            throw new Error('Property not found');
-        }
-
-        // Create a new space object based on the schema
-        const newSpace = {
-            type: newSpaceData.type,
-            amenities: newSpaceData.amenities || [],
-            photos: newSpaceData.photos || [],
-        };
-
-        // Add the new space to the existing spaces array
-        property.property_details.spaces.push(newSpace);
-
-        // Save the updated property
-        await property.save();
-        return property;
-    } catch (error) {
-        console.error('Error adding new space:', error);
-        throw error;
-    }
-};
-
-// Function to update a space in a property
-export const updateSpace = async (propertyId, spaceId, updatedSpaceData) => {
-    try {
-        const property = await Hotel.findById(propertyId);
-        if (!property) {
-            throw new Error('Property not found');
-        }
-
-        // Find the space to update
-        const spaceIndex = property.property_details.spaces.findIndex(space => space._id.toString() === spaceId);
-        if (spaceIndex === -1) {
-            throw new Error('Space not found');
-        }
-
-        // Update the space
-        property.property_details.spaces[spaceIndex] = {
-            ...property.property_details.spaces[spaceIndex],
-            ...updatedSpaceData,
-        };
-
-        // Save the updated property
-        await property.save();
-        return property;
-    } catch (error) {
-        console.error('Error updating space:', error);
-        throw error;
-    }
-};
-
-// Function to delete a space from a property
-export const deleteSpace = async (propertyId, spaceId) => {
-    try {
-        const property = await Hotel.findById(propertyId);
-        if (!property) {
-            throw new Error('Property not found');
-        }
-
-        // Remove the space from the spaces array
-        property.property_details.spaces = property.property_details.spaces.filter(space => space._id.toString() !== spaceId);
-
-        // Save the updated property
-        await property.save();
-        return property;
-    } catch (error) {
-        console.error('Error deleting space:', error);
-        throw error;
-    }
-};

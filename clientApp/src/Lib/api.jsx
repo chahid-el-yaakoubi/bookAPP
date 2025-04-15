@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+ 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
@@ -15,7 +15,7 @@ api.interceptors.request.use((config) => {
 // Auth API
 export const login = async (username, password) => {
   const response = await api.post('/api/auth/login', { username, password });
-  console.log({'data' : response.data})
+  console.log({ 'data': response.data })
 
   return response.data;
 };
@@ -35,8 +35,9 @@ export const CheckUsername = async (username) => {
 
 
 // PROPERTIES: CRUD (create, read, update, delete)
-export const getProperties = async () => {
-  const response = await api.get('/api/hotels');
+export const getProperties = async (city) => {
+  const conditions = city ? `?city=${city}` : '';
+  const response = await api.get(`/api/hotels${conditions}`);
 
   return response;
 };
@@ -47,15 +48,35 @@ export const createProperty = async (propertyData) => {
 };
 
 export const updateProperty = async (id, propertyData) => {
-  const response = await api.put(`/api/properties/${id}`, propertyData);
-  return response.data;
+  const response = await api.put(`/api/hotels/${id}`, propertyData);
+  return response;
 };
+
 
 export const deleteProperty = async (id) => {
   const response = await api.delete(`/api/hotels/${id}`);
   return response;
 };
 
+
+export const addPhotosProperty = async (id,type, formdata) => {
+  const response = await api.post(`/api/${type}/${id}/upload`, formdata, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  });
+  return response;
+};
+
+export const updatePhotosProperty = async (id, formdata) => {
+  const response = await api.put(`/api/hotels/${id}/update_photo`, formdata);
+  return response;
+};
+
+export const deletePhotosProperty = async (id, formdata) => {
+  const response = await api.delete(`/api/hotels/${id}/delete_photos`, formdata);
+  return response;
+};
 
 // USERS
 export const getUsers = async () => {

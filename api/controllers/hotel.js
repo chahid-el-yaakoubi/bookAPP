@@ -2,7 +2,7 @@
 import Hotel from '../models/property.js';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
-import { console } from 'inspector';
+// import { console } from 'inspector';
 dotenv.config();
 
 // Configure cloudinary
@@ -153,7 +153,9 @@ export const getHotel = async (req, res, next) => {
 export const getHotels = async (req, res, next) => {
     const { min, max, limit, ...other } = req.query;
     const city = other.city;
-    const condition = city ? { "city": city } : {};
+    const condition = city ? { "location.city": city } : {};
+
+    console.log(condition)
     try {
         const hotels = await Hotel.find(condition) ; //.skip(4)
         res.status(200).json(hotels);
@@ -165,7 +167,7 @@ export const getHotels = async (req, res, next) => {
 export const getAdminHotels = async (req, res, next) => {
     const {id } = req.params;
     try {
-        const hotels = await Hotel.find({ isA: id });
+        const hotels = await Hotel.find({ created_by: id });
         res.status(200).json(hotels);
     } catch (err) {
         next(err);

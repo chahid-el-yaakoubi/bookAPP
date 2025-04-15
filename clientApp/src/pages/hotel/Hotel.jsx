@@ -41,6 +41,7 @@ import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt } from "react-icons/fa";
 import HotelRoomsDisplay from './rooms/TableRooms';
 import { SharePropertyModal } from './componentHotel/Share.jsx';
 import { toggleReservation } from '../../redux/SaveClient.js';
+import Footer from '../../components/footer.jsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -202,7 +203,7 @@ export function Hotel() {
 
       <div className='hidden md:block'>
         <Navbar />
-        <Header />
+        <Header type={"house_rental"}/>
       </div>
 
       <BookingProvider >
@@ -423,62 +424,21 @@ export function Hotel() {
                 longitude={mockListing.coordinates.longitude}
               /> */}
 
-              <div className="w-full h-[400px]">
+              <div className="w-full h-[400px] mb-20">
 
                 <MapIframe />
 
               </div>
 
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2">{mockListing.location}</h3>
-                <p className="text-gray-600">
-                  The nearest airports to La Catitera are Granada which is 1:15 hours drive and Málaga which is 1:45 hours drive away. The house is set within a mountainous countryside landscape. There are beautiful walks in the area, interesting towns, villages and even vineyards to visit. Good restaurants are about a 20 minute drive away and the beach and Granada are both accessible. The nearest town is Torvizcon which is a five minute drive and 30 minute river walk...
-                </p>
-              </div>
+              
             </div>
 
-            <div className="mt-8 pt-8 border-t">
-              <h2 className="text-2xl font-semibold mb-6">Meet your host</h2>
-              <div className="flex gap-8">
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <img
-                    src={mockListing.host.avatar}
-                    alt={mockListing.host.name}
-                    className="w-20 h-20 rounded-full"
-                  />
-                  <h3 className="font-semibold">{mockListing.host.name}</h3>
-                  <p className="text-gray-600">Host</p>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex gap-8">
-                    <div>
-                      <p className="font-semibold">{mockListing.host.reviewCount}</p>
-                      <p className="text-gray-600">Reviews</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">{mockListing.host.rating} ★</p>
-                      <p className="text-gray-600">Rating</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">{mockListing.host.yearsHosting}</p>
-                      <p className="text-gray-600">Years hosting</p>
-                    </div>
-                  </div>
-                  <p>{mockListing.host.description}</p>
-                  <div className="flex items-center gap-2">
-                    <Globe2 className="w-5 h-5" />
-                    <span>Speaks {mockListing.host.languages.join(', ')}</span>
-                  </div>
-                  <p className="text-gray-600">{mockListing.host.location}</p>
-                  <button className="px-6 py-2 border border-black rounded-lg font-semibold hover:bg-gray-100">
-                    Message host
-                  </button>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
       </BookingProvider >
+
+      <Footer />
     </div>
 
   );

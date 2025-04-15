@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FaDollarSign, FaInfoCircle, FaSave, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const Pricing = () => {
     const dispatch = useDispatch();
@@ -23,32 +24,31 @@ const Pricing = () => {
     // Check for validation errors after discount changes
     useEffect(() => {
         const newErrors = { weekly: '', monthly: '' };
-        
+
         // Validate weekly discount
         if (Number(weeklyDiscount) > 20) {
             newErrors.weekly = 'Warning: Weekly discount above 20% may reduce bookings';
         }
-        
+
         // Validate monthly discount
         if (Number(monthlyDiscount) > 49) {
             newErrors.monthly = 'Error: Monthly discount cannot exceed 49%';
         }
-        
+
         // Validate weekly vs monthly
         if (Number(weeklyDiscount) > Number(monthlyDiscount) && Number(monthlyDiscount) > 0) {
             newErrors.weekly = 'Error: This discount must be less than or equal to your monthly (4 weeks) trip length discount of ' + monthlyDiscount + '%';
         }
-        
+
         setErrors(newErrors);
     }, [weeklyDiscount, monthlyDiscount]);
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         setIsSaving(true);
         e.preventDefault();
 
-        
+
         const updatedProperty = {
-            ...selectedProperty,
             pricing: {
                 nightly_rate: basePrice,
                 Weekend_price: weekendPrice,
@@ -64,15 +64,23 @@ const Pricing = () => {
             }
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+
+        // Show success message and reset saving state
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
+            setIsSaving(false)
+
+
+           
+        } else {
+            (err) => {
+                console.error(err)
+            }
+        }
 
         // Simulate API call delay
-        setTimeout(() => {
-            setIsSaving(false);
-        }, 1000);
+        
     };
 
     const toggleSmartPricing = () => {
@@ -122,8 +130,8 @@ const Pricing = () => {
     };
 
     const hasErrors = () => {
-        return errors.weekly.includes('Error:') || errors.monthly.includes('Error:') || 
-               Number(monthlyDiscount) > 49;
+        return errors.weekly.includes('Error:') || errors.monthly.includes('Error:') ||
+            Number(monthlyDiscount) > 49;
     };
 
     const weeklyAverage = calculateWeeklyAverage();
@@ -246,7 +254,7 @@ const Pricing = () => {
                             <div>
                                 <p className="font-medium">Weekly · For 7 nights or more</p>
                                 <div className="flex items-center mt-2">
-                                    <button 
+                                    <button
                                         onClick={() => decrementDiscount('weekly')}
                                         className="bg-gray-200 hover:bg-gray-300 p-2 rounded-l-md"
                                     >
@@ -263,7 +271,7 @@ const Pricing = () => {
                                         />
                                         <span className="text-2xl font-bold">%</span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => incrementDiscount('weekly')}
                                         className="bg-gray-200 hover:bg-gray-300 p-2 rounded-r-md"
                                     >
@@ -289,7 +297,7 @@ const Pricing = () => {
                             <div>
                                 <p className="font-medium">Monthly · For 28 nights or more</p>
                                 <div className="flex items-center mt-2">
-                                    <button 
+                                    <button
                                         onClick={() => decrementDiscount('monthly')}
                                         className="bg-gray-200 hover:bg-gray-300 p-2 rounded-l-md"
                                     >
@@ -306,7 +314,7 @@ const Pricing = () => {
                                         />
                                         <span className="text-2xl font-bold">%</span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => incrementDiscount('monthly')}
                                         className="bg-gray-200 hover:bg-gray-300 p-2 rounded-r-md"
                                         disabled={Number(monthlyDiscount) >= 99}
@@ -333,7 +341,7 @@ const Pricing = () => {
                         </div>
                     </div>
                 </div>
- 
+
                 {/* Save button */}
                 <div className="pt-4">
                     <button

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  MdSmokeFree 
+import {
+  MdSmokeFree
 } from 'react-icons/md';
-import { 
-  FaExclamationTriangle, 
-  FaFireExtinguisher, 
-  FaMedkit, 
-  FaCamera, 
-  FaUserShield, 
-  FaKey, 
+import {
+  FaExclamationTriangle,
+  FaFireExtinguisher,
+  FaMedkit,
+  FaCamera,
+  FaUserShield,
+  FaKey,
   FaDoorOpen,
   FaCheck
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
+import { selectProperty } from '../../../../../../../redux/actions/propertyActions';
 
 const SafetySecurityFeatures = () => {
   const dispatch = useDispatch();
@@ -51,26 +53,25 @@ const SafetySecurityFeatures = () => {
   };
 
   // Save selected features
-  const saveFeatures = () => {
+  const saveFeatures = async () => {
     setIsSaving(true);
-    
+
     const updatedProperty = {
-      ...selectedProperty,
       safety_features: {
         ...selectedProperty?.safety_features,
         safety: Array.from(selectedFeatures)
       }
     };
 
-    dispatch({
-      type: 'UPDATE_PROPERTY',
-      payload: { updatedProperty }
-    });
+    const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-    // Simulate API call delay
-    setTimeout(() => {
+    if (res.status === 200) {
+      dispatch(selectProperty(res.data));
+
       setIsSaving(false);
-    }, 1000);
+
+    }
+     
   };
 
   return (
@@ -88,12 +89,12 @@ const SafetySecurityFeatures = () => {
             key={item.id}
             onClick={() => toggleFeature(item.id)}
             className={`flex items-center p-4 border rounded-lg transition-all focus:outline-none
-              ${selectedFeatures.has(item.id) 
-                ? 'border-2 border-green-500 bg-green-50' 
+              ${selectedFeatures.has(item.id)
+                ? 'border-2 border-green-500 bg-green-50'
                 : 'border-gray-200 hover:border-blue bg-gray-50 hover:bg-blue'}`}
           >
-            <div className={`mr-4 p-2 rounded-full ${selectedFeatures.has(item.id) 
-              ? 'bg-green-500 text-white' 
+            <div className={`mr-4 p-2 rounded-full ${selectedFeatures.has(item.id)
+              ? 'bg-green-500 text-white'
               : 'bg-gray-200 text-gray-600'}`}>
               <item.icon className="w-5 h-5" />
             </div>
@@ -110,7 +111,7 @@ const SafetySecurityFeatures = () => {
       <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-8">
         <h3 className="font-medium mb-2">Safety Compliance Note:</h3>
         <p className="text-gray-600">
-          Ensuring your property has appropriate safety features not only protects your guests 
+          Ensuring your property has appropriate safety features not only protects your guests
           but may also be required by local regulations.
         </p>
       </div>

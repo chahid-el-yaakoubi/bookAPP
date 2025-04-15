@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_PROPERTY, updateProperty } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY, updateProperty } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 
 const Availability = ({ hotelId }) => {
     const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const Availability = ({ hotelId }) => {
         setAllowExceptions(!allowExceptions);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         // Validate minimum is less than maximum
         if (minimumNights > maximumNights) {
             alert('Minimum nights cannot be greater than maximum nights');
@@ -60,7 +60,6 @@ const Availability = ({ hotelId }) => {
 
 
         const updatedProperty = {
-            ...selectedProperty,
             available: {
                 tripLength: {
                     minimumNights,
@@ -73,10 +72,11 @@ const Availability = ({ hotelId }) => {
             }
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+       const res = await updateProperty(selectedProperty?._id, updatedProperty);
+       if (res.status === 200) {
+        dispatch(selectProperty(res.data));
+
+    }
     };
 
     return (

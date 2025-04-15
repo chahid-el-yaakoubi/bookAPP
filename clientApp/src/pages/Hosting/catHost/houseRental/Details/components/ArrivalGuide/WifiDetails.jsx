@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { FaWifi, FaEye, FaEyeSlash, FaCopy, FaSave } from 'react-icons/fa';
-import { UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
+import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions'; // Update the path as needed
 import { useDispatch, useSelector } from 'react-redux';
+import { updateProperty } from '../../../../../../../Lib/api';
 
 const WifiDetails = () => {
     const dispatch = useDispatch();
@@ -37,12 +38,11 @@ const WifiDetails = () => {
         setAdditionalNetworks(additionalNetworks.filter((_, i) => i !== index));
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         setIsSaving(true);
         e.preventDefault();
 
         const updatedProperty = {
-            ...selectedProperty,
             wifi: {
                 networkName,
                 password,
@@ -51,15 +51,17 @@ const WifiDetails = () => {
             }
         };
 
-        dispatch({
-            type: UPDATE_PROPERTY,
-            payload: { updatedProperty }
-        });
+      
+        const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        // Simulate API call delay
-        setTimeout(() => {
+        if (res.status === 200) {
+            dispatch(selectProperty(res.data));
             setIsSaving(false);
-        }, 1000);
+
+        }
+
+
+       
     };
 
     return (

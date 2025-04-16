@@ -20,7 +20,6 @@ import {
 } from '../redux/filtersSlice';
 import { applyFilters } from '../redux/hotelsSlice';
 import { MdElevator } from 'react-icons/md';
-import { Flag } from 'lucide-react';
 
 export const FilterModule = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -64,8 +63,6 @@ export const FilterModule = ({ onClose }) => {
   };
 
   const handleAmenityToggle = (id) => handleToggle(toggleAmenity, id);
-  const handleBookingOptionToggle = (id) => handleToggle(toggleBookingOption, id);
-  const handleExceptionalPropertyToggle = (id) => handleToggle(toggleExceptionalProperty, id);
   const handlePropertyTypeToggle = (id) => handleToggle(togglePropertyType, id);
 
   const handleClearFilters = () => {

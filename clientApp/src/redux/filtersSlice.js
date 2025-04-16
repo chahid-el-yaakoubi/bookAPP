@@ -70,7 +70,7 @@ const filtersSlice = createSlice({
       saveToLocalStorage("filters", state);
     },
     clearFilters: (state) => {
-      state.priceRange = { min: 200, max: 2000 };
+      state.priceRange = { min: 100, max: 2000 };
       state.amenities = {};
       state.bookingOptions = {};
       state.exceptionalProperties = {};

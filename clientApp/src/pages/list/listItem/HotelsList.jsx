@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setHotels, setSelectedFilter } from "../../../redux/hotelsSlice";
+import { setHotels, applyFilters } from "../../../redux/hotelsSlice";
+import { togglePropertyType } from "../../../redux/filtersSlice";
 import { FilterModule } from "../../../components/FilterModule";
 import { Logo } from "../../../components/Navbar";
 import SearchMobile from '../../../components/searchMobile';
@@ -25,11 +26,12 @@ const PROPERTY_TYPES = [
   { type: "villa", icon: faSwimmingPool, label: "Villa" },
 ];
 
-const HotelsList = ({city}) => {
+const HotelsList = ({ city }) => {
   const dispatch = useDispatch();
   const hotels = useSelector((state) => state.hotels.filteredHotels);
-  const selectedFilter = useSelector((state) => state.hotels.selectedFilter);
-  
+  const filters = useSelector((state) => state.filters);
+  const propertyTypes = useSelector((state) => state.filters.propertyTypes);
+
   const [showModel, setShowModel] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
@@ -40,12 +42,19 @@ const HotelsList = ({city}) => {
       try {
         const response = await getProperties(city);
         dispatch(setHotels(response.data));
+        // Apply filters after setting hotels
+        dispatch(applyFilters(filters));
       } catch (error) {
         console.error("Error fetching hotels:", error);
       }
     };
     fetchHotels();
-  }, [dispatch]);
+  }, [dispatch, city, filters]);
+
+  // Re-apply filters whenever filters change
+  useEffect(() => {
+    dispatch(applyFilters(filters));
+  }, [dispatch, filters]);
 
   // Handle scroll events
   useEffect(() => {
@@ -54,15 +63,31 @@ const HotelsList = ({city}) => {
       setIsAtTop(window.scrollY <= scrollThreshold);
       setShowButton(window.scrollY > 200);
     };
-  
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Handle type selection with useCallback
   const handleChooseType = useCallback((type) => {
-    dispatch(setSelectedFilter(type === "all" ? null : type));
-  }, [dispatch]);
+    if (type === "all") {
+      // Clear all property type filters by setting each to false if it's currently true
+      PROPERTY_TYPES.forEach(({ type }) => {
+        if (propertyTypes && propertyTypes[type.toLowerCase()]) {
+          dispatch(togglePropertyType(type.toLowerCase()));
+        }
+      });
+    } else {
+      // Toggle the selected property type
+      dispatch(togglePropertyType(type.toLowerCase()));
+    }
+    // No need to call applyFilters here as it will be triggered by the useEffect
+  }, [dispatch, propertyTypes]);
+
+  // Check if any property type is selected
+  const hasActivePropertyFilter = useMemo(() => {
+    return propertyTypes && Object.values(propertyTypes).some(value => value === true);
+  }, [propertyTypes]);
 
   // Scroll to top function
   const scrollToTop = useCallback(() => {
@@ -73,7 +98,10 @@ const HotelsList = ({city}) => {
   const typesWithHotels = useMemo(() => {
     const types = {};
     PROPERTY_TYPES.forEach(({ type }) => {
-      types[type] = hotels.some(hotel => hotel.type.type === type);
+      types[type] = hotels.some(hotel =>
+        hotel.type && hotel.type.type &&
+        hotel.type.type.toLowerCase() === type.toLowerCase()
+      );
     });
     return types;
   }, [hotels]);
@@ -83,20 +111,32 @@ const HotelsList = ({city}) => {
     setShowModel(prev => !prev);
   }, []);
 
+  // Check if a specific filter is active
+  const isFilterActive = useCallback((type) => {
+    if (!propertyTypes) return false;
+    return !!propertyTypes[type.toLowerCase()];
+  }, [propertyTypes]);
+
   return (
-    <div className="container">
+    <div className="w-full">
       {/* Navigation Bar */}
+      <div className={`overflow-hidden flex justify-between ${!isAtTop ? 'hidden' : null}`}>
+        <div className="relative bg-primary h-14 w-20 -translate-x-10   translate-y-6 rotate-45 hidden md:block"></div>
+        <div className="relative bg-primary h-14 w-20 -rotate-45 translate-x-10   translate-y-6 hidden md:block"></div>   
+      </div>
+
       <div
         className={`
-         py-1 shadow-md transition-all duration-300 mx-auto z-20
-          fixed top-[61px] left-0 right-0 bg-primary w-[96%] rounded-b-xl
+         py-1 shadow-md transition-all duration-300 mx-auto z-50 md:z-20
+          fixed top-[61px] left-0 right-0 bg-primary w-[96%] rounded-b-md
           md:w-full
-          ${isAtTop 
-            ? "md:relative md:top-0 md:mt-0 md:bg-primary md:rounded shadow-xl"
+          ${isAtTop
+            ? "md:relative md:top-0 md:mt-0 md:bg-primary  shadow-xl"
             : "md:fixed md:top-0 md:bg-primary md:rounded-none"}
         `}
       >
         <div className="container mx-auto px-4">
+
           <div className="flex items-center justify-between gap-4">
             {/* Mobile Logo */}
             <div className="flex items-center md:hidden">
@@ -115,7 +155,7 @@ const HotelsList = ({city}) => {
                   className={`
                     min-w-[120px] px-4 py-2 rounded-lg border transition-all duration-200 
                     flex items-center gap-2
-                    ${selectedFilter === null
+                    ${!hasActivePropertyFilter
                       ? "bg-orange-500 text-white border-primary-dark"
                       : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"}
                   `}
@@ -131,15 +171,14 @@ const HotelsList = ({city}) => {
                     onClick={() => handleChooseType(type)}
                     className={`
                       min-w-[90px] px-3 py-2 rounded-lg transition-all duration-200 
-                      flex  items-center gap-1 shadow-sm
-                      ${selectedFilter === type
-                        ? "bg-orange-500 text-white  hover:bg-orange-400 border-b-2 border-primary-dark"
+                      flex items-center gap-1 shadow-sm
+                      ${isFilterActive(type)
+                        ? "bg-orange-500 text-white hover:bg-orange-400 border-b-2 border-primary-dark"
                         : typesWithHotels[type]
-                          ? "bg-transparant text-gray-100 hover:bg-blue border border-gray-200"
-                          : "bg-transparant text-gray-100 hover:bg-blue border border-gray-200 opacity-75"
+                          ? "bg-transparent text-gray-100 hover:bg-blue border border-gray-200"
+                          : "bg-transparent text-gray-100 hover:bg-blue border border-gray-200 opacity-75"
                       }
                     `}
-                    // disabled={typesWithHotels[type]}
                   >
                     <FontAwesomeIcon icon={icon} className="text-lg" />
                     <span className="text-sm whitespace-nowrap">{label}</span>
@@ -162,10 +201,10 @@ const HotelsList = ({city}) => {
             {/* Filters Button */}
             <button
               onClick={toggleFilterModal}
-              className="px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 text-gray-700 shadow-sm"
+              className="flex items-center gap-2 py-2 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-100 text-sm font-medium"
             >
               <FontAwesomeIcon icon={faSliders} />
-              <span className="text-sm font-medium">Filtres</span>
+              <span>Filters</span>
             </button>
           </div>
         </div>

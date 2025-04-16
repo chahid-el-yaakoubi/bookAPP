@@ -74,7 +74,7 @@ export const Home = () => {
             </div>
             <Navbar />
             <Header type = {"house_rental"}  />
-            <div className="mb-10 md:mb-14"> </div>
+            <div className="mb-10 md:mb-10"> </div>
             <HotelsList  />
 
 

@@ -16,3 +16,4 @@ router.get('/', getAllBookings);
 router.post('/check', checkAvailability);
 
 export default router;
+ 

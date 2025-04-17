@@ -1,4 +1,3 @@
-"use client"
 
 import { useContext, useEffect, useState } from "react"
 import { BookingForm } from "./booking_form"

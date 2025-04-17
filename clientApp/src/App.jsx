@@ -32,7 +32,6 @@ import Details from './pages/Hosting/catHost/houseRental/Details/Details';
 import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
 import { HomeCars } from './pages/cars/HomeCars';
-import BookingDetailsPage from './pages/Hosting/catHost/houseRental/Bookings/page';
 import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/BookingsPage';
 
 function App() {
@@ -82,7 +81,7 @@ function App() {
 
               {/* bookings */}
               <Route path="/host/properties/bookings" element={<BookingsPage />} />
-              <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} />
+              {/* <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} /> */}
               
               
               

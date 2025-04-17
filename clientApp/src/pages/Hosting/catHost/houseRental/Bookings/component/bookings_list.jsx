@@ -1,7 +1,6 @@
 
 import { useContext, useEffect, useState } from "react"
 import { BookingForm } from "./booking_form"
-import { mockBookings } from "../../../../../../Lib/moc_data"
 import { createBooking, deleteBooking, getBookings, getProperties, updateBooking } from "../../../../../../Lib/api"
 import { AuthContext } from "../../../../../../contextApi/AuthContext"
 

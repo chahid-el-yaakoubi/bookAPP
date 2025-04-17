@@ -181,7 +181,6 @@ export function BookingsList() {
               />
             </svg>
           </div>
-
           <div className="w-full sm:w-40 space-y-2 flex justify-between gap-4 items-center ">
             {["all", "confirmed", "pending", "cancelled"].map((status, i) => (
               <button

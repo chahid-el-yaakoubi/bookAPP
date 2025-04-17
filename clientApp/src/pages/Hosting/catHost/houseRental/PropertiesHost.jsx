@@ -20,6 +20,7 @@ const PropertiesHost = () => {
 
     // alert(created_by)
 
+
     const [statusFilter, setStatusFilter] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);

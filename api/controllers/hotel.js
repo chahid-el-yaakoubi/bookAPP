@@ -88,6 +88,7 @@ export const creatHotel = async (req, res, next) => {
 }
 
 
+
 export const updateHotel = async (req, res, next) => {
 
     try {

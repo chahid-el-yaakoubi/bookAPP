@@ -14,10 +14,10 @@ import { createProperty } from '../../../../Lib/api';
 const STORAGE_KEY = 'property_draft';
 
 const AddProperty = () => {
-  const { user } = useContext(AuthContext);
-  const owner_id = user?._id;
+  const { state } = useContext(AuthContext);
+  const created_by = state.user?.id;
 
-  // alert(owner_id)
+  // alert(created_by)
   const dispatch = useDispatch();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -40,7 +40,7 @@ const AddProperty = () => {
     // Default initial state if no saved data
     return {
       title: '',
-      created_by : owner_id || '',
+      created_by : created_by ,
       type: {
         type: '',
         category: '',

@@ -78,6 +78,48 @@ export const deletePhotosProperty = async (id, formdata) => {
   return response;
 };
 
+// admin properties
+export const getPropertiesAdmin = async (id) => {
+  const response = await api.get(`/api/hotels/${id}`);
+
+  return response;
+};
+
+// rooms
+export const getPropertiesRooms = async (id) => {
+  const response = await api.get(`/api/rooms/${id}/find`);
+
+  return response;
+};
+
+export const createRoom = async (id, formdata) => {
+  const response = await api.post(`/api/rooms/${id}`, formdata);
+
+  return response;
+};
+
+
+// bookoings
+export const createBooking = async (bookingData) => {
+  const response = await api.post('/api/bookings', bookingData);
+  return response;
+};
+
+export const updateBooking = async (id, bookingData) => {
+  const response = await api.put(`/api/bookings/${id}`, bookingData);
+  return response;
+};
+
+export const deleteBooking = async (id) => {
+  const response = await api.delete(`/api/bookings/${id}`);
+  return response;
+};
+
+export const getBookings = async () => {
+  const response = await api.get('/api/bookings');
+  return response;
+};
+
 // USERS
 export const getUsers = async () => {
   const response = await api.get('/api/users');

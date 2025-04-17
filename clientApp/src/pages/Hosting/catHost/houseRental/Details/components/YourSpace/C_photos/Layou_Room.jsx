@@ -7,6 +7,7 @@ import useFetch from "../../../../../../../../hooks/useFetch";
 import { RoomDisplay } from "./ItemTableRoom";
 import { RoomDetail } from "./DetailRoom";
 import { useSelector } from "react-redux";
+import { createRoom } from "../../../../../../../../Lib/api";
 
 const RoomLayout = ({ job }) => {
     const { id } = useParams();
@@ -48,7 +49,7 @@ const RoomLayout = ({ job }) => {
         console.log(id)
         // Here you would typically send the data to your backend
         // For example:
-        const response = await axios.post(`/api/rooms/${id}`, formData)
+        const response = await createRoom( id , formData)
 
         if (response.status === 200) {
             // Successfully added room

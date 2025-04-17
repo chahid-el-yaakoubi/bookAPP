@@ -5,7 +5,7 @@ const Footer = () => {
     const { t } = useTranslation();
 
     return (
-        <footer className="bg-gray-800 text-gray-200 w-full py-8 flex justify-center">
+        <footer className="bg-gray-800 text-gray-200 w-full py-8 flex justify-center relative z-50">
             <div className="container">
                 <div className="container mx-auto px-4 flex flex-wrap md:flex-nowrap">
                     {/* Contact Info */}

@@ -11,6 +11,7 @@ import citiesRouter from "./routes/cities.js";
 import houseRentalRouter from "./routes/houseRental.js";
 import shopsRouter from "./routes/shopSaleRent.js";
 import carsRouter from "./routes/cars.js";
+import BookingsRouter from './routes/bookings.js'
 
 dotenv.config();
 const app = express();
@@ -43,6 +44,7 @@ const connect = async () => {
 // Routes
 app.use('/api/auth', authoRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/bookings', BookingsRouter);
 app.use('/api/hotels', hotelsRouter);
 app.use('/api/rooms', roomsRouter);
 app.use('/api/cities', citiesRouter);

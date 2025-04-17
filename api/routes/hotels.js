@@ -10,8 +10,6 @@ const upload = multer({ dest: 'uploads/' });
 // CREATE  
 router.post('/', verifyAdmin, creatHotel);
 
-
-
 // UPDATE 
 router.put('/:id', verifyAdmin, updateHotel);
 // DELETE

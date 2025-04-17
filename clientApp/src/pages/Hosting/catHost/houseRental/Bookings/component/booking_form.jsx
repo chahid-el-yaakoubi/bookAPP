@@ -48,7 +48,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
 
   const [rooms, setRooms] = useState([]);
   const [selectedHouse, setSelectedhouse] = useState({});
-  const [suggestedGuests, setSuggestedGuests] = useState(mockGuests);
+  const [suggestedGuests, setSuggestedGuests] = useState([]);
   const [basePrice, setBasePrice] = useState(0);
 
   const getData = async () => {
@@ -99,14 +99,6 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
     }));
     
     // Update suggestions
-    if (value) {
-      const filtered = mockGuests.filter(guest => 
-        guest.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestedGuests(filtered);
-    } else {
-      setSuggestedGuests(mockGuests);
-    }
 
     // Clear error for this field
     if (errors.guestName) {

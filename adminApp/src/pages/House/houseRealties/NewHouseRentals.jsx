@@ -7,7 +7,6 @@ import { FormSection, InputField, SelectField, CheckboxField } from '../../../co
 import { City, Neighborhood, Region } from "../../../components/Location";
 import useFetch from "../../../hooks/useFetch";
 import { AuthContext } from "../../context/AuthContect";
-// import { set } from "mongoose";
 
 
 

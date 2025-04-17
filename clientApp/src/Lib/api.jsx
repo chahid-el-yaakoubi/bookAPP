@@ -42,6 +42,11 @@ export const getProperties = async (city) => {
   return response;
 };
 
+export const getProperty = async (id) => {
+  const response = await api.get(`/api/hotels/find/${id}`);
+  return response;
+};
+
 export const createProperty = async (propertyData) => {
   const response = await api.post('/api/hotels', propertyData);
   return response;

@@ -31,12 +31,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProperty } from '../../../../../redux/actions/propertyActions';
 
-import axios from 'axios';
 import TopNavHost from '../../../ComponentHost/TopNavHost';
 import { useTranslation } from 'react-i18next';
 import RoomLayout from './components/YourSpace/C_photos/Layou_Room';
 import Amenities from './components/YourSpace/Amenities';
 import { Bathrooms } from './components/YourSpace/Bathrooms';
+import { getProperty } from '../../../../../Lib/api';
 
 const Details = ({ sectionPath, job }) => {
 
@@ -102,7 +102,7 @@ const Details = ({ sectionPath, job }) => {
         // Find the property by ID
         const getHotel = async () => {
             try {
-                const response = await axios.get(`/api/hotels/find/${id}`);
+                const response = await getProperty(id);
                 const property = response.data;
                 if (property) {
                     dispatch(selectProperty(property));

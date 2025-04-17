@@ -54,7 +54,9 @@ const AddProperty = () => {
         postal_code: '',
         latitude: '',
         longitude: '',
-        neighborhood : ''
+        neighborhood : '',
+        floorNumber: 3,
+        floors : 1,
       },
       property_details: {
         amenities: {

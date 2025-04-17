@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaCalendarAlt, FaList, FaChevronDown } from 'react-icons/fa';
+import { LuNotebookPen } from 'react-icons/lu';
 
 const TopNavHost = ({category}) => {
     const location = useLocation();
@@ -54,7 +55,7 @@ const TopNavHost = ({category}) => {
                                       : 'text-gray-600 hover:bg-gray-100'}`}
                                   
                             >
-                                <FaList className="w-4 h-4" />
+                                <LuNotebookPen className="w-4 h-4" />
                                 <span>Bookings</span>
                             </Link>
                         </div>

@@ -11,7 +11,6 @@ import {
     AlertCircle,
     Bell,
     Camera,
-
     Mountain,
     Calendar,
     FileText,
@@ -43,6 +42,7 @@ const getIcon = (label) => {
 
     return iconMap[label] || <div className="w-5 h-5" />;
 };
+
 function Modal({ isOpen, onClose, title, items }) {
     useEffect(() => {
         if (isOpen) {
@@ -93,6 +93,7 @@ function Modal({ isOpen, onClose, title, items }) {
         </div>
     );
 }
+
 function CategoryItem({ label, value }) {
     return (
         <div className="flex items-center justify-between text-gray-700 py-2">
@@ -148,7 +149,7 @@ export function ThingsToKnow({ data }) {
         houseRules: [
             { label: 'Check-in', value: `${chekin?.checkInWindow.start} - ${chekin?.checkInWindow.end}` },
             { label: 'Checkout before', value: chekin?.checkoutTime },
-            { label: 'Maximum guests', value:  `${data?.rules?.max_guests} guests maximum `},
+            { label: 'Maximum guests', value: `${data?.rules?.max_guests} guests maximum` },
             { label: 'Pets', value: data?.rules?.pets?.allowed ? 'allowed' : 'not allowed' },
             { label: 'Parties or Events', value: data?.rules?.events },
             { label: 'Smoking', value: data?.rules?.smoking }

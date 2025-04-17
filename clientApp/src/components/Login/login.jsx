@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contextApi/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LuCircleArrowLeft } from "react-icons/lu";
 import { login } from "../../Lib/api";

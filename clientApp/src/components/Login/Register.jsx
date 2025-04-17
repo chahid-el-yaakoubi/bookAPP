@@ -1,11 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contextApi/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuCircleArrowLeft } from "react-icons/lu";
 import { CheckUsername, login, register } from "../../Lib/api";
-const apiUrl = import.meta.env.VITE_API_URL;
 
 
 const RegisterForm = () => {

@@ -32,7 +32,7 @@ import Details from './pages/Hosting/catHost/houseRental/Details/Details';
 import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
 import { HomeCars } from './pages/cars/HomeCars';
-// import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/BookingsPage';
+import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/BookingsPage';
 
 function App() {
   const { t } = useTranslation();
@@ -80,8 +80,8 @@ function App() {
               <Route path="/hosting/login" element={<LoginHost />} />
 
               {/* bookings */}
-              {/* <Route path="/host/properties/bookings" element={<BookingsPage />} /> */}
-              {/* <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} /> */}
+              <Route path="/host/properties/bookings" element={<BookingsPage />} />
+              <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} />
               
               
               

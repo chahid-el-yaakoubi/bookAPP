@@ -6,7 +6,6 @@ import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment'; // Import moment
 
 import { deleteProperty, getProperties, getPropertiesAdmin } from '../../../../Lib/api';
-import user from '../../../../../../api/models/user';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 
 const PropertiesHost = () => {

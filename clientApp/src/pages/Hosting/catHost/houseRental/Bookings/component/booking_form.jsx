@@ -447,8 +447,8 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 -top-10 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-slide-up ">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold">{booking ? "Edit Booking" : "Add New Booking"}</h2>
           <p className="text-sm text-gray-500 mt-1">
@@ -629,12 +629,12 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
               <span className="text-xl font-bold">
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
-                  currency: "USD",
+                  currency: "MAD",
                 }).format(totalPrice)}
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              {basePrice > 0 ? `$${basePrice} per night × ${formData.dateRange?.from && formData.dateRange?.to ? 
+              {basePrice > 0 ? `MAD${basePrice} per night × {formData.dateRange?.from && formData.dateRange?.to ? 
                 Math.ceil((new Date(formData.dateRange.to).getTime() - new Date(formData.dateRange.from).getTime()) / (1000 * 60 * 60 * 24)) : 
                 1} nights` : 'Select property and dates to calculate price'}
             </p>

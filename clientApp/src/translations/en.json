@@ -2,7 +2,8 @@
   "dir": "ltr",
   "general": {
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "at" : "At"
   },
   "header": {
     "menu": {
@@ -369,6 +370,29 @@
       "subtitle": "Join thousands of successful partners on Axistay and start growing your business today",
       "createListing": "Create Your Listing"
     }
+  },
+  "singleProperty": {
+    "viewAll": "View All Photos",
+    "share" : "Share",
+    "save" : "Save",
+    "usaved" : "Usaved",
+    "aboutThisPlace": "About this place",
+    "nearbyPlaces": "Nearby Places",
+    "showAll": "Show All",
+    "kilometers": "km",
+   "categories": {
+      "walkingRoutes": "Walking Routes",
+      "bookingPlaces": "Booking Places",
+      "beaches": "Beaches",
+      "restaurants": "Restaurants",
+      "publicTransit": "Public Transit",
+      "airports": "Airports",
+      "attractions": "Attractions"
+    },
+    "offersTitle": "What this place offers"
+
+
+
   }
 }
 

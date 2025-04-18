@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { CgMenuGridR } from "react-icons/cg";
+import { useTranslation } from 'react-i18next';
 
 export function ImageGallery({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -8,6 +9,9 @@ export function ImageGallery({ images }) {
   const [selectedType, setSelectedType] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
+
+  const { t } = useTranslation();
+
 
   // Mobile detection
   useEffect(() => {
@@ -92,7 +96,7 @@ export function ImageGallery({ images }) {
   }, [filteredImages, currentIndex]);
 
   return (
-    <div className="w-full">
+    <div className="w-full" dir='ltr'>
       {/* Mobile view */}
       {isMobile && (
         <div
@@ -102,7 +106,7 @@ export function ImageGallery({ images }) {
           onTouchEnd={handleTouchEnd}
         >
           {/* Counter */}
-          <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded z-20 text-sm">
+          <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded z-10 text-sm">
             {currentIndex + 1} / {filteredImages.length}
           </div>
 
@@ -181,7 +185,7 @@ export function ImageGallery({ images }) {
             ))}
 
             {filteredImages.length > 0 && (
-              <div className="absolute bottom-0 right-0 h-[47.5%] w-[24.5%] rounded-b-r-lg overflow-hidden z-50 ">
+              <div className="absolute bottom-0 right-0 h-[47.5%] w-[24.5%] rounded-b-r-lg overflow-hidden z-10 ">
                 {/* Background collage */}
                 <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-[1px] z-[-1]">
                   {filteredImages.slice(0, 6).map((img, idx) => (
@@ -202,7 +206,7 @@ export function ImageGallery({ images }) {
                   }}
                 >
                   <CgMenuGridR className="w-16 h-16 " />
-                  <span className='text-blue bg-black p-4 rounded'>Show all photos</span>
+                  <span className='text-blue bg-black p-4 rounded'>{t('singleProperty.viewAll')}</span>
                 </button>
               </div>
             )}

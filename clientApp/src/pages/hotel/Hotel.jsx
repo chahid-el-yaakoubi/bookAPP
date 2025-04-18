@@ -42,6 +42,9 @@ import HotelRoomsDisplay from './rooms/TableRooms';
 import { SharePropertyModal } from './componentHotel/Share.jsx';
 import { toggleReservation } from '../../redux/SaveClient.js';
 import Footer from '../../components/footer.jsx';
+import PropertyFeatures from './componentHotel/Features.jsx';
+import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
+import { useTranslation } from 'react-i18next';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -96,6 +99,8 @@ const mockListing = {
 };
 
 export function Hotel() {
+  const { t } = useTranslation();
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -112,6 +117,8 @@ export function Hotel() {
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState({});
   const [rooms, setRooms] = useState([]);
+  const [propertyFeatures, setPropertyFeatures] = useState();
+  const [propertyamenities, setPropertyAmenities] = useState();
   const [type, setType] = useState({});
   const [policies, setPolicies] = useState({});
   const [proximities, setProximities] = useState([]);
@@ -160,6 +167,12 @@ export function Hotel() {
     if (hotel && hotel.policies) {
       setPolicies(hotel.policies);
     }
+    if (hotel && hotel.property_details && hotel.property_details.propertyFeatures) {
+      setPropertyFeatures(hotel.property_details.propertyFeatures);
+    }
+    if (hotel && hotel.property_details && hotel.property_details.amenities) {
+      setPropertyAmenities(hotel.property_details.amenities);
+    }
   }, [hotel])
 
   useEffect(() => {
@@ -203,7 +216,7 @@ export function Hotel() {
 
       <div className='hidden md:block'>
         <Navbar />
-        <Header type={"house_rental"}/>
+        <Header type={"house_rental"} />
       </div>
 
       <BookingProvider >
@@ -229,7 +242,7 @@ export function Hotel() {
                   })}
                   className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
                   <Share className="w-4 h-4" />
-                  <span className="underline">Share</span>
+                  <span className="underline">{t('singleProperty.share')}</span>
                 </button>
                 <SharePropertyModal
                   isOpen={isShareModalOpen}
@@ -237,11 +250,12 @@ export function Hotel() {
                   property={[]}
                 />
                 <button
-                onClick={handleClick}
-                 className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                  onClick={handleClick}
+                  className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg">
                   <Heart className="w-4 h-4" />
                   <span className="underline">
-                    {exists ? 'usaved' : 'save'}
+                    {exists ? t('singleProperty.usaved') : t('singleProperty.save')}
+
                   </span>
                 </button>
               </div>
@@ -302,7 +316,8 @@ export function Hotel() {
 
 
                 <div className="py-6 border-b">
-                  <h1 className='text-2xl font-semibold mb-4'>About this place</h1>
+                  <h1 className='text-2xl font-semibold mb-4'>{t('singleProperty.aboutThisPlace')}
+                  </h1>
                   <p className="whitespace-pre-line text-gray-700">
                     {mockListing.description}
                   </p>
@@ -329,7 +344,7 @@ export function Hotel() {
 
             {/* Nearby Places Section */}
             <div className="py-8 border-b">
-              <h2 className="text-2xl font-semibold mb-6">Nearby Places</h2>
+              <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.nearbyPlaces')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                 {Object.entries(proximities)
                   .filter(([category, places]) => category !== null && places && places.length > 0)
@@ -339,29 +354,29 @@ export function Hotel() {
                       <div className="flex items-center gap-3 mb-4">
                         {categoryIcons[category] || <FaMapMarkerAlt className="text-gray-500 text-xl" />}
                         <h3 className="text-lg font-semibold capitalize">
-                          {category.replace(/([A-Z])/g, " $1")}
+                          {t(`singleProperty.categories.${category}`, category.replace(/([A-Z])/g, " $1"))}
                         </h3>
                       </div>
                       <ul className="text-gray-700">
                         {places.map((place) => (
                           <li key={place.id} className="flex justify-between text-gray-600">
                             <span className="font-medium">{place.name}</span>
-                            <span className="text-sm text-gray-500">{place.distance} km</span>
+                            <span className="text-sm text-gray-500">
+                              {place.distance} {t('singleProperty.kilometers')}
+                            </span>
                           </li>
                         ))}
                       </ul>
                     </div>
                   ))}
                 {isMobile && (
-                  <button
-                    className="text-blue-500 underline"
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    Show All
+                  <button className="text-blue-500 underline" onClick={() => setIsModalOpen(true)}>
+                    {t('singleProperty.showAll')}
                   </button>
                 )}
               </div>
             </div>
+
 
             {/* Modal for Mobile View */}
             {isModalOpen && (
@@ -401,18 +416,12 @@ export function Hotel() {
               </div>
             )}
 
+
+
             <div className="py-6 border-b">
-              <h2 className="text-2xl font-semibold mb-4">What this place offers</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {mockListing.amenities.map((amenity) => (
-                  <div key={amenity} className="flex items-center gap-4">
-                    <div className="w-8 h-8 flex items-center justify-center text-gray-600">
-                      ★
-                    </div>
-                    {amenity}
-                  </div>
-                ))}
-              </div>
+              <h2 className="text-2xl font-semibold mb-4"> {t('singleProperty.offersTitle')}</h2>
+              <PropertyFeatures propertyFeaturesdata={propertyFeatures} />
+              <PropertyAmenities propertyAmenitiesData={propertyamenities} />
             </div>
 
             <ThingsToKnow data={policies} />
@@ -430,10 +439,10 @@ export function Hotel() {
 
               </div>
 
-              
+
             </div>
 
-            
+
           </div>
         </div>
       </BookingProvider >

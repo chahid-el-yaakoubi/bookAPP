@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
+import {
   FaTimes, FaPaw, FaParking, FaUtensils, FaWifi, FaHouseUser,
   FaBuilding, FaHotel, FaBolt, FaSearch, FaTrophy, FaStar,
   FaHotTub, FaHome, FaTv, FaSnowflake, FaFire, FaBriefcase,
@@ -9,6 +9,8 @@ import {
   FaTshirt, FaTree, FaChair, FaDoorClosed, FaMountain,
   FaCamera
 } from 'react-icons/fa';
+import { MdElevator } from 'react-icons/md';
+
 import {
   toggleAmenity,
   toggleBookingOption,
@@ -19,12 +21,10 @@ import {
   setSortByPrice
 } from '../redux/filtersSlice';
 import { applyFilters } from '../redux/hotelsSlice';
-import { MdElevator } from 'react-icons/md';
 
 export const FilterModule = ({ onClose }) => {
   const dispatch = useDispatch();
-  
-  // Get filters from filtersSlice with proper default values
+
   const filters = useSelector((state) => state.filters) || {
     priceRange: { min: 200, max: 2000 },
     amenities: {},
@@ -33,73 +33,60 @@ export const FilterModule = ({ onClose }) => {
     propertyTypes: {},
     sortByPrice: 'default'
   };
-  
-  // Get filtered hotels with fallback
+
   const { filteredHotels = [] } = useSelector((state) => state.hotels || {});
-  
-  // Make sure filters are applied when component mounts
+
   useEffect(() => {
     dispatch(applyFilters(filters));
   }, [dispatch, filters]);
-  
-  // Price sort options
+
   const priceSortOptions = [
-    { id: 'default', label: 'Recommandé' },
-    { id: 'low-to-high', label: 'Prix: croissant' },
-    { id: 'high-to-low', label: 'Prix: décroissant' }
+    { id: 'default', label: 'Recommended' },
+    { id: 'low-to-high', label: 'Price: Low to High' },
+    { id: 'high-to-low', label: 'Price: High to Low' }
   ];
 
-  // Create a generic toggle handler to reduce repetition
   const handleToggle = (toggleAction, itemId) => {
     dispatch(toggleAction(itemId));
-    
-    // Apply filters after state update
-    // We'll let the useEffect handle filter application after state change
   };
 
   const handlePriceSortChange = (sortOption) => {
     dispatch(setSortByPrice(sortOption));
-    // The useEffect will handle filter application
   };
 
   const handleAmenityToggle = (id) => handleToggle(toggleAmenity, id);
   const handlePropertyTypeToggle = (id) => handleToggle(togglePropertyType, id);
 
   const handleClearFilters = () => {
-    // Clear all filters
     dispatch(clearFilters());
-    // The useEffect will handle filter application
   };
 
   const handleApplyFilters = () => {
-    // Final application of all filters
     dispatch(applyFilters(filters));
     onClose();
   };
 
-  // Handle price range changes with debounce
   let priceRangeDebounceTimer;
   const handlePriceRangeChange = (type, value) => {
     clearTimeout(priceRangeDebounceTimer);
-    
+
     const newValue = parseInt(value);
     let newPriceRange;
-    
+
     if (type === 'min') {
-      newPriceRange = { 
-        min: newValue, 
-        max: Math.max(filters.priceRange?.max || 2000, newValue) 
+      newPriceRange = {
+        min: newValue,
+        max: Math.max(filters.priceRange?.max || 2000, newValue)
       };
     } else {
-      newPriceRange = { 
+      newPriceRange = {
         min: Math.min(filters.priceRange?.min || 100, newValue),
-        max: newValue 
+        max: newValue
       };
     }
-    
+
     dispatch(setPriceRange(newPriceRange));
-    
-    // Debounce the filter application for better performance
+
     priceRangeDebounceTimer = setTimeout(() => {
       dispatch(applyFilters({
         ...filters,
@@ -109,63 +96,56 @@ export const FilterModule = ({ onClose }) => {
   };
 
   const propertyTypes = [
-    { id: 'hotel', label: 'Hôtel', icon: <FaHotel /> },
-    { id: 'apartment', label: 'Appartement', icon: <FaBuilding /> },
+    { id: 'hotel', label: 'Hotel', icon: <FaHotel /> },
+    { id: 'apartment', label: 'Apartment', icon: <FaBuilding /> },
     { id: 'villa', label: 'Villa', icon: <FaHome /> },
     { id: 'house', label: 'House', icon: <FaHome /> },
-    { id: 'guesthouse', label: 'Maison d\'hôtes', icon: <FaHouseUser /> },
-  ];
-
-  const roomTypes = [
-    { id: 'room-bedrooms', label: 'Chambres' },
-    { id: 'room-beds', label: 'Lits' },
-    { id: 'room-bathrooms', label: 'Salles de bain' }
+    { id: 'guesthouse', label: 'Guesthouse', icon: <FaHouseUser /> },
   ];
 
   const amenityCategories = [
     {
-      title: "Très demandés",
+      title: "Popular",
       items: [
         { id: 'wifi', label: 'Wi-Fi / Internet', icon: <FaWifi /> },
-        { id: 'tv', label: 'Télévision', icon: <FaTv /> },
-        { id: 'ac', label: 'Climatisation', icon: <FaSnowflake /> },
-        { id: 'heating', label: 'Chauffage', icon: <FaFire /> },
-        { id: 'hot-water', label: 'Eau chaude', icon: <FaShower /> },
+        { id: 'tv', label: 'Television', icon: <FaTv /> },
+        { id: 'ac', label: 'Air Conditioning', icon: <FaSnowflake /> },
+        { id: 'heating', label: 'Heating', icon: <FaFire /> },
+        { id: 'hot-water', label: 'Hot Water', icon: <FaShower /> },
         { id: 'parking', label: 'Parking / Garage', icon: <FaParking /> },
       ]
     },
     {
-      title: "Produits et services de base",
+      title: "Essentials",
       items: [
-        { id: 'kitchen', label: 'Cuisine', icon: <FaUtensils /> },
-        { id: 'washer', label: 'Lave-linge', icon: <FaTshirt /> },
-        { id: 'workspace', label: 'Espace de travail dédié', icon: <FaBriefcase /> },
-        { id: 'elevator', label: 'Ascenseur', icon: <MdElevator /> },
+        { id: 'kitchen', label: 'Kitchen', icon: <FaUtensils /> },
+        { id: 'washer', label: 'Washer', icon: <FaTshirt /> },
+        { id: 'workspace', label: 'Dedicated Workspace', icon: <FaBriefcase /> },
+        { id: 'elevator', label: 'Elevator', icon: <MdElevator /> },
       ]
     },
     {
-      title: "Caractéristiques",
+      title: "Features",
       items: [
-        { id: 'garden', label: 'Jardin', icon: <FaTree /> },
-        { id: 'pool', label: 'Piscine', icon: <FaSwimmingPool /> },
-        { id: 'terrace', label: 'Terrasse / Balcon', icon: <FaChair /> },
+        { id: 'garden', label: 'Garden', icon: <FaTree /> },
+        { id: 'pool', label: 'Pool', icon: <FaSwimmingPool /> },
+        { id: 'terrace', label: 'Terrace / Balcony', icon: <FaChair /> },
         { id: 'jacuzzi', label: 'Jacuzzi', icon: <FaHotTub /> },
         { id: 'bbq', label: 'Barbecue', icon: <FaFire /> },
-        { id: 'breakfast', label: 'Petit-déjeuner', icon: <FaCoffee /> },
+        { id: 'breakfast', label: 'Breakfast', icon: <FaCoffee /> },
       ]
-    }, 
+    },
     {
-      title: "Sécurité",
+      title: "Security",
       items: [
-        { id: 'smoke-detector', label: 'Détecteur de fumée', icon: <FaLockOpen /> },
-        { id: 'carbon-detector', label: 'Détecteur de monoxyde de carbone', icon: <FaLock /> },
-        { id: 'security', label: 'Sécurité 24h/24', icon: <FaLock /> },
+        { id: 'smoke-detector', label: 'Smoke Detector', icon: <FaLockOpen /> },
+        { id: 'carbon-detector', label: 'Carbon Monoxide Detector', icon: <FaLock /> },
+        { id: 'security', label: '24/7 Security', icon: <FaLock /> },
         { id: 'camera', label: 'Camera', icon: <FaCamera /> },
       ]
     },
   ];
-  
-  // Calculate if any filters are applied
+
   const hasActiveFilters = () => {
     const propertyTypesActive = filters.propertyTypes && Object.values(filters.propertyTypes).some(value => value);
     const amenitiesActive = filters.amenities && Object.values(filters.amenities).some(value => value);
@@ -173,31 +153,28 @@ export const FilterModule = ({ onClose }) => {
     const exceptionalPropertiesActive = filters.exceptionalProperties && Object.values(filters.exceptionalProperties).some(value => value);
     const priceRangeActive = filters.priceRange?.min !== 200 || filters.priceRange?.max !== 2000;
     const sortActive = filters.sortByPrice !== 'default';
-    
-    return propertyTypesActive || amenitiesActive || bookingOptionsActive || 
-           exceptionalPropertiesActive || priceRangeActive || sortActive;
+
+    return propertyTypesActive || amenitiesActive || bookingOptionsActive ||
+      exceptionalPropertiesActive || priceRangeActive || sortActive;
   };
 
-  // Check if a specific filter is active
   const isFilterActive = (type, id) => {
     if (!filters[type]) return false;
     return !!filters[type][id];
   };
 
-  // Reusable button component for better consistency
   const FilterButton = ({ type, id, children, className, isActive, onClick }) => (
     <button
       onClick={onClick}
       className={`border transition-all ${
-        isActive 
-          ? 'bg-black text-white border-black font-medium' 
+        isActive
+          ? 'bg-black text-white border-black font-medium'
           : 'bg-white text-gray-700 border-gray-300 hover:border-black'
       } ${className}`}
     >
       {children}
     </button>
   );
-
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
       <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl">

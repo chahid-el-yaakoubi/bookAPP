@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 // Action creators
@@ -48,6 +48,9 @@ import { updateProperty } from '../../../../../../../Lib/api';
  * based on the mode prop
  */
 const Amenities = ({ mode }) => {
+    const { t, i18n } = useTranslation(['properties']);
+    const isRTL = i18n.dir() === 'rtl';
+
     const dispatch = useDispatch();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
     const { id } = useParams();
@@ -69,181 +72,173 @@ const Amenities = ({ mode }) => {
     const getComponentInfo = () => {
         return mode === 'amenities'
             ? {
-                title: 'Amenities',
-                description: 'Select the amenities available in your property\'s rooms/units.'
+                title: t('amenities.title'),
+                description: t('amenities.description')
             }
             : {
-                title: 'Property Features',
-                description: 'Select the features available throughout your property.'
+                title: t('amenities.title'),
+                description: t('amenities.description')
             };
     };
-
     // Define all possible amenities
     const roomAmenities = [
         // Room Features
-        { id: 'air_conditioning', label: 'Air Conditioning', icon: FaFan, category: 'Room Features' },
-        { id: 'heating_system', label: 'Heating System', icon: FaThermometerHalf, category: 'Room Features' },
-        { id: 'fan', label: 'Fan', icon: FaFan, category: 'Room Features' },
-        { id: 'wardrobe', label: 'Wardrobe/Closet', icon: FaHome, category: 'Room Features' },
-        { id: 'full_length_mirror', label: 'Full-Length Mirror', icon: GiMirrorMirror, category: 'Room Features' },
-        { id: 'blackout_curtains', label: 'Blackout Curtains', icon: MdCurtainsClosed, category: 'Room Features' },
-        { id: 'reading_lights', label: 'Reading Lights', icon: FaLightbulb, category: 'Room Features' },
-        { id: 'soundproofing', label: 'Soundproofing', icon: FaVolumeMute, category: 'Room Features' },
-        { id: 'balcony', label: 'Balcony', icon: FaDoorOpen, category: 'Room Features' },
-        { id: 'terrace', label: 'Terrace', icon: FaUmbrellaBeach, category: 'Room Features' },
-        { id: 'safe', label: 'In-Room Safe', icon: FaLock, category: 'Room Features' },
-        { id: 'iron', label: 'Iron & Ironing Board', icon: GiIronMask, category: 'Room Features' },
-        { id: 'luggage_rack', label: 'Luggage Rack', icon: FaSuitcase, category: 'Room Features' },
-        { id: 'telephone', label: 'Telephone', icon: FaPhone, category: 'Room Features' },
-        { id: 'alarm_clock', label: 'Alarm Clock', icon: FaClock, category: 'Room Features' },
+        { id: 'airConditioning', label: t('amenities.items.airConditioning'), icon: FaFan, category: t('amenities.categories.roomFeatures') },
+        { id: 'heatingSystem', label: t('amenities.items.heatingSystem'), icon: FaThermometerHalf, category: t('amenities.categories.roomFeatures') },
+        { id: 'fan', label: t('amenities.items.fan'), icon: FaFan, category: t('amenities.categories.roomFeatures') },
+        { id: 'wardrobe', label: t('amenities.items.wardrobe'), icon: FaHome, category: t('amenities.categories.roomFeatures') },
+        { id: 'fullLengthMirror', label: t('amenities.items.fullLengthMirror'), icon: GiMirrorMirror, category: t('amenities.categories.roomFeatures') },
+        { id: 'blackoutCurtains', label: t('amenities.items.blackoutCurtains'), icon: MdCurtainsClosed, category: t('amenities.categories.roomFeatures') },
+        { id: 'readingLights', label: t('amenities.items.readingLights'), icon: FaLightbulb, category: t('amenities.categories.roomFeatures') },
+        { id: 'soundproofing', label: t('amenities.items.soundproofing'), icon: FaVolumeMute, category: t('amenities.categories.roomFeatures') },
+        { id: 'balcony', label: t('amenities.items.balcony'), icon: FaDoorOpen, category: t('amenities.categories.roomFeatures') },
+        { id: 'terrace', label: t('amenities.items.terrace'), icon: FaUmbrellaBeach, category: t('amenities.categories.roomFeatures') },
+        { id: 'inRoomSafe', label: t('amenities.items.inRoomSafe'), icon: FaLock, category: t('amenities.categories.roomFeatures') },
+        { id: 'ironAndBoard', label: t('amenities.items.ironAndBoard'), icon: GiIronMask, category: t('amenities.categories.roomFeatures') },
+        { id: 'luggageRack', label: t('amenities.items.luggageRack'), icon: FaSuitcase, category: t('amenities.categories.roomFeatures') },
+        { id: 'telephone', label: t('amenities.items.telephone'), icon: FaPhone, category: t('amenities.categories.roomFeatures') },
+        { id: 'alarmClock', label: t('amenities.items.alarmClock'), icon: FaClock, category: t('amenities.categories.roomFeatures') },
 
         // Entertainment
-        { id: 'tv', label: 'TV', icon: FaTv, category: 'Entertainment' },
-        { id: 'satellite_tv', label: 'Satellite/Cable TV', icon: FaTv, category: 'Entertainment' },
-        { id: 'smart_tv', label: 'Smart TV', icon: FaTv, category: 'Entertainment' },
-        { id: 'netflix', label: 'Netflix', icon: FaTv, category: 'Entertainment' },
-        { id: 'speakers', label: 'Speakers', icon: FaVolumeUp, category: 'Entertainment' },
-        { id: 'game_console', label: 'Game Console', icon: FaGamepad, category: 'Entertainment' },
-        { id: 'streaming_services', label: 'Streaming Services', icon: FaFilm, category: 'Entertainment' },
-        { id: 'books', label: 'Books & Magazines', icon: FaBook, category: 'Entertainment' },
-        { id: 'board_games', label: 'Board Games', icon: GiChessKing, category: 'Entertainment' },
-        { id: 'premium_channels', label: 'Premium TV Channels', icon: FaTv, category: 'Entertainment' },
-        { id: 'dvd_player', label: 'DVD Player', icon: FcDvdLogo, category: 'Entertainment' },
+        { id: 'tv', label: t('amenities.items.tv'), icon: FaTv, category: t('amenities.categories.entertainment') },
+        { id: 'satelliteTv', label: t('amenities.items.satelliteTv'), icon: FaTv, category: t('amenities.categories.entertainment') },
+        { id: 'smartTv', label: t('amenities.items.smartTv'), icon: FaTv, category: t('amenities.categories.entertainment') },
+        { id: 'netflix', label: t('amenities.items.netflix'), icon: FaTv, category: t('amenities.categories.entertainment') },
+        { id: 'speakers', label: t('amenities.items.speakers'), icon: FaVolumeUp, category: t('amenities.categories.entertainment') },
+        { id: 'gameConsole', label: t('amenities.items.gameConsole'), icon: FaGamepad, category: t('amenities.categories.entertainment') },
+        { id: 'streamingServices', label: t('amenities.items.streamingServices'), icon: FaFilm, category: t('amenities.categories.entertainment') },
+        { id: 'books', label: t('amenities.items.books'), icon: FaBook, category: t('amenities.categories.entertainment') },
+        { id: 'boardGames', label: t('amenities.items.boardGames'), icon: GiChessKing, category: t('amenities.categories.entertainment') },
+        { id: 'premiumChannels', label: t('amenities.items.premiumChannels'), icon: FaTv, category: t('amenities.categories.entertainment') },
+        { id: 'dvdPlayer', label: t('amenities.items.dvdPlayer'), icon: FcDvdLogo, category: t('amenities.categories.entertainment') },
 
         // Workspace
-        { id: 'desk', label: 'Desk / Workspace', icon: FaLaptopHouse, category: 'Workspace' },
-        { id: 'laptop_friendly_desk', label: 'Laptop-Friendly Desk', icon: FaLaptop, category: 'Workspace' },
-        { id: 'office_chair', label: 'Office Chair', icon: FaChair, category: 'Workspace' },
-        { id: 'high_speed_wifi', label: 'High-Speed WiFi', icon: FaWifi, category: 'Workspace' },
-        { id: 'ethernet_connection', label: 'Ethernet Connection', icon: FaNetworkWired, category: 'Workspace' },
-        { id: 'printer', label: 'Printer Access', icon: FaPrint, category: 'Workspace' },
-        { id: 'usb_ports', label: 'USB Charging Ports', icon: FaUsb, category: 'Workspace' },
-        { id: 'power_outlets', label: 'Multiple Power Outlets', icon: FaPlug, category: 'Workspace' },
-        { id: 'stationery', label: 'Stationery', icon: FaPen, category: 'Workspace' },
+        { id: 'desk', label: t('amenities.items.desk'), icon: FaLaptopHouse, category: t('amenities.categories.workspace') },
+        { id: 'laptopFriendlyDesk', label: t('amenities.items.laptopFriendlyDesk'), icon: FaLaptop, category: t('amenities.categories.workspace') },
+        { id: 'officeChair', label: t('amenities.items.officeChair'), icon: FaChair, category: t('amenities.categories.workspace') },
+        { id: 'highSpeedWifi', label: t('amenities.items.highSpeedWifi'), icon: FaWifi, category: t('amenities.categories.workspace') },
+        { id: 'ethernetConnection', label: t('amenities.items.ethernetConnection'), icon: FaNetworkWired, category: t('amenities.categories.workspace') },
+        { id: 'printerAccess', label: t('amenities.items.printerAccess'), icon: FaPrint, category: t('amenities.categories.workspace') },
+        { id: 'usbPorts', label: t('amenities.items.usbPorts'), icon: FaUsb, category: t('amenities.categories.workspace') },
+        { id: 'powerOutlets', label: t('amenities.items.powerOutlets'), icon: FaPlug, category: t('amenities.categories.workspace') },
+        { id: 'stationery', label: t('amenities.items.stationery'), icon: FaPen, category: t('amenities.categories.workspace') },
 
         // Kitchen & Dining
-        { id: 'refrigerator', label: 'Refrigerator', icon: BiFridge, category: 'Kitchen & Dining' },
-        { id: 'microwave', label: 'Microwave', icon: FaUtensils, category: 'Kitchen & Dining' },
-        { id: 'electric_kettle', label: 'Electric Kettle', icon: FaCoffee, category: 'Kitchen & Dining' },
-        { id: 'toaster', label: 'Toaster', icon: GiToaster, category: 'Kitchen & Dining' },
-        { id: 'coffee_machine', label: 'Coffee Machine', icon: FaCoffee, category: 'Kitchen & Dining' },
-        { id: 'oven', label: 'Oven', icon: FaFire, category: 'Kitchen & Dining' },
-        { id: 'stovetop', label: 'Stovetop', icon: FaFire, category: 'Kitchen & Dining' },
-        { id: 'dining_table', label: 'Dining Table & Chairs', icon: GiTable, category: 'Kitchen & Dining' },
-        { id: 'kitchenware', label: 'Kitchenware', icon: FaUtensils, category: 'Kitchen & Dining' },
-        { id: 'dishwasher', label: 'Dishwasher', icon: MdOutlineCleaningServices, category: 'Kitchen & Dining' },
-        { id: 'blender', label: 'Blender', icon: FaBlender, category: 'Kitchen & Dining' },
-        { id: 'water_purifier', label: 'Water Purifier', icon: FaWater, category: 'Kitchen & Dining' },
-        { id: 'wine_glasses', label: 'Wine Glasses', icon: FaWineGlass, category: 'Kitchen & Dining' },
-        { id: 'cutting_board', label: 'Cutting Board & Knives', icon: GiKnifeFork, category: 'Kitchen & Dining' },
-        { id: 'spices', label: 'Basic Spices & Cooking Oil', icon: GiSaltShaker, category: 'Kitchen & Dining' },
-        { id: 'food_processor', label: 'Food Processor', icon: FaBlender, category: 'Kitchen & Dining' },
+        { id: 'refrigerator', label: t('amenities.items.refrigerator'), icon: BiFridge, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'microwave', label: t('amenities.items.microwave'), icon: FaUtensils, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'electricKettle', label: t('amenities.items.electricKettle'), icon: FaCoffee, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'toaster', label: t('amenities.items.toaster'), icon: GiToaster, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'coffeeMachine', label: t('amenities.items.coffeeMachine'), icon: FaCoffee, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'oven', label: t('amenities.items.oven'), icon: FaFire, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'stovetop', label: t('amenities.items.stovetop'), icon: FaFire, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'diningTable', label: t('amenities.items.diningTable'), icon: GiTable, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'kitchenware', label: t('amenities.items.kitchenware'), icon: FaUtensils, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'dishwasher', label: t('amenities.items.dishwasher'), icon: MdOutlineCleaningServices, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'blender', label: t('amenities.items.blender'), icon: FaBlender, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'waterPurifier', label: t('amenities.items.waterPurifier'), icon: FaWater, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'wineGlasses', label: t('amenities.items.wineGlasses'), icon: FaWineGlass, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'cuttingBoard', label: t('amenities.items.cuttingBoard'), icon: GiKnifeFork, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'spices', label: t('amenities.items.spices'), icon: GiSaltShaker, category: t('amenities.categories.kitchenAndDining') },
+        { id: 'foodProcessor', label: t('amenities.items.foodProcessor'), icon: FaBlender, category: t('amenities.categories.kitchenAndDining') },
 
         // Bathroom Facilities
-        { id: 'private_bathroom', label: 'Private Bathroom', icon: FaBath, category: 'Bathroom Facilities' },
-        { id: 'shared_bathroom', label: 'Shared Bathroom', icon: FaBath, category: 'Bathroom Facilities' },
-        { id: 'toilet_bidet', label: 'Toilet & Bidet', icon: FaToilet, category: 'Bathroom Facilities' },
-        { id: 'shower', label: 'Shower', icon: FaShower, category: 'Bathroom Facilities' },
-        { id: 'bathtub', label: 'Bathtub', icon: FaBath, category: 'Bathroom Facilities' },
-        { id: 'jacuzzi', label: 'Jacuzzi / Hot Tub', icon: FaHotTub, category: 'Bathroom Facilities' },
-        { id: 'towels_bathrobes', label: 'Towels & Bathrobes', icon: FaTshirt, category: 'Bathroom Facilities' },
-        { id: 'hairdryer', label: 'Hairdryer', icon: FaCut, category: 'Bathroom Facilities' },
-        { id: 'toiletries', label: 'Toiletries', icon: FaSoap, category: 'Bathroom Facilities' },
-        { id: 'makeup_mirror', label: 'Makeup Mirror', icon: GiMirrorMirror, category: 'Bathroom Facilities' },
-        { id: 'heated_towel_rack', label: 'Heated Towel Rack', icon: FaTemperatureHigh, category: 'Bathroom Facilities' },
-        { id: 'bathroom_scale', label: 'Bathroom Scale', icon: FaWeight, category: 'Bathroom Facilities' },
-        { id: 'rain_shower', label: 'Rain Shower', icon: FaCloudRain, category: 'Bathroom Facilities' },
-        { id: 'shower_cap', label: 'Shower Cap', icon: FaHatCowboy, category: 'Bathroom Facilities' },
-        { id: 'slippers', label: 'Slippers', icon: GiSocks, category: 'Bathroom Facilities' },
+        { id: 'privateBathroom', label: t('amenities.items.privateBathroom'), icon: FaBath, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'sharedBathroom', label: t('amenities.items.sharedBathroom'), icon: FaBath, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'toiletBidet', label: t('amenities.items.toiletBidet'), icon: FaToilet, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'shower', label: t('amenities.items.shower'), icon: FaShower, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'bathtub', label: t('amenities.items.bathtub'), icon: FaBath, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'jacuzzi', label: t('amenities.items.jacuzzi'), icon: FaHotTub, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'towelsAndBathrobes', label: t('amenities.items.towelsAndBathrobes'), icon: FaTshirt, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'hairdryer', label: t('amenities.items.hairdryer'), icon: FaCut, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'toiletries', label: t('amenities.items.toiletries'), icon: FaSoap, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'makeupMirror', label: t('amenities.items.makeupMirror'), icon: GiMirrorMirror, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'heatedTowelRack', label: t('amenities.items.heatedTowelRack'), icon: FaTemperatureHigh, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'bathroomScale', label: t('amenities.items.bathroomScale'), icon: FaWeight, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'rainShower', label: t('amenities.items.rainShower'), icon: FaCloudRain, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'showerCap', label: t('amenities.items.showerCap'), icon: FaHatCowboy, category: t('amenities.categories.bathroomFacilities') },
+        { id: 'slippers', label: t('amenities.items.slippers'), icon: GiSocks, category: t('amenities.categories.bathroomFacilities') },
 
         // Technology
-        { id: 'smart_home', label: 'Smart Home Features', icon: FaRobot, category: 'Technology' },
-        { id: 'voice_assistant', label: 'Voice Assistant', icon: FaMicrophone, category: 'Technology' },
-        { id: 'usb_charging', label: 'USB Charging Ports', icon: FaUsb, category: 'Technology' },
-        { id: 'international_outlets', label: 'International Power Outlets', icon: FaPlug, category: 'Technology' },
-        { id: 'digital_key', label: 'Digital Key/Smart Lock', icon: FaKey, category: 'Technology' },
-        { id: 'projector', label: 'Projector', icon: FaProjectDiagram, category: 'Technology' },
-        { id: 'bluetooth_speaker', label: 'Bluetooth Speaker', icon: FaVolumeUp, category: 'Technology' },
+        { id: 'smartHome', label: t('amenities.items.smartHome'), icon: FaRobot, category: t('amenities.categories.technology') },
+        { id: 'voiceAssistant', label: t('amenities.items.voiceAssistant'), icon: FaMicrophone, category: t('amenities.categories.technology') },
+        { id: 'usbCharging', label: t('amenities.items.usbCharging'), icon: FaUsb, category: t('amenities.categories.technology') },
+        { id: 'internationalOutlets', label: t('amenities.items.internationalOutlets'), icon: FaPlug, category: t('amenities.categories.technology') },
+        { id: 'digitalKey', label: t('amenities.items.digitalKey'), icon: FaKey, category: t('amenities.categories.technology') },
+        { id: 'projector', label: t('amenities.items.projector'), icon: FaProjectDiagram, category: t('amenities.categories.technology') },
+        { id: 'bluetoothSpeaker', label: t('amenities.items.bluetoothSpeaker'), icon: FaVolumeUp, category: t('amenities.categories.technology') },
 
         // Family Features
-        { id: 'baby_cot', label: 'Baby Cot/Crib', icon: FaBaby, category: 'Family Features' },
-        { id: 'high_chair', label: 'High Chair', icon: FaChair, category: 'Family Features' },
-        { id: 'child_safety', label: 'Child Safety Features', icon: FaChild, category: 'Family Features' },
-        { id: 'baby_bath', label: 'Baby Bath', icon: FaBath, category: 'Family Features' },
-        { id: 'baby_monitor', label: 'Baby Monitor', icon: FaBaby, category: 'Family Features' },
+        { id: 'babyCot', label: t('amenities.items.babyCot'), icon: FaBaby, category: t('amenities.categories.familyFeatures') },
+        { id: 'highChair', label: t('amenities.items.highChair'), icon: FaChair, category: t('amenities.categories.familyFeatures') },
+        { id: 'childSafety', label: t('amenities.items.childSafety'), icon: FaChild, category: t('amenities.categories.familyFeatures') },
+        { id: 'babyBath', label: t('amenities.items.babyBath'), icon: FaBath, category: t('amenities.categories.familyFeatures') },
+        { id: 'babyMonitor', label: t('amenities.items.babyMonitor'), icon: FaBaby, category: t('amenities.categories.familyFeatures') },
     ];
 
     // Define property features
     const propertyFeatures = [
         // Essentials
-        { id: 'wifi', label: 'Free Wi-Fi', icon: FaWifi, category: 'Essentials' },
-        { id: 'air_conditioning', label: 'Air Conditioning', icon: FaSnowflake, category: 'Essentials' },
-        { id: 'heating', label: 'Heating', icon: FaFire, category: 'Essentials' },
-        { id: 'kitchen', label: 'Fully Equipped Kitchen', icon: GiKitchenKnives, category: 'Essentials' },
-        { id: 'parking', label: 'Free Parking', icon: FaParking, category: 'Essentials' },
-        { id: 'elevator', label: 'Elevator', icon: FaArrowUp, category: 'Essentials' },
+        { id: 'wifi', label: t('amenities.items.freeWifi'), icon: FaWifi, category: t('amenities.categories.essentials') },
+        { id: 'airConditioning', label: t('amenities.items.airConditioning'), icon: FaSnowflake, category: t('amenities.categories.essentials') },
+        { id: 'heating', label: t('amenities.items.heating'), icon: FaFire, category: t('amenities.categories.essentials') },
+        { id: 'fullyEquippedKitchen', label: t('amenities.items.fullyEquippedKitchen'), icon: GiKitchenKnives, category: t('amenities.categories.essentials') },
+        { id: 'freeParking', label: t('amenities.items.freeParking'), icon: FaParking, category: t('amenities.categories.essentials') },
+        { id: 'elevator', label: t('amenities.items.elevator'), icon: FaArrowUp, category: t('amenities.categories.essentials') },
 
         // Outdoor
-        { id: 'garden', label: 'Garden', icon: FaLeaf, category: 'Outdoor' },
-        { id: 'terrace_balcony', label: 'Terrace / Balcony', icon: MdBalcony, category: 'Outdoor' },
-        { id: 'bbq_area', label: 'BBQ Area', icon: ImSpoonKnife, category: 'Outdoor' },
-        { id: 'picnic_area', label: 'Picnic Area', icon: FaUmbrellaBeach, category: 'Outdoor' },
-        { id: 'patio', label: 'Patio / Outdoor Seating', icon: FaChair, category: 'Outdoor' },
-        { id: 'outdoor_furniture', label: 'Outdoor Furniture', icon: FaChair, category: 'Outdoor' },
-        { id: 'beach_access', label: 'Beach Access', icon: FaUmbrella, category: 'Outdoor' },
-        { id: 'ski_access', label: 'Ski-in / Ski-out', icon: FaSkiing, category: 'Outdoor' },
-        { id: 'hiking_trails', label: 'Hiking Trails', icon: FaHiking, category: 'Outdoor' },
-        { id: 'outdoor_pool', label: 'Outdoor Pool', icon: FaSwimmingPool, category: 'Outdoor' },
-        { id: 'tennis_court', label: 'Tennis Court', icon: FaTableTennis, category: 'Outdoor' },
-        { id: 'golf_course', label: 'Golf Course', icon: FaGolfBall, category: 'Outdoor' },
+        { id: 'garden', label: t('amenities.items.garden'), icon: FaLeaf, category: t('amenities.categories.outdoor') },
+        { id: 'terraceBalcony', label: t('amenities.items.terraceBalcony'), icon: MdBalcony, category: t('amenities.categories.outdoor') },
+        { id: 'bbqArea', label: t('amenities.items.bbqArea'), icon: ImSpoonKnife, category: t('amenities.categories.outdoor') },
+        { id: 'picnicArea', label: t('amenities.items.picnicArea'), icon: FaUmbrellaBeach, category: t('amenities.categories.outdoor') },
+        { id: 'patio', label: t('amenities.items.patio'), icon: FaChair, category: t('amenities.categories.outdoor') },
+        { id: 'outdoorFurniture', label: t('amenities.items.outdoorFurniture'), icon: FaChair, category: t('amenities.categories.outdoor') },
+        { id: 'beachAccess', label: t('amenities.items.beachAccess'), icon: FaUmbrella, category: t('amenities.categories.outdoor') },
+        { id: 'skiAccess', label: t('amenities.items.skiAccess'), icon: FaSkiing, category: t('amenities.categories.outdoor') },
+        { id: 'hikingTrails', label: t('amenities.items.hikingTrails'), icon: FaHiking, category: t('amenities.categories.outdoor') },
+        { id: 'outdoorPool', label: t('amenities.items.outdoorPool'), icon: FaSwimmingPool, category: t('amenities.categories.outdoor') },
+        { id: 'tennisCourt', label: t('amenities.items.tennisCourt'), icon: FaTableTennis, category: t('amenities.categories.outdoor') },
+        { id: 'golfCourse', label: t('amenities.items.golfCourse'), icon: FaGolfBall, category: t('amenities.categories.outdoor') },
 
         // Wellness
-        { id: 'indoor_pool', label: 'Indoor Pool', icon: FaSwimmingPool, category: 'Wellness' },
-        { id: 'fitness_center', label: 'Gym / Fitness Center', icon: FaDumbbell, category: 'Wellness' },
-        { id: 'spa', label: 'Spa & Wellness Center', icon: FaSpa, category: 'Wellness' },
-        { id: 'sauna', label: 'Sauna / Steam Room', icon: FaHotTub, category: 'Wellness' },
-        { id: 'massage', label: 'Massage Services', icon: FaHandHoldingHeart, category: 'Wellness' },
+        { id: 'indoorPool', label: t('amenities.items.indoorPool'), icon: FaSwimmingPool, category: t('amenities.categories.wellness') },
+        { id: 'fitnessCenter', label: t('amenities.items.fitnessCenter'), icon: FaDumbbell, category: t('amenities.categories.wellness') },
+        { id: 'spa', label: t('amenities.items.spa'), icon: FaSpa, category: t('amenities.categories.wellness') },
+        { id: 'sauna', label: t('amenities.items.sauna'), icon: FaHotTub, category: t('amenities.categories.wellness') },
+        { id: 'massage', label: t('amenities.items.massage'), icon: FaHandHoldingHeart, category: t('amenities.categories.wellness') },
 
         // Laundry
-        { id: 'washing_machine', label: 'Washing Machine', icon: GiWashingMachine, category: 'Laundry' },
-        { id: 'dryer', label: 'Dryer', icon: MdOutlineLocalLaundryService, category: 'Laundry' },
-        { id: 'iron_board', label: 'Iron & Ironing Board', icon: MdIron, category: 'Laundry' },
-        { id: 'laundry_service', label: 'Laundry Service', icon: MdOutlineCleaningServices, category: 'Laundry' },
+        { id: 'washingMachine', label: t('amenities.items.washingMachine'), icon: GiWashingMachine, category: t('amenities.categories.laundry') },
+        { id: 'dryer', label: t('amenities.items.dryer'), icon: MdOutlineLocalLaundryService, category: t('amenities.categories.laundry') },
+        { id: 'ironBoard', label: t('amenities.items.ironBoard'), icon: MdIron, category: t('amenities.categories.laundry') },
+        { id: 'laundryService', label: t('amenities.items.laundryService'), icon: MdOutlineCleaningServices, category: t('amenities.categories.laundry') },
 
         // Business
-        { id: 'conference_room', label: 'Conference Room', icon: IoMdBusiness, category: 'Business' },
-        { id: 'printing_scanning', label: 'Printing / Scanning', icon: BsPrinter, category: 'Business' },
-        { id: 'business_center', label: 'Business Center', icon: FaBriefcase, category: 'Business' },
+        { id: 'conferenceRoom', label: t('amenities.items.conferenceRoom'), icon: IoMdBusiness, category: t('amenities.categories.business') },
+        { id: 'printingScanning', label: t('amenities.items.printingScanning'), icon: BsPrinter, category: t('amenities.categories.business') },
+        { id: 'businessCenter', label: t('amenities.items.businessCenter'), icon: FaBriefcase, category: t('amenities.categories.business') },
 
         // Services
-        { id: 'daily_housekeeping', label: 'Daily Housekeeping', icon: FaBroom, category: 'Services' },
-        { id: 'breakfast_included', label: 'Breakfast Included', icon: FaCoffee, category: 'Services' },
-        { id: 'room_service', label: 'Room Service', icon: FaConciergeBell, category: 'Services' },
-        { id: 'restaurant', label: 'On-site Restaurant', icon: FaUtensils, category: 'Services' },
-        { id: 'bar', label: 'Bar/Lounge', icon: FaGlassMartini, category: 'Services' },
-        { id: 'grocery_delivery', label: 'Grocery Delivery', icon: FaShoppingBasket, category: 'Services' },
-        { id: 'childcare', label: 'Childcare Services', icon: FaBaby, category: 'Services' },
-        { id: 'dry_cleaning', label: 'Dry Cleaning', icon: FaTshirt, category: 'Services' },
-        { id: 'tour_desk', label: 'Tour Desk', icon: FaMap, category: 'Services' },
-        { id: 'currency_exchange', label: 'Currency Exchange', icon: FaExchangeAlt, category: 'Services' },
-        { id: 'concierge', label: 'Concierge Service', icon: FaConciergeBell, category: 'Services' },
-        { id: 'luggage_storage', label: 'Luggage Storage', icon: FaSuitcase, category: 'Services' },
-        { id: '24h_front_desk', label: '24-Hour Front Desk', icon: FaUserClock, category: 'Services' },
-
-        // // Pet-Friendly Features
-        // { id: 'pets_allowed', label: 'Pets Allowed', icon: FaPaw, category: 'Pet-Friendly Features' },
-        // { id: 'pet_beds', label: 'Pet Beds', icon: FaBed, category: 'Pet-Friendly Features' },
-        // { id: 'pet_bowls', label: 'Pet Bowls', icon: FaUtensils, category: 'Pet-Friendly Features' },
-        // { id: 'dog_walking', label: 'Dog Walking Service', icon: FaDog, category: 'Pet-Friendly Features' },
-        // { id: 'pet_sitting', label: 'Pet Sitting Service', icon: FaPaw, category: 'Pet-Friendly Features' },
+        { id: 'dailyHousekeeping', label: t('amenities.items.dailyHousekeeping'), icon: FaBroom, category: t('amenities.categories.services') },
+        { id: 'breakfastIncluded', label: t('amenities.items.breakfastIncluded'), icon: FaCoffee, category: t('amenities.categories.services') },
+        { id: 'roomService', label: t('amenities.items.roomService'), icon: FaConciergeBell, category: t('amenities.categories.services') },
+        { id: 'restaurant', label: t('amenities.items.restaurant'), icon: FaUtensils, category: t('amenities.categories.services') },
+        { id: 'bar', label: t('amenities.items.bar'), icon: FaGlassMartini, category: t('amenities.categories.services') },
+        { id: 'groceryDelivery', label: t('amenities.items.groceryDelivery'), icon: FaShoppingBasket, category: t('amenities.categories.services') },
+        { id: 'childcare', label: t('amenities.items.childcare'), icon: FaBaby, category: t('amenities.categories.services') },
+        { id: 'dryCleaning', label: t('amenities.items.dryCleaning'), icon: FaTshirt, category: t('amenities.categories.services') },
+        { id: 'tourDesk', label: t('amenities.items.tourDesk'), icon: FaMap, category: t('amenities.categories.services') },
+        { id: 'currencyExchange', label: t('amenities.items.currencyExchange'), icon: FaExchangeAlt, category: t('amenities.categories.services') },
+        { id: 'concierge', label: t('amenities.items.concierge'), icon: FaConciergeBell, category: t('amenities.categories.services') },
+        { id: 'luggageStorage', label: t('amenities.items.luggageStorage'), icon: FaSuitcase, category: t('amenities.categories.services') },
+        { id: '24hFrontDesk', label: t('amenities.items.24hFrontDesk'), icon: FaUserClock, category: t('amenities.categories.services') },
 
         // Nearby Services
-        { id: 'supermarket', label: 'Supermarket Nearby', icon: BiStore, category: 'Nearby Services' },
-        { id: 'pharmacy', label: 'Pharmacy Nearby', icon: RiMedicineBottleLine, category: 'Nearby Services' },
-        { id: 'atm_bank', label: 'ATM / Bank Nearby', icon: RiBankFill, category: 'Nearby Services' },
-        { id: 'public_transport', label: 'Public Transport Nearby', icon: FaSubway, category: 'Nearby Services' },
-        { id: 'hospital', label: 'Hospital Nearby', icon: FaMedkit, category: 'Nearby Services' },
-        { id: 'shopping_center', label: 'Shopping Center Nearby', icon: FaShoppingBasket, category: 'Nearby Services' },
+        { id: 'supermarket', label: t('amenities.items.supermarket'), icon: BiStore, category: t('amenities.categories.nearbyServices') },
+        { id: 'pharmacy', label: t('amenities.items.pharmacy'), icon: RiMedicineBottleLine, category: t('amenities.categories.nearbyServices') },
+        { id: 'atmBank', label: t('amenities.items.atmBank'), icon: RiBankFill, category: t('amenities.categories.nearbyServices') },
+        { id: 'publicTransport', label: t('amenities.items.publicTransport'), icon: FaSubway, category: t('amenities.categories.nearbyServices') },
+        { id: 'hospital', label: t('amenities.items.hospital'), icon: FaMedkit, category: t('amenities.categories.nearbyServices') },
+        { id: 'shoppingCenter', label: t('amenities.items.shoppingCenter'), icon: FaShoppingBasket, category: t('amenities.categories.nearbyServices') },
     ];
 
     // Get the appropriate items list based on mode
@@ -414,7 +409,7 @@ const Amenities = ({ mode }) => {
     const { title, description } = getComponentInfo();
 
     return (
-        <div className="w-full  mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className={`w-full mx-auto p-6 bg-white rounded-lg shadow-md `}>
             <div className="mb-6 text-center">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
                 <p className="text-gray-600">{description}</p>
@@ -424,10 +419,13 @@ const Amenities = ({ mode }) => {
             <div className="mb-6">
                 <input
                     type="text"
-                    placeholder={`Search ${title.toLowerCase()}...`}
+                    placeholder={mode === 'amenities' 
+                        ? t('amenities.searchPlaceholder') 
+                        : t('amenities.searchPlaceholder')
+                    }
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className={`w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 `}
                 />
             </div>
 
@@ -436,10 +434,10 @@ const Amenities = ({ mode }) => {
                 {Object.entries(groupedItems).map(([category, items]) => (
                     <div key={category} className="border border-gray-200 rounded-lg overflow-hidden">
                         <div
-                            className="flex justify-between items-center p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                            className={`flex items-center p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors  `}
                             onClick={() => toggleCategory(category)}
                         >
-                            <h3 className="font-medium text-gray-800">{category}</h3>
+                            <h3 className="font-medium text-gray-800 flex-grow">{category}</h3>
                             {expandedCategories[category] ? <FaChevronUp className="text-gray-600" /> : <FaChevronDown className="text-gray-600" />}
                         </div>
                         {expandedCategories[category] && (
@@ -447,13 +445,13 @@ const Amenities = ({ mode }) => {
                                 {items.map(item => (
                                     <div
                                         key={item.id}
-                                        className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${selectedItems.has(item.id)
+                                        className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors   ${selectedItems.has(item.id)
                                                 ? 'bg-green-200 border border-green-400'
                                                 : 'hover:bg-gray-100 border border-transparent'
                                             }`}
                                         onClick={() => toggleItem(item.id)}
                                     >
-                                        <item.icon className="w-5 h-5 mr-2 text-gray-600" />
+                                        <item.icon className={`w-5 h-5 text-gray-600 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                                         <span className="text-sm">{item.label}</span>
                                     </div>
                                 ))}
@@ -464,13 +462,16 @@ const Amenities = ({ mode }) => {
             </div>
 
             {/* Custom Item Input */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
                 <div className="flex space-x-2 mb-3">
                     <input
                         type="text"
                         value={customItem}
                         onChange={(e) => setCustomItem(e.target.value)}
-                        placeholder={`Add custom ${mode === 'amenities' ? 'amenity' : 'feature'}`}
+                        placeholder={mode === 'amenities' 
+                            ? t('amenities.customAmenityPlaceholder') 
+                            : t('propertyFeatures.customFeaturePlaceholder')
+                        }
                         className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                     <button
@@ -496,16 +497,25 @@ const Amenities = ({ mode }) => {
                         ))}
                     </div>
                 )}
-            </div>
+            </div> */}
 
             {/* Save Button */}
-            <div className="flex justify-end">
+            <div className={`flex ${isRTL ? 'justify-start' : 'justify-end'}`}>
                 <button
                     onClick={saveItems}
                     disabled={isSaving}
-                    className="flex items-center space-x-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    className={`flex items-center space-x-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}
                 >
-                    <span>{isSaving ? 'Saving...' : 'Save'}</span>
+                    <span>
+                        {isSaving 
+                            ? (mode === 'amenities' 
+                                ? t('amenities.savingButton') 
+                                : t('amenities.savingButton'))
+                            : (mode === 'amenities' 
+                                ? t('amenities.saveButton') 
+                                : t('amenities.saveButton'))
+                        }
+                    </span>
                     <FaSave />
                 </button>
             </div>

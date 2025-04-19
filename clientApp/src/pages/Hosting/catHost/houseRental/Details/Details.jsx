@@ -169,7 +169,7 @@ const Details = ({ sectionPath, job }) => {
         { id: 'check-in', label: t('properties:menu.checkInAndCheckout'), icon: FaKey },
         { id: 'wifi', label: t('properties:menu.wifiDetails'), icon: FaWifi },
         { id: 'house-rules', label: t('properties:menu.houseRules'), icon: FaClipboardList },
-        { id: 'checkout', label: t('properties:menu.checkoutInstructions'), icon: FaSignOutAlt },
+        // { id: 'checkout', label: t('properties:menu.checkoutInstructions'), icon: FaSignOutAlt },
     ];
 
     // Navigate to the section's dedicated route when a sidebar item is clicked

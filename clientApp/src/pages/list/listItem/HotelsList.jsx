@@ -16,6 +16,7 @@ import {
   faSliders,
   faArrowUp
 } from "@fortawesome/free-solid-svg-icons";
+import useFetch from "../../../hooks/useFetch";
 
 // Define property types as a constant outside the component
 const PROPERTY_TYPES = [
@@ -36,12 +37,17 @@ const HotelsList = ({ city }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
 
+
+
   // Fetch hotels on component mount
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await getProperties(city);
-        dispatch(setHotels(response.data));
+        const conditions = city ? `?city=${city}` : '';
+
+        const { data } = useFetch(`/api/hotels${conditions}`)
+
+        dispatch(setHotels(data));
         // Apply filters after setting hotels
         dispatch(applyFilters(filters));
       } catch (error) {
@@ -49,7 +55,7 @@ const HotelsList = ({ city }) => {
       }
     };
     fetchHotels();
-  }, [dispatch, city, filters]);
+  }, [dispatch, city, ]); //filters
 
   // Re-apply filters whenever filters change
   useEffect(() => {
@@ -121,14 +127,14 @@ const HotelsList = ({ city }) => {
     <div className="w-full">
       {/* Navigation Bar */}
       <div className={`overflow-hidden flex justify-between ${!isAtTop ? 'hidden' : null}`}>
-        <div className="relative bg-primary h-14 w-20 -translate-x-10   translate-y-6 rotate-45 hidden md:block"></div>
-        <div className="relative bg-primary h-14 w-20 -rotate-45 translate-x-10   translate-y-6 hidden md:block"></div>   
+        <div className="relative testbg h-14 w-20 -translate-x-10   translate-y-6 rotate-45 hidden md:block"></div>
+        <div className="relative testbg h-14 w-20 -rotate-45 translate-x-10    translate-y-6 hidden md:block"></div>
       </div>
 
       <div
         className={`
          py-1 shadow-md transition-all duration-300 mx-auto z-50 md:z-20
-          fixed top-[61px] left-0 right-0 bg-primary w-[96%] rounded-b-md
+          fixed top-[61px] left-0 right-0 testbg w-[96%] rounded-b-md
           md:w-full
           ${isAtTop
             ? "md:relative md:top-0 md:mt-0 md:bg-primary  shadow-xl"
@@ -175,8 +181,8 @@ const HotelsList = ({ city }) => {
                       ${isFilterActive(type)
                         ? "bg-orange-500 text-white hover:bg-orange-400 border-b-2 border-primary-dark"
                         : typesWithHotels[type]
-                          ? "bg-transparent text-gray-100 hover:bg-blue border border-gray-200"
-                          : "bg-transparent text-gray-100 hover:bg-blue border border-gray-200 opacity-75"
+                          ? "bg-lime-500 text-gray-100 hover:bg-blue border border-gray-200"
+                          : "bg-lime-500 text-gray-100 hover:bg-blue border border-gray-200  "
                       }
                     `}
                   >
@@ -201,7 +207,7 @@ const HotelsList = ({ city }) => {
             {/* Filters Button */}
             <button
               onClick={toggleFilterModal}
-              className="flex items-center gap-2 py-2 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-100 text-sm font-medium"
+              className="flex items-center gap-2 py-2 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-100 text-sm font-medium bg-gradient-to-t from-blue to-orange-500"
             >
               <FontAwesomeIcon icon={faSliders} />
               <span>Filters</span>

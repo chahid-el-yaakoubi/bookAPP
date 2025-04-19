@@ -180,3 +180,30 @@
     transform: perspective(500px) rotateX(30deg);
   }
   
+  .testbg1 {
+    background-image: linear-gradient(
+        rgba(15, 23, 42, 0.7), 
+        rgba(15, 23, 42, 0.0)
+    ), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG0Ao_etgVxgmtqjBmqPY03is5iWTk0py-tA&s');
+    /* background-size: cover; */
+    /* background-position: center; */
+    /* background-repeat: no-repeat; */
+    min-height: 20px ;
+    /* width: 10%; */
+    /* position: relative; */
+    /* background-attachment: fixed; */
+}
+
+.testbg {
+  background-image: linear-gradient(
+      rgba(15, 23, 42, 0.0), 
+      rgba(15, 23, 42, 0.7)
+  ), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG0Ao_etgVxgmtqjBmqPY03is5iWTk0py-tA&s');
+  /* background-size: cover; */
+  /* background-position: center; */
+  /* background-repeat: no-repeat; */
+  min-height: 20px ;
+  /* width: 10%; */
+  /* position: relative; */
+  /* background-attachment: fixed; */
+}

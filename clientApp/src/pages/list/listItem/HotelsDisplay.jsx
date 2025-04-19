@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
@@ -13,14 +13,25 @@ import { faMapMarkerAlt, faHeart, faStar } from "@fortawesome/free-solid-svg-ico
 //   }
 // });
 
+
+
 const HotelsDisplay = () => {
+  const dispatch = useDispatch()
+
+
+  const { data } = useFetch(`/api/hotels`)
+  useEffect(() => {
+
+    dispatch(setHotels(data));
+
+  }, [data]); //filters
   const hotels = useSelector(state => state.hotels.filteredHotels);
 
   return (
     <>
       {hotels.length > 0 ? <div className="  xl:px-20 py-20 ">
         <HotelCardGrid hotels={hotels} />
-       
+
       </div> :
         <div className="container py-20">
 
@@ -137,6 +148,8 @@ export default HotelsDisplay;
 
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { setHotels } from "../../../redux/hotelsSlice";
+import useFetch from "../../../hooks/useFetch";
 
 export const HotelCard = ({ hotel }) => {
   const navigate = useNavigate();

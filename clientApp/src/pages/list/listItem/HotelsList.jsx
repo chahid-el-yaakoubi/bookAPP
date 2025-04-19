@@ -45,7 +45,7 @@ const HotelsList = ({ city }) => {
       try {
         const conditions = city ? `?city=${city}` : '';
 
-        const { data } = await useFetch(`/api/hotels${conditions}`)
+        const { data } =  useFetch(`/api/hotels${conditions}`)
 
         dispatch(setHotels(data));
         // Apply filters after setting hotels

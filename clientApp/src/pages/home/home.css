@@ -182,9 +182,9 @@
   
   .testbg1 {
     background-image: linear-gradient(
-        rgba(15, 23, 42, 0.7), 
-        rgba(15, 23, 42, 0.0)
-    ), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG0Ao_etgVxgmtqjBmqPY03is5iWTk0py-tA&s');
+        rgba(15, 23, 42, 0.6), 
+        rgba(15, 23, 42, 0.8)
+    ), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwMY1S4TlBuFRdNaKgRIzH604sowdhwqh56g&s');
     /* background-size: cover; */
     /* background-position: center; */
     /* background-repeat: no-repeat; */

@@ -264,5 +264,85 @@
     },
     "offersTitle": "ماذا يقدم هذا المكان"
 
+  },
+  "hotelsList": {
+    "showAll": "عرض الكل",
+    "filters": "تصفية",
+    "propertyTypes": {
+      "house": "منزل",
+      "guesthouse": "بيت ضيافة",
+      "apartment": "شقة",
+      "hotel": "فندق",
+      "villa": "فيلا"
+    },
+    "backToTop": "العودة للأعلى"
+  },
+  "hotelsDisplay": {
+    "noLocation": "لا يوجد موقع",
+    "untitledHotel": "فندق بدون عنوان",
+    "previousImage": "الصورة السابقة",
+    "nextImage": "الصورة التالية",
+    "rooms": "{{count}} غرف",
+    "bathrooms": "{{count}} حمامات",
+    "pricePerNight": "{{price}} درهم / ليلة",
+    "listingTypes": {
+      "hotel": "فندق",
+      "apartment": "شقة",
+      "house": "منزل",
+      "villa": "فيلا",
+      "guesthouse": "بيت ضيافة"
+    }
+  },
+  "FilterModule" : {
+    "common": {
+      "close": "إغلاق"
+    },
+    "filters": {
+      "title": "التصفية",
+      "propertyType": "نوع العقار",
+      "priceRange": "نطاق السعر",
+      "to": "إلى",
+      "minPrice": "السعر الأدنى",
+      "maxPrice": "السعر الأقصى",
+      "sortByPrice": "ترتيب حسب السعر",
+      "clearAll": "مسح الكل",
+      "showProperties": "عرض {{count}} عقار",
+      "recommended": "موصى به",
+      "priceLowToHigh": "السعر: من الأقل إلى الأعلى",
+      "priceHighToLow": "السعر: من الأعلى إلى الأقل"
+    },
+    "propertyTypes": {
+      "hotel": "فندق",
+      "apartment": "شقة",
+      "villa": "فيلا",
+      "house": "منزل",
+      "guesthouse": "بيت ضيافة"
+    },
+    "amenities": {
+      "popular": "شائع",
+      "essentials": "الضروريات",
+      "features": "المميزات",
+      "security": "الأمان",
+      "wifi": "واي فاي / إنترنت",
+      "tv": "تلفاز",
+      "ac": "تكييف",
+      "heating": "تدفئة",
+      "hotWater": "ماء ساخن",
+      "parking": "موقف سيارات / مرآب",
+      "kitchen": "مطبخ",
+      "washer": "غسالة",
+      "workspace": "مساحة عمل",
+      "elevator": "مصعد",
+      "garden": "حديقة",
+      "pool": "حمام سباحة",
+      "terrace": "شرفة",
+      "jacuzzi": "جاكوزي",
+      "bbq": "شواية",
+      "breakfast": "إفطار",
+      "smokeDetector": "كاشف الدخان",
+      "carbonDetector": "كاشف أول أكسيد الكربون",
+      "security24": "حراسة 24/7",
+      "camera": "كاميرا أمنية"
+    }
   }
 }

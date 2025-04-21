@@ -10,6 +10,7 @@ import {
   FaCamera
 } from 'react-icons/fa';
 import { MdElevator } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 import {
   toggleAmenity,
@@ -23,6 +24,8 @@ import {
 import { applyFilters } from '../redux/hotelsSlice';
 
 export const FilterModule = ({ onClose }) => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.dir() === 'rtl';
   const dispatch = useDispatch();
 
   const filters = useSelector((state) => state.filters) || {
@@ -41,9 +44,9 @@ export const FilterModule = ({ onClose }) => {
   }, [dispatch, filters]);
 
   const priceSortOptions = [
-    { id: 'default', label: 'Recommended' },
-    { id: 'low-to-high', label: 'Price: Low to High' },
-    { id: 'high-to-low', label: 'Price: High to Low' }
+    { id: 'default', label: t('FilterModule.filters.recommended'), },
+    { id: 'low-to-high', label: t('FilterModule.filters.priceLowToHigh'), },
+    { id: 'high-to-low', label: t('FilterModule.filters.priceHighToLow'), }
   ];
 
   const handleToggle = (toggleAction, itemId) => {
@@ -96,52 +99,52 @@ export const FilterModule = ({ onClose }) => {
   };
 
   const propertyTypes = [
-    { id: 'hotel', label: 'Hotel', icon: <FaHotel /> },
-    { id: 'apartment', label: 'Apartment', icon: <FaBuilding /> },
-    { id: 'villa', label: 'Villa', icon: <FaHome /> },
-    { id: 'house', label: 'House', icon: <FaHome /> },
-    { id: 'guesthouse', label: 'Guesthouse', icon: <FaHouseUser /> },
+    { id: 'hotel', label: t('FilterModule.propertyTypes.hotel'), icon: <FaHotel /> },
+    { id: 'apartment', label: t('FilterModule.propertyTypes.apartment'), icon: <FaBuilding /> },
+    { id: 'villa', label: t('FilterModule.propertyTypes.villa'), icon: <FaHome /> },
+    { id: 'house', label: t('FilterModule.propertyTypes.house'), icon: <FaHome /> },
+    { id: 'guesthouse', label: t('FilterModule.propertyTypes.guesthouse'), icon: <FaHouseUser /> },
   ];
 
   const amenityCategories = [
     {
-      title: "Popular",
+      title: t('FilterModule.amenities.popular'),
       items: [
-        { id: 'wifi', label: 'Wi-Fi / Internet', icon: <FaWifi /> },
-        { id: 'tv', label: 'Television', icon: <FaTv /> },
-        { id: 'ac', label: 'Air Conditioning', icon: <FaSnowflake /> },
-        { id: 'heating', label: 'Heating', icon: <FaFire /> },
-        { id: 'hot-water', label: 'Hot Water', icon: <FaShower /> },
-        { id: 'parking', label: 'Parking / Garage', icon: <FaParking /> },
+        { id: 'wifi', label: t('FilterModule.amenities.wifi'), icon: <FaWifi /> },
+        { id: 'tv', label: t('FilterModule.amenities.tv'), icon: <FaTv /> },
+        { id: 'ac', label: t('FilterModule.amenities.ac'), icon: <FaSnowflake /> },
+        { id: 'heating', label: t('FilterModule.amenities.heating'), icon: <FaFire /> },
+        { id: 'hot-water', label: t('FilterModule.amenities.hotWater'), icon: <FaShower /> },
+        { id: 'parking', label: t('FilterModule.amenities.parking'), icon: <FaParking /> },
       ]
     },
     {
-      title: "Essentials",
+      title: t('FilterModule.amenities.essentials'),
       items: [
-        { id: 'kitchen', label: 'Kitchen', icon: <FaUtensils /> },
-        { id: 'washer', label: 'Washer', icon: <FaTshirt /> },
-        { id: 'workspace', label: 'Dedicated Workspace', icon: <FaBriefcase /> },
-        { id: 'elevator', label: 'Elevator', icon: <MdElevator /> },
+        { id: 'kitchen', label: t('FilterModule.amenities.kitchen'), icon: <FaUtensils /> },
+        { id: 'washer', label: t('FilterModule.amenities.washer'), icon: <FaTshirt /> },
+        { id: 'workspace', label: t('FilterModule.amenities.workspace'), icon: <FaBriefcase /> },
+        { id: 'elevator', label: t('FilterModule.amenities.elevator'), icon: <MdElevator /> },
       ]
     },
     {
-      title: "Features",
+      title: t('FilterModule.amenities.features'),
       items: [
-        { id: 'garden', label: 'Garden', icon: <FaTree /> },
-        { id: 'pool', label: 'Pool', icon: <FaSwimmingPool /> },
-        { id: 'terrace', label: 'Terrace / Balcony', icon: <FaChair /> },
-        { id: 'jacuzzi', label: 'Jacuzzi', icon: <FaHotTub /> },
-        { id: 'bbq', label: 'Barbecue', icon: <FaFire /> },
-        { id: 'breakfast', label: 'Breakfast', icon: <FaCoffee /> },
+        { id: 'garden', label: t('FilterModule.amenities.garden'), icon: <FaTree /> },
+        { id: 'pool', label: t('FilterModule.amenities.pool'), icon: <FaSwimmingPool /> },
+        { id: 'terrace', label: t('FilterModule.amenities.terrace'), icon: <FaChair /> },
+        { id: 'jacuzzi', label: t('FilterModule.amenities.jacuzzi'), icon: <FaHotTub /> },
+        { id: 'bbq', label: t('FilterModule.amenities.bbq'), icon: <FaFire /> },
+        { id: 'breakfast', label: t('FilterModule.amenities.breakfast'), icon: <FaCoffee /> },
       ]
     },
     {
-      title: "Security",
+      title: t('FilterModule.amenities.security'),
       items: [
-        { id: 'smoke-detector', label: 'Smoke Detector', icon: <FaLockOpen /> },
-        { id: 'carbon-detector', label: 'Carbon Monoxide Detector', icon: <FaLock /> },
-        { id: 'security', label: '24/7 Security', icon: <FaLock /> },
-        { id: 'camera', label: 'Camera', icon: <FaCamera /> },
+        { id: 'smoke-detector', label: t('FilterModule.amenities.smokeDetector'), icon: <FaLockOpen /> },
+        { id: 'carbon-detector', label: t('FilterModule.amenities.carbonDetector'), icon: <FaLock /> },
+        { id: 'security', label: t('FilterModule.amenities.security24'), icon: <FaLock /> },
+        { id: 'camera', label: t('FilterModule.amenities.camera'), icon: <FaCamera /> },
       ]
     },
   ];
@@ -177,17 +180,17 @@ export const FilterModule = ({ onClose }) => {
   );
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
-      <div className="bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl">
+      <div className={`bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl ${isRTL ? 'text-right' : 'text-left'}`}>
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
           <button 
             onClick={onClose} 
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Fermer"
+            aria-label={t('common.close')}
           >
             <FaTimes className="text-lg" />
           </button>
-          <span className="font-semibold text-lg">Filtres</span>
+          <span className="font-semibold text-lg">{t('FilterModule.filters.title')}</span>
           <div className="w-8" /> 
         </div>
 
@@ -195,7 +198,7 @@ export const FilterModule = ({ onClose }) => {
         <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 130px)' }}>
           {/* Property Types */}
           <section className="p-4 border-b">
-            <h3 className="text-lg font-medium mb-4">Type de logement</h3>
+            <h3 className="text-lg font-medium mb-4">{t('FilterModule.filters.propertyType')}</h3>
             <div className="grid grid-cols-2 gap-3">
               {propertyTypes.map(type => (
                 <FilterButton
@@ -217,18 +220,18 @@ export const FilterModule = ({ onClose }) => {
 
           {/* Price Range Section */}
           <section className="p-4 border-b">
-            <h3 className="text-lg font-medium mb-4">Fourchette de prix</h3>
+            <h3 className="text-lg font-medium mb-4">{t('FilterModule.filters.priceRange')}</h3>
             <div className="space-y-6">
               {/* Display current price range */}
               <div className="flex justify-between items-center px-2">
                 <span className="font-medium text-lg">${filters.priceRange?.min || 200}</span>
-                <span className="text-gray-500">à</span>
+                <span className="text-gray-500">{t('FilterModule.filters.to')}</span>
                 <span className="font-medium text-lg">${filters.priceRange?.max || 2000}</span>
               </div>
               
               {/* Min price slider */}
               <div className="space-y-2">
-                <label className="text-sm text-gray-600 font-medium">Prix minimum</label>
+                <label className="text-sm text-gray-600 font-medium">{t('FilterModule.filters.minPrice')}</label>
                 <input 
                   type="range" 
                   min="0" 
@@ -242,7 +245,7 @@ export const FilterModule = ({ onClose }) => {
               
               {/* Max price slider */}
               <div className="space-y-2">
-                <label className="text-sm text-gray-600 font-medium">Prix maximum</label>
+                <label className="text-sm text-gray-600 font-medium">{t('FilterModule.filters.maxPrice')}</label>
                 <input 
                   type="range" 
                   min="0" 
@@ -258,7 +261,7 @@ export const FilterModule = ({ onClose }) => {
 
           {/* Price Sort Section */}
           <section className="p-4 border-b">
-            <h3 className="text-lg font-medium mb-4">Tri par prix</h3>
+            <h3 className="text-lg font-medium mb-4">{t('FilterModule.filters.sortByPrice')}</h3>
             <div className="space-y-3">
               {priceSortOptions.map(option => (
                 <FilterButton
@@ -308,13 +311,13 @@ export const FilterModule = ({ onClose }) => {
             className={`text-sm font-semibold underline ${hasActiveFilters() ? 'opacity-100' : 'opacity-50'}`}
             disabled={!hasActiveFilters()}
           >
-            Tout effacer
+            {t('FilterModule.filters.clearAll')}
           </button>
           <button 
             onClick={handleApplyFilters}
             className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
           >
-            Afficher {filteredHotels.length} logements
+            {t('FilterModule.filters.showProperties', { count: filteredHotels.length })}
           </button>
         </div>
       </div>

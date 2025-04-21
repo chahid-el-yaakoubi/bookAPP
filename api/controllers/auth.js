@@ -51,9 +51,6 @@ export const register = async (req, res, next) => {
   }
 };
 
-
-
-
 export const CheckUsername = async (req, res, next) => {
   try {
     const { username } = req.body;
@@ -102,8 +99,6 @@ export const CheckUsername = async (req, res, next) => {
   }
 };
 
-
-
 export const verify = async (req, res, next) => {
   try {
     const { iduser, code } = req.body;
@@ -126,86 +121,6 @@ export const verify = async (req, res, next) => {
   }
 };
 
-
-
-// export const login = async (req, res, next) => {
-//   try {
-//     const user = await User.findOne({ username: req.body.username });
-//     if (!user) return next(createError(401, "User not found!"));
-
-//     const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
-//     if (!isPasswordCorrect) return next(createError(401, "Incorrect username or password!"));
-
-//     const { password,email, ...otherDetails } = user._doc;
-
-//     // Determine admin flags
-//     const adminFields = [
-//       user.adminCars,
-//       user.adminHotes,
-//       user.adminHouses,
-//       user.adminShops,
-//       user.adminUsers,
-//     ];
-
-//     const adminCount = adminFields.filter(Boolean).length;
-//     const isFullAdmin = adminCount === adminFields.length;
-//     const isAnyAdmin = adminCount > 0;
-
-//     // Set token duration based on admin level
-//     let tokenExpiry;
-//     let cookieMaxAge;
-
-//     if (!isAnyAdmin) {
-//       tokenExpiry = undefined; // No expiration
-//       cookieMaxAge = undefined;
-//     } else if (isFullAdmin) {
-//       tokenExpiry = '30d';
-//       cookieMaxAge = 1000 * 60 * 60 * 24 * 30;
-//     } else {
-//       tokenExpiry = '6h';
-//       cookieMaxAge = 1000 * 60 * 60 * 6;
-//     }
-
-//     const token = jwt.sign(
-//       {
-//         id: user._id,
-//         email : email,
-//         isAdmin: isAnyAdmin,
-//       },
-//       process.env.JWT_SECRET,
-//       tokenExpiry ? { expiresIn: tokenExpiry } : undefined
-//     );
-
-
-//     res.json({ token, user: { id: user._id, email: email, isAdmin: isAnyAdmin, roles: {
-//       cars : user.adminCars,
-//       users : user.adminUsers,
-//       hotels : user.adminHotes,
-//       houses : user.adminHouses,
-//       shops : user.adminShops,
-//     } } });
-
-
-//     // res.cookie("access_token", token, {
-//     //   httpOnly: true,
-//     //   maxAge: cookieMaxAge,
-//     //   secure: process.env.NODE_ENV === "production",
-//     //   sameSite: 'None',
-//     // })
-//     // .status(200)
-//     // .json({
-//     //   message: "Login successful",
-//     //   details: { ...otherDetails },
-//     //   isAdmin: isAnyAdmin,
-//     // });
-
-//   } catch (err) {
-//     console.error(err);
-//     next(err);
-//   }
-// };
-
-
 export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -215,6 +130,11 @@ export const login = async (req, res, next) => {
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return next(createError(401, "Incorrect username or password!"));
+
+    // Check if user is verified
+    if (!user.isVerified) {
+      return next(createError(403, "Please verify your email before logging in"));
+    }
 
     const {
       password: _,
@@ -231,38 +151,100 @@ export const login = async (req, res, next) => {
     const isAnyAdmin = Object.values(roles).some(Boolean);
     const isFullAdmin = Object.values(roles).every(Boolean);
 
-    // 4. إعداد صلاحية التوكن
-    const expiresIn = !isAnyAdmin ? undefined : isFullAdmin ? "30d" : "6h";
-    const cookieMaxAge = !isAnyAdmin ? undefined : isFullAdmin ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 6;
-
-    // 5. إنشاء التوكن
+    // Set token expiration based on admin status
+    // Admin tokens expire in 6 hours, regular user tokens don't expire
+    const expiresIn = isAnyAdmin ? "6h" : "365d"; // 1 year for regular users
+    
+    // Create token with proper expiration
     const token = jwt.sign(
-      { id: _id, email, isAdmin: isAnyAdmin },
-      process.env.JWT_SECRET,
-      expiresIn ? { expiresIn } : undefined
+      { 
+        id: _id, 
+        email, 
+        isAdmin: isAnyAdmin,
+        roles: isAnyAdmin ? roles : undefined,
+        exp: isAnyAdmin ? Math.floor(Date.now() / 1000) + (60 * 60 * 6) : undefined // 6 hours for admins
+      },
+      process.env.JWT_SECRET
     );
+
+    // Calculate token expiry time for client-side reference
+    const expiryTime = isAnyAdmin ? new Date(Date.now() + 1000 * 60 * 60 * 6).getTime() : null;
 
     res.status(200).json({
       message: "Login successful",
       token,
+      tokenExpiry: expiryTime, // Send expiry timestamp to client
       user: {
         id: _id,
         email,
+        username: user.username,
+        fullName: user.fullName,
         isAdmin: isAnyAdmin,
         roles,
       },
     });
 
-    // ✅ لو تبغى تفعل الكوكيز:
-    // res.cookie("access_token", token, {
-    //   httpOnly: true,
-    //   maxAge: cookieMaxAge,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: 'None',
-    // });
-
   } catch (err) {
     console.error("Login Error:", err);
+    next(err);
+  }
+};
+
+export const refreshToken = async (req, res, next) => {
+  try {
+    // Verify the existing token
+    const { token } = req.body;
+    
+    if (!token) {
+      return next(createError(401, "No token provided"));
+    }
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return next(createError(403, "Invalid or expired token"));
+    }
+    
+    // Find the user
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
+    
+    // Check if this is an admin token that needs refreshing
+    const roles = { 
+      cars: user.adminCars, 
+      hotels: user.adminHotes, 
+      houses: user.adminHouses, 
+      shops: user.adminShops, 
+      users: user.adminUsers 
+    };
+    const isAnyAdmin = Object.values(roles).some(Boolean);
+    
+    // Generate a new token
+    const newToken = jwt.sign(
+      { 
+        id: user._id, 
+        email: user.email, 
+        isAdmin: isAnyAdmin,
+        roles: isAnyAdmin ? roles : undefined,
+        exp: isAnyAdmin ? Math.floor(Date.now() / 1000) + (60 * 60 * 6) : undefined // 6 hours for admins
+      },
+      process.env.JWT_SECRET
+    );
+    
+    // Calculate token expiry time for client
+    const expiryTime = isAnyAdmin ? new Date(Date.now() + 1000 * 60 * 60 * 6).getTime() : null;
+    
+    res.status(200).json({
+      message: "Token refreshed successfully",
+      token: newToken,
+      tokenExpiry: expiryTime,
+    });
+    
+  } catch (err) {
+    console.error("Token Refresh Error:", err);
     next(err);
   }
 };
@@ -282,15 +264,21 @@ export const verifyAdmin = async (req, res, next) => {
     user.verificationCodeExpires = undefined;
     await user.save();
 
-    const { isAdmin, password, ...otherDetails } = user._doc;
-    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
+    // Create admin token with 6-hour expiration
+    const token = jwt.sign(
+      { 
+        id: user._id, 
+        isAdmin: true,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 6) // 6 hours
+      }, 
+      process.env.JWT_SECRET
+    );
 
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      sameSite: 'None',
-      maxAge: 60 * 60 * 1000 * 10, // 10 hour
-      secure: process.env.NODE_ENV === "production", // Secure flag for HTTPS
-    }).status(200).json({ details: { ...otherDetails }, isAdmin });
+    res.status(200).json({ 
+      message: "Admin verified successfully",
+      token,
+      tokenExpiry: new Date(Date.now() + 1000 * 60 * 60 * 6).getTime()
+    });
   } catch (err) {
     next(err);
   }
@@ -300,18 +288,12 @@ export const verifyUserCode = async (req, res, next) => {
   try {
     const { code, newPassword, email } = req.body;
 
-
-    // Find the user by ID
+    // Find the user by email
     const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
-    if (user.verificationCode !== code) {
-      console.log({ code, newPassword, email })
-      console.log(user.verificationCode)
-
-    }
     // Check if code matches and is not expired
     if (
       user.verificationCode !== code ||

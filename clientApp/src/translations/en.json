@@ -390,9 +390,86 @@
       "attractions": "Attractions"
     },
     "offersTitle": "What this place offers"
-
-
-
+  },
+  "hotelsList": {
+    "showAll": "Show All",
+    "filters": "Filters",
+    "propertyTypes": {
+      "house": "House",
+      "guesthouse": "Guesthouse",
+      "apartment": "Apartment",
+      "hotel": "Hotel",
+      "villa": "Villa"
+    },
+    "backToTop": "Back to top"
+  },
+  "hotelsDisplay": {
+    "noLocation": "No location available",
+    "untitledHotel": "Untitled Hotel",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "rooms": "{{count}} rooms",
+    "bathrooms": "{{count}} bathrooms",
+    "pricePerNight": "{{price}} MAD / night",
+    "listingTypes": {
+      "hotel": "Hotel",
+      "apartment": "Apartment",
+      "house": "House",
+      "villa": "Villa",
+      "guesthouse": "Guesthouse"
+    }
+  },
+  "FilterModule" : {
+    "common": {
+      "close": "Close"
+    },
+    "filters": {
+      "title": "Filters",
+      "propertyType": "Property Type",
+      "priceRange": "Price Range",
+      "to": "to",
+      "minPrice": "Minimum Price",
+      "maxPrice": "Maximum Price",
+      "sortByPrice": "Sort by Price",
+      "clearAll": "Clear All",
+      "showProperties": "Show {{count}} properties",
+      "recommended": "Recommended",
+      "priceLowToHigh": "Price: Low to High",
+      "priceHighToLow": "Price: High to Low"
+    },
+    "propertyTypes": {
+      "hotel": "Hotel",
+      "apartment": "Apartment",
+      "villa": "Villa",
+      "house": "House",
+      "guesthouse": "Guesthouse"
+    },
+    "amenities": {
+      "popular": "Popular",
+      "essentials": "Essentials",
+      "features": "Features",
+      "security": "Security",
+      "wifi": "Wi-Fi / Internet",
+      "tv": "Television",
+      "ac": "Air Conditioning",
+      "heating": "Heating",
+      "hotWater": "Hot Water",
+      "parking": "Parking / Garage",
+      "kitchen": "Kitchen",
+      "washer": "Washer",
+      "workspace": "Workspace",
+      "elevator": "Elevator",
+      "garden": "Garden",
+      "pool": "Swimming Pool",
+      "terrace": "Terrace",
+      "jacuzzi": "Jacuzzi",
+      "bbq": "BBQ",
+      "breakfast": "Breakfast",
+      "smokeDetector": "Smoke Detector",
+      "carbonDetector": "Carbon Detector",
+      "security24": "24/7 Security",
+      "camera": "Security Camera"
+    }
   }
 }
 

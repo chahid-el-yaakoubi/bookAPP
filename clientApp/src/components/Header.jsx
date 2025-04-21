@@ -134,11 +134,11 @@ export const Header = ({ type }) => {
     if (type === menuType) {
       return `${baseClass} text-white bg-primary-dark group active:scale-95`;
     }
-    return `${baseClass} text-white/80 bg-blue/80 hover:text-white group`;
+    return `${baseClass} text-white/80 bg-gray-600  hover:text-orange-500 group`;
   };
 
   return (
-    <div className="fixed md:relative top-0 flex justify-center z-40 md:z-30 testbg1 md:pb-14 w-full">
+    <div className="fixed md:relative top-0 flex justify-center z-40 md:z-30 bg-primary md:pb-14 w-full">
       <div className="container-fluid px-4 lg:px-16 xl:px-40 flex flex-col justify-center items-center w-full md:ps-20">
         <div className="w-full p-2 text-center rounded-b-lg overflow-x-auto">
           <div className="flex items-center justify-start gap-2 md:gap-10 mx-auto min-w-max">

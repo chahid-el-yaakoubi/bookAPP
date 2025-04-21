@@ -103,7 +103,18 @@ export const createRoom = async (id, formdata) => {
   return response;
 };
 
+export const updateRoom = async (id, formdata) => {
+  const response = await api.put(`/api/rooms/${id}`, formdata);
 
+  return response;
+};
+
+
+export const deleteRoom = async (id, hotelId) => {
+  const response = await api.delete(`/api/rooms/${id}/${hotelId}`);
+
+  return response;
+};
 // bookoings
 export const createBooking = async (bookingData) => {
   const response = await api.post('/api/bookings', bookingData);

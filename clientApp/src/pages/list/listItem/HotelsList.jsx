@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from 'react-i18next';
 import { setHotels, applyFilters } from "../../../redux/hotelsSlice";
 import { togglePropertyType } from "../../../redux/filtersSlice";
 import { FilterModule } from "../../../components/FilterModule";
@@ -20,14 +21,15 @@ import useFetch from "../../../hooks/useFetch";
 
 // Define property types as a constant outside the component
 const PROPERTY_TYPES = [
-  { type: "house", icon: faHouse, label: "House" },
-  { type: "guesthouse", icon: faHouse, label: "Guesthouse" },
-  { type: "apartment", icon: faHouseFlag, label: "Appartement" },
-  { type: "hotel", icon: faHotel, label: "Hôtel" },
-  { type: "villa", icon: faSwimmingPool, label: "Villa" },
+  { type: "house", icon: faHouse, labelKey: "house" },
+  { type: "guesthouse", icon: faHouse, labelKey: "guesthouse" },
+  { type: "apartment", icon: faHouseFlag, labelKey: "apartment" },
+  { type: "hotel", icon: faHotel, labelKey: "hotel" },
+  { type: "villa", icon: faSwimmingPool, labelKey: "villa" },
 ];
 
 const HotelsList = ({ city }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const hotels = useSelector((state) => state.hotels.filteredHotels);
   const filters = useSelector((state) => state.filters);
@@ -37,25 +39,20 @@ const HotelsList = ({ city }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
 
-
-
   // Fetch hotels on component mount
   useEffect(() => {
     const fetchHotels = async () => {
       try {
         const conditions = city ? `?city=${city}` : '';
-
-        const { data } =  useFetch(`/api/hotels${conditions}`)
-
+        const { data } = await useFetch(`/api/hotels${conditions}`);
         dispatch(setHotels(data));
-        // Apply filters after setting hotels
         dispatch(applyFilters(filters));
       } catch (error) {
         console.error("Error fetching hotels:", error);
       }
     };
     fetchHotels();
-  }, [dispatch, city, ]); //filters
+  }, [dispatch, city, filters]); // Added filters to dependency array
 
   // Re-apply filters whenever filters change
   useEffect(() => {
@@ -84,10 +81,9 @@ const HotelsList = ({ city }) => {
         }
       });
     } else {
-      // Toggle the selected property type
+      // Toggle the selected property type without affecting others
       dispatch(togglePropertyType(type.toLowerCase()));
     }
-    // No need to call applyFilters here as it will be triggered by the useEffect
   }, [dispatch, propertyTypes]);
 
   // Check if any property type is selected
@@ -124,111 +120,120 @@ const HotelsList = ({ city }) => {
   }, [propertyTypes]);
 
   return (
-    <div className="w-full">
-      {/* Navigation Bar */}
-      <div className={`overflow-hidden flex justify-between ${!isAtTop ? 'hidden' : null}`}>
-        <div className="relative testbg h-14 w-20 -translate-x-10   translate-y-6 rotate-45 hidden md:block"></div>
-        <div className="relative testbg h-14 w-20 -rotate-45 translate-x-10    translate-y-6 hidden md:block"></div>
-      </div>
+    <div className="w-full relative mt-10">
+      {/* Existing content with higher z-index */}
+      <div className="relative">
+        {/* Navigation Bar - Remove decorative elements for cleaner look */}
+        <div className={`overflow-hidden flex justify-between ${!isAtTop ? 'hidden' : null}`}>
+          {/* Remove decorative divs */}
+        </div>
 
-      <div
-        className={`
-         py-1 shadow-md transition-all duration-300 mx-auto z-50 md:z-20
-          fixed top-[61px] left-0 right-0 testbg w-[96%] rounded-b-md
-          md:w-full
-          ${isAtTop
-            ? "md:relative md:top-0 md:mt-0 md:bg-primary  shadow-xl"
-            : "md:fixed md:top-0 md:bg-primary md:rounded-none"}
-        `}
-      >
-        <div className="container mx-auto px-4">
+        <div
+          className={`
+            shadow-md transition-all duration-300 mx-auto z-50 md:z-20
+            fixed top-[61px] left-0 right-0 w-[96%] rounded-b-md bg-white 
+            md:w-full
+            ${isAtTop
+              ? "md:relative md:top-0 md:mt-0 shadow-lg"
+              : "md:fixed md:top-0 md:bg-white md:rounded-none"}
+          `}
+        >
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              {/* Mobile Logo */}
+              <div className="flex items-center md:hidden">
+                <Logo />
+              </div>
 
-          <div className="flex items-center justify-between gap-4">
-            {/* Mobile Logo */}
-            <div className="flex items-center md:hidden">
-              <Logo />
-            </div>
+              {/* Mobile Search */}
+              <SearchMobile />
 
-            {/* Mobile Search */}
-            <SearchMobile />
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:block flex-1">
-              <div className="flex items-center gap-3 overflow-x-auto py-2 scrollbar-hide">
-                {/* Show All Button */}
-                <button
-                  onClick={() => handleChooseType("all")}
-                  className={`
-                    min-w-[120px] px-4 py-2 rounded-lg border transition-all duration-200 
-                    flex items-center gap-2
-                    ${!hasActivePropertyFilter
-                      ? "bg-orange-500 text-white border-primary-dark"
-                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"}
-                  `}
-                >
-                  <FontAwesomeIcon icon={faArrowDownWideShort} className="text-lg" />
-                  <span className="text-sm">Tout afficher</span>
-                </button>
-
-                {/* Property Type Buttons */}
-                {PROPERTY_TYPES.map(({ type, icon, label }) => (
+              {/* Desktop Navigation */}
+              <div className="hidden md:block flex-1">
+                <div className="flex items-center gap-2 overflow-x-auto py-2 scrollbar-hide">
+                  {/* Show All Button */}
                   <button
-                    key={type}
-                    onClick={() => handleChooseType(type)}
+                    onClick={() => handleChooseType("all")}
                     className={`
-                      min-w-[90px] px-3 py-2 rounded-lg transition-all duration-200 
-                      flex items-center gap-1 shadow-sm
-                      ${isFilterActive(type)
-                        ? "bg-orange-500 text-white hover:bg-orange-400 border-b-2 border-primary-dark"
-                        : typesWithHotels[type]
-                          ? "bg-lime-500 text-gray-100 hover:bg-blue border border-gray-200"
-                          : "bg-lime-500 text-gray-100 hover:bg-blue border border-gray-200  "
-                      }
+                      min-w-[120px] px-4 py-2.5 rounded-full border transition-all duration-200 
+                      flex items-center gap-2
+                      ${!hasActivePropertyFilter
+                        ? "bg-blue text-white border-blue hover:bg-blue-dark"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"}
                     `}
                   >
-                    <FontAwesomeIcon icon={icon} className="text-lg" />
-                    <span className="text-sm whitespace-nowrap">{label}</span>
+                    <FontAwesomeIcon icon={faArrowDownWideShort} className="text-lg" />
+                    <span className="text-sm font-medium">{t('hotelsList.showAll')}</span>
                   </button>
-                ))}
+
+                  {/* Property Type Buttons */}
+                  {PROPERTY_TYPES.map(({ type, icon, labelKey }) => (
+                    <button
+                      key={type}
+                      onClick={() => handleChooseType(type)}
+                      className={`
+                        min-w-[100px] px-4 py-2.5 rounded-full transition-all duration-200 
+                        flex items-center gap-2 relative
+                        ${isFilterActive(type)
+                          ? "bg-blue text-white hover:bg-blue-dark border-2 border-blue"
+                          : typesWithHotels[type]
+                            ? "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }
+                        ${isFilterActive(type) ? 'ring-2 ring-blue ring-opacity-50' : ''}
+                      `}
+                    >
+                      <FontAwesomeIcon icon={icon} className="text-lg" />
+                      <span className="text-sm font-medium whitespace-nowrap">
+                        {t(`hotelsList.propertyTypes.${labelKey}`)}
+                      </span>
+                      {isFilterActive(type) && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Back to Top Button */}
-            {showButton && (
+              {/* Back to Top Button */}
+              {showButton && (
+                <button
+                  onClick={scrollToTop}
+                  className="hidden md:flex w-10 h-10 bg-blue text-white rounded-full shadow-lg hover:bg-blue-dark transition-all duration-200 items-center justify-center"
+                  aria-label={t('hotelsList.backToTop')}
+                >
+                  <FontAwesomeIcon icon={faArrowUp} />
+                </button>
+              )}
+
+              {/* Filters Button */}
               <button
-                onClick={scrollToTop}
-                className="hidden md:flex w-10 h-10 bg-primary-dark text-white rounded-full shadow-lg hover:bg-primary transition-all duration-200 items-center justify-center"
-                aria-label="Back to top"
+                onClick={toggleFilterModal}
+                className="flex items-center gap-2 py-2.5 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-700 text-sm font-medium bg-white hover:bg-gray-50"
               >
-                <FontAwesomeIcon icon={faArrowUp} />
+                <FontAwesomeIcon icon={faSliders} />
+                <span>{t('hotelsList.filters')}</span>
               </button>
-            )}
-
-            {/* Filters Button */}
-            <button
-              onClick={toggleFilterModal}
-              className="flex items-center gap-2 py-2 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-100 text-sm font-medium bg-gradient-to-t from-blue to-orange-500"
-            >
-              <FontAwesomeIcon icon={faSliders} />
-              <span>Filters</span>
-            </button>
+            </div>
           </div>
         </div>
+
+        {/* Filter Module */}
+        {showModel && <FilterModule onClose={toggleFilterModal} />}
+
+        {/* Floating Back to Top button for mobile */}
+        {showButton && (
+          <button
+            onClick={scrollToTop}
+            className="md:hidden fixed bottom-6 right-6 w-12 h-12 bg-primary-dark text-white rounded-full shadow-lg hover:bg-primary transition-all duration-200 flex items-center justify-center z-30"
+            aria-label={t('hotelsList.backToTop')}
+          >
+            <FontAwesomeIcon icon={faArrowUp} />
+          </button>
+        )}
       </div>
-
-      {/* Filter Module */}
-      {showModel && <FilterModule onClose={toggleFilterModal} />}
-
-      {/* Floating Back to Top button for mobile */}
-      {showButton && (
-        <button
-          onClick={scrollToTop}
-          className="md:hidden fixed bottom-6 right-6 w-12 h-12 bg-primary-dark text-white rounded-full shadow-lg hover:bg-primary transition-all duration-200 flex items-center justify-center z-30"
-          aria-label="Back to top"
-        >
-          <FontAwesomeIcon icon={faArrowUp} />
-        </button>
-      )}
     </div>
   );
 };

@@ -7,7 +7,9 @@ import useFetch from "../../../../../../../../hooks/useFetch";
 import { RoomDisplay } from "./ItemTableRoom";
 import { RoomDetail } from "./DetailRoom";
 import { useSelector } from "react-redux";
-import { createRoom } from "../../../../../../../../Lib/api";
+import { createRoom, deleteRoom, updateRoom } from "../../../../../../../../Lib/api";
+import RoomHouse from "./AddRoomHouse1";
+import { RoomCardHouse } from "./CardHouseRoom";
 
 const RoomLayout = ({ job }) => {
     const { id } = useParams();
@@ -16,22 +18,22 @@ const RoomLayout = ({ job }) => {
     const navigate = useNavigate();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
 
-    
+
 
     console.log(selectedProperty)
     const [openConfirmDelete, setopenConfirmDelete] = useState(false);
     const [dataRoomEdit, setDataRoomEdit] = useState({});
     const [typeProperty, settypeProperty] = useState('');
 
-    useEffect(()=>{
-        if(selectedProperty){
+    useEffect(() => {
+        if (selectedProperty && selectedProperty.type?.type) {
             settypeProperty(selectedProperty?.type?.type)
         }
     }, [selectedProperty])
 
 
     const { data, error, reFetch } = useFetch(`/api/rooms/${id}/find`)
- 
+
 
     const handleAddRoom = async () => {
         navigate(newPath + `/add`)
@@ -49,7 +51,7 @@ const RoomLayout = ({ job }) => {
         console.log(id)
         // Here you would typically send the data to your backend
         // For example:
-        const response = await createRoom( id , formData)
+        const response = await createRoom(id, formData)
 
         if (response.status === 200) {
             // Successfully added room
@@ -69,7 +71,7 @@ const RoomLayout = ({ job }) => {
 
 
         // For example:
-        const response = await axios.put(`/api/rooms/${roomId}`, formData)
+        const response = await updateRoom(roomId, formData)
 
         if (response.status === 200) {
             reFetch();
@@ -78,13 +80,10 @@ const RoomLayout = ({ job }) => {
         }
     };
 
- 
+
 
     const handleDelete = async (roomId) => {
-        console.log('Deleting Room with ID:', roomId);
-        // Here you would typically send a DELETE request to your backend
-        // For example:
-        const response = await axios.delete(`/api/rooms/${roomId}/${id}`);
+        const response = await deleteRoom(roomId, id);
 
         if (response.status === 200) {
             // Successfully deleted room
@@ -113,6 +112,8 @@ const RoomLayout = ({ job }) => {
 
     }
 
+    // alert(typeProperty)
+
     return (
         <>
             {job === "singleRoom" ? (
@@ -120,14 +121,33 @@ const RoomLayout = ({ job }) => {
             ) : (
                 <div>
                     {job === "add" ? (
-                        <RoomForm onSubmit={handleSubmit} onCancel={handleBack} typeProperty={typeProperty} />
+                        selectedProperty?.type?.type === "hotel" ? (
+                            <RoomForm
+                                onSubmit={handleSubmit}
+                                onCancel={handleBack}
+                                typeProperty={typeProperty}
+                            />
+                        ) : (
+                            <RoomHouse
+                                onSubmit={handleSubmit}
+                                onCancel={handleBack}
+                                typeProperty={typeProperty}
+                            />
+                        )
                     ) : job === "edit" ? (
-                        <RoomForm
-                            onSubmit={handleUpdate}
-                            initialData={dataRoomEdit}
-                            onCancel={handleBack}
-                        />
-                    ) : (
+                        selectedProperty?.type?.type === "hotel" ? (
+                            <RoomForm
+                                onSubmit={handleUpdate}
+                                initialData={dataRoomEdit}
+                                onCancel={handleBack}
+                            />
+                        ) : (
+                            <RoomHouse
+                                onSubmit={handleUpdate}
+                                initialData={dataRoomEdit}
+                                onCancel={handleBack}
+                            />
+                        )) : (
                         <div>
                             <button
                                 className="flex items-center gap-2 bg-gray-400 rounded-md p-2 hover:scale-105"
@@ -137,23 +157,38 @@ const RoomLayout = ({ job }) => {
                             </button>
 
                             <div>
-                                <h1 className="text-4xl mt-6 ">Your Room Management</h1>
-                                <RoomDisplay
-                                    data={data}
-                                    handleSingleRoom={handleSingleRoom}
-                                    handleEditRoom={handleEditRoom}
-                                    handleDelete={show}
-                                    openConfirmDelete ={openConfirmDelete}
-                                    setOpenConfirmDelete={setopenConfirmDelete}
 
-                                />
+
+
+
+                                {
+                                    selectedProperty?.type?.type === "hotel" ? (<>
+                                        <h1 className="text-4xl mt-6">Your Room Management</h1>
+                                        <RoomDisplay
+                                            data={data}
+                                            handleSingleRoom={handleSingleRoom}
+                                            handleEditRoom={handleEditRoom}
+                                            handleDelete={show}
+                                            openConfirmDelete={openConfirmDelete}
+                                            setOpenConfirmDelete={setopenConfirmDelete}
+                                        /></>) : (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
+                                            {data?.map((room) => (
+                                                <RoomCardHouse
+                                                    key={room._id}
+                                                    room={room}
+                                                    onClick={handleSingleRoom}
+                                                    onDelete={show}
+                                                    onEdit={handleEditRoom}
+                                                />
+                                            ))}
+                                        </div>)
+                                }
+
                             </div>
-                            
                         </div>
-
-
                     )}
                 </div>
+
             )}
         </>
 

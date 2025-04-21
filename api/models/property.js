@@ -65,6 +65,20 @@ const BathroomSchema = new mongoose.Schema({
     },
     type: { type: String },
   });
+
+  
+const RoomsSchema = new mongoose.Schema({
+    id: { type: Number, required: true },
+    features: {
+      type: Map,
+      of: Boolean,
+      default: {}
+    },
+    beds : [{
+        type: { type: String,  }, 
+        count: { type: Number,   }   
+    }],
+  });
   
 // Update the property_details schema to include spaces
 const PropertyDetailsSchema = new Schema({
@@ -87,6 +101,7 @@ const PropertyDetailsSchema = new Schema({
         default: []
     },
     bathrooms: [BathroomSchema ],
+    rooms :  [RoomsSchema ],
 });
 
 

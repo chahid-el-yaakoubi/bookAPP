@@ -43,67 +43,6 @@ const MapIframe = () => {
   );
 };
 
-// Professional Room Table Component
-const RoomTable = ({ rooms }) => {
-  const { t } = useTranslation();
-
-  if (!rooms || rooms.length === 0) {
-    return <div className="text-gray-500 italic">{t('singleProperty.noRoomsAvailable')}</div>;
-  }
-
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-        <thead>
-          <tr className="bg-gray-50">
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b">
-              {t('singleProperty.roomName')}
-            </th>
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b">
-              {t('singleProperty.beds')}
-            </th>
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b">
-              {t('singleProperty.amenities')}
-            </th>
-            <th className="py-3 px-4 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b">
-              {t('singleProperty.occupancy')}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {rooms.map((room, index) => {
-            const { roomName, bedCounts, amenities, capacity } = room;
-
-            // Format bed counts for display
-            const bedDetails = bedCounts
-              ? Object.entries(bedCounts)
-                .filter(([_, count]) => parseInt(count) > 0)
-                .map(([type, count]) => `${count} ${type}`)
-                .join(", ")
-              : '';
-
-            // Format amenities for display
-            const amenitiesList = amenities
-              ? Object.entries(amenities)
-                .filter(([_, value]) => value === true)
-                .map(([amenity]) => t(`singleProperty.amenities.${amenity}`))
-                .join(", ")
-              : '';
-
-            return (
-              <tr key={index} className="bg-white">
-                <td className="py-3 px-4 text-sm text-gray-600 border-b">{roomName}</td>
-                <td className="py-3 px-4 text-sm text-gray-600 border-b">{bedDetails}</td>
-                <td className="py-3 px-4 text-sm text-gray-600 border-b">{amenitiesList}</td>
-                <td className="py-3 px-4 text-sm text-gray-600 border-b">{capacity}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-};
 
 // New HotelDetailsTabs Component
 const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) => {

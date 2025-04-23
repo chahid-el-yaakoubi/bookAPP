@@ -3,7 +3,7 @@
   "general": {
     "from": "From",
     "to": "To",
-    "at" : "At"
+    "at": "At"
   },
   "header": {
     "menu": {
@@ -41,9 +41,18 @@
     },
     "alertMessage": "Please enter a destination to start searching.",
     "plural": {
-      "adult": ["adult", "adults"],
-      "child": ["child", "children"],
-      "room": ["room", "rooms"]
+      "adult": [
+        "adult",
+        "adults"
+      ],
+      "child": [
+        "child",
+        "children"
+      ],
+      "room": [
+        "room",
+        "rooms"
+      ]
     }
   },
   "featured": {
@@ -85,7 +94,6 @@
     "BrowseByPropertyType": "Browse by property type",
     "HomesGuestsLove": "Homes guests love"
   },
-
   "footer": {
     "contactUs": "Contact Us",
     "companyName": "Professional Booking Services",
@@ -247,59 +255,59 @@
     "yes": "Yes",
     "no": "No"
   },
-    "experiences": {
-        "marchica": {
-            "title": "Marchica Lagoon",
-            "description": "Visit one of the largest lagoons in the Mediterranean",
-            "price": "From $40"
-        },
-        "charrana": {
-            "title": "Charrana Beach",
-            "description": "Enjoy the pristine waters of this beautiful beach",
-            "price": "From $25"
-        },
-        "gurugu": {
-            "title": "Mount Gurugu Tours",
-            "description": "Hike the iconic mountain with panoramic views of Nador",
-            "price": "From $35"
-        },
-        "souk": {
-            "title": "Traditional Souk Visit",
-            "description": "Experience the local market and Riffian culture",
-            "price": "From $20"
-        },
-        "forks": {
-            "title": "Three Forks Cape",
-            "description": "Visit the historic lighthouse and stunning coastline",
-            "price": "From $30"
-        },
-        "seafood": {
-            "title": "Local Seafood Experience",
-            "description": "Taste fresh Mediterranean seafood at local restaurants",
-            "price": "From $45"
-        }
-    } ,
-    "FeaturedProperties": {
-      "propertyDetails": "Property Details",
-      "totalReviews": "Total Reviews",
-      "rating": "Rating",
-      "ratings": {
-        "exceptional": "Exceptional",
-        "excellent": "Excellent",
-        "veryGood": "Very Good",
-        "good": "Good"
-      },
-      "perNight": "per night",
-      "bookNow": "Book Now",
-      "showLess": "Show Less"
+  "experiences": {
+    "marchica": {
+      "title": "Marchica Lagoon",
+      "description": "Visit one of the largest lagoons in the Mediterranean",
+      "price": "From $40"
     },
-    "favorites": {
-      "title": "Houses guests love",
-      "location": "Location",
-      "rating": "Rating",
-      "reviews": "Reviews",
-      "startingFrom": "Starting from"
-    } ,
+    "charrana": {
+      "title": "Charrana Beach",
+      "description": "Enjoy the pristine waters of this beautiful beach",
+      "price": "From $25"
+    },
+    "gurugu": {
+      "title": "Mount Gurugu Tours",
+      "description": "Hike the iconic mountain with panoramic views of Nador",
+      "price": "From $35"
+    },
+    "souk": {
+      "title": "Traditional Souk Visit",
+      "description": "Experience the local market and Riffian culture",
+      "price": "From $20"
+    },
+    "forks": {
+      "title": "Three Forks Cape",
+      "description": "Visit the historic lighthouse and stunning coastline",
+      "price": "From $30"
+    },
+    "seafood": {
+      "title": "Local Seafood Experience",
+      "description": "Taste fresh Mediterranean seafood at local restaurants",
+      "price": "From $45"
+    }
+  },
+  "FeaturedProperties": {
+    "propertyDetails": "Property Details",
+    "totalReviews": "Total Reviews",
+    "rating": "Rating",
+    "ratings": {
+      "exceptional": "Exceptional",
+      "excellent": "Excellent",
+      "veryGood": "Very Good",
+      "good": "Good"
+    },
+    "perNight": "per night",
+    "bookNow": "Book Now",
+    "showLess": "Show Less"
+  },
+  "favorites": {
+    "title": "Houses guests love",
+    "location": "Location",
+    "rating": "Rating",
+    "reviews": "Reviews",
+    "startingFrom": "Starting from"
+  },
   "mailList": {
     "title": "Subscribe to our newsletter",
     "subtitle": "Receive the latest news and updates",
@@ -309,7 +317,7 @@
     "successMessage": "Your email has been successfully registered.",
     "errorTitle": "Error",
     "errorMessage": "Please enter a valid email address."
-  } ,
+  },
   "currency": {
     "USD": "US Dollar",
     "MAD": "Moroccan Dirham",
@@ -372,15 +380,17 @@
     }
   },
   "singleProperty": {
+    "location" : "Location",
+    "availableRooms" : "Available Rooms",
     "viewAll": "View All Photos",
-    "share" : "Share",
-    "save" : "Save",
-    "usaved" : "Usaved",
+    "share": "Share",
+    "save": "Save",
+    "usaved": "Usaved",
     "aboutThisPlace": "About this place",
     "nearbyPlaces": "Nearby Places",
     "showAll": "Show All",
     "kilometers": "km",
-   "categories": {
+    "categories": {
       "walkingRoutes": "Walking Routes",
       "bookingPlaces": "Booking Places",
       "beaches": "Beaches",
@@ -389,7 +399,10 @@
       "airports": "Airports",
       "attractions": "Attractions"
     },
-    "offersTitle": "What this place offers"
+    "hotelDetails": "Accommodation Details",
+    "offersTitle": "What this place offers",
+    "amenities": "Amenities",
+    "features": "Features"
   },
   "hotelsList": {
     "showAll": "Show All",
@@ -419,7 +432,7 @@
       "guesthouse": "Guesthouse"
     }
   },
-  "FilterModule" : {
+  "FilterModule": {
     "common": {
       "close": "Close"
     },
@@ -470,9 +483,73 @@
       "security24": "24/7 Security",
       "camera": "Security Camera"
     }
+  },
+  "rules": {
+    "thingsToKnow": "Things to Know",
+    "houseRules": "House Rules",
+    "safetyAndProperty": "Safety & Property",
+    "cancellationPolicy": "Cancellation Policy",
+    "checkIn": "Check-in",
+    "checkoutBefore": "Checkout before",
+    "maximumGuests": "Maximum guests",
+    "pets": "Pets",
+    "partiesOrEvents": "Parties or events",
+    "smoking": "Smoking",
+    "carbonMonoxideAlarm": "Carbon monoxide alarm",
+    "smokeAlarm": "Smoke alarm",
+    "securityCamera": "Security camera",
+    "poolHotTub": "Pool / hot tub",
+    "heights": "Heights without protection",
+    "freeCancellationBefore": "Free cancellation before",
+    "reviewThePolicy": "Review the policy",
+    "notSuitableForInfants": "Not suitable for infants",
+    "damageProtection": "Damage protection",
+    "fireExtinguisher": "Fire extinguisher",
+    "emergencyExit": "Emergency exit",
+    "notSpecified": "Not specified",
+    "allowed": "Allowed",
+    "notAllowed": "Not allowed",
+    "notReported": "Not reported",
+    "noneReported": "None reported",
+    "noBarriers": "No barriers",
+    "noProtection": "No protection",
+    "available": "Available",
+    "notAvailable": "Not available",
+    "hours": "hours",
+    "days": "days",
+    "viewDetails": "View details",
+    "under2Years": "Under 2 years",
+    "required": "Required",
+    "guestsMaximum": "guests maximum",
+    "checkInDescription": "You can check in between the specified hours.",
+    "checkoutDescription": "Please vacate the property by this time on your departure day.",
+    "maxGuestsDescription": "This includes adults and children. Exceeding this limit may result in extra charges.",
+    "petsDescription": "Policies regarding pets vary. Please check before bringing your pet.",
+    "partiesDescription": "Please respect the property and neighbors when hosting events.",
+    "smokingDescription": "This policy applies to all indoor areas of the property.",
+    "carbonMonoxideDescription": "Carbon monoxide detectors help keep you safe from this odorless gas.",
+    "smokeAlarmDescription": "Smoke alarms provide early warning in case of fire.",
+    "securityCameraDescription": "Security cameras may be present on the property grounds.",
+    "fireExtinguisherDescription": "A fire extinguisher is available for emergency use.",
+    "emergencyExitDescription": "The property has marked emergency exits for safety.",
+    "poolDescription": "No barriers or fences are present around water features.",
+    "heightsDescription": "Some areas may have drops without protective barriers.",
+    "cancellationDescription": "Full refund available if canceled this many days before check-in.",
+    "policyReviewDescription": "See full details of the cancellation policy.",
+    "infantsDescription": "This property may not be suitable for children under 2 years old.",
+    "damageProtectionDescription": "Damage protection coverage is required for this booking.",
+    "title": "Accessibility Features",
+    "stepFree": "Step-Free Access",
+    "stepFreeDescription": "The property can be accessed without needing to climb stairs or steps.",
+    "elevator": "Elevator",
+    "elevatorDescription": "The property has an elevator for guest use.",
+    "parking": "Designated Parking",
+    "parkingDescription": "The property has a designated parking spot for guests with special needs.",
+    "wideEntrance": "Wide Entrance",
+    "wideEntranceDescription": "The entrance is at least 32 inches (82 cm) wide.",
+    "rollShower": "Wheelchair Accessible Shower",
+    "rollShowerDescription": "A shower with no steps or barriers for easy access by a wheelchair.",
+    "accessibleToilet": "Accessible Toilet",
+    "accessibleToiletDescription": "A toilet with grab bars and space for wheelchair access."
   }
 }
-
-
-
-  

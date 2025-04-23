@@ -73,8 +73,14 @@
     "customSafetyFeaturesDescription": "Description of custom safety features",
     "propertySafetyComplianceDescription": "Description of property safety compliance",
     "safetyRecommendation": "Safety recommendations",
-
+    "common": {
+        "close": "Close",
+        "showAll": "Show All ({{count}})"
+    },
     "amenities": {
+        "allPropertyAmenities": "All Property Amenities",
+        "allPropertyFeatures": "All Property Features",
+        "showAll": "Show All",
         "title": "Amenities",
         "description": "Select the amenities available in your property's rooms/units.",
         "searchPlaceholder": "Search ...",

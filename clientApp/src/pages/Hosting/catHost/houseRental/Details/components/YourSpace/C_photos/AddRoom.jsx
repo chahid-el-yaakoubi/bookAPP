@@ -1,36 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-  // Font Awesome Icons
   FaFan, FaThermometerHalf, FaHome, FaLightbulb, FaVolumeMute,
-  FaTv, FaVolumeUp, FaGamepad, FaLaptopHouse, FaLaptop,
-  FaChair, FaWifi, FaUtensils, FaCoffee, FaFire, FaBath, FaShower,
-  FaHotTub, FaTshirt, FaCut, FaSoap, FaParking, FaBus, FaBiking,
-  FaCarAlt, FaUmbrellaBeach, FaLock, FaPhone, FaClock,
-  FaFilm, FaBook, FaNetworkWired, FaPrint, FaUsb, FaPlug,
-  FaPen, FaBlender, FaWater, FaWineGlass, FaTemperatureHigh,
-
-  FaBuilding, FaSuitcase,
-  FaCamera, FaKey,
-  FaRobot, FaMicrophone, FaProjectDiagram,
-
-  FaTable,
-  FaChessKing,
-  FaSocks,
+  FaTv, FaVolumeUp, FaGamepad, FaLaptop, FaChair, FaWifi,
+  FaUtensils, FaCoffee, FaFire, FaBath, FaShower, FaSuitcase,
+  FaLock, FaPhone, FaClock, FaFilm, FaBook, FaNetworkWired,
+  FaPrint, FaUsb, FaPlug, FaPen, FaBlender, FaWater, FaBuilding,
+  FaCamera, FaKey, FaMicrophone, FaProjectDiagram
 } from 'react-icons/fa';
-import { FcDvdLogo } from "react-icons/fc";
-
-// Material Design Icons
 import { MdCurtainsClosed, MdOutlineCleaningServices, MdSmokeFree } from 'react-icons/md';
-
-// Game Icons
-import {
-  GiToaster, GiKnifeFork,
-} from 'react-icons/gi';
+import { GiToaster, GiKnifeFork } from 'react-icons/gi';
 import { FaDoorOpen, FaEarListen, FaRadio, FaTreeCity } from "react-icons/fa6";
-
-// Bootstrap Icons
 import { BiFridge } from 'react-icons/bi';
-import { ArrowLeft, Coffee, Droplet, Home, Laptop, Layout, Minus, Plus, Tv, Users, X } from 'lucide-react';
+import { 
+  ArrowLeft, Coffee, Droplet, Home, Laptop, Layout, 
+  Minus, Plus, Tv, Users, Umbrella, X, Map, Sun, 
+  Mountain, Palmtree
+} from 'lucide-react';
 import { BathroomAmenitiesSelector } from './AddBathroom';
 
 const BED_TYPES = [
@@ -38,37 +23,38 @@ const BED_TYPES = [
   'Double Bed',
   'Queen Bed',
   'King Bed',
-  'Small Double Bed',
+  'Traditional Moroccan Bed',
   'Bunk Bed',
   'Sofa Bed',
-  'Couch',
   'Floor Mattress',
-  'Air Mattress',
   'Crib',
-  'Toddler Bed',
-  'Hammock',
-  'Water Bed',
 ];
 
+// Morocco-specific view types
 const VIEW_TYPES = [
-  'City View',
-  'Sea View',
+  'Medina View',
   'Garden View',
   'Pool View',
   'Mountain View',
+  'Desert View',
+  'Ocean View',
+  'Riad Courtyard View',
+  'City View',
+  'Atlas Mountains View',
 ];
 
 // Amenities categorized
 const AMENITY_CATEGORIES = [
   'Entertainment',
   'Workspace',
+  'Moroccan Features',
   'Kitchen & Dining',
   'Technology'
 ];
 
 const RoomFeatures = [
-  { id: 'air_conditioning', label: 'Air Conditioning', category: 'Room Features', icon: FaTemperatureHigh },
-  { id: 'heating_system', label: 'Heating System', category: 'Room Features', icon: FaThermometerHalf },
+  { id: 'air_conditioning', label: 'Air Conditioning', category: 'Room Features', icon: FaThermometerHalf },
+  { id: 'heating_system', label: 'Heating System', category: 'Room Features', icon: FaFire },
   { id: 'fan', label: 'Fan', category: 'Room Features', icon: FaFan },
   { id: 'wardrobe', label: 'Wardrobe/Closet', category: 'Room Features', icon: FaHome },
   { id: 'full_length_mirror', label: 'Full-Length Mirror', category: 'Room Features', icon: FaCamera },
@@ -76,54 +62,47 @@ const RoomFeatures = [
   { id: 'reading_lights', label: 'Reading Lights', category: 'Room Features', icon: FaLightbulb },
   { id: 'soundproofing', label: 'Soundproofing', category: 'Room Features', icon: FaVolumeMute },
   { id: 'balcony', label: 'Balcony', category: 'Room Features', icon: FaBuilding },
-  { id: 'terrace', label: 'Terrace', category: 'Room Features', icon: FaTreeCity },
+  { id: 'terrace', label: 'Terrace/Rooftop', category: 'Room Features', icon: FaTreeCity },
   { id: 'safe', label: 'In-Room Safe', category: 'Room Features', icon: FaLock },
-  { id: 'iron', label: 'Iron & Ironing Board', category: 'Room Features', icon: FaCut },
+  { id: 'iron', label: 'Iron & Ironing Board', category: 'Room Features', icon: FaFire },
   { id: 'luggage_rack', label: 'Luggage Rack', category: 'Room Features', icon: FaSuitcase },
   { id: 'telephone', label: 'Telephone', category: 'Room Features', icon: FaPhone },
   { id: 'alarm_clock', label: 'Alarm Clock', category: 'Room Features', icon: FaClock },
+  { id: 'moroccan_decor', label: 'Moroccan Décor', category: 'Room Features', icon: Palmtree },
+  { id: 'traditional_rugs', label: 'Traditional Berber Rugs', category: 'Room Features', icon: Home },
+  { id: 'courtyard_access', label: 'Courtyard Access', category: 'Room Features', icon: FaDoorOpen },
 ];
 
 const AMENITIES = [
   // Entertainment
-  { id: 'tv', label: 'TV (Satellite, Smart TV, Netflix, etc.)', category: 'Entertainment', icon: FaTv },
-  { id: 'speakers', label: 'Speakers', category: 'Entertainment', icon: FaEarListen },
-  { id: 'radio', label: 'Radio', category: 'Entertainment', icon: FaRadio },
-  { id: 'game_console', label: 'Game Console (PlayStation, Xbox, etc.)', category: 'Entertainment', icon: FaGamepad },
+  { id: 'tv', label: 'TV (Satellite/Smart TV)', category: 'Entertainment', icon: FaTv },
+  { id: 'speakers', label: 'Bluetooth Speakers', category: 'Entertainment', icon: FaEarListen },
   { id: 'streaming_services', label: 'Streaming Services', category: 'Entertainment', icon: FaTv },
   { id: 'books', label: 'Books & Magazines', category: 'Entertainment', icon: FaBook },
-  { id: 'board_games', label: 'Board Games', category: 'Entertainment', icon: FaChessKing },
-  { id: 'premium_channels', label: 'Premium TV Channels', category: 'Entertainment', icon: FaTv },
-  { id: 'dvd_player', label: 'DVD Player', category: 'Entertainment', icon: FcDvdLogo },
 
   // Workspace
-  { id: 'desk', label: 'Desk / Workspace', category: 'Workspace', icon: FaTable },
-  { id: 'laptop_friendly_desk', label: 'Laptop-Friendly Desk', category: 'Workspace', icon: FaLaptop },
-  { id: 'office_chair', label: 'Office Chair', category: 'Workspace', icon: FaChair },
+  { id: 'desk', label: 'Desk / Workspace', category: 'Workspace', icon: FaLaptop },
   { id: 'high_speed_wifi', label: 'High-Speed WiFi', category: 'Workspace', icon: FaWifi },
-  { id: 'ethernet_connection', label: 'Ethernet Connection', category: 'Workspace', icon: FaNetworkWired },
-  { id: 'printer', label: 'Printer Access', category: 'Workspace', icon: FaPrint },
-  { id: 'usb_ports', label: 'USB Charging Ports', category: 'Workspace', icon: FaUsb },
   { id: 'power_outlets', label: 'Multiple Power Outlets', category: 'Workspace', icon: FaPlug },
-  { id: 'stationery', label: 'Stationery', category: 'Workspace', icon: FaPen },
+
+  // Moroccan Features
+  { id: 'traditional_breakfast', label: 'Traditional Moroccan Breakfast', category: 'Moroccan Features', icon: FaCoffee },
+  { id: 'mint_tea_service', label: 'Mint Tea Service', category: 'Moroccan Features', icon: Coffee },
+  { id: 'hammam_access', label: 'Hammam Access', category: 'Moroccan Features', icon: FaShower },
+  { id: 'moroccan_toiletries', label: 'Moroccan Argan Toiletries', category: 'Moroccan Features', icon: FaWater },
+  { id: 'courtyard_seating', label: 'Traditional Courtyard Seating', category: 'Moroccan Features', icon: FaChair },
+  { id: 'local_artwork', label: 'Local Artwork & Crafts', category: 'Moroccan Features', icon: FaCamera },
 
   // Kitchen & Dining
   { id: 'mini_fridge', label: 'Mini Fridge', category: 'Kitchen & Dining', icon: BiFridge },
-  { id: 'microwave', label: 'Microwave', category: 'Kitchen & Dining', icon: FaBlender },
-  { id: 'stove_hot_plate', label: 'Stove/Hot Plate', category: 'Kitchen & Dining', icon: FaFire },
-  { id: 'sink', label: 'Sink', category: 'Kitchen & Dining', icon: FaWater },
   { id: 'coffee_maker_kettle', label: 'Coffee Maker/Kettle', category: 'Kitchen & Dining', icon: FaCoffee },
-  { id: 'toaster', label: 'Toaster', category: 'Kitchen & Dining', icon: GiToaster },
-  { id: 'utensils_cookware', label: 'Utensils & Cookware', category: 'Kitchen & Dining', icon: GiKnifeFork },
-  { id: 'dishwasher', label: 'Dishwasher (sometimes)', category: 'Kitchen & Dining', icon: FaWater },
+  { id: 'bottled_water', label: 'Complimentary Bottled Water', category: 'Kitchen & Dining', icon: FaWater },
+  { id: 'dining_area', label: 'Private Dining Area', category: 'Kitchen & Dining', icon: GiKnifeFork },
 
   // Technology
-  { id: 'smart_home', label: 'Smart Home Features', category: 'Technology', icon: FaRobot },
-  { id: 'voice_assistant', label: 'Voice Assistant (Alexa, Google)', category: 'Technology', icon: FaMicrophone },
+  { id: 'smart_home', label: 'Smart Room Controls', category: 'Technology', icon: FaKey },
   { id: 'usb_charging', label: 'USB Charging Ports', category: 'Technology', icon: FaUsb },
   { id: 'international_outlets', label: 'International Power Outlets', category: 'Technology', icon: FaPlug },
-  { id: 'digital_key', label: 'Digital Key/Smart Lock', category: 'Technology', icon: FaKey },
-  { id: 'projector', label: 'Projector', category: 'Technology', icon: FaProjectDiagram },
   { id: 'bluetooth_speaker', label: 'Bluetooth Speaker', category: 'Technology', icon: FaEarListen },
 ];
 
@@ -132,12 +111,12 @@ const categoryIcons = {
   'Room Features': <Home size={20} />,
   'Entertainment': <Tv size={20} />,
   'Workspace': <Laptop size={20} />,
+  'Moroccan Features': <Palmtree size={20} />,
   'Kitchen & Dining': <Coffee size={20} />,
-  'Technology': <FaRobot size={20} />
+  'Technology': <FaPlug size={20} />
 };
 
-const hotelTypes = ['hotel', 'guesthouse', 'hostel', 'boutique-hotel'];
-
+const hotelTypes = ['hotel', 'riad', 'guesthouse', 'kasbah', 'resort', 'boutique-hotel'];
 
 const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const [formData, setFormData] = useState({
@@ -154,6 +133,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
     view: [],
     categorizedAmenities: {},
     roomTitle: '',
+    tempBed: { type: 'Double Bed', count: 1 },
   });
 
   const [errors, setErrors] = useState({});
@@ -161,8 +141,8 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const [expandedCategories, setExpandedCategories] = useState({
     'Entertainment': true,
     'Workspace': false,
-    'Kitchen & Dining': false,
-    'Bathroom Facilities': false,
+    'Moroccan Features': true,
+    'Kitchen & Dining': false, 
     'Technology': false
   });
 
@@ -171,7 +151,8 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
     if (initialData) {
       setFormData(prev => ({
         ...prev,
-        ...initialData
+        ...initialData,
+        tempBed: { type: 'Double Bed', count: 1 },
       }));
     }
   }, [initialData]);
@@ -184,7 +165,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
       newErrors.type = 'Room type is required';
     }
 
-    if ( hotelTypes.includes(typeProperty) && formData.price <= 0) {
+    if (hotelTypes.includes(typeProperty) && (!formData.price || formData.price <= 0)) {
       newErrors.price = 'Price must be greater than 0';
     }
 
@@ -230,17 +211,14 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
 
   const toggleAmenity = (amenityId, category) => {
     setFormData(prev => {
-      // Create a new object for categorizedAmenities if it doesn't exist
       const currentCategorizedAmenities = prev.categorizedAmenities || {};
       const currentCategoryAmenities = currentCategorizedAmenities[category] || [];
 
       let updatedCategoryAmenities;
 
       if (currentCategoryAmenities.includes(amenityId)) {
-        // Remove amenity if already selected
         updatedCategoryAmenities = currentCategoryAmenities.filter(id => id !== amenityId);
       } else {
-        // Add amenity if not selected
         updatedCategoryAmenities = [...currentCategoryAmenities, amenityId];
       }
 
@@ -261,66 +239,21 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const toggleView = (view) => {
     setFormData((prev) => ({
       ...prev,
-      view: prev.view.includes(view)
+      view: prev.view?.includes(view)
         ? prev.view.filter((v) => v !== view)
-        : [...prev.view, view],
+        : [...(prev.view || []), view],
     }));
   };
-
-  const addAmenity = () => {
-    if (amenity.trim()) {
-      setFormData((prev) => ({
-        ...prev,
-        amenities: [...prev.amenities, amenity.trim()],
-      }));
-      setAmenity(''); // Clear the input after adding
-    }
-  };
-
-  const removeAmenity = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      amenities: prev.amenities.filter((_, i) => i !== index),
-    }));
-  };
-
-  // Function to render room features
-  const renderRoomFeatures = () => {
-    return RoomFeatures.map((item) => {
-      const isChecked = formData.roomFeatures.includes(item.id);
-
-      return (
-        <div
-          key={item.id}
-          className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue transition-all"
-          onClick={() => toggleRoomFeature(item.id)}
-        >
-          <input
-            type="checkbox"
-            name={item.id}
-            className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded "
-            checked={isChecked}
-            onChange={() => { }} // Prevent native change handler since the click on div handles it
-          />
-          {item.icon && <item.icon className="ml-2 mr-2 text-gray-800" size={20} />}
-          <label htmlFor={item.id} className="ml-1 block text-sm  text-gray-700">{item.label}</label>
-        </div>
-      );
-    });
-  };
-
 
   const toggleRoomFeature = (featureId) => {
     setFormData((prev) => {
-      const currentFeatures = prev.roomFeatures;
+      const currentFeatures = prev.roomFeatures || [];
       if (currentFeatures.includes(featureId)) {
-        // Remove feature if already selected
         return {
           ...prev,
           roomFeatures: currentFeatures.filter(id => id !== featureId),
         };
       } else {
-        // Add feature if not selected
         return {
           ...prev,
           roomFeatures: [...currentFeatures, featureId],
@@ -335,6 +268,31 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
       ...prev,
       [category]: !prev[category]
     }));
+  };
+
+  // Function to render room features
+  const renderRoomFeatures = () => {
+    return RoomFeatures.map((item) => {
+      const isChecked = formData.roomFeatures?.includes(item.id);
+
+      return (
+        <div
+          key={item.id}
+          className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue transition-all"
+          onClick={() => toggleRoomFeature(item.id)}
+        >
+          <input
+            type="checkbox"
+            name={item.id}
+            className="h-5 w-5 text-blue focus:ring-blue border-gray-300 rounded"
+            checked={isChecked}
+            onChange={() => {}} // Prevent native change handler since the click on div handles it
+          />
+          {item.icon && <item.icon className="ml-2 mr-2 text-gray-800" size={20} />}
+          <label htmlFor={item.id} className="ml-1 block text-sm text-gray-700">{item.label}</label>
+        </div>
+      );
+    });
   };
 
   return (
@@ -382,27 +340,23 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                 />
               </div>
 
-              {
-                hotelTypes.includes(typeProperty) && (
                   <div>
                     <label className="block text-lg font-medium text-gray-700 mb-2">Price per Night</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-3 text-xl text-gray-500">$</span>
+                      <span className="absolute left-4 top-3 text-xl text-gray-500">MAD</span>
                       <input
                         type="number"
                         name="price"
                         value={formData.price}
                         placeholder='0'
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
+                        className="w-full pl-16 pr-4 py-3 text-lg rounded-lg border-2 border-gray-300 focus:border-blue focus:ring focus:ring-blue transition"
                         required
                         min="0"
                       />
                     </div>
                   </div>
-                )
-
-              }
+                
 
 
               <div>
@@ -441,8 +395,6 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                 </div>
               </div>
 
-              {
-                hotelTypes.includes(typeProperty) && (
                   <div>
                     <label className="block text-lg font-medium text-gray-700 mb-2">Room Number/Title</label>
                     <input
@@ -459,8 +411,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                       placeholder="e.g. 101, 203, Suite A"
                     />
                   </div>
-                )
-              }
+                 
 
             </div>
 
@@ -702,8 +653,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
           </div>
 
           {/* bathrooms*/}
-          {
-            hotelTypes.includes(typeProperty) && (
+          
 
               <>
 
@@ -771,7 +721,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                 </div>
 
                 {/* Custom Amenities Card */}
-                <div className="bg-white rounded-xl shadow-lg p-8">
+                {/* <div className="bg-white rounded-xl shadow-lg p-8">
                   <div className="flex items-center mb-6">
                     <Droplet className="text-blue mr-4" size={28} />
                     <h2 className="text-2xl font-bold text-gray-800">Custom Amenities</h2>
@@ -820,22 +770,19 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
                       )}
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Add error display */}
-                {Object.keys(errors).length > 0 && (
+                {/* {Object.keys(errors).length > 0 && (
                   <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                     {Object.values(errors).map((error, index) => (
                       <p key={index}>{error}</p>
                     ))}
                   </div>
-                )}
+                )} */}
               </>
 
-
-
-            )
-          }
+ 
 
           {/* Categorized Amenities Card */}
 
@@ -851,7 +798,7 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue transition"
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary transition"
             >
               {initialData ? 'Update Room' : 'Create Room'}
             </button>

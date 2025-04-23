@@ -121,7 +121,7 @@ const RoomLayout = ({ job }) => {
             ) : (
                 <div>
                     {job === "add" ? (
-                        selectedProperty?.type?.type === "hotel" ? (
+                        (selectedProperty?.type?.type === "hotel" || selectedProperty?.type?.type === "guesthouse") ? (
                             <RoomForm
                                 onSubmit={handleSubmit}
                                 onCancel={handleBack}
@@ -135,7 +135,7 @@ const RoomLayout = ({ job }) => {
                             />
                         )
                     ) : job === "edit" ? (
-                        selectedProperty?.type?.type === "hotel" ? (
+                        (selectedProperty?.type?.type === "hotel" || selectedProperty?.type?.type === "guesthouse")  ? (
                             <RoomForm
                                 onSubmit={handleUpdate}
                                 initialData={dataRoomEdit}

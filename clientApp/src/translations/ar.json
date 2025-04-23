@@ -245,6 +245,7 @@
     }
   },
   "singleProperty": {
+    "location" : "الموقع",
     "viewAll": "عرض جميع الصور",
     "share": "مشاركة",
     "save": "حفظ",
@@ -262,8 +263,10 @@
       "airports": "مطارات",
       "attractions": "معالم سياحية"
     },
-    "offersTitle": "ماذا يقدم هذا المكان"
-
+    "hotelDetails": "تفاصيل الإقامة",
+    "offersTitle": "ماذا يقدم هذا المكان",
+    "amenities": "المرفقات",
+    "features": "المميزات"
   },
   "hotelsList": {
     "showAll": "عرض الكل",
@@ -293,7 +296,7 @@
       "guesthouse": "بيت ضيافة"
     }
   },
-  "FilterModule" : {
+  "FilterModule": {
     "common": {
       "close": "إغلاق"
     },
@@ -344,5 +347,73 @@
       "security24": "حراسة 24/7",
       "camera": "كاميرا أمنية"
     }
+  },
+  "rules": {
+    "thingsToKnow": "أشياء يجب معرفتها",
+    "houseRules": "قواعد المنزل",
+    "safetyAndProperty": "السلامة والممتلكات",
+    "cancellationPolicy": "سياسة الإلغاء",
+    "checkIn": "تسجيل الوصول",
+    "checkoutBefore": "المغادرة قبل",
+    "maximumGuests": "الحد الأقصى للضيوف",
+    "pets": "الحيوانات الأليفة",
+    "partiesOrEvents": "الحفلات أو المناسبات",
+    "smoking": "التدخين",
+    "carbonMonoxideAlarm": "جهاز إنذار أول أكسيد الكربون",
+    "smokeAlarm": "جهاز إنذار الدخان",
+    "securityCamera": "كاميرا أمنية",
+    "poolHotTub": "المسبح / الجاكوزي",
+    "heights": "مرتفعات بدون حماية",
+    "freeCancellationBefore": "إلغاء مجاني قبل",
+    "reviewThePolicy": "مراجعة السياسة",
+    "notSuitableForInfants": "غير مناسب للرضع",
+    "damageProtection": "حماية من الأضرار",
+    "fireExtinguisher": "طفاية حريق",
+    "emergencyExit": "مخرج طوارئ",
+    "notSpecified": "غير محدد",
+    "allowed": "مسموح",
+    "notAllowed": "غير مسموح",
+    "notReported": "غير مبلغ عنه",
+    "noneReported": "لا شيء مبلغ عنه",
+    "noBarriers": "لا حواجز",
+    "noProtection": "لا حماية",
+    "available": "متوفر",
+    "notAvailable": "غير متوفر",
+    "hours": "ساعات",
+    "days": "أيام",
+    "viewDetails": "عرض التفاصيل",
+    "under2Years": "أقل من سنتين",
+    "required": "مطلوب",
+    "guestsMaximum": "الحد الأقصى للضيوف",
+    "checkInDescription": "يمكنك تسجيل الوصول بين الساعات المحددة.",
+    "checkoutDescription": "يرجى إخلاء العقار بحلول هذا الوقت في يوم المغادرة.",
+    "maxGuestsDescription": "يشمل ذلك البالغين والأطفال. قد يؤدي تجاوز هذا الحد إلى رسوم إضافية.",
+    "petsDescription": "تختلف سياسات الحيوانات الأليفة. يرجى التحقق قبل إحضار حيوانك الأليف.",
+    "partiesDescription": "يرجى احترام العقار والجيران عند استضافة المناسبات.",
+    "smokingDescription": "تنطبق هذه السياسة على جميع المناطق الداخلية للعقار.",
+    "carbonMonoxideDescription": "أجهزة الكشف عن أول أكسيد الكربون تساعد في الحفاظ على سلامتك من هذا الغاز عديم الرائحة.",
+    "smokeAlarmDescription": "توفر أجهزة إنذار الدخان إنذارًا مبكرًا في حالة نشوب حريق.",
+    "securityCameraDescription": "قد تكون هناك كاميرات أمنية في أرض العقار.",
+    "fireExtinguisherDescription": "طفاية حريق متاحة للاستخدام في حالات الطوارئ.",
+    "emergencyExitDescription": "العقار به مخارج طوارئ محددة للسلامة.",
+    "poolDescription": "لا توجد حواجز أو أسوار حول ميزات المياه.",
+    "heightsDescription": "قد تحتوي بعض المناطق على انخفاضات بدون حواجز واقية.",
+    "cancellationDescription": "استرداد كامل متاح إذا تم الإلغاء قبل تسجيل الوصول بهذا العدد من الأيام.",
+    "policyReviewDescription": "الاطلاع على التفاصيل الكاملة لسياسة الإلغاء.",
+    "infantsDescription": "قد لا يكون هذا العقار مناسبًا للأطفال دون سن سنتين.",
+    "damageProtectionDescription": "تغطية الحماية من الأضرار مطلوبة لهذا الحجز.",
+    "title": "ميزات الوصول",
+    "stepFree": "دخول خالي من السلالم",
+    "stepFreeDescription": "يمكن الوصول إلى العقار دون الحاجة للصعود على السلالم أو الخطوات",
+    "elevator": "مصعد",
+    "elevatorDescription": "العقار يحتوي على مصعد للاستخدام من قبل الضيوف",
+    "parking": "موقف سيارات مخصص",
+    "parkingDescription": "العقار يحتوي على موقف سيارات مخصص للضيوف ذوي الاحتياجات الخاصة",
+    "wideEntrance": "مدخل واسع",
+    "wideEntranceDescription": "المدخل عرضه على الأقل 32 بوصة (82 سم)",
+    "rollShower": "دش مخصص للكراسي المتحركة",
+    "rollShowerDescription": "دش بدون خطوات أو حواجز للوصول السهل بواسطة الكرسي المتحرك",
+    "accessibleToilet": "مرحاض مخصص",
+    "accessibleToiletDescription": "مرحاض مع قضبان مساعدة ومساحة للوصول باستخدام الكرسي المتحرك"
   }
 }

@@ -26,7 +26,7 @@
         "availability": "التوافر",
         "rooms": "عن الغرف",
         "safety": "السلامة",
-        "bathrooms" : "الحمام",
+        "bathrooms": "الحمام",
         "backToMenu": "العودة إلى القائمة",
         "backButton": "رجوع",
         "emptyDiv": " "
@@ -74,8 +74,13 @@
     "customSafetyFeaturesDescription": "وصف ميزات السلامة المخصصة",
     "propertySafetyComplianceDescription": "وصف امتثال العقار للسلامة",
     "safetyRecommendation": "توصية السلامة",
-
+    "common": {
+        "close": "إغلاق",
+        "showAll": "عرض جميع ({{count}})"
+    },
     "amenities": {
+        "allPropertyAmenities": "جميع وسائل الراحة في العقار",
+        "allPropertyFeatures": "جميع المميزات في العقار",
         "title": "وسائل الراحة",
         "description": "حدد وسائل الراحة المتاحة في غرف/وحدات عقارك.",
         "searchPlaceholder": "البحث...",
@@ -230,6 +235,6 @@
         "propertyFeatures": "ميزات العقار",
         "amenitiesSubtitle": "استكشف وسائل الراحة المتوفرة في هذا العقار",
         "propertyAmenities": "وسائل الراحة في العقار",
-    "uniqueFeatures": "اكتشف الميزات الفريدة التي تجعل هذا العقار مميزًا"
+        "uniqueFeatures": "اكتشف الميزات الفريدة التي تجعل هذا العقار مميزًا"
     }
 }

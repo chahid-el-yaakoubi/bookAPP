@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ImageGallery } from './componentHotel/ImageGallery';
 import { BookingCard } from './componentHotel/BookingCard';
 import { ThingsToKnow } from './componentHotel/ThingsToKnow';
-import { Share, Heart, Globe2 } from 'lucide-react';
+import { Share, Heart } from 'lucide-react';
 import { BookingProvider } from '../../contexts/BookingContext';
 import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
@@ -18,12 +18,13 @@ import Footer from '../../components/footer.jsx';
 import { useTranslation } from 'react-i18next';
 import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
 import PropertyFeatures from './componentHotel/Features.jsx';
+import { LayoutRoom } from './rooms/LayoutRoom.jsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // Improved MapIframe component with responsive design
 const MapIframe = () => {
-  const embedLink = "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d740.2628554265848!2d-5.353500794964029!3d35.57215546645905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzXCsDM0JzE5LjYiTiA1wrAyMScxMC42Ilc";
+  const embedLink = "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4209.136539582935!2d-2.9391949235346493!3d35.15725335857831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzXCsDA5JzI2LjEiTiAywrA1NicxMS44Ilc!5e1!3m2!1sen!2sma!4v1745355233505!5m2!1sen!2sma";
 
   return (
     <div className="w-full h-full overflow-hidden rounded-lg">
@@ -45,7 +46,7 @@ const MapIframe = () => {
 // Professional Room Table Component
 const RoomTable = ({ rooms }) => {
   const { t } = useTranslation();
-  
+
   if (!rooms || rooms.length === 0) {
     return <div className="text-gray-500 italic">{t('singleProperty.noRoomsAvailable')}</div>;
   }
@@ -72,7 +73,7 @@ const RoomTable = ({ rooms }) => {
         <tbody className="divide-y divide-gray-200">
           {rooms.map((room, index) => {
             const { roomName, bedCounts, amenities, capacity } = room;
-            
+
             // Format bed counts for display
             const bedDetails = bedCounts
               ? Object.entries(bedCounts)
@@ -80,9 +81,9 @@ const RoomTable = ({ rooms }) => {
                 .map(([type, count]) => `${count} ${type}`)
                 .join(", ")
               : '';
-              
+
             // Format amenities for display
-            const amenitiesList = amenities 
+            const amenitiesList = amenities
               ? Object.entries(amenities)
                 .filter(([_, value]) => value === true)
                 .map(([amenity]) => t(`singleProperty.amenities.${amenity}`))
@@ -151,12 +152,12 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) 
   );
 
   const renderFeatures = () => (
-    <PropertyFeatures propertyFeaturesdata={propertyFeatures} />
+    <PropertyFeatures propertyFeaturesData={propertyFeatures} />
 
   );
 
   const renderAmenities = () => (
-      <PropertyAmenities propertyAmenitiesData={propertyAmenities} />
+    <PropertyAmenities propertyAmenitiesData={propertyAmenities} />
   );
 
   // Render tab content based on active tab
@@ -176,24 +177,23 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) 
   return (
     <div className="py-6 border-b">
       <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.hotelDetails', 'Hotel Details')}</h2>
-      
+
       {/* Tab Navigation */}
       <div className="border-b flex">
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            className={`px-6 py-3 font-medium text-sm transition-colors relative ${
-              activeTab === tab.id 
-                ? 'text-pink-600 border-b-2 border-pink-600' 
+            className={`px-6 py-3 font-medium text-sm transition-colors relative ${activeTab === tab.id
+                ? 'text-blue border-b-2 border-blue text-xl'
                 : 'text-gray-600 hover:text-gray-900'
-            }`}
+              }`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.label}
           </button>
         ))}
       </div>
-      
+
       {/* Tab Content */}
       {renderTabContent()}
     </div>
@@ -212,7 +212,7 @@ export function Hotel() {
     airports: <FaPlane className="text-indigo-500 text-xl" />,
     attractions: <FaMapMarkerAlt className="text-green-500 text-xl" />,
   };
-  
+
   const { data: hotel, error, loading } = useFetch(`api/hotels/find/${id}`);
   const { data: roomsData, loading: roomsLoading } = useFetch(`/api/rooms/${id}/find`);
 
@@ -225,6 +225,12 @@ export function Hotel() {
   const [propertyAmenities, setPropertyAmenities] = useState();
   const [type, setType] = useState({});
   const [policies, setPolicies] = useState({});
+  const [accessibilityFeatures, setAccessibilityFeatures] = useState({});
+  const [safetyFeatures, setSafetyFeatures] = useState({});
+  const [propertyData, setPropertyData] = useState({});
+
+  const [cancellationPolicy, setCancellationPolicy] = useState({});
+
   const [proximities, setProximities] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -252,35 +258,53 @@ export function Hotel() {
   }, []);
 
   useEffect(() => {
+
+    if(hotel && hotel.property_details && !loading && !error){
+      setPropertyData(hotel)
+    }
     if (hotel) {
       if (hotel.property_details?.photos) {
         setImages(hotel.property_details.photos);
       }
-      
+
+
       if (hotel.location) {
         setLocation(hotel.location);
       }
-      
+
       if (hotel.type) {
         setType(hotel.type);
       }
-      
+
       if (hotel.proximities) {
         setProximities(hotel.proximities);
       }
-      
+
       if (hotel.policies) {
         setPolicies(hotel.policies);
       }
-      
+
+      if (hotel.accessibility_features) {
+        setAccessibilityFeatures(hotel.accessibility_features);
+
+      }
+
+      if (hotel.safety_features) {
+        setSafetyFeatures(hotel.safety_features);
+      }
+
+      if (hotel.cancellation) {  
+        setCancellationPolicy(hotel.cancellation);
+      }
+
       if (hotel.property_details?.propertyFeatures) {
         setPropertyFeatures(hotel.property_details.propertyFeatures);
       }
-      
+
       if (hotel.property_details?.amenities) {
         setPropertyAmenities(hotel.property_details.amenities);
       }
-      
+
       if (hotel.property_details?.description) {
         setDescription(hotel.property_details.description);
       }
@@ -301,27 +325,30 @@ export function Hotel() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p className="font-bold">Error</p>
-          <p>Error loading property details. Please try again later.</p>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+  //         <p className="font-bold">Error</p>
+  //         <p>Error loading property details. Please try again later.</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div>
-      <div className='hidden md:block'>
+    <div className=''>
+      <div className=''>
         <Navbar />
-        <Header type={"house_rental"} />
+        <div className="hidden md:block">
+          <Header type={"house_rental"} />
+
+        </div>
       </div>
 
       <BookingProvider>
-        <div className="bg-white shadow-sm">
-          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:pt-20">
+        <div className="bg-blue/10 shadow-sm">
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:pt-20 bg-primary/10">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold mb-1 hidden md:block">{hotel?.title}</h1>
 
@@ -339,13 +366,13 @@ export function Hotel() {
                   <Share className="w-4 h-4" />
                   <span className="underline">{t('singleProperty.share')}</span>
                 </button>
-                
+
                 <SharePropertyModal
                   isOpen={isShareModalOpen}
                   onClose={() => setIsShareModalOpen(false)}
                   property={hotel || {}}
                 />
-                
+
                 <button
                   onClick={handleClick}
                   className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 rounded-lg transition">
@@ -380,7 +407,7 @@ export function Hotel() {
                         </>
                       )}
                     </h2>
-                    
+
                     <div className="flex items-center mt-2">
                       <FaBed className="text-gray-500 mr-2" />
                       <span className="text-gray-700">
@@ -414,7 +441,7 @@ export function Hotel() {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <RoomTable rooms={rooms} />
+                <LayoutRoom rooms={rooms} />
               )}
             </div>
 
@@ -425,12 +452,13 @@ export function Hotel() {
               propertyAmenities={propertyAmenities}
             />
 
-            <ThingsToKnow data={policies} />
+            <ThingsToKnow propertyData={propertyData} />
 
             <div className="py-6">
               <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.location')}</h2>
               <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
-                <MapIframe />
+                <MapIframe /> 
+                
               </div>
             </div>
 

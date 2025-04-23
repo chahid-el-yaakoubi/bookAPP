@@ -209,7 +209,7 @@ const AMENITY_CATEGORIES = {
     nearbyServices: ['publicTransport', 'supermarket', 'pharmacy', 'atmBank', 'hospital', 'shoppingCenter']
 };
 
-const AmenityItem = ({ amenity }) => {
+const AmenityItem = ({ amenity, isRTL }) => {
   const Icon = amenity.icon;
   
   return (
@@ -218,7 +218,7 @@ const AmenityItem = ({ amenity }) => {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Icon className="w-5 h-5 text-blue mr-3 flex-shrink-0" />
+      <Icon className={`${isRTL ? 'ml-2' : 'mr-2'} w-4 h-4 text-primary flex-shrink-0 `} />
       <span className="text-gray-700">{amenity.label}</span>
     </motion.div>
   );
@@ -226,7 +226,8 @@ const AmenityItem = ({ amenity }) => {
 
 // Full screen modal component for displaying all amenities
 const AllAmenitiesModal = ({ isOpen, onClose, categorizedAmenities }) => {
-  const { t } = useTranslation(['properties']);
+  const { t, i18n } = useTranslation(['properties']);
+  const isRTL = i18n.language === 'ar';
 
   // Early return if not open
   if (!isOpen) return null;
@@ -247,7 +248,7 @@ const AllAmenitiesModal = ({ isOpen, onClose, categorizedAmenities }) => {
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue to-blue p-4 flex justify-between items-center">
+        <div className="sticky top-0 z-10 bg-gradient-to-b from-primary to-blue p-4 flex justify-between items-center">
           <h2 className="text-xl font-bold text-white">
             {t('amenities.allPropertyAmenities', 'All Property Amenities')}
           </h2>
@@ -272,7 +273,7 @@ const AllAmenitiesModal = ({ isOpen, onClose, categorizedAmenities }) => {
                       const Icon = amenity.icon;
                       return (
                         <div key={amenity.id} className="flex items-center py-1">
-                          <Icon className="w-4 h-4 text-blue mr-2 flex-shrink-0" />
+                          <Icon className={`${isRTL ? 'ml-2' : 'mr-2'} w-4 h-4 text-primary flex-shrink-0 `} />
                           <span className="text-sm text-gray-700">{amenity.label}</span>
                         </div>
                       );
@@ -288,7 +289,7 @@ const AllAmenitiesModal = ({ isOpen, onClose, categorizedAmenities }) => {
         <div className="sticky bottom-0 bg-gray-50 p-4 border-t border-gray-200 flex justify-end">
           <button 
             onClick={onClose}
-            className="px-6 py-2 bg-blue text-white rounded-full hover:bg-blue-600 transition-colors"
+            className="px-6 py-2 bg-blue text-white rounded-full hover:bg-blue transition-colors"
           >
             {t('common.close', 'Close')}
           </button>
@@ -298,7 +299,7 @@ const AllAmenitiesModal = ({ isOpen, onClose, categorizedAmenities }) => {
   );
 };
 
-const CategorySection = ({ title, amenities, isExpanded, toggleExpansion }) => {
+const CategorySection = ({ title, amenities, isExpanded, toggleExpansion, isRTL }) => {
   const displayLimit = 5;
   const displayedAmenities = isExpanded ? amenities : amenities.slice(0, displayLimit);
   const hiddenCount = amenities.length - displayLimit;
@@ -306,36 +307,16 @@ const CategorySection = ({ title, amenities, isExpanded, toggleExpansion }) => {
   return (
     <div className="w-full md:w-1/2 lg:w-1/3 p-3">
       <div className="h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue to-blue p-3">
+        <div className="bg-gradient-to-r from-primary to-blue p-3">
           <h3 className="text-lg font-semibold text-white">{title}</h3>
         </div>
         <div className="p-3">
           <AnimatePresence initial={false}>
             {displayedAmenities.map(amenity => (
-              <AmenityItem key={amenity.id} amenity={amenity} />
+              <AmenityItem key={amenity.id} amenity={amenity} isRTL={isRTL} />
             ))}
           </AnimatePresence>
           
-          {amenities.length > displayLimit && (
-            <motion.button 
-              onClick={() => toggleExpansion(title)} 
-              className="w-full mt-3 py-2 text-sm font-medium text-blue hover:bg-blue/10 rounded-lg transition-colors flex items-center justify-center space-x-2"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-            >
-              {isExpanded ? (
-                <>
-                  <span>Show Less</span>
-                  <FaChevronUp className="w-3 h-3" />
-                </>
-              ) : (
-                <>
-                  <span>{`Show More (${hiddenCount} more)`}</span>
-                  <FaChevronDown className="w-3 h-3" />
-                </>
-              )}
-            </motion.button>
-          )}
         </div>
       </div>
     </div>
@@ -343,7 +324,8 @@ const CategorySection = ({ title, amenities, isExpanded, toggleExpansion }) => {
 };
 
 const PropertyAmenities = ({ propertyAmenitiesData }) => {
-  const { t } = useTranslation(['properties']);
+  const { t, i18n } = useTranslation(['properties']);
+  const isRTL = i18n.language === 'ar';
   const [expandedCategories, setExpandedCategories] = useState({});
   const [showAllAmenitiesModal, setShowAllAmenitiesModal] = useState(false);
 
@@ -439,12 +421,12 @@ const PropertyAmenities = ({ propertyAmenitiesData }) => {
 
   return (
     <>
-      <div className="w-full max-w-6xl mx-auto bg-gray-50 rounded-xl shadow-lg overflow-hidden">
-        <div className="p-6 text-center bg-gradient-to-r from-blue to-blue">
+      <div className="w-full max-w-6xl mx-auto bg-gray-50 rounded-xl shadow-lg overflow-hidden mt-10">
+        <div className="p-6 text-center bg-gradient-to-b from-primary to-blue">
           <h2 className="text-2xl font-bold text-white">
             {t('amenities.propertyAmenities', 'Property Amenities')}
           </h2>
-          <p className="text-blue-100 mt-2">
+          <p className="text-gray-100 font-semibold mt-2">
             {t('amenities.amenitiesSubtitle', 'Everything you need for a comfortable stay')}
           </p>
         </div>
@@ -460,6 +442,7 @@ const PropertyAmenities = ({ propertyAmenitiesData }) => {
                 amenities={amenities}
                 isExpanded={!!expandedCategories[category]}
                 toggleExpansion={toggleCategoryExpansion}
+                isRTL={isRTL}
               />
             ))
           }
@@ -479,7 +462,7 @@ const PropertyAmenities = ({ propertyAmenitiesData }) => {
             whileTap={{ scale: 0.95 }}
           >
             <span className="mr-2">
-              {t('common.showAllAmenities', `Show All Amenities (${totalAmenities})`)}
+              {t('common.showAll', { count: totalAmenities }  )}
             </span>
             <FaChevronDown />
           </motion.button>

@@ -1,10 +1,8 @@
 import {
-  // Font Awesome Icons
   FaBath, FaShower,
   FaHotTub, FaTshirt, FaSoap, FaTemperatureHigh,
   FaWeight, FaCloudRain,
-  FaUsers, FaToilet, FaUmbrella,
-
+  FaToilet, FaUmbrella,
   FaSocks,
   FaToiletPaper,
   FaTools,
@@ -16,76 +14,58 @@ import {
   FaTh,
 } from 'react-icons/fa';
 import { PiHairDryerBold } from "react-icons/pi";
+import { GiMirrorMirror } from 'react-icons/gi';
+import { Plus } from 'lucide-react';
 
-// Material Design Icons
-
-// Game Icons
-import {
-  GiMirrorMirror
-} from 'react-icons/gi';
-
-// Bootstrap Icons
-import { BiFridge } from 'react-icons/bi';
-import { ArrowLeft, Coffee, Droplet, Home, Laptop, Layout, Minus, Plus, Tv, Users, X } from 'lucide-react';
 export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, handleSave }) => {
-  // Bathroom types data
+  // Moroccan-focused bathroom types
   const bathroomTypes = [
     "Private Bathroom",
     "Shared Bathroom",
+    "Traditional Hammam",
     "Shower Only",
     "Bathtub Only",
     "Shower & Bathtub",
-    "Toilet Only",
-    "Outdoor Bathroom",
     "Ensuite Bathroom",
-    "External Bathroom",
     "Guest Bathroom",
-    "Other"
+    "Outdoor Bathroom"
   ];
 
+  // Refined amenities list with Moroccan traditional items prioritized
   const bathroomAmenities = [
-    // Essentials
-    { id: 'toilet_bidet', label: 'Toilet & Bidet', category: 'Bathroom Facilities', icon: FaToilet },
-    { id: 'shower_bathtub', label: 'Shower / Bathtub', category: 'Bathroom Facilities', icon: FaShower },
-    { id: 'moroccan_hamam_basin', label: 'Moroccan Hammam Basin (Bsat)', category: 'Traditional', icon: FaHotTub },
-    { id: 'water_bucket', label: 'Water Bucket (Sla)', category: 'Traditional', icon: FaHotTub },
+    // Traditional Moroccan
+    { id: 'moroccan_hamam_basin', label: 'Hammam Basin (Bsat)', category: 'Traditional', icon: FaHotTub },
+    { id: 'water_bucket', label: 'Water Bucket (Sla)', category: 'Traditional', icon: FaBath },
+    { id: 'moroccan_black_soap', label: 'Black Soap (Saboun Beldi)', category: 'Traditional', icon: FaSoap },
+    { id: 'ghassoul', label: 'Ghassoul Clay', category: 'Traditional', icon: FaSoap },
+    { id: 'kessa_glove', label: 'Kessa Scrubbing Glove', category: 'Traditional', icon: FaSoap },
+    { id: 'essential_oils', label: 'Argan & Rose Oils', category: 'Traditional', icon: FaSoap },
 
-    // Luxury Options
-    { id: 'jacuzzi', label: 'Jacuzzi / Hot Tub', category: 'Luxury', icon: FaHotTub },
-    { id: 'rain_shower', label: 'Rain Shower', category: 'Luxury', icon: FaCloudRain },
+    // Essentials
+    { id: 'toilet_bidet', label: 'Toilet & Bidet', category: 'Essentials', icon: FaToilet },
+    { id: 'shower_bathtub', label: 'Shower / Bathtub', category: 'Essentials', icon: FaShower },
+    { id: 'sink_with_mirror', label: 'Sink with Mirror', category: 'Essentials', icon: FaSink },
+    { id: 'toilet_paper', label: 'Toilet Paper', category: 'Essentials', icon: FaToiletPaper },
+    { id: 'trash_bin', label: 'Bathroom Trash Bin', category: 'Essentials', icon: FaTrash },
+    { id: 'power_socket', label: 'Power Socket', category: 'Essentials', icon: FaPlug },
 
     // Comfort & Hygiene
     { id: 'towels_bathrobes', label: 'Towels & Bathrobes', category: 'Comfort', icon: FaTshirt },
     { id: 'slippers', label: 'Slippers', category: 'Comfort', icon: FaSocks },
+    { id: 'bath_mat', label: 'Bath Mat', category: 'Comfort', icon: FaTh },
     { id: 'heated_towel_rack', label: 'Heated Towel Rack', category: 'Comfort', icon: FaTemperatureHigh },
-    { id: 'bathroom_scale', label: 'Bathroom Scale', category: 'Comfort', icon: FaWeight },
+    { id: 'air_freshener', label: 'Incense (Bakhoor)', category: 'Comfort', icon: FaWind },
 
     // Grooming
     { id: 'hairdryer', label: 'Hairdryer', category: 'Grooming', icon: PiHairDryerBold },
     { id: 'makeup_mirror', label: 'Makeup Mirror', category: 'Grooming', icon: GiMirrorMirror },
-    { id: 'shaving_mirror', label: 'Shaving Mirror', category: 'Grooming', icon: GiMirrorMirror },
     { id: 'shower_cap', label: 'Shower Cap', category: 'Grooming', icon: FaUmbrella },
 
-    // Toiletries
-    { id: 'toiletries', label: 'Toiletries (Soap, Shampoo, Conditioner, etc.)', category: 'Toiletries', icon: FaSoap },
-    { id: 'moroccan_black_soap', label: 'Moroccan Black Soap (Saboun Beldi)', category: 'Traditional', icon: FaSoap },
-    { id: 'ghassoul', label: 'Ghassoul Clay', category: 'Traditional', icon: FaSoap },
-    { id: 'kessa_glove', label: 'Kessa Scrubbing Glove', category: 'Traditional', icon: FaSoap },
-    { id: 'essential_oils', label: 'Essential Oils (e.g., Argan, Rose)', category: 'Toiletries', icon: FaSoap },
-
-    // Miscellaneous
-    { id: 'toilet_paper', label: 'Toilet Paper', category: 'Essentials', icon: FaToiletPaper },
-    { id: 'plunger', label: 'Toilet Plunger', category: 'Essentials', icon: FaTools },
-    { id: 'trash_bin', label: 'Bathroom Trash Bin', category: 'Essentials', icon: FaTrash },
-    { id: 'air_freshener', label: 'Air Freshener / Incense', category: 'Comfort', icon: FaWind },
-    { id: 'sink_with_mirror', label: 'Sink with Mirror', category: 'Essentials', icon: FaSink },
-    { id: 'bath_mat', label: 'Bath Mat', category: 'Comfort', icon: FaTh },
-
-    // Lighting & Electrical
-    { id: 'vanity_light', label: 'Vanity Lighting', category: 'Lighting', icon: FaLightbulb },
-    { id: 'power_socket', label: 'Power Socket Near Mirror', category: 'Essentials', icon: FaPlug }
+    // Luxury Options
+    { id: 'rain_shower', label: 'Rain Shower', category: 'Luxury', icon: FaCloudRain },
+    { id: 'jacuzzi', label: 'Jacuzzi', category: 'Luxury', icon: FaHotTub },
+    { id: 'vanity_light', label: 'Decorative Lighting', category: 'Luxury', icon: FaLightbulb },
   ];
-
 
   // Handle checkbox change for bathroom amenities
   const handleAmenityChange = (bathroomId, amenityId, checked) => {
@@ -107,7 +87,6 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
         }
         : bathroom
     );
-
 
     onBathroomsChange(updatedBathrooms);
   };
@@ -145,19 +124,19 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
   };
 
   return (
-    <div className="w-full bg-gray-100 rounded">
+    <div className="w-full bg-gray-50 rounded">
       {/* Hero Section */}
-      <div className="text-gray-900 py-12 px-6 mb-8 rounded-lg shadow-lg">
+      <div className="bg-amber-50 text-gray-900 py-8 px-6 mb-6 rounded-lg shadow-md">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Bathroom Amenities</h1>
-          <p className="text-lg opacity-90">Customize your property's bathroom facilities with ease. Add multiple bathrooms and select the amenities each one offers.</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Moroccan Bathroom Amenities</h1>
+          <p className="text-lg opacity-90">Customize your Moroccan property's bathroom facilities. Add traditional hammams or modern bathrooms with authentic local amenities.</p>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 pb-4">
-        <div className="mb-6 p-4 bg-gray-100 rounded-lg shadow-sm border border-blue">
-          <p className="text-blue">Your property has <span className="font-bold">{bathrooms.length}</span> bathroom(s) configured. Add more bathrooms as needed.</p>
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-200">
+          <p className="text-blue-800">Your property has <span className="font-bold">{bathrooms.length}</span> bathroom(s) configured. Add more bathrooms as needed.</p>
         </div>
 
         {bathrooms.map(bathroom => (
@@ -184,7 +163,7 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
                 id={`bathroom-${bathroom.id}-type`}
                 value={bathroom.type}
                 onChange={(e) => handleTypeChange(bathroom.id, e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded focus:ring-blue focus:border-blue"
+                className="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
               >
                 {bathroomTypes.map(type => (
                   <option key={type} value={type}>{type}</option>
@@ -194,16 +173,16 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {bathroomAmenities.map(amenity => (
-                <div key={amenity.id} className="flex items-center p-2 rounded hover:bg-blue/20 cursor-pointer ">
+                <div key={amenity.id} className="flex items-center p-2 rounded hover:bg-amber-50 cursor-pointer">
                   <input
                     type="checkbox"
                     id={`bathroom-${bathroom.id}-${amenity.id}`}
                     checked={bathroom.amenities[amenity.id] || false}
                     onChange={(e) => handleAmenityChange(bathroom.id, amenity.id, e.target.checked)}
-                    className="h-5 w-5 text-blue rounded mr-2"
+                    className="h-5 w-5 text-amber-600 rounded mr-2"
                   />
-                  {amenity.icon && <amenity.icon className="mr-2 text-gray-600" size={20} />}
-                  <label htmlFor={`bathroom-${bathroom.id}-${amenity.id}`} className="text-gray-700">
+                  {amenity.icon && <amenity.icon className="mr-2 text-amber-700" size={18} />}
+                  <label htmlFor={`bathroom-${bathroom.id}-${amenity.id}`} className="text-gray-700 text-sm">
                     {amenity.label}
                   </label>
                 </div>
@@ -215,19 +194,19 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
         <button
           type="button"
           onClick={addBathroom}
-          className="w-full mb-8 px-4 py-3 bg-blue text-white rounded-lg hover:bg-blue transition flex items-center justify-center shadow-md"
+          className="w-full mb-8 px-4 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition flex items-center justify-center shadow-md"
         >
-          <span className="mr-2 text-xl">+</span> Add Another Bathroom
+          <Plus size={20} className="mr-2" /> Add Another Bathroom
         </button>
 
         {/* Summary Section */}
-        <div className="mt-8 mb-12 p-6 border rounded-lg bg-gray-50 shadow-md">
+        <div className="mt-8 mb-12 p-6 border rounded-lg bg-amber-50 shadow-md">
           <h3 className="text-xl font-bold mb-4 text-gray-800">Selected Amenities Summary</h3>
 
           {bathrooms.map(bathroom => (
             <div key={bathroom.id} className="mb-4 last:mb-0">
               <div className="flex items-center mb-2">
-                <div className="w-8 h-8 bg-blue text-white rounded-full flex items-center justify-center mr-2 font-bold">
+                <div className="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center mr-2 font-bold">
                   {bathroom.id}
                 </div>
                 <h4 className="font-semibold text-gray-700">
@@ -241,7 +220,7 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
                   .map(([amenityId, _]) => {
                     const amenity = bathroomAmenities.find(a => a.id === amenityId);
                     return (
-                      <span key={amenityId} className="inline-block bg-blue text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
+                      <span key={amenityId} className="inline-block bg-amber-600 text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
                         {amenity?.label}
                       </span>
                     );
@@ -255,17 +234,14 @@ export const BathroomAmenitiesSelector = ({ bathrooms = [], onBathroomsChange, h
           ))}
         </div>
 
-        {
-  handleSave ? (
-    <button
-      onClick={handleSave}
-      className="bg-gradient-to-r from-blue w-32 to-teal-500 text-white font-semibold p-4 rounded-lg shadow-xl hover:from-blue hover:to-teal-600 transition-all duration-300 transform hover:scale-105"
-    >
-      Save
-    </button>
-  ) : null
-}
-
+        {handleSave && (
+          <button
+            onClick={handleSave}
+            className="bg-gradient-to-r from-amber-600 to-amber-800 text-white font-semibold py-3 px-6 rounded-lg shadow-xl hover:from-amber-700 hover:to-amber-900 transition-all duration-300"
+          >
+            Save Changes
+          </button>
+        )}
       </div>
     </div>
   );

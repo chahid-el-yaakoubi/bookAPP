@@ -1,156 +1,62 @@
-import City from '../models/cities.js';
-import { createError } from '../utils/error.js';
+import Region from '../models/Region.js';
 
-// Create a new city
-export const createCity = async (req, res, next) => {
-    const newCity = new City(req.body);
+export const createRegion = async (req, res) => {
     try {
-        const savedCity = await newCity.save();
-        res.status(201).json(savedCity);
+      const { regionNameEnglish, regionNameArabic } = req.body;
+  
+      // Check if region with same English OR Arabic name already exists
+      const existingRegion = await Region.findOne({
+        $or: [
+          { regionNameEnglish },
+          { regionNameArabic }
+        ]
+      });
+  
+      if (existingRegion) {
+        return res.status(409).json({ message: "Region already exists" });
+      }
+  
+      const newRegion = new Region(req.body);
+      await newRegion.save();
+  
+      res.status(200).json(newRegion);
     } catch (err) {
-        next(err);
+      res.status(400).json({ error: err.message });
     }
+  };
+  
+  
+
+export const updateRegion = async (req, res) => {
+  try {
+    const updated = await Region.findOneAndUpdate({ id: req.params.id }, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updated) return res.status(404).json({ error: 'Region not found' });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
-// Get all cities
-export const getCities = async (req, res, next) => {
+export const deleteRegion = async (req, res) => {
     try {
-        const cities = await City.find();
-        res.status(200).json(cities);
+      const deleted = await Region.findOneAndDelete({ id: req.params.id });
+      if (!deleted) return res.status(404).json({ error: 'Region not found' });
+      res.status(200).json({ message: 'Region deleted successfully', deleted });
     } catch (err) {
-        next(err);
+      res.status(400).json({ error: err.message });
     }
+  };
+  
+
+
+export const getAllRegions = async (req, res) => {
+  try {
+    const regions = await Region.find();
+    res.status(200).json(regions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
-
-// Get cities by region
-export const getCitiesByRegion = async (req, res, next) => {
-    const { region } = req.params;
-    try {
-        const cities = await City.find({ region })
-            .populate('neighbors', 'name region');
-        res.status(200).json(cities);
-    } catch (err) {
-        next(err);
-    }
-};
-
-// Get single city
-export const getCity = async (req, res, next) => {
-    try {
-        const city = await City.findById(req.params.id);
-        if (!city) return next(createError(404, "City not found!"));
-        res.status(200).json(city);
-    } catch (err) {
-        next(err);
-    }
-};
-
-// Update city
-export const updateCity = async (req, res, next) => {
-    try {
-        const updatedCity = await City.findByIdAndUpdate(
-            req.params.id,
-            { $set: req.body },
-            { new: true }
-        ).populate('neighbors', 'name region');
-        if (!updatedCity) return next(createError(404, "City not found!"));
-        res.status(200).json(updatedCity);
-    } catch (err) {
-        next(err);
-    }
-};
-
-// Delete city
-export const deleteCity = async (req, res, next) => {
-    try {
-        const city = await City.findById(req.params.id);
-        if (!city) return next(createError(404, "City not found!"));
-
-        // Remove this city from all its neighbors' neighbor lists
-        await City.updateMany(
-            { _id: { $in: city.neighbors } },
-            { $pull: { neighbors: req.params.id } }
-        );
-
-        await City.findByIdAndDelete(req.params.id);
-        res.status(200).json("City has been deleted.");
-    } catch (err) {
-        next(err);
-    }
-};
-
-// Add neighbor(s)
-export const addNeighbor = async (req, res, next) => {
-    try {
-        const { cityId } = req.params;
-        const { neighbors: neighborName } = req.body;
-
-        console.log('Attempting to add neighbor:');
-        console.log('City ID:', cityId);
-        console.log('Neighbor Name:', neighborName);
-
-        // Validate input
-        if (!neighborName) {
-            return next(createError(400, "Neighbor name is required"));
-        }
-
-        // Get the city and update its neighbors array
-        const updatedCity = await City.findByIdAndUpdate(
-            cityId,
-            { $addToSet: { neighbors: neighborName.trim() } },  // Use addToSet to avoid duplicates
-            { new: true }
-        );
-
-        if (!updatedCity) {
-            return next(createError(404, "City not found"));
-        }
-
-        res.status(200).json(updatedCity);
-
-    } catch (err) {
-        next(err);
-    }
-};
-
-// Remove neighbor
-export const removeNeighbor = async (req, res, next) => {
-    try {
-        const { cityId } = req.params;
-        const { neighborName } = req.body;
-
-        console.log('Removing neighbor:');
-        console.log('City ID:', cityId);
-        console.log('Neighbor Name:', neighborName);
-
-        if (!neighborName) {
-            return next(createError(400, "Neighbor name is required"));
-        }
-
-        // Remove neighbor name from the city's neighbors array
-        const updatedCity = await City.findByIdAndUpdate(
-            cityId,
-            { $pull: { neighbors: neighborName.trim() } },
-            { new: true }
-        );
-
-        if (!updatedCity) {
-            return next(createError(404, "City not found"));
-        }
-
-        res.status(200).json(updatedCity);
-    } catch (err) {
-        next(err);
-    }
-};
-
-
-
-export const countByCity = async (req, res, next) => {
-    try {
-    const hotelCount = await City.countDocuments({});
-        res.status(200).json(hotelCount);
-    } catch (err) {
-        next(err);
-    }
-}
-

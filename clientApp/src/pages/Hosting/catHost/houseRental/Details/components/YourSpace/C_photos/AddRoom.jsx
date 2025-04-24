@@ -47,8 +47,8 @@ const VIEW_TYPES = [
 const AMENITY_CATEGORIES = [
   'Entertainment',
   'Workspace',
-  'Moroccan Features',
-  'Kitchen & Dining',
+  'Moroccan_Features',
+  'Kitchen_&_Dining',
   'Technology'
 ];
 
@@ -85,19 +85,19 @@ const AMENITIES = [
   { id: 'high_speed_wifi', label: 'High-Speed WiFi', category: 'Workspace', icon: FaWifi },
   { id: 'power_outlets', label: 'Multiple Power Outlets', category: 'Workspace', icon: FaPlug },
 
-  // Moroccan Features
-  { id: 'traditional_breakfast', label: 'Traditional Moroccan Breakfast', category: 'Moroccan Features', icon: FaCoffee },
-  { id: 'mint_tea_service', label: 'Mint Tea Service', category: 'Moroccan Features', icon: Coffee },
-  { id: 'hammam_access', label: 'Hammam Access', category: 'Moroccan Features', icon: FaShower },
-  { id: 'moroccan_toiletries', label: 'Moroccan Argan Toiletries', category: 'Moroccan Features', icon: FaWater },
-  { id: 'courtyard_seating', label: 'Traditional Courtyard Seating', category: 'Moroccan Features', icon: FaChair },
-  { id: 'local_artwork', label: 'Local Artwork & Crafts', category: 'Moroccan Features', icon: FaCamera },
+  // Moroccan_Features
+  { id: 'traditional_breakfast', label: 'Traditional Moroccan Breakfast', category: 'Moroccan_Features', icon: FaCoffee },
+  { id: 'mint_tea_service', label: 'Mint Tea Service', category: 'Moroccan_Features', icon: Coffee },
+  { id: 'hammam_access', label: 'Hammam Access', category: 'Moroccan_Features', icon: FaShower },
+  { id: 'moroccan_toiletries', label: 'Moroccan Argan Toiletries', category: 'Moroccan_Features', icon: FaWater },
+  { id: 'courtyard_seating', label: 'Traditional Courtyard Seating', category: 'Moroccan_Features', icon: FaChair },
+  { id: 'local_artwork', label: 'Local Artwork & Crafts', category: 'Moroccan_Features', icon: FaCamera },
 
-  // Kitchen & Dining
-  { id: 'mini_fridge', label: 'Mini Fridge', category: 'Kitchen & Dining', icon: BiFridge },
-  { id: 'coffee_maker_kettle', label: 'Coffee Maker/Kettle', category: 'Kitchen & Dining', icon: FaCoffee },
-  { id: 'bottled_water', label: 'Complimentary Bottled Water', category: 'Kitchen & Dining', icon: FaWater },
-  { id: 'dining_area', label: 'Private Dining Area', category: 'Kitchen & Dining', icon: GiKnifeFork },
+  // Kitchen_&_Dining
+  { id: 'mini_fridge', label: 'Mini Fridge', category: 'Kitchen_&_Dining', icon: BiFridge },
+  { id: 'coffee_maker_kettle', label: 'Coffee Maker/Kettle', category: 'Kitchen_&_Dining', icon: FaCoffee },
+  { id: 'bottled_water', label: 'Complimentary Bottled Water', category: 'Kitchen_&_Dining', icon: FaWater },
+  { id: 'dining_area', label: 'Private Dining Area', category: 'Kitchen_&_Dining', icon: GiKnifeFork },
 
   // Technology
   { id: 'smart_home', label: 'Smart Room Controls', category: 'Technology', icon: FaKey },
@@ -111,8 +111,8 @@ const categoryIcons = {
   'Room Features': <Home size={20} />,
   'Entertainment': <Tv size={20} />,
   'Workspace': <Laptop size={20} />,
-  'Moroccan Features': <Palmtree size={20} />,
-  'Kitchen & Dining': <Coffee size={20} />,
+  'Moroccan_Features': <Palmtree size={20} />,
+  'Kitchen_&_Dining': <Coffee size={20} />,
   'Technology': <FaPlug size={20} />
 };
 
@@ -141,8 +141,8 @@ const RoomForm = ({ onSubmit, initialData, onCancel, typeProperty }) => {
   const [expandedCategories, setExpandedCategories] = useState({
     'Entertainment': true,
     'Workspace': false,
-    'Moroccan Features': true,
-    'Kitchen & Dining': false, 
+    'Moroccan_Features': true,
+    'Kitchen_&_Dining': false, 
     'Technology': false
   });
 

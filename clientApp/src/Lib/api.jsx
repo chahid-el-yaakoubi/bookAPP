@@ -157,6 +157,30 @@ export const deleteUser = async (id) => {
   return response.data;
 };
 
+// add region
+// Create a new region
+export const createRegion = async (regionData) => {
+  const response = await api.post('/api/cities', regionData);
+  console.log(regionData)
+  return response;
+};
+
+export const getRegions = async () => {
+  const response = await api.get('/api/cities');
+  return response;
+};
+
+export const updateRegion = async (id, regionData) => {
+  const response = await api.put(`/api/cities/${id}`, regionData);
+  console.log(regionData)
+
+  return response;
+};
+
+export const deleteRegion = async (id) => {
+  const response = await api.delete(`/api/cities/${id}`);
+  return response;
+};
 
 // Example for logout (optional, just clear localStorage in frontend)
 export const logout = () => {

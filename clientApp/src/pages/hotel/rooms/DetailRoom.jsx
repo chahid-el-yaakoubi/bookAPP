@@ -19,13 +19,10 @@ function RoomDetail({ room, onClose }) {
     const { t, i18n } = useTranslation();
     const isRTL = i18n.language === "ar";
 
-    if(isRTL){
-        alert('yyyy')
-    }
-    
     const [activeTab, setActiveTab] = useState("overview");
-
     const [current, setCurrent] = useState(0);
+    const [expandedBathrooms, setExpandedBathrooms] = useState({});
+
     const total = room.photos.length;
 
     const nextSlide = () => {
@@ -62,12 +59,19 @@ function RoomDetail({ room, onClose }) {
         }
     };
 
+    const toggleBathroomExpansion = (bathroomIndex) => {
+        setExpandedBathrooms(prev => ({
+            ...prev,
+            [bathroomIndex]: !prev[bathroomIndex]
+        }));
+    };
+
     return (
-        <div className={`fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 `}>
+        <div className={`fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4`}>
             <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] h-full overflow-hidden flex flex-col">
                 {/* Header with close button */}
-                <div className={`flex justify-between items-center p-4 border-b  `}>
-                    <h2 className="text-xl font-bold text-gray-900">{room.type}</h2>
+                <div className={`flex justify-between items-center p-4 border-b`}>
+                    <h2 className={`text-xl font-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h2>
                     <button
                         onClick={onClose}
                         className="p-1 rounded-full hover:bg-gray-100"
@@ -89,12 +93,12 @@ function RoomDetail({ room, onClose }) {
 
                         {/* Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                            <div className="text-sm text-white/80">
+                            <div className={`text-sm text-white/80`}>
                                 {room.type}
                             </div>
-                            <h1 className="text-xl md:text-2xl font-bold text-white">{room.type}</h1>
-                            <div className="flex items-center mt-2">
-                                <MapPin className="h-4 w-4 text-white mr-1" />
+                            <h1 className={`text-xl md:text-2xl font-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h1>
+                            <div className={`flex items-center mt-2 }`}>
+                                <MapPin className={`h-4 w-4 text-white ${isRTL ? 'ml-1' : 'mr-1'}`} />
                                 <span className="text-white/90 text-sm">{t('premium_location')}</span>
                             </div>
                         </div>
@@ -104,13 +108,13 @@ function RoomDetail({ room, onClose }) {
                             onClick={prevSlide}
                             className={`absolute top-1/2 ${isRTL ? 'right-4' : 'left-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
                         >
-                            {isRTL ? '❯' : '❮'}
+                            {'❮'}
                         </button>
                         <button
                             onClick={nextSlide}
                             className={`absolute top-1/2 ${isRTL ? 'left-4' : 'right-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
                         >
-                            {isRTL ? '❮' : '❯'}
+                          {'❯'}
                         </button>
                     </div>
 
@@ -176,14 +180,14 @@ function RoomDetail({ room, onClose }) {
 
                                 <div className="space-y-6">
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900 mb-3">{t('description')}</h3>
-                                        <p className="text-gray-700 leading-relaxed">
-                                            { t('default_room_description')}
+                                        <h3 className={`text-xl font-semibold text-gray-900 mb-3 ${isRTL ? 'text-right' : 'text-left'}`}>{t('description')}</h3>
+                                        <p className={`text-gray-700 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t('default_room_description')}
                                         </p>
                                     </div>
 
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900 mb-3">{t('views')}</h3>
+                                        <h3 className={`text-xl font-semibold text-gray-900 mb-3 ${isRTL ? 'text-right' : 'text-left'}`}>{t('views')}</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {(room.view || ["Garden", "Pool"]).map((view, index) => (
                                                 <div key={index} className="bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1 text-xs font-medium rounded-full">
@@ -207,18 +211,18 @@ function RoomDetail({ room, onClose }) {
                                         "Technology": ["smart_controls", "high_speed_internet"]
                                     }).map(([category, amenities], categoryIndex) => (
                                         <div key={category}>
-                                            <div className={`flex items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                            <div className={`flex items-center mb-4 `}>
                                                 <div className={`bg-gray-100 p-2 rounded-full text-gray-900 ${isRTL ? 'ml-3' : 'mr-3'}`}>
                                                     {getCategoryIcon(category)}
                                                 </div>
-                                                <h3 className="text-lg font-semibold text-gray-900">{t(category.toLowerCase())}</h3>
+                                                <h3 className={`text-lg font-semibold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{t(category.toLowerCase())}</h3>
                                             </div>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                                 {amenities.map((amenity, index) => (
-                                                    <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                                        <Check className="h-4 w-4 text-gray-900 mr-2 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-700 capitalize">{t(amenity)}</span>
+                                                    <div key={index} className={`flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200 `}>
+                                                        <Check className={`h-4 w-4 text-gray-900 ${isRTL ? 'ml-2' : 'mr-2'} flex-shrink-0`} />
+                                                        <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(amenity)}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -237,7 +241,7 @@ function RoomDetail({ room, onClose }) {
                             <div className="pt-6">
                                 <div className="space-y-6">
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('room_features')}</h3>
+                                        <h3 className={`text-xl font-semibold text-gray-900 mb-4 `}>{t('room_features')}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                             {(room.roomFeatures || [
                                                 "air_conditioning",
@@ -247,9 +251,9 @@ function RoomDetail({ room, onClose }) {
                                                 "minibar",
                                                 "wardrobe"
                                             ]).map((feature, index) => (
-                                                <div key={index} className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                                <div key={index} className={`flex items-center`}>
                                                     <div className={`h-2 w-2 rounded-full bg-blue ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
-                                                    <span className="text-sm text-gray-700 capitalize">{t(feature)}</span>
+                                                    <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(feature)}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -258,23 +262,13 @@ function RoomDetail({ room, onClose }) {
                                     <div className="my-6 h-px bg-gray-200" />
 
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('bathroom_amenities')}</h3>
+                                        <h3 className={`text-xl font-semibold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('bathroom_amenities')}</h3>
 
-                                        {(room.bathrooms || [{
-                                            type: "En-suite",
-                                            amenities: {
-                                                rain_shower: true,
-                                                bathtub: true,
-                                                toiletries: true,
-                                                hairdryer: true,
-                                                towels: true,
-                                                mirror: true
-                                            }
-                                        }]).map((bathroom, index) => (
+                                        {(room.bathrooms ).map((bathroom, index) => (
                                             <div key={index} className="mb-6">
-                                                <div className={`flex items-center mb-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                                <div className={`flex items-center mb-3`}>
                                                     <ShowerHead className={`h-5 w-5 text-gray-900 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                                                    <h4 className="font-medium text-gray-900">
+                                                    <h4 className={`font-medium text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                                                         {t('bathroom')} {index + 1} - {t(bathroom.type.toLowerCase())}
                                                     </h4>
                                                 </div>
@@ -282,18 +276,21 @@ function RoomDetail({ room, onClose }) {
                                                 <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 ${isRTL ? 'pr-7' : 'pl-7'}`}>
                                                     {Object.entries(bathroom.amenities)
                                                         .filter(([_, value]) => value === true)
-                                                        .slice(0, 9)
+                                                        .slice(0, expandedBathrooms[index] ? undefined : 9)
                                                         .map(([key], idx) => (
-                                                            <div key={idx} className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                                            <div key={idx} className={`flex items-center`}>
                                                                 <Check className={`h-3.5 w-3.5 text-gray-900 ${isRTL ? 'ml-1.5' : 'mr-1.5'}`} />
-                                                                <span className="text-sm text-gray-700 capitalize">{t(key)}</span>
+                                                                <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(key)}</span>
                                                             </div>
                                                         ))}
 
                                                     {Object.entries(bathroom.amenities).filter(([_, value]) => value === true).length > 9 && (
-                                                        <div className="text-sm text-blue font-medium">
-                                                            +{Object.entries(bathroom.amenities).filter(([_, value]) => value === true).length - 9} {t('more')}
-                                                        </div>
+                                                        <button
+                                                            onClick={() => toggleBathroomExpansion(index)}
+                                                            className={`text-sm text-blue font-medium hover:underline ${isRTL ? 'text-right' : 'text-left'}`}
+                                                        >
+                                                            {expandedBathrooms[index] ? t('show_less') : `+${Object.entries(bathroom.amenities).filter(([_, value]) => value === true).length - 9} ${t('more')}`}
+                                                        </button>
                                                     )}
                                                 </div>
 

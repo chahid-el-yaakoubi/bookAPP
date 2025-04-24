@@ -19,7 +19,7 @@ import {
   ChevronUp,
   ShieldAlert,
   FireExtinguisher,
- 
+
   Building,
   Car,
   ArrowRightCircle,
@@ -30,7 +30,7 @@ import { FaWheelchair } from 'react-icons/fa';
 
 function PolicyItem({ label, value, isExpanded, onClick, getIconFunc }) {
   return (
-    <div 
+    <div
       className={`flex items-center justify-between py-3 px-4 border-b hover:bg-gray-50 cursor-pointer transition ${isExpanded ? 'bg-gray-50' : ''}`}
       onClick={onClick}
     >
@@ -72,17 +72,17 @@ function PolicyCategory({ title, items, getIconFunc }) {
       <div className="border rounded-lg overflow-hidden shadow-sm">
         {items.map((item, index) => (
           <div key={index}>
-            <PolicyItem 
-              label={item.label} 
-              value={item.value} 
+            <PolicyItem
+              label={item.label}
+              value={item.value}
               isExpanded={expandedItem === index}
               onClick={() => toggleItem(index)}
               getIconFunc={getIconFunc}
             />
             {expandedItem === index && (
-              <PolicyDetails 
-                label={item.label} 
-                value={item.value} 
+              <PolicyDetails
+                label={item.label}
+                value={item.value}
                 description={item.description}
                 getIconFunc={getIconFunc}
               />
@@ -100,11 +100,10 @@ function TabSelector({ categories, activeTab, onTabChange, isRTL }) {
       {Object.keys(categories).map((category) => (
         <button
           key={category}
-          className={`px-6 py-3 font-medium text-sm transition-colors ${
-            activeTab === category
+          className={`px-6 py-3 font-medium text-sm transition-colors ${activeTab === category
               ? 'border-b-2 border-blue text-xl text-blue'
               : 'text-gray-600 hover:text-primary'
-          }`}
+            }`}
           onClick={() => onTabChange(category)}
         >
           {categories[category].title}
@@ -115,7 +114,7 @@ function TabSelector({ categories, activeTab, onTabChange, isRTL }) {
 }
 
 export function ThingsToKnow({ propertyData }) {
-  console.log({'test data ' : propertyData})
+  console.log({ 'test data ': propertyData })
   const [activeTab, setActiveTab] = useState('houseRules');
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
@@ -190,35 +189,35 @@ export function ThingsToKnow({ propertyData }) {
     houseRules: {
       title: t('rules.houseRules'),
       items: [
-        { 
-          label: t('rules.checkIn'), 
-          value: data.checkInOutTimes ? 
-            `${data.checkInOutTimes.checkInWindow.start} - ${data.checkInOutTimes.checkInWindow.end}` : 
+        {
+          label: t('rules.checkIn'),
+          value: data.checkInOutTimes ?
+            `${data.checkInOutTimes.checkInWindow.start} - ${data.checkInOutTimes.checkInWindow.end}` :
             t('rules.notSpecified'),
           description: t('rules.checkInDescription')
         },
-        { 
-          label: t('rules.checkoutBefore'), 
+        {
+          label: t('rules.checkoutBefore'),
           value: data.checkInOutTimes?.checkoutTime || t('rules.notSpecified'),
           description: t('rules.checkoutDescription')
         },
-        { 
-          label: t('rules.maximumGuests'), 
+        {
+          label: t('rules.maximumGuests'),
           value: data.rules?.max_guests ? `${data.rules.max_guests} ${t('rules.guestsMaximum')}` : t('rules.notSpecified'),
           description: t('rules.maxGuestsDescription')
         },
-        { 
-          label: t('rules.pets'), 
+        {
+          label: t('rules.pets'),
           value: data.rules?.pets?.allowed ? t('rules.allowed') : t('rules.notAllowed'),
           description: t('rules.petsDescription')
         },
-        { 
-          label: t('rules.partiesOrEvents'), 
+        {
+          label: t('rules.partiesOrEvents'),
           value: data.rules?.events === "allowed" ? t('rules.allowed') : t('rules.notAllowed'),
           description: t('rules.partiesDescription')
         },
-        { 
-          label: t('rules.smoking'), 
+        {
+          label: t('rules.smoking'),
           value: data.rules?.smoking === "allowed" ? t('rules.allowed') : t('rules.notAllowed'),
           description: t('rules.smokingDescription')
         }
@@ -227,63 +226,75 @@ export function ThingsToKnow({ propertyData }) {
     safetyAndProperty: {
       title: t('rules.safetyAndProperty'),
       items: [
-        { 
-          label: t('rules.carbonMonoxideAlarm'), 
+        {
+          label: t('rules.carbonMonoxideAlarm'),
           value: hasSafetyFeature('carbon_monoxide_detector') ? t('rules.available') : t('rules.notReported'),
           description: t('rules.carbonMonoxideDescription')
         },
-        { 
-          label: t('rules.smokeAlarm'), 
+        {
+          label: t('rules.smokeAlarm'),
           value: hasSafetyFeature('smoke_detector') ? t('rules.available') : t('rules.notReported'),
           description: t('rules.smokeAlarmDescription')
         },
-        { 
-          label: t('rules.securityCamera'), 
+        {
+          label: t('rules.securityCamera'),
           value: hasSafetyFeature('security_camera') ? t('rules.available') : t('rules.noneReported'),
           description: t('rules.securityCameraDescription')
         },
-        { 
-          label: t('rules.fireExtinguisher'), 
+        {
+          label: t('rules.fireExtinguisher'),
           value: hasSafetyFeature('fire_extinguisher') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.fireExtinguisherDescription')
         },
-        { 
-          label: t('rules.emergencyExit'), 
+        {
+          label: t('rules.emergencyExit'),
           value: hasSafetyFeature('emergency_exit') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.emergencyExitDescription')
+        },
+        {
+          label: t('rules.securityGuard'),
+          value: hasSafetyFeature('security_guard') ? t('rules.available') : t('rules.notAvailable'),
+          description: t('rules.securityGuardDescription')
+        },
+        {
+          label: t('rules.firstAidKit'),
+          value: hasSafetyFeature('first_aid_kit') ? t('rules.available') : t('rules.notAvailable'),
+          description: t('rules.firstAidKitDescription')
         }
+        
+
       ]
     },
     accessibility: {
       title: t('rules.title'),
       items: [
-        { 
-          label: t('rules.stepFree'), 
+        {
+          label: t('rules.stepFree'),
           value: hasAccessibilityFeature('step_free') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.stepFreeDescription')
         },
-        { 
-          label: t('rules.elevator'), 
+        {
+          label: t('rules.elevator'),
           value: hasAccessibilityFeature('elevator') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.elevatorDescription')
         },
-        { 
-          label: t('rules.parking'), 
+        {
+          label: t('rules.parking'),
           value: hasAccessibilityFeature('parking') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.parkingDescription')
         },
-        { 
-          label: t('rules.wideEntrance'), 
+        {
+          label: t('rules.wideEntrance'),
           value: hasAccessibilityFeature('wide_entrance') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.wideEntranceDescription')
         },
-        { 
-          label: t('rules.rollShower'), 
+        {
+          label: t('rules.rollShower'),
           value: hasAccessibilityFeature('roll_shower') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.rollShowerDescription')
         },
-        { 
-          label: t('rules.accessibleToilet'), 
+        {
+          label: t('rules.accessibleToilet'),
           value: hasAccessibilityFeature('accessible_toilet') ? t('rules.available') : t('rules.notAvailable'),
           description: t('rules.accessibleToiletDescription')
         }
@@ -292,18 +303,18 @@ export function ThingsToKnow({ propertyData }) {
     cancellation: {
       title: t('rules.cancellationPolicy'),
       items: [
-        { 
-          label: t('rules.freeCancellationBefore'), 
+        {
+          label: t('rules.freeCancellationBefore'),
           value: `${getRefundDays()} ${t('rules.days')}`,
           description: t('rules.cancellationDescription')
         },
-        { 
-          label: t('rules.reviewThePolicy'), 
+        {
+          label: t('rules.reviewThePolicy'),
           value: t('rules.viewDetails'),
           description: t('rules.policyReviewDescription')
         },
-        { 
-          label: t('rules.damageProtection'), 
+        {
+          label: t('rules.damageProtection'),
           value: t('rules.required'),
           description: t('rules.damageProtectionDescription')
         }
@@ -314,16 +325,16 @@ export function ThingsToKnow({ propertyData }) {
   return (
     <div className={`py-12 border-t  `}>
       <h2 className="text-2xl font-semibold mb-6">{t('rules.thingsToKnow')}</h2>
-      
+
       <div>
-        <TabSelector 
-          categories={categories} 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab} 
+        <TabSelector
+          categories={categories}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           isRTL={isRTL}
         />
-        <PolicyCategory 
-          title={categories[activeTab].title} 
+        <PolicyCategory
+          title={categories[activeTab].title}
           items={categories[activeTab].items}
           getIconFunc={getIcon}
         />

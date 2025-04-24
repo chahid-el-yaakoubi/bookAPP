@@ -157,7 +157,7 @@ export const RoomDetail = ({ onBack, onEdit }) => {
                             <div className="absolute bottom-4 left-4 right-4">
                                 <h1 className="text-4xl font-bold text-white mb-2">{room?.type || 'Room'}</h1>
                                 <div className="flex items-baseline text-white">
-                                    <span className="text-3xl font-bold">${room?.price || '0'}</span>
+                                    <span className="text-3xl font-bold">MAD {room?.price || '0'}</span>
                                     <span className="ml-1 text-sm opacity-90">/night</span>
                                 </div>
                             </div>

@@ -169,11 +169,10 @@ export const FilterModule = ({ onClose }) => {
   const FilterButton = ({ type, id, children, className, isActive, onClick }) => (
     <button
       onClick={onClick}
-      className={`border transition-all ${
-        isActive
-          ? 'bg-black text-white border-black font-medium'
-          : 'bg-white text-gray-700 border-gray-300 hover:border-black'
-      } ${className}`}
+      className={`border transition-all ${isActive
+        ? 'bg-blue text-white border-blue font-medium'
+        : 'bg-white text-gray-700 border-gray-300 hover:border-blue'
+        } ${className}`}
     >
       {children}
     </button>
@@ -183,15 +182,15 @@ export const FilterModule = ({ onClose }) => {
       <div className={`bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl ${isRTL ? 'text-right' : 'text-left'}`}>
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label={t('common.close')}
           >
             <FaTimes className="text-lg" />
           </button>
           <span className="font-semibold text-lg">{t('FilterModule.filters.title')}</span>
-          <div className="w-8" /> 
+          <div className="w-8" />
         </div>
 
         {/* Main Content */}
@@ -200,6 +199,7 @@ export const FilterModule = ({ onClose }) => {
           <section className="p-4 border-b">
             <h3 className="text-lg font-medium mb-4">{t('FilterModule.filters.propertyType')}</h3>
             <div className="grid grid-cols-2 gap-3">
+
               {propertyTypes.map(type => (
                 <FilterButton
                   key={type.id}
@@ -213,8 +213,12 @@ export const FilterModule = ({ onClose }) => {
                     {type.icon}
                   </span>
                   <span>{type.label}</span>
+
+                 
                 </FilterButton>
               ))}
+
+
             </div>
           </section>
 
@@ -228,28 +232,28 @@ export const FilterModule = ({ onClose }) => {
                 <span className="text-gray-500">{t('FilterModule.filters.to')}</span>
                 <span className="font-medium text-lg">${filters.priceRange?.max || 2000}</span>
               </div>
-              
+
               {/* Min price slider */}
               <div className="space-y-2">
                 <label className="text-sm text-gray-600 font-medium">{t('FilterModule.filters.minPrice')}</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="2000" 
+                <input
+                  type="range"
+                  min="0"
+                  max="2000"
                   step="50"
                   value={filters.priceRange?.min || 200}
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
                   className="w-full cursor-pointer"
                 />
               </div>
-              
+
               {/* Max price slider */}
               <div className="space-y-2">
                 <label className="text-sm text-gray-600 font-medium">{t('FilterModule.filters.maxPrice')}</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="2000" 
+                <input
+                  type="range"
+                  min="0"
+                  max="2000"
                   step="50"
                   value={filters.priceRange?.max || 2000}
                   onChange={(e) => handlePriceRangeChange('max', e.target.value)}
@@ -272,7 +276,7 @@ export const FilterModule = ({ onClose }) => {
                 >
                   <span>{option.label}</span>
                   {filters.sortByPrice === option.id && (
-                    <span className="h-5 w-5 rounded-full bg-white text-black flex items-center justify-center text-xs">✓</span>
+                    <span className="h-5 w-5 rounded-full bg-white text-blue flex items-center justify-center text-xs">✓</span>
                   )}
                 </FilterButton>
               ))}
@@ -306,16 +310,16 @@ export const FilterModule = ({ onClose }) => {
 
         {/* Footer */}
         <div className="sticky bottom-0 border-t p-4 flex justify-between items-center bg-white rounded-b-2xl">
-          <button 
+          <button
             onClick={handleClearFilters}
             className={`text-sm font-semibold underline ${hasActiveFilters() ? 'opacity-100' : 'opacity-50'}`}
             disabled={!hasActiveFilters()}
           >
             {t('FilterModule.filters.clearAll')}
           </button>
-          <button 
+          <button
             onClick={handleApplyFilters}
-            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
+            className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
           >
             {t('FilterModule.filters.showProperties', { count: filteredHotels.length })}
           </button>

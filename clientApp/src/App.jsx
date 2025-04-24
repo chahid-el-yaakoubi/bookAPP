@@ -33,6 +33,8 @@ import Welcome from './pages/Hosting/catHost/houseRental/steps/Welcome';
 import MobileMenuPage from './pages/Hosting/catHost/houseRental/Details/components/MobileMenu';
 import { HomeCars } from './pages/cars/HomeCars';
 import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/BookingsPage';
+import { Cities } from './pages/Hosting/pagesHost/Cities';
+import Callender from './pages/Hosting/pagesHost/Callender';
 
 function App() {
   const { t } = useTranslation();
@@ -78,6 +80,12 @@ function App() {
               <Route path="/host" element={<WelcomePage />} />
               <Route path="/hosting" element={<HomeHost />} />
               <Route path="/hosting/login" element={<LoginHost />} />
+
+              {/* cities */}
+
+              <Route path="/host/cities" element={<Cities />} />
+              <Route path="/host/Callender" element={<Callender />} />
+
 
               {/* bookings */}
               <Route path="/host/properties/bookings" element={<BookingsPage />} />

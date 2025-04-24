@@ -45,7 +45,8 @@ const MapIframe = () => {
 
 
 // New HotelDetailsTabs Component
-const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) => {
+const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities, typePrperty }) => {
+  console.log(typePrperty)
   const [activeTab, setActiveTab] = useState('nearby');
   const { t } = useTranslation();
 
@@ -57,11 +58,17 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) 
   };
 
   // Tab configuration
-  const tabs = [
+  let tabs = [
     { id: 'nearby', label: t('singleProperty.nearbyPlaces', 'Nearby Places') },
     { id: 'features', label: t('singleProperty.features', 'Features') },
     { id: 'amenities', label: t('singleProperty.amenities', 'Amenities') }
   ];
+
+  // Conditionally remove the "amenities" tab
+  if (typePrperty === 'hotel' || typePrperty === 'guesthouse') {
+    tabs = tabs.filter(tab => tab.id !== 'amenities');
+  }
+
 
   const renderNearbyPlaces = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-6">
@@ -123,8 +130,8 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities }) 
           <button
             key={tab.id}
             className={`px-6 py-3 font-medium text-sm transition-colors relative ${activeTab === tab.id
-                ? 'text-blue border-b-2 border-blue text-xl'
-                : 'text-gray-600 hover:text-gray-900'
+              ? 'text-blue border-b-2 border-blue text-xl'
+              : 'text-gray-600 hover:text-gray-900'
               }`}
             onClick={() => setActiveTab(tab.id)}
           >
@@ -198,7 +205,7 @@ export function Hotel() {
 
   useEffect(() => {
 
-    if(hotel && hotel.property_details && !loading && !error){
+    if (hotel && hotel.property_details && !loading && !error) {
       setPropertyData(hotel)
     }
     if (hotel) {
@@ -232,7 +239,7 @@ export function Hotel() {
         setSafetyFeatures(hotel.safety_features);
       }
 
-      if (hotel.cancellation) {  
+      if (hotel.cancellation) {
         setCancellationPolicy(hotel.cancellation);
       }
 
@@ -264,16 +271,6 @@ export function Hotel() {
     );
   }
 
-  // if (error) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-  //         <p className="font-bold">Error</p>
-  //         <p>Error loading property details. Please try again later.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className=''>
@@ -389,6 +386,7 @@ export function Hotel() {
               proximities={proximities}
               propertyFeatures={propertyFeatures}
               propertyAmenities={propertyAmenities}
+              typePrperty={type.type}
             />
 
             <ThingsToKnow propertyData={propertyData} />
@@ -396,8 +394,8 @@ export function Hotel() {
             <div className="py-6">
               <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.location')}</h2>
               <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
-                <MapIframe /> 
-                
+                <MapIframe />
+
               </div>
             </div>
 

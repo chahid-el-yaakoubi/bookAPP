@@ -30,7 +30,7 @@ export const RoomTable = ({ room, onEdit, onDelete, onClick }) => {
             </td>
             <td className="px-4 py-3 border-b text-gray-800">{room?.capacity} Guests</td>
             <td className="px-4 py-3 border-b text-gray-800">{room?.bathrooms?.length || 0}</td>
-            <td className="px-4 py-3 border-b font-medium text-gray-800">${room?.price}</td>
+            <td className="px-4 py-3 border-b font-medium text-gray-800">MAD {room?.price}</td>
             <td className="px-4 py-3 border-b">
                 <div className="flex space-x-2 justify-end">
                     <button

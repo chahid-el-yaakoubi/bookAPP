@@ -178,7 +178,7 @@ const HotelsList = ({ city }) => {
                           ? "bg-blue text-white hover:bg-blue-dark border-2 border-blue"
                           : typesWithHotels[type]
                             ? "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "bg-gray-100 text-gray-400 cursor-pointer "
                         }
                         ${isFilterActive(type) ? 'ring-2 ring-blue ring-opacity-50' : ''}
                       `}
@@ -188,7 +188,7 @@ const HotelsList = ({ city }) => {
                         {t(`hotelsList.propertyTypes.${labelKey}`)}
                       </span>
                       {isFilterActive(type) && (
-                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
                           <span className="text-white text-xs">✓</span>
                         </span>
                       )}

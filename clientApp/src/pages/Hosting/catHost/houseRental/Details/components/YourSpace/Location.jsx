@@ -1,73 +1,163 @@
 import { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaSave, FaSearch, FaLocationArrow } from 'react-icons/fa';
-import { selectProperty, UPDATE_PROPERTY } from '../../../../../../../redux/actions/propertyActions';
+import { selectProperty } from '../../../../../../../redux/actions/propertyActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateProperty } from '../../../../../../../Lib/api';
+import { getRegions, updateProperty } from '../../../../../../../Lib/api';
 
 const Location = () => {
     const dispatch = useDispatch();
     const selectedProperty = useSelector(state => state.property.selectedProperty);
     const initialLocation = selectedProperty?.location;
+    const [regions, setRegions] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [neighborhoods, setNeighborhoods] = useState([]);
 
     // State for form fields
-    const [city, setCity] = useState('');
-    const [region, setRegion] = useState('');
+    const [selectedRegion, setSelectedRegion] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedNeighborhood, setSelectedNeighborhood] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
-    const [neighborhood, setNeighborhood] = useState('');
+    const [postal_code, setPostal_code] = useState('');
     const [coordinateInput, setCoordinateInput] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    // Initialize form with data if provided
+    // Fetch regions with async/await
     useEffect(() => {
-        if (initialLocation) {
-            setCity(initialLocation.city || '');
-            setRegion(initialLocation?.region || '');
-            
+        const fetchRegionsData = async () => {
+            try {
+                const res = await getRegions();
+                setRegions(res.data);
+            } catch (error) {
+                console.error("Error fetching regions:", error);
+            }
+        };
+
+        fetchRegionsData();
+    }, []);
+
+    // Initialize form with data once regions are loaded
+    useEffect(() => {
+        if (initialLocation && regions.length > 0) {
+            // Find region by name
+            const regionObj = regions.find(r => r.regionNameEnglish === initialLocation.region);
+
+            if (regionObj) {
+                setSelectedRegion(regionObj._id);
+
+                // Immediately set cities from the found region
+                setCities(regionObj.cities || []);
+
+                // Wait for the next render cycle with cities
+                setTimeout(() => {
+                    // Find city by name
+                    const cityObj = regionObj.cities.find(c => c.cityNameEnglish === initialLocation.city);
+
+                    if (cityObj) {
+                        setSelectedCity(cityObj.id);
+
+                        // Immediately set neighborhoods
+                        setNeighborhoods(cityObj.neighborhoods || []);
+
+                        // Wait for the next render cycle with neighborhoods
+                        setTimeout(() => {
+                            // Find neighborhood by name
+                            const neighborhoodObj = cityObj.neighborhoods.find(n => n.valueEnglish === initialLocation.neighborhood);
+                            if (neighborhoodObj) {
+                                setSelectedNeighborhood(neighborhoodObj.id);
+                            }
+                        }, 0);
+                    }
+                }, 0);
+            }
+
+            // Set coordinate data
             const lat = initialLocation?.latitude ? initialLocation.latitude.toString() : '';
             const lng = initialLocation?.longitude ? initialLocation.longitude.toString() : '';
-            
+            const pscode = initialLocation?.postal_code ? initialLocation.postal_code.toString() : '';
+
             setLatitude(lat);
             setLongitude(lng);
-            
+
+            setPostal_code(pscode)
+
             // Set coordinate input display format
             if (lat && lng) {
                 setCoordinateInput(`${lat}, ${lng}`);
             } else {
                 setCoordinateInput('');
             }
-            
-            setNeighborhood(initialLocation?.neighborhood || '');
         }
-    }, [initialLocation]);
+    }, [initialLocation, regions]);
+
+    // Update cities when region changes
+    useEffect(() => {
+        if (selectedRegion) {
+            const selectedRegionObj = regions.find(r => r._id === selectedRegion);
+            if (selectedRegionObj) {
+                setCities(selectedRegionObj.cities);
+                setSelectedCity('');
+                setNeighborhoods([]);
+                setSelectedNeighborhood('');
+            }
+        } else {
+            setCities([]);
+            setSelectedCity('');
+            setNeighborhoods([]);
+            setSelectedNeighborhood('');
+        }
+    }, [selectedRegion, regions]);
+
+    // Update neighborhoods when city changes
+    useEffect(() => {
+        if (selectedCity && cities.length > 0) {
+            const selectedCityObj = cities.find(c => c.id === selectedCity);
+            if (selectedCityObj) {
+                setNeighborhoods(selectedCityObj.neighborhoods);
+                setSelectedNeighborhood('');
+            }
+        } else {
+            setNeighborhoods([]);
+            setSelectedNeighborhood('');
+        }
+    }, [selectedCity, cities]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSaving(true);
 
+        // Get region, city, and neighborhood names from selections
+        const regionObj = regions.find(r => r._id === selectedRegion);
+        const cityObj = cities.find(c => c.id === selectedCity);
+        const neighborhoodObj = neighborhoods.find(n => n.id === selectedNeighborhood);
+
         const updatedProperty = {
             location: {
                 ...selectedProperty.location,
-                city: city,
-                region: region,
+                region: regionObj?.regionNameEnglish || '',
+                city: cityObj?.cityNameEnglish || '',
+                neighborhood: neighborhoodObj?.valueEnglish || '',
                 latitude: latitude ? parseFloat(latitude) : null,
                 longitude: longitude ? parseFloat(longitude) : null,
-                neighborhood: neighborhood
+                postal_code : postal_code || ''
             }
         };
 
-        const res = await updateProperty(selectedProperty?._id, updatedProperty);
+        try {
+            const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
-        if (res.status === 200) {
-            dispatch(selectProperty(res.data));
+            if (res.status === 200) {
+                dispatch(selectProperty(res.data));
+                setIsSaving(false);
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+            }
+        } catch (error) {
+            console.error("Error updating property:", error);
             setIsSaving(false);
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-
+            alert("Failed to save location details.");
         }
-
-         
     };
 
     const handleGetCurrentLocation = () => {
@@ -94,18 +184,18 @@ const Location = () => {
     const handleCoordinateChange = (e) => {
         const value = e.target.value;
         setCoordinateInput(value);
-        
+
         // If input is empty, clear both coordinates
         if (!value.trim()) {
             setLatitude('');
             setLongitude('');
             return;
         }
-        
+
         // If input contains a comma, try to parse as lat,lng pair
         if (value.includes(',')) {
             const coords = value.split(',').map(coord => coord.trim());
-            
+
             if (coords.length >= 2) {
                 // Set values even if they're not perfectly formatted numbers
                 // (validation will happen during form submission)
@@ -136,47 +226,80 @@ const Location = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Region
                             </label>
-                            <input
-                                type="text"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
+                            <select
+                                value={selectedRegion}
+                                onChange={(e) => setSelectedRegion(e.target.value)}
                                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
-                                placeholder="e.g. California"
-                            />
+                            >
+                                <option value="">Select Region</option>
+                                {regions.map(region => (
+                                    <option key={region._id} value={region._id}>
+                                        {region.regionNameEnglish}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 City
                             </label>
+                            <select
+                                value={selectedCity}
+                                onChange={(e) => setSelectedCity(e.target.value)}
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
+                                disabled={!selectedRegion}
+                            >
+                                <option value="">Select City</option>
+                                {cities.map(city => (
+                                    <option key={city.id} value={city.id}>
+                                        {city.cityNameEnglish}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Neighborhood
+                            </label>
+                            <select
+                                value={selectedNeighborhood}
+                                onChange={(e) => setSelectedNeighborhood(e.target.value)}
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
+                                disabled={!selectedCity}
+                            >
+                                <option value="">Select Neighborhood</option>
+                                {neighborhoods.map(neighborhood => (
+                                    <option key={neighborhood.id} value={neighborhood.id}>
+                                        {neighborhood.valueEnglish}
+                                    </option>
+                                ))}
+                            </select>
+
+                        </div>
+                        <div className='w-full'>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Postal Code
+                            </label>
                             <input
                                 type="text"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
+                                value={postal_code}
+                                onChange={(e) => setPostal_code(e.target.value)}
                                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
-                                placeholder="e.g. San Francisco"
+                                placeholder="e.g. 40000"
                             />
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Neighborhood
-                        </label>
-                        <input
-                            type="text"
-                            value={neighborhood}
-                            onChange={(e) => setNeighborhood(e.target.value)}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue focus:border-blue"
-                            placeholder="e.g. Downtown"
-                        />
-                    </div>
+
+
+
 
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <label className="block text-sm font-medium text-gray-700">
                                 Latitude, Longitude
                             </label>
-                            <button 
+                            <button
                                 type="button"
                                 onClick={handleGetCurrentLocation}
                                 className="text-sm text-blue flex items-center hover:text-blue"
@@ -212,7 +335,9 @@ const Location = () => {
                                         {latitude}, {longitude}
                                     </span>
                                     <span className="block mt-1 text-sm text-gray-600">
-                                        {city && region ? `${city}, ${region}` : 'Location set'}
+                                        {selectedRegion && selectedCity ?
+                                            `${cities.find(c => c.id === selectedCity)?.cityNameEnglish || ''}, ${regions.find(r => r._id === selectedRegion)?.regionNameEnglish || ''}`
+                                            : 'Location set'}
                                     </span>
                                 </div>
                             ) : (

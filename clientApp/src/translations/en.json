@@ -550,7 +550,11 @@
     "rollShower": "Wheelchair Accessible Shower",
     "rollShowerDescription": "A shower with no steps or barriers for easy access by a wheelchair.",
     "accessibleToilet": "Accessible Toilet",
-    "accessibleToiletDescription": "A toilet with grab bars and space for wheelchair access."
+    "accessibleToiletDescription": "A toilet with grab bars and space for wheelchair access.",
+    "securityGuard": "Security Guard",
+    "securityGuardDescription": "A security guard is available to assist in case of any emergency.",
+    "firstAidKit": "First Aid Kit",
+    "firstAidKitDescription": "A first aid kit is available for emergencies."
   },
   "roomCard": {
     "night": "night",

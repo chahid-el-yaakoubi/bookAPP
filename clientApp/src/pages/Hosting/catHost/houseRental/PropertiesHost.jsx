@@ -1,14 +1,15 @@
 import HostLayout from '../../ComponentHost/HostLayout';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaHotel } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
 import { deleteProperty, getProperties, updateProperty } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
+import { FaHouse } from 'react-icons/fa6';
 
-const PropertiesHost = () => {
+const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     const { state } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ const PropertiesHost = () => {
 
     const getData = async () => {
         try {
-            const response = await getProperties();
+            const response = await getProperties('', 'single');
             const data = response.data.map(hotel => ({
                 id: hotel._id,
                 name: hotel.title,
@@ -142,14 +143,14 @@ const PropertiesHost = () => {
                                 className={`w-full py-2 rounded-md transition-colors 
                                     ${status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
                                         status === 'pending' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
-                                        'bg-red-100 text-red-800 hover:bg-red-200'}`}
+                                            'bg-red-100 text-red-800 hover:bg-red-200'}`}
                             >
                                 {status.charAt(0).toUpperCase() + status.slice(1)}
                             </button>
                         ))}
                     </div>
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="mt-4 w-full py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
                     >
                         Cancel
@@ -163,12 +164,12 @@ const PropertiesHost = () => {
         try {
             // Use updateProperty to update the status
             await updateProperty(propertyId, { status: { status: newStatus } });
-            
+
             // Optimistically update the local state
-            setHouses(prevHouses => 
-                prevHouses.map(house => 
-                    house.id === propertyId 
-                        ? { ...house, status: newStatus } 
+            setHouses(prevHouses =>
+                prevHouses.map(house =>
+                    house.id === propertyId
+                        ? { ...house, status: newStatus }
                         : house
                 )
             );
@@ -192,10 +193,10 @@ const PropertiesHost = () => {
                             >
                                 <div className="flex items-center">
                                     {key === 'name' ? 'Name' :
-                                     key === 'price' ? 'Price/Night' :
-                                     key === 'status' ? 'Status' :
-                                     key === 'createdAt' ? 'Created At' :
-                                     'Updated At'}
+                                        key === 'price' ? 'Price/Night' :
+                                            key === 'status' ? 'Status' :
+                                                key === 'createdAt' ? 'Created At' :
+                                                    'Updated At'}
                                     {key !== 'status' && <span className="ml-2">{renderSortIcon(key)}</span>}
                                 </div>
                             </th>
@@ -212,7 +213,7 @@ const PropertiesHost = () => {
                         >
                             <td className="px-6 py-4 whitespace-nowrap">{house.name}</td>
                             <td className="px-6 py-4 whitespace-nowrap">MAD {house.price}</td>
-                            <td 
+                            <td
                                 className="px-6 py-4 whitespace-nowrap"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -221,8 +222,8 @@ const PropertiesHost = () => {
                             >
                                 <span className={`px-2 py-1 rounded-full text-xs cursor-pointer
                                     ${house.status === 'active' ? 'bg-green-100 text-green-800' :
-                                      house.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-red-100 text-red-800'}`}>
+                                        house.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                            'bg-red-100 text-red-800'}`}>
                                     {house.status}
                                 </span>
                             </td>
@@ -246,7 +247,7 @@ const PropertiesHost = () => {
 
             {/* Status Update Modal */}
             {selectedHouseForStatusUpdate && (
-                <StatusUpdateModal 
+                <StatusUpdateModal
                     house={selectedHouseForStatusUpdate}
                     onClose={() => setSelectedHouseForStatusUpdate(null)}
                     onUpdateStatus={updatePropertyStatus}
@@ -328,12 +329,23 @@ const PropertiesHost = () => {
     return (
         <HostLayout>
             <TopNavHost category="properties" />
-            <main className="px-2 flex-1 md:p-10 mt-8 bg-blue/30 overflow-auto">
+
+            <div className="flex items-center justify-center gap-4 w-full mt-20 ">
+                <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
+                    <FaHouse />
+                    <span>Houses</span>
+                </button>
+                <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
+                    <FaHotel />
+                    <span>Hotels</span>
+                </button>
+            </div>
+            <main className="px-2 flex-1 md:p-10 mt-4 bg-blue/30 overflow-auto">
                 <div>
-                    
+
                     {/* Header with Search, View Toggle, and Add Property Button */}
                     <div className="flex justify-between items-center mb-6 pt-16">
-                       
+
                         <div className="flex items-center gap-4">
                             <h1 className="text-2xl font-bold">Properties</h1>
                             <div className="relative">

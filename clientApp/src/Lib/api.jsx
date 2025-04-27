@@ -35,9 +35,10 @@ export const CheckUsername = async (username) => {
 
 
 // PROPERTIES: CRUD (create, read, update, delete)
-export const getProperties = async (city) => {
-  const conditions = city ? `?city=${city}` : '';
-  const response = await api.get(`/api/hotels${conditions}`);
+export const getProperties = async (city, type) => {
+  const conditions = city ? `&city=${city}` : '';
+  // const type = city ? `&city=${city}` : '';
+  const response = await api.get(`/api/hotels?type=${type}${conditions}`);
 
   return response;
 };

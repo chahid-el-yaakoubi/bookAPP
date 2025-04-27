@@ -151,19 +151,43 @@ export const getHotel = async (req, res, next) => {
 
 
 
-export const getHotels = async (req, res, next) => {
-    const { min, max, limit, ...other } = req.query;
-    const city = other.city;
-    const condition = city ? { "location.city": city } : {};
+// export const getHotels = async (req, res, next) => {
+//     const { min, max, limit, ...other } = req.query;
+//     const city = other.city;
+//     const condition = city ? { "location.city": city } : {};
 
-    console.log(condition)
-    try {
-        const hotels = await Hotel.find(condition) ; //.skip(4)
-        res.status(200).json(hotels);
-    } catch (err) {
-        next(err);
+//     console.log(condition)
+//     try {
+//         const hotels = await Hotel.find(condition) ; //.skip(4)
+//         res.status(200).json(hotels);
+//     } catch (err) {
+//         next(err);
+//     }
+// }
+
+export const getHotels = async (req, res, next) => {
+    const { limit, type, city } = req.query;
+  
+    let query = {};
+  
+    if (city) {
+      query["location.city"] = city;
     }
-}
+  
+    if (type === 'multi') {
+      query["type.type"] = { $in: ['hotel', 'guesthouse'] };
+    } else if (type === 'single') {
+      query["type.type"] = { $in: ['house', 'apartment', 'villa'] };
+    }
+  
+    try {
+      const listings = await Hotel.find(query).limit(limit ? parseInt(limit) : 0);
+      res.status(200).json(listings);
+    } catch (err) {
+      next(err);
+    }
+  };
+  
 
 export const getAdminHotels = async (req, res, next) => {
     const {id } = req.params;

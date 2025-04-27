@@ -402,7 +402,9 @@
     "hotelDetails": "Accommodation Details",
     "offersTitle": "What this place offers",
     "amenities": "Amenities",
-    "features": "Features"
+    "features": "Features",
+    "back" : "back"
+
   },
   "hotelsList": {
     "showAll": "Show All",

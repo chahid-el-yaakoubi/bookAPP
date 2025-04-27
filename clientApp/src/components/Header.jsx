@@ -154,7 +154,7 @@ export const Header = ({ type }) => {
               </div>
             </Link>
 
-            {/* <div className="min-w-[70px] md:min-w-[100px]">
+            <div className="min-w-[70px] md:min-w-[100px]">
               <div className={getMenuItemClass("explore")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faKey} />
@@ -164,7 +164,7 @@ export const Header = ({ type }) => {
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
                 )}
               </div>
-            </div> */}
+            </div>
 
             <Link to={'/cars'} className="min-w-[70px] md:min-w-[80px]">
 
@@ -187,12 +187,15 @@ export const Header = ({ type }) => {
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
                   <FontAwesomeIcon icon={faTaxi} />
                 </div>
-                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">{t('header.menu.taxi')}</span>
+                <span className="text-[10px] md:text-sm font-medium text-center whitespace-nowrap">Plombers</span>
+                 {/* {t('header.menu.taxi')} */}
                 {type === "taxi" && (
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
                 )}
               </div>
             </div>
+
+           
           </div>
         </div>
 

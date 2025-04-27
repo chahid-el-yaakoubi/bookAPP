@@ -100,7 +100,7 @@ export function ImageGallery({ images }) {
       {/* Mobile view */}
       {isMobile && (
         <div
-          className="relative w-full h-72 overflow-hidden shadow-xl rounded-xl"
+          className="relative w-full h-72 overflow-hidden shadow-xl rounded"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}

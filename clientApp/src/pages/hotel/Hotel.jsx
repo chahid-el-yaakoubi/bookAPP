@@ -9,7 +9,7 @@ import { Header } from '../../components/Header';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useFetch from '../../hooks/useFetch';
-import { TfiAngleLeft } from "react-icons/tfi";
+import { TfiAngleLeft, TfiAngleRight } from "react-icons/tfi";
 import { MdArrowRight } from 'react-icons/md';
 import { FaUtensils, FaTrain, FaPlane, FaMapMarkerAlt, FaBed, FaBath, FaWifi, FaSwimmingPool } from "react-icons/fa";
 import { SharePropertyModal } from './componentHotel/Share.jsx';
@@ -147,7 +147,9 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities, ty
 };
 
 export function Hotel() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const isRTL = i18n.language === "ar";
   const { id } = useParams();
   const navigate = useNavigate();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -291,7 +293,10 @@ export function Hotel() {
               <button
                 onClick={() => { navigate(-1) }}
                 className='flex items-center gap-2 justify-start shadow-lg p-2 rounded hover:bg-gray-100 md:hidden'>
-                <TfiAngleLeft className="w-4 h-4" />
+               
+                {
+                  isRTL ?  <TfiAngleRight className="w-4 h-4" /> :  <TfiAngleLeft className="w-4 h-4" />
+                }
                 <span className="underline">{t('singleProperty.back')}</span>
               </button>
 

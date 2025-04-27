@@ -96,7 +96,7 @@ function PolicyCategory({ title, items, getIconFunc }) {
 
 function TabSelector({ categories, activeTab, onTabChange, isRTL }) {
   return (
-    <div className={`flex border-b mb-6 shadow-xl`}>
+    <div className={`flex border-b mb-6 shadow-xl overflow-auto`}>
       {Object.keys(categories).map((category) => (
         <button
           key={category}

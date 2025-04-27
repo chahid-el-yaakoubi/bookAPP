@@ -35,6 +35,7 @@ import { HomeCars } from './pages/cars/HomeCars';
 import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/BookingsPage';
 import { Cities } from './pages/Hosting/pagesHost/Cities';
 import Callender from './pages/Hosting/pagesHost/Callender';
+import { HomePrperty } from './pages/Hosting/catHost/houseRental/HomePrperty';
 
 function App() {
   const { t } = useTranslation();
@@ -94,7 +95,7 @@ function App() {
               
               
               {/* Properties */}
-              <Route path="/host/properties" element={<PropertiesHost />} />
+              <Route path="/host/properties" element={<HomePrperty />} />
               <Route path="/host/properties/welcome" element={<Welcome />} />
               <Route path="/host/properties/add" element={<AddProperty />} />
               <Route path="/host/properties/:id" element={<PropertyDetail />} />

@@ -266,7 +266,8 @@
     "hotelDetails": "تفاصيل الإقامة",
     "offersTitle": "ماذا يقدم هذا المكان",
     "amenities": "المرفقات",
-    "features": "المميزات"
+    "features": "المميزات",
+    "back" : "رجوع"
   },
   "hotelsList": {
     "showAll": "عرض الكل",

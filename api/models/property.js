@@ -106,7 +106,7 @@ const PropertyDetailsSchema = new Schema({
 
 
 const HotelSchema = new mongoose.Schema({
-    created_by: { type: String, require : true },
+    created_by: { type: String, require : true , ref: "User",},
     title: { type: String },
     type: {
         type: {

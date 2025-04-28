@@ -48,7 +48,6 @@ const Hotels = () => {
 
     useEffect(() => {
         if (fetchedData) {
-            console.log(fetchedData)
             const transformedData = fetchedData.map((item) => ({
                 isA: item.isA,
                 id: item._id,

@@ -20,7 +20,7 @@ router.get('/find/:id', getHotel)
 router.get('/', getHotels)
 //  get hotels admins
 router.get('/:id', getAdminHotels)
-router.get('/partner', getPartners)
+router.get('/partner/find', getPartners)
 
 // COUNT BY CITY
 router.get('/contByCity/count/:id', countByCity)

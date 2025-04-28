@@ -52,6 +52,8 @@ app.use('/api/house-rentals', houseRentalRouter);
 app.use('/api/shops', shopsRouter);
 app.use('/api/cars', carsRouter);
 
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;

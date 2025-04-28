@@ -259,6 +259,17 @@ export const countByCity = async (req, res, next) => {
 }
 
 
+export const test = async (req, res, next) => {
+  const { id } = req.params;
+  const condition = id === "all" ? {} : { isA: id };
+  try {
+    const hotelCount = await Hotel.countDocuments(condition);
+    res.status(200).json(hotelCount);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const countByType = async (req, res, next) => {
 
   try {

@@ -225,7 +225,7 @@ export const getPartners = async (req, res, next) => {
       }
 
       partnerMap[partnerId].totalProperties += 1;
-      partnerMap[partnerId].statuses.push(hotel.status.status); // ✅ only the status string
+      partnerMap[partnerId].statuses.push(hotel.status.status);  
     });
 
     // 3. Create the final partner array

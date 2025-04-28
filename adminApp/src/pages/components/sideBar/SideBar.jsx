@@ -29,12 +29,10 @@ import Logout from "../../login/Logout";
 import { AuthContext } from "../../context/AuthContect";
 
 const Sidebar = ({ use }) => {
+  const { state } = useContext(AuthContext);
+    const user = state?.user;
+  const { cars, users, hotes, houses, shops } = user.roles;
 
-  const { user } = useContext(AuthContext);
-  const { adminCars, adminUsers, adminHotes, adminHouses, adminShops } = user;
-  if(!adminHotes){
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-  }
   const [logout, setLogout] = useState(false);
 
   return (
@@ -56,7 +54,7 @@ const Sidebar = ({ use }) => {
               <span className="text-sm font-semibold ml-2 sidebar-text">Dashboard</span>
             </li>
           </Link>
-          {adminUsers && (
+          {users && (
             <>
           <p className="text-xs font-bold text-gray-400 my-4">LISTS</p>
           <Link to="/users" className="no-underline">
@@ -68,7 +66,9 @@ const Sidebar = ({ use }) => {
           </>
           )} 
 
-          {adminHotes && (
+
+
+          {hotes && (
           <Link to="/hotels" className="no-underline">
             <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "hotels" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faHotel} className="icon" />
@@ -77,7 +77,7 @@ const Sidebar = ({ use }) => {
           </Link>
           )}
 
-          {adminHouses && (
+          {houses && (
           <Link to="/houses-sales" className="no-underline">
             <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "housesSales" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faHouse} className="icon" />
@@ -86,7 +86,7 @@ const Sidebar = ({ use }) => {
           </Link>
           )}
 
-          {adminUsers && (
+          {users && (
           <Link to="/cities" className="no-underline">
             <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "cities" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faCity} className="icon" />
@@ -95,7 +95,7 @@ const Sidebar = ({ use }) => {
           </Link>
           )}
 
-          {adminShops && (
+          {shops && (
           <Link to="/shops" className="no-underline">
             <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "shops" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faShop} className="icon" />
@@ -104,7 +104,7 @@ const Sidebar = ({ use }) => {
           </Link>
           )} 
 
-          {adminCars && (
+          {cars && (
           <Link to="/cars" className="no-underline">
             <li className={`flex  p-2 cursor-pointer hover:bg-blue-100 rounded-md ${use === "cars" ? 'active' : ''}`}>
               <FontAwesomeIcon icon={faCar} className="icon" />

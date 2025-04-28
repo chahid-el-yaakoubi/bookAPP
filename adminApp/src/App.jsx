@@ -1,11 +1,12 @@
 // React and router imports
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useContext } from "react";
 
 
 // Component imports
 import Home from './pages/home/Home'
 import User from './pages/user/Users'
+import Partner from './pages/partner/Partner'
 import Single from './pages/user/componentUser/Single'
 import AuthForm from './pages/login/Login'
 import { AuthContext } from './pages/context/AuthContect'
@@ -31,55 +32,62 @@ import { Profile } from './pages/components/profile/Profile';
 // import PropertyForm from './pages/House/hotels/newTest';
 
 function App() {
-
+  const { state } = useContext(AuthContext);
+  const user = state?.user;
   const ProtectedRoute = ({ children }) => {
-    const { user } = useContext(AuthContext);
-    if (!user) {
-      return <Navigate to="/login" />;
+    if (!user || !user.isAdmin) {
+      return <Navigate to="/login" />;;
     }
-    return children;
-  }
+
+    return children;;
+  };
+
+
+  // const ProtectedRoute = ({ children }) => {
+  //   const { user } = useContext(AuthContext);
+  //   if (!user) {
+  //     return <Navigate to="/login" />;
+  //   }
+  //   return children;
+  // }
+
+
 
   const ProtectedUser = ({ children }) => {
-    const { user } = useContext(AuthContext);
-    if (!user || !user.adminUsers) {
+    if (!user || !user.roles.users) {
       return <Navigate to="/login" />;
     }
     return children;
   }
   const ProtectedHotes = ({ children }) => {
-    const { user } = useContext(AuthContext);
-    if (!user || !user.adminHotes) {
+    if (!user || !user.roles.hotes) {
       return <Navigate to="/login" />;
     }
     return children;
   }
 
   const ProtectedCars = ({ children }) => {
-    const { user } = useContext(AuthContext);
-    if (!user || !user.adminCars) {
+    if (!user || !user.roles.cars) {
       return <Navigate to="/login" />;
     }
     return children;
   }
 
   const ProtectedShops = ({ children }) => {
-    const { user } = useContext(AuthContext);
-    if (!user || !user.adminShops) {
+    if (!user || !user.roles.shops) {
       return <Navigate to="/login" />;
     }
     return children;
   }
 
   const ProtectedHouses = ({ children }) => {
-    const { user } = useContext(AuthContext);
 
-    if (!user || !user.adminHouses) {
+    if (!user || !user.roles.houses) {
       return <Navigate to="/login" />;
     }
     return children;
   }
-  
+
   return (
     <div >
       <BrowserRouter>
@@ -103,8 +111,8 @@ function App() {
                 <User use="user" type="new" />
               </ProtectedUser>
             } />
-             <Route path='verify/:userId' element={
-                <ProtectedUser>
+            <Route path='verify/:userId' element={
+              <ProtectedUser>
                 <User use="user" type="verify" />
               </ProtectedUser>
             } />
@@ -116,6 +124,15 @@ function App() {
             <Route path='edit/:userId' element={
               <ProtectedUser>
                 <User use="user" type="edit" />
+              </ProtectedUser>
+            } />
+          </Route>
+
+          {/* partners */}
+          <Route path='partner'>
+            <Route index element={
+              <ProtectedUser>
+                <Partner use="user" type="/" />
               </ProtectedUser>
             } />
           </Route>
@@ -157,7 +174,7 @@ function App() {
                 <HouseRentals type="new" />
               </ProtectedHouses>
             } />
-             <Route path="edit/:id" element={
+            <Route path="edit/:id" element={
               <ProtectedHouses>
                 <HouseRentals type="edit" />
               </ProtectedHouses>
@@ -169,8 +186,8 @@ function App() {
             } />
           </Route>
 
-          
-          
+
+
 
           <Route path='profile' element={
             <ProtectedRoute>
@@ -201,13 +218,13 @@ function App() {
                 <Cities type="edit" />
               </ProtectedUser>
             } />
-            
+
           </Route>
 
 
           {/* shops */}
 
-            
+
           <Route path="shops">
             <Route index element={
               <ProtectedShops>

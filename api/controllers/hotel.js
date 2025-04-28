@@ -1,5 +1,6 @@
 // import Hotel from '../models/hotel.js';
 import Hotel from '../models/property.js';
+import User from '../models/user.js';
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 // import { console } from 'inspector';
@@ -199,6 +200,57 @@ export const getAdminHotels = async (req, res, next) => {
     }
 }
 
+export const getPartners = await Hotel.aggregate([
+    {
+      $lookup: {
+        from: "User",
+        localField: "created_by",
+        foreignField: "_id",
+        as: "partnerInfo"
+      }
+    },
+    { $unwind: "$partnerInfo" }, // Flatten the array
+    {
+      $group: {
+        _id: "$created_by",  // Group by partner id
+        username: { $first: "$partnerInfo.username" },
+        email: { $first: "$partnerInfo.email" },
+        phoneNumber: { $first: "$partnerInfo.phoneNumber" },
+        totalProperties: { $sum: 1 }, // count number of properties
+        statuses: { $push: "$status" } // collect all statuses
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        username: 1,
+        email: 1,
+        phoneNumber: 1,
+        totalProperties: 1,
+        statusCount: {
+          $arrayToObject: {
+            $map: {
+              input: { $setUnion: ["$statuses", []] }, // unique statuses
+              as: "status",
+              in: {
+                k: "$$status",
+                v: {
+                  $size: {
+                    $filter: {
+                      input: "$statuses",
+                      as: "s",
+                      cond: { $eq: ["$$s", "$$status"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]);
+  
 
 export const countByCity = async (req, res, next) => {
     const {id} = req.params;

@@ -15,14 +15,16 @@ import { BASE_URL } from "../utils/apiConfig";
 
 const Home = () => {
 
-    const token = Cookies.get("user");
-    console.log(token);
 
-    const { user } = useContext(AuthContext);
-    const { adminCars, adminUsers, adminHotes, adminHouses, adminShops } = user;
+    
+    const token = Cookies.get("user");
+
+    const { state } = useContext(AuthContext);
+    const user = state?.user;
+    const { cars, users, hotes, houses, shops } = user.roles;
 
     let idCount = "all";
-    if (!adminUsers) {
+    if (!users) {
         idCount = user._id
     }
 
@@ -39,22 +41,22 @@ const Home = () => {
     return (
         <Layout children={<>
             <div className={`flex  gap-4 p-4`}>
-                {adminUsers && (
+                {users && (
                     <Widget type="cities" count={countCities} />
                 )}
-                {adminHotes && (
+                {hotes && (
                     <Widget type="hotel" count={countByCity} />
                 )}
-                {adminHouses && (
+                {houses && (
                     <Widget type="house" count={coutHouse} />
                 )}
-                {adminCars && (
+                {cars && (
                     <Widget type="cars" count={coutCar} />
                 )}
-                {adminShops && (
+                {shops && (
                     <Widget type="shops" count={coutShop} />
                 )}
-                {adminUsers && (
+                {users && (
                     <Widget type="user" count={countUser} />
                 )}
             </div>

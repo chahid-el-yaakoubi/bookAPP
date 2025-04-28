@@ -13,11 +13,7 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   const { state } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // State management
-  const [view, setView] = useState(() => {
-    return localStorage.getItem('propertiesView') || 'table';
-  });
-
+  
   const [itemsPerPage, setItemsPerPage] = useState(() => {
     const storedItemsPerPage = localStorage.getItem('propertiesItemsPerPage');
     return storedItemsPerPage ? parseInt(storedItemsPerPage, 10) : 5;
@@ -35,10 +31,7 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
     direction: 'asc'
   });
 
-  // Update localStorage when view changes
-  useEffect(() => {
-    localStorage.setItem('propertiesView', view);
-  }, [view]);
+
 
   // Update localStorage when items per page changes
   useEffect(() => {
@@ -127,22 +120,22 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   return (
     <HostLayout>
       <TopNavHost category="properties" />
-      <div className="flex items-center justify-center gap-4 w-full mt-20 ">
+      <div className="flex items-center justify-center gap-4 w-full mt-20 mb-3 ">
         <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
           <FaHouse />
-          <span>Houses</span>
+          <span>Properties</span>
         </button>
         <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
           <FaHotel />
           <span>Hotels</span>
         </button>
       </div>
-      <main className="px-2 flex-1 md:p-10 mt-8 bg-blue/30 overflow-auto">
+      <main className="px-2 flex-1 md:p-10 mt-4 bg-blue/30 overflow-auto">
         <div>
           {/* Header with Search, View Toggle, and Add Property Button */}
           <div className="flex justify-between items-center mb-6 pt-16">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold">Properties</h1>
+              {/* <h1 className="text-2xl font-bold">Properties</h1> */}
               <div className="relative">
                 <button
                   onClick={() => setShowSearch(!showSearch)}
@@ -178,27 +171,27 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
               </div>
             </div>
 
-            {/* View Toggle */}
-            <div className="flex items-center gap-2 mr-4">
-              <button
-                onClick={() => setView('table')}
-                className={`p-2 rounded ${view === 'table' ? 'bg-blue text-white' : 'hover:bg-gray-100'}`}
-              >
-                <FaList />
-              </button>
-              <button
-                onClick={() => setView('card')}
-                className={`p-2 rounded ${view === 'card' ? 'bg-blue text-white' : 'hover:bg-gray-100'}`}
-              >
-                <FaThLarge />
-              </button>
-            </div>
+          
 
             <button
               onClick={() => navigate('/host/properties/add')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="group cursor-pointer outline-none  duration-300 shadow-xl shadow-blue hover:scale-110  w-12 h-12 rounded-full"
+              title="Add New"
             >
-              Add New
+              <svg
+                className="stroke-primary fill-none group-hover:fill-blue group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
+                viewBox="0 0 40 40"
+                height="50px"
+                width="50px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeWidth="1.5"
+                  d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                ></path>
+                <path strokeWidth="1.5" d="M8 12H16"></path>
+                <path strokeWidth="1.5" d="M12 16V8"></path>
+              </svg>
             </button>
           </div>
 

@@ -3,12 +3,10 @@ import { AuthContext } from "../../contextApi/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuCircleArrowLeft } from "react-icons/lu";
-import { CheckUsername, login, register } from "../../Lib/api";
-
+import { login, register } from "../../Lib/api";
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
-        fullName: "",
         email: "",
         username: "",
         password: "",
@@ -16,7 +14,6 @@ const RegisterForm = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [isGeneratingUsername, setIsGeneratingUsername] = useState(false);
     const [localError, setLocalError] = useState(null); // local form errors
 
     const { loading, error, dispatch, user } = useContext(AuthContext);
@@ -31,41 +28,6 @@ const RegisterForm = () => {
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
     };
-
-    const generateUsername = async () => {
-        if (!formData.fullName) {
-            setLocalError("Please enter your full name first");
-            return;
-        }
-
-        setLocalError(null);
-        setIsGeneratingUsername(true);
-        try {
-            const baseUsername = formData.fullName
-                .toLowerCase()
-                .replace(/\s+/g, "");
-
-            const res = await CheckUsername(formData.username);
-
-            if (res.data.available) {
-                setFormData((prev) => ({ ...prev, username: baseUsername }));
-            } else {
-                const randomSuffix = Math.floor(10 + Math.random() * 90);
-                const newUsername = `${baseUsername}${randomSuffix}`;
-                setFormData((prev) => ({ ...prev, username: newUsername }));
-            }
-        } catch (err) {
-            setLocalError("Error generating username. Please try again.");
-        } finally {
-            setIsGeneratingUsername(false);
-        }
-    };
-
-    useEffect(() => {
-        if (formData.fullName.length > 3 && !formData.username) {
-            generateUsername();
-        }
-    }, [formData.fullName]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -82,10 +44,13 @@ const RegisterForm = () => {
                 dispatch({ type: "LOGIN_START" });
                 try {
                     const loginRes = await login(formData.username, formData.password);
-                    dispatch({ type: "LOGIN_SUCCESS", payload: {
-                        user: loginRes.user,
-                        token: loginRes.token,
-                      }, });
+                    dispatch({ 
+                        type: "LOGIN_SUCCESS", 
+                        payload: {
+                            user: loginRes.user,
+                            token: loginRes.token,
+                        }, 
+                    });
                     navigate("/");
                 } catch (err) {
                     dispatch({
@@ -128,8 +93,6 @@ const RegisterForm = () => {
                         >
                             <LuCircleArrowLeft className="w-6 h-6 text-white" />
                             back
-
-
                         </button>
                         <div className="flex flex-col items-center mt-6">
                             <div className="bg-white rounded-full p-2 flex items-center justify-center w-10 h-10">
@@ -164,12 +127,12 @@ const RegisterForm = () => {
                             className="mt-4 mx-12 flex flex-col gap-3"
                         >
                             <Input
-                                id="fullName"
-                                label="Full Name"
+                                id="username"
+                                label="Username"
                                 type="text"
-                                value={formData.fullName}
+                                value={formData.username}
                                 onChange={handleChange}
-                                placeholder="John Doe"
+                                placeholder="Choose a username"
                             />
 
                             <Input
@@ -180,37 +143,6 @@ const RegisterForm = () => {
                                 onChange={handleChange}
                                 placeholder="your@email.com"
                             />
-
-                            <div>
-                                <label
-                                    htmlFor="username"
-                                    className="block text-sm text-indigo-200 mb-1"
-                                >
-                                    Username
-                                </label>
-                                <div className="flex">
-                                    <input
-                                        id="username"
-                                        type="text"
-                                        value={formData.username}
-                                        onChange={handleChange}
-                                        placeholder="Generated username"
-                                        className="w-full px-4 py-2 bg-indigo-700 text-white rounded-l-md placeholder-indigo-300 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={generateUsername}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-500 focus:outline-none"
-                                        disabled={isGeneratingUsername || !formData.fullName}
-                                    >
-                                        {isGeneratingUsername ? "..." : "Generate"}
-                                    </button>
-                                </div>
-                                <p className="text-xs text-indigo-300 mt-1">
-                                    Username is auto-generated from your name, but you can edit it
-                                </p>
-                            </div>
 
                             <PasswordInput
                                 id="password"

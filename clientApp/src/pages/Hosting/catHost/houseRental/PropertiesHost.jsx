@@ -330,10 +330,10 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
         <HostLayout>
             <TopNavHost category="properties" />
 
-            <div className="flex items-center justify-center gap-4 w-full mt-20 ">
+            <div className="flex items-center justify-center gap-4 w-full mt-20 mb-3 ">
                 <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
                     <FaHouse />
-                    <span>Houses</span>
+                    <span>Properties</span>
                 </button>
                 <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
                     <FaHotel />
@@ -347,7 +347,7 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                     <div className="flex justify-between items-center mb-6 pt-16">
 
                         <div className="flex items-center gap-4">
-                            <h1 className="text-2xl font-bold">Properties</h1>
+                            {/* <h1 className="text-2xl font-bold">Properties</h1> */}
                             <div className="relative">
                                 <button
                                     onClick={() => setShowSearch(!showSearch)}
@@ -407,12 +407,12 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
 
                         <button
                             onClick={() => navigate('/host/properties/add')}
-                            className="group cursor-pointer outline-none hover:rotate-90 duration-300 shadow-xl shadow-blue w-10 rounded-full"
+                            className="group cursor-pointer outline-none  duration-300 shadow-xl shadow-blue hover:scale-110  w-12 h-12 rounded-full"
                             title="Add New"
                         >
                             <svg
                                 className="stroke-primary fill-none group-hover:fill-blue group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
-                                viewBox="0 0 30 30"
+                                viewBox="0 0 40 40"
                                 height="50px"
                                 width="50px"
                                 xmlns="http://www.w3.org/2000/svg"

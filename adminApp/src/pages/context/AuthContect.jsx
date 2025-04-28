@@ -1,27 +1,27 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useReducer, useEffect } from "react";
 
-// Initial state
-const INITIAL_STATE = {
-  user: JSON.parse(localStorage.getItem("user")) || null, // Use localStorage for persistence across sessions
+// Initial State
+const initialState = {
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
 };
 
-// Create context
-export const AuthContext = createContext(INITIAL_STATE);
-
-// Reducer function
+// Reducer Function
 const AuthReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_START":
       return {
-        user: null,
+        ...state,
         loading: true,
         error: null,
       };
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload,
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
         loading: false,
         error: null,
       };
@@ -33,7 +33,9 @@ const AuthReducer = (state, action) => {
       };
     case "LOGOUT":
       return {
+        ...state,
         user: null,
+        token: null,
         loading: false,
         error: null,
       };
@@ -42,28 +44,22 @@ const AuthReducer = (state, action) => {
   }
 };
 
-// Context provider
-export const AuthContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+// Context
+export const AuthContext = createContext();
 
-  // Sync user data with localStorage
+// AuthContextProvider Component
+export const AuthContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(AuthReducer, initialState);
+
   useEffect(() => {
-    if (state.user) {
-      localStorage.setItem("user", JSON.stringify(state.user)); // Store user in localStorage
-    } else {
-      localStorage.removeItem("user"); // Clear localStorage on logout
+    if (state.user && state.token) {
+      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("token", state.token);
     }
-  }, [state.user]);
+  }, [state.user, state.token]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user: state.user,
-        loading: state.loading,
-        error: state.error,
-        dispatch,
-      }}
-    >
+    <AuthContext.Provider value={{ state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

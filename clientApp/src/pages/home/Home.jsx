@@ -51,7 +51,7 @@ export const Home = () => {
         <div className="home bg-blue/50 ">
             <div className="fixed bg-blue/90   top-0 left-0 right-0 -z-10 max-h-screen"></div>
 
-            <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+            {/* <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
                 <button
                     className="bg-black text-white px-5 py-3 text-base md:text-lg lg:text-xl rounded-xl flex items-center gap-2 md:gap-4"
                     onClick={() => setShowHotelsMap(!showHotelsMap)}
@@ -59,7 +59,7 @@ export const Home = () => {
                     Show Maps
                     <FaMap />
                 </button>
-            </div>
+            </div> */}
 
             {showHotelsMap && <MapComponent showHotelsMap={showHotelsMap} setShowHotelsMap={setShowHotelsMap} />}
 

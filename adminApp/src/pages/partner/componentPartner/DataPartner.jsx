@@ -7,8 +7,6 @@ import { useState } from "react";
 import useFetch from '../../../hooks/useFetch';
 import moment from 'moment';
 import { FaEye, FaTrash, FaEdit } from 'react-icons/fa';
- 
- 
 
 
 
@@ -111,7 +109,7 @@ const DataUser = (props) => {
     return (
         <div className={`my-2 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-[calc(100vw-110px)]`}>
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold mb-4 md:mb-0">Users List</h2>
+                <h2 className="text-xl font-semibold mb-4 md:mb-0">Partners List</h2>
                 <Link to="/users/new" className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center ">
                     Ajouter utilisateur
                 </Link>

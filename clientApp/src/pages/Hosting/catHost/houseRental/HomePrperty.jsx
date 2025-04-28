@@ -1,23 +1,31 @@
-import React, { useState } from 'react'
-import PropertiesHost from './PropertiesHost'
-import HotelsHost from './HotelsHost'
+import React, { useState, useEffect } from 'react';
+import PropertiesHost from './PropertiesHost';
+import HotelsHost from './HotelsHost';
 
 export const HomePrperty = () => {
-    const [type , setType] = useState('houses')
+    const [type, setType] = useState(() => {
+        // Read the saved type from localStorage, default to 'houses'
+        return localStorage.getItem('propertyType') || 'houses';
+    });
 
-    const setHouses = ()=>{
-        setType('houses')
-    }
+    useEffect(() => {
+        // Whenever 'type' changes, save it to localStorage
+        localStorage.setItem('propertyType', type);
+    }, [type]);
+
+    const setHouses = () => {
+        setType('houses');
+    };
     
-    const setHotels = ()=>{
-        setType('hotels')
-    }
+    const setHotels = () => {
+        setType('hotels');
+    };
+
     return (
-
         <>
-           
-            {type === 'houses'   ?  <PropertiesHost setHousesType={setHouses} setHotelsType={setHotels} ListType={type} /> : <HotelsHost setHousesType={setHouses} setHotelsType={setHotels} ListType={type} /> }
+            {type === 'houses' 
+                ? <PropertiesHost setHousesType={setHouses} setHotelsType={setHotels} ListType={type} /> 
+                : <HotelsHost setHousesType={setHouses} setHotelsType={setHotels} ListType={type} />}
         </>
-
-    )
-}
+    );
+};

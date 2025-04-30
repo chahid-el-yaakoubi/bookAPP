@@ -1,6 +1,6 @@
 import HostLayout from '../../ComponentHost/HostLayout';
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaHotel } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
@@ -12,6 +12,7 @@ import { FaHouse } from 'react-icons/fa6';
 const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     const { state } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);
 
     // Use localStorage for view and items per page with fallback values
     const [view, setView] = useState(() => {
@@ -49,6 +50,7 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
 
     const getData = async () => {
         try {
+            setIsLoading(true);
             const response = await getProperties('', 'single');
             const data = response.data.map(hotel => ({
                 id: hotel._id,
@@ -62,6 +64,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
             setHouses(data);
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -427,85 +431,94 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                         </button>
                     </div>
 
-                    {/* Status Filter Buttons */}
-                    <div className="mb-6 flex flex-wrap gap-2">
-                        {['all', 'active', 'pending', 'rejected'].map((status) => (
-                            <button
-                                key={status}
-                                onClick={() => setStatusFilter(status)}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                                ${status === statusFilter
-                                        ? 'bg-blue text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                {status.charAt(0).toUpperCase() + status.slice(1)}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Render properties based on selected view */}
-                    {renderProperties()}
-
-                    {/* Pagination Controls */}
-                    <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-700">Items per page:</span>
-                            <select
-                                className="p-1 border rounded-md text-sm"
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    const newItemsPerPage = Number(e.target.value);
-                                    setItemsPerPage(newItemsPerPage);
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                <option value={5}>5</option>
-                                <option value={10}>10</option>
-                                <option value={20}>20</option>
-                            </select>
+                    {/* Add loading indicator */}
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
                         </div>
-
-                        <div className="flex items-center space-x-4">
-                            <span className="text-sm text-gray-700">
-                                Page {currentPage} of {totalPages}
-                            </span>
-
-                            <div className="flex space-x-2">
-                                <button
-                                    className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => setCurrentPage(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                >
-                                    Previous
-                                </button>
-
-                                {/* Page Numbers */}
-                                <div className="flex space-x-1">
-                                    {[...Array(totalPages)].map((_, index) => (
-                                        <button
-                                            key={index + 1}
-                                            className={`px-3 py-1 border rounded-md ${currentPage === index + 1
+                    ) : (
+                        <>
+                            {/* Status Filter Buttons */}
+                            <div className="mb-6 flex flex-wrap gap-2">
+                                {['all', 'active', 'pending', 'rejected'].map((status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => setStatusFilter(status)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                                        ${status === statusFilter
                                                 ? 'bg-blue text-white'
-                                                : 'hover:bg-gray-100'
-                                                }`}
-                                            onClick={() => setCurrentPage(index + 1)}
-                                        >
-                                            {index + 1}
-                                        </button>
-                                    ))}
+                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                    >
+                                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Render properties based on selected view */}
+                            {renderProperties()}
+
+                            {/* Pagination Controls */}
+                            <div className="mt-4 flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-sm text-gray-700">Items per page:</span>
+                                    <select
+                                        className="p-1 border rounded-md text-sm"
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            const newItemsPerPage = Number(e.target.value);
+                                            setItemsPerPage(newItemsPerPage);
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        <option value={5}>5</option>
+                                        <option value={10}>10</option>
+                                        <option value={20}>20</option>
+                                    </select>
                                 </div>
 
-                                <button
-                                    className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={() => setCurrentPage(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                >
-                                    Next
-                                </button>
+                                <div className="flex items-center space-x-4">
+                                    <span className="text-sm text-gray-700">
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+
+                                    <div className="flex space-x-2">
+                                        <button
+                                            className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => setCurrentPage(currentPage - 1)}
+                                            disabled={currentPage === 1}
+                                        >
+                                            Previous
+                                        </button>
+
+                                        {/* Page Numbers */}
+                                        <div className="flex space-x-1">
+                                            {[...Array(totalPages)].map((_, index) => (
+                                                <button
+                                                    key={index + 1}
+                                                    className={`px-3 py-1 border rounded-md ${currentPage === index + 1
+                                                        ? 'bg-blue text-white'
+                                                        : 'hover:bg-gray-100'
+                                                        }`}
+                                                    onClick={() => setCurrentPage(index + 1)}
+                                                >
+                                                    {index + 1}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={() => setCurrentPage(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
             </main>
         </HostLayout>

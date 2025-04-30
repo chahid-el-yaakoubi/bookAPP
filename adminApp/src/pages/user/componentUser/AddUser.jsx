@@ -27,6 +27,8 @@ export const AddUser = () => {
         city: '',
         phone: '',
     })
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     useEffect(() => {
         if (user) {
@@ -99,22 +101,26 @@ export const AddUser = () => {
     }
 
     return (
-        <div className="flex-[6] p-8 bg-gray-50">
-            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm mb-6">
+        <div className="flex-[6] p-8 bg-gray-50 min-h-screen">
+            <div className="flex items-center justify-between p-6 bg-white rounded-lg shadow-md mb-8">
                 <h1 className="text-2xl font-semibold text-gray-800">NOUVELLE UTILISATEUR</h1>
                 <Link to="/users/">
-                    <button className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200'>
-                        tout utilisateur
+                    <button className='px-5 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium shadow-sm'>
+                        Tout utilisateur
                     </button>
                 </Link>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-8">
-                {error && <div className="text-red-500 text-center mb-6 p-3 bg-red-50 rounded">{error}</div>}
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
+                {error && (
+                    <div className="text-red-500 text-center mb-6 p-4 bg-red-50 rounded-md border border-red-100">
+                        {error}
+                    </div>
+                )}
                 
-                <div className="flex lg:flex-row md:flex-col gap-8">
-                    <div className="profile flex-[1] flex flex-col items-center space-y-4">
-                        <div className="bg-gray-100 h-[200px] w-[200px] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="profile flex flex-col items-center space-y-6">
+                        <div className="bg-gray-50 h-[220px] w-[220px] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
                             {formData.img ? (
                                 <img 
                                     src={URL.createObjectURL(formData.img)} 
@@ -122,11 +128,11 @@ export const AddUser = () => {
                                     className="w-full h-full object-cover rounded-lg"
                                 />
                             ) : (
-                                <span className="text-gray-400">No image</span>
+                                <span className="text-gray-400 text-sm">Aucune image</span>
                             )}
                         </div>
                         <div className="w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Images:</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Image de profil:</label>
                             <input 
                                 type="file" 
                                 name="img" 
@@ -136,7 +142,7 @@ export const AddUser = () => {
                         </div>
                     </div>
 
-                    <div className="flex-[1] flex flex-col gap-6">
+                    <div className="space-y-6">
                         <div className="form-group">
                             <label className="block text-sm font-medium text-gray-700 mb-2">Nom et Prénom:</label>
                             <input 
@@ -144,20 +150,20 @@ export const AddUser = () => {
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                                 placeholder="John Doe" 
                                 required
                             />
                         </div>
 
                         <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Télephone:</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone:</label>
                             <input 
                                 type="tel" 
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                                 placeholder="06 25 55 78 45" 
                             />
                         </div>
@@ -169,21 +175,21 @@ export const AddUser = () => {
                                 name="city"
                                 value={formData.city}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                                 placeholder="Nador" 
                             />
                         </div>
                     </div>
 
-                    <div className="flex-[1] flex flex-col gap-6">
+                    <div className="space-y-6">
                         <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">UserName:</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Nom d'utilisateur:</label>
                             <input 
                                 type="text" 
                                 name="username"
                                 value={formData.username}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                                 placeholder="John_Doe"
                                 required
                             />
@@ -196,137 +202,157 @@ export const AddUser = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                                 placeholder="Johndoe@gmail.com"
                                 required
                             />
                         </div>
 
                         <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Mode passe:</label>
-                            <input 
-                                type="password" 
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder=""
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Mode passe:</label>
-                            <input 
-                                type="password" 
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder=""
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group mt-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-4">Admin :</label>
-                            <div className="flex gap-6">
-                                <div className="flex items-center">
-                                    <input 
-                                        type="radio" 
-                                        id="oui" 
-                                        name="isAdmin" 
-                                        value="true"
-                                        checked={formData.isAdmin === true}
-                                        onChange={(e) => setFormData(prev => ({...prev, isAdmin: true}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="oui" className="ml-2 text-gray-700">Oui</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="radio" 
-                                        id="non" 
-                                        name="isAdmin" 
-                                        value="false"
-                                        checked={formData.isAdmin === false}
-                                        onChange={(e) => setFormData(prev => ({...prev, isAdmin: false}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="non" className="ml-2 text-gray-700">Non</label>
-                                </div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe:</label>
+                            <div className="relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"} 
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                >
+                                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                                </button>
                             </div>
                         </div>
 
-                        <div className="form-group mt-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-4">Catégories d'administration :</label>
-                            <div className="space-y-3">
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminCars" 
-                                        name="adminCars"
-                                        checked={formData.adminCars}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminCars: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminCars" className="ml-2 text-gray-700">Voitures</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminUsers" 
-                                        name="adminUsers"
-                                        checked={formData.adminUsers}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminUsers: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminUsers" className="ml-2 text-gray-700">Utilisateurs</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminHotes" 
-                                        name="adminHotes"
-                                        checked={formData.adminHotes}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminHotes: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminHotes" className="ml-2 text-gray-700">Hôtes</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminHouses" 
-                                        name="adminHouses"
-                                        checked={formData.adminHouses}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminHouses: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminHouses" className="ml-2 text-gray-700">Maisons</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        id="adminShops" 
-                                        name="adminShops"
-                                        checked={formData.adminShops}
-                                        onChange={(e) => setFormData(prev => ({...prev, adminShops: e.target.checked}))}
-                                        className="w-4 h-4 text-blue-600" 
-                                    />
-                                    <label htmlFor="adminShops" className="ml-2 text-gray-700">Magasins</label>
-                                </div>
+                        <div className="form-group">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer mot de passe:</label>
+                            <div className="relative">
+                                <input 
+                                    type={showConfirmPassword ? "text" : "password"} 
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                >
+                                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex justify-center mt-8">
-                    <button className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium">
+                <div className="mt-8 space-y-8">
+                    <div className="form-group">
+                        <label className="block text-sm font-medium text-gray-700 mb-4">Statut administrateur:</label>
+                        <div className="flex gap-8">
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    id="oui" 
+                                    name="isAdmin" 
+                                    value="true"
+                                    checked={formData.isAdmin === true}
+                                    onChange={(e) => setFormData(prev => ({...prev, isAdmin: true}))}
+                                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="oui" className="ml-2 text-gray-700 cursor-pointer">Oui</label>
+                            </div>
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    id="non" 
+                                    name="isAdmin" 
+                                    value="false"
+                                    checked={formData.isAdmin === false}
+                                    onChange={(e) => setFormData(prev => ({...prev, isAdmin: false}))}
+                                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="non" className="ml-2 text-gray-700 cursor-pointer">Non</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="block text-sm font-medium text-gray-700 mb-4">Catégories d'administration:</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    id="adminCars" 
+                                    name="adminCars"
+                                    checked={formData.adminCars}
+                                    onChange={(e) => setFormData(prev => ({...prev, adminCars: e.target.checked}))}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="adminCars" className="ml-2 text-gray-700 cursor-pointer">Voitures</label>
+                            </div>
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    id="adminUsers" 
+                                    name="adminUsers"
+                                    checked={formData.adminUsers}
+                                    onChange={(e) => setFormData(prev => ({...prev, adminUsers: e.target.checked}))}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="adminUsers" className="ml-2 text-gray-700 cursor-pointer">Utilisateurs</label>
+                            </div>
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    id="adminHotes" 
+                                    name="adminHotes"
+                                    checked={formData.adminHotes}
+                                    onChange={(e) => setFormData(prev => ({...prev, adminHotes: e.target.checked}))}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="adminHotes" className="ml-2 text-gray-700 cursor-pointer">Hôtes</label>
+                            </div>
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    id="adminHouses" 
+                                    name="adminHouses"
+                                    checked={formData.adminHouses}
+                                    onChange={(e) => setFormData(prev => ({...prev, adminHouses: e.target.checked}))}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="adminHouses" className="ml-2 text-gray-700 cursor-pointer">Maisons</label>
+                            </div>
+                            <div className="flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    id="adminShops" 
+                                    name="adminShops"
+                                    checked={formData.adminShops}
+                                    onChange={(e) => setFormData(prev => ({...prev, adminShops: e.target.checked}))}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer" 
+                                />
+                                <label htmlFor="adminShops" className="ml-2 text-gray-700 cursor-pointer">Magasins</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex justify-center mt-10">
+                    <button className="px-8 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium shadow-sm hover:shadow-md">
                         Ajouter
                     </button>
                 </div>
             </form>
-        </div>
-    )
+        </div>
+    )
 }

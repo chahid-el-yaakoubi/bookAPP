@@ -11,7 +11,7 @@ const User = ({ type }) => {
         <Layout children={<>
             {/* {type === "/" ? (<DataUser />) : ( type === "new" ? <AddUser />  : ( type === "edit" ? <UpdateUser />   : ( type === "verify" ? <VerifyUser /> : <Single />)))} */}
             <DataPartner />
-        </>} use="user" />
+        </>} use="partner" />
     );
 };
 

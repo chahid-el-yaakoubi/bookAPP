@@ -46,6 +46,8 @@ const Details = ({ sectionPath, job }) => {
     const navigate = useNavigate();
     const { t } = useTranslation(['properties']);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [showSidebar, setShowSidebar] = useState(true);
+    const [showContent, setShowContent] = useState(false);
     
     // Map route paths to section IDs
     const pathToSectionMap = {
@@ -80,7 +82,9 @@ const Details = ({ sectionPath, job }) => {
     // Handle window resize to detect mobile/desktop
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            setShowSidebar(!mobile);
         };
         
         window.addEventListener('resize', handleResize);
@@ -121,13 +125,32 @@ const Details = ({ sectionPath, job }) => {
             const { tab, section } = pathToSectionMap[sectionPath];
             setActiveTab(tab);
             setActiveSection(section);
+            if (isMobile) {
+                setShowContent(true);
+            }
         } else {
             // Default to photo-tour if no valid sectionPath
             setActiveTab('your-space');
             setActiveSection('title');
             navigate(`/host/properties/${id}/details/title`);
         }
-    }, [sectionPath, id, navigate]);
+    }, [sectionPath, id, navigate, isMobile]);
+
+    // Save selected section to localStorage
+    const saveSelectedSection = (sectionId) => {
+        localStorage.setItem('selectedPropertySection', sectionId);
+    };
+
+    // Load selected section from localStorage
+    useEffect(() => {
+        const savedSection = localStorage.getItem('selectedPropertySection');
+        if (savedSection && pathToSectionMap[savedSection]) {
+            const { tab, section } = pathToSectionMap[savedSection];
+            setActiveTab(tab);
+            setActiveSection(section);
+        }
+    }, []);
+
     const selectedProperty = useSelector(state => state.property.selectedProperty);
  
     const filteredCategories = [
@@ -175,7 +198,16 @@ const Details = ({ sectionPath, job }) => {
     // Navigate to the section's dedicated route when a sidebar item is clicked
     const handleSectionChange = (sectionId) => {
         setActiveSection(sectionId);
+        saveSelectedSection(sectionId);
+        if (isMobile) {
+            setShowContent(true);
+        }
         navigate(`/host/properties/${id}/details/${sectionId}`);
+    };
+
+    // Add back button handler
+    const handleBackToSidebar = () => {
+        setShowContent(false);
     };
 
     const handleBackToMenu = () => {
@@ -233,73 +265,31 @@ const Details = ({ sectionPath, job }) => {
             }
         }
     };
-
-    // Mobile version of the Details page
-    if (isMobile) {
-        return (
-            <HostLayout>
-                <TopNavHost category={"properties"} />
-                <div className="flex flex-col min-h-screen bg-gray-50 pt-16">
-                    {/* Mobile header with back button and section title */}
-                    <div className="sticky top-16 z-10 bg-white p-4 shadow-md">
-                        <div className="flex items-center justify-between">
-                            <button 
-                                onClick={handleBackToMenu}
-                                className="bg-blue hover:bg-blue-600 p-2 rounded-full"
-                            >
-                                <FaArrowLeft className="w-5 h-5 text-white" />
-                            </button>
-                            <div className="flex items-center gap-2">
-                                {currentSection.icon && (
-                                    <currentSection.icon className="w-5 h-5 text-blue" />
-                                )}
-                                <h1 className="text-lg font-semibold">{currentSection.label}</h1>
-                            </div>
-                            <div className="w-8"></div> {/* Empty div for balanced spacing */}
-                        </div>
-                    </div>
-
-                    {/* Main Content */}
-                    <div className="flex-1 bg-blue/10 m-2 rounded-lg shadow-sm">
-                        {selectedProperty ? (
-                            <div className="p-4">
-                                <h1 className="text-xl font-bold mb-4 text-gray-800">{selectedProperty.name}</h1>
-                                {renderContent()}
-                            </div>
-                        ) : (
-                            <div className="p-4 flex justify-center items-center h-full">
-                                <p className="text-gray-600">Loading property details...</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </HostLayout>
-        );
-    }
+ 
 
     // Desktop version remains mostly unchanged
     return (
         <HostLayout>
             <TopNavHost category={"properties"} />
             <div className="flex min-h-screen bg-gray-50 pt-16">
-                {/* Sidebar - Always visible on desktop */}
-                <div className="lg:w-[400px] bg-white border-r border-gray-200 fixed top-20 bottom-0 overflow-y-auto z-40 hidden md:block">
+                {/* Sidebar - Now responsive */}
+                <div className={`${!showContent ? 'block' : 'hidden'} ${showSidebar ? 'block' : 'hidden'} lg:w-[400px] bg-white border-r border-gray-200 fixed top-20 bottom-0 overflow-y-auto z-40 w-full md:w-auto`}>
                     <div className="p-4">
                         {/* Back button */}
-                        <div className="flex items-center gap-4 mx-20 my-6 ">
+                        <div className="flex items-center gap-4 mx-4 md:mx-20 my-6">
                             <button 
                                 onClick={() => navigate(`/host/properties`)}
                                 className="bg-gray-600 hover:bg-gray-400 p-2 rounded-full"
                             >
-                                <LuCircleArrowLeft className="w-6 h-6 text-blue" />
+                                <LuCircleArrowLeft className="w-6 h-6 text-white" />
                             </button>
-                            <h1 className="text-3xl"> {t('properties:menu.adEditTool')}</h1>
+                            <h1 className="text-xl md:text-3xl"> {t('properties:menu.adEditTool')}</h1>
                         </div>
                         
                         {/* Main tabs */}
-                        <div className="flex mb-6 border-b ">
+                        <div className="flex mb-6 border-b">
                             <button
-                                className={`pb-2 px-4 ${activeTab === 'your-space'
+                                className={`pb-2 px-4 text-sm md:text-base ${activeTab === 'your-space'
                                     ? 'border-b-2 border-blue text-blue'
                                     : 'text-gray-600'}`}
                                 onClick={() => setTabAndSection('your-space', 'photo-tour')}
@@ -307,12 +297,12 @@ const Details = ({ sectionPath, job }) => {
                                 {t('properties:menu.yourSpace')}
                             </button>
                             <button
-                                className={`pb-2 px-4 ${activeTab === 'arrival-guide'
+                                className={`pb-2 px-4 text-sm md:text-base ${activeTab === 'arrival-guide'
                                     ? 'border-b-2 border-blue text-blue'
                                     : 'text-gray-600'}`}
                                 onClick={() => setTabAndSection('arrival-guide', 'check-in')}
                             >
-                                 {t('properties:menu.arrivalGuide')}
+                                {t('properties:menu.arrivalGuide')}
                             </button>
                         </div>
 
@@ -323,12 +313,12 @@ const Details = ({ sectionPath, job }) => {
                                     <button
                                         key={category.id}
                                         onClick={() => handleSectionChange(category.id)}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left   ${activeSection === category.id
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm md:text-base ${activeSection === category.id
                                                 ? 'bg-blue text-white'
                                                 : 'hover:bg-gray-100 text-gray-700'
                                             }`}
                                     >
-                                        <category.icon className={`w-5 h-5 ${activeSection === category.id ? 'text-white' : 'text-gray-500'
+                                        <category.icon className={`w-4 h-4 md:w-5 md:h-5 ${activeSection === category.id ? 'text-white' : 'text-gray-500'
                                             }`} />
                                         {category.label}
                                     </button>
@@ -338,10 +328,32 @@ const Details = ({ sectionPath, job }) => {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 bg-blue/10 m-0 md:m-6 rounded-lg shadow-sm md:ms-[420px]">
+                <div className={`flex-1 bg-blue/10 m-0 md:m-6 rounded-lg shadow-sm ${showSidebar && !showContent ? 'md:ms-[420px]' : ''}`}>
+                    {/* Mobile sidebar toggle button */}
+                    {isMobile && !showContent && (
+                        <button 
+                            onClick={() => setShowSidebar(!showSidebar)}
+                            className="fixed top-24 left-4 z-50 bg-white p-2 rounded-lg shadow-md hover:bg-gray-50"
+                        >
+                            <FaList className="w-5 h-5 text-gray-600" />
+                        </button>
+                    )}
+
+                    {/* Back button for mobile content view */}
+                    {isMobile && showContent && (
+                        <button 
+                            onClick={handleBackToSidebar}
+                            className="fixed top-24 left-4 z-50 bg-white p-2 rounded-lg shadow-md hover:bg-gray-50"
+                        >
+                            <FaArrowLeft className="w-5 h-5 text-gray-600" />
+                        </button>
+                    )}
+                    
                     {selectedProperty ? (
                         <div className="p-6">
-                            <h1 className="text-2xl font-bold mb-4">{selectedProperty.name}</h1>
+                            {!showContent && (
+                                <h1 className="text-2xl font-bold mb-4">{selectedProperty.name}</h1>
+                            )}
                             {renderContent()}
                         </div>
                     ) : (

@@ -4,6 +4,53 @@ import { createError } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 import sendEmail from '../utils/sendEmail.js';
 
+// Rate limiting implementation
+const loginAttempts = new Map();
+const lastAttemptTime = new Map();
+
+const checkLoginAttempts = async (username) => {
+  return loginAttempts.get(username) || 0;
+};
+
+const incrementLoginAttempts = async (username) => {
+  const attempts = loginAttempts.get(username) || 0;
+  loginAttempts.set(username, attempts + 1);
+  lastAttemptTime.set(username, Date.now());
+  
+  // Clear attempts after 1 hour
+  setTimeout(() => {
+    loginAttempts.delete(username);
+    lastAttemptTime.delete(username);
+  }, 60 * 60 * 1000);
+};
+
+const resetLoginAttempts = async (username) => {
+  loginAttempts.delete(username);
+  lastAttemptTime.delete(username);
+};
+
+const getWaitTime = (username) => {
+  const lastAttempt = lastAttemptTime.get(username);
+  if (!lastAttempt) return 0;
+  
+  const attempts = loginAttempts.get(username) || 0;
+  const timeSinceLastAttempt = Date.now() - lastAttempt;
+  
+  // Progressive waiting time based on failed attempts
+  const waitTimes = {
+    1: 2000,  // 2 seconds after 1st failed attempt
+    2: 5000,  // 5 seconds after 2nd failed attempt
+    3: 10000, // 10 seconds after 3rd failed attempt
+    4: 20000, // 20 seconds after 4th failed attempt
+    5: 30000  // 30 seconds after 5th failed attempt
+  };
+  
+  const requiredWaitTime = waitTimes[attempts] || 0;
+  const remainingWaitTime = Math.max(0, requiredWaitTime - timeSinceLastAttempt);
+  
+  return remainingWaitTime;
+};
+
 export const register = async (req, res, next) => {
   try {
     const { username, email, password, fullName } = req.body;
@@ -50,9 +97,6 @@ export const register = async (req, res, next) => {
     next(err);
   }
 };
-
-
-
 
 export const CheckUsername = async (req, res, next) => {
   try {
@@ -102,8 +146,6 @@ export const CheckUsername = async (req, res, next) => {
   }
 };
 
-
-
 export const verify = async (req, res, next) => {
   try {
     const { iduser, code } = req.body;
@@ -126,98 +168,60 @@ export const verify = async (req, res, next) => {
   }
 };
 
-
-
-// export const login = async (req, res, next) => {
-//   try {
-//     const user = await User.findOne({ username: req.body.username });
-//     if (!user) return next(createError(401, "User not found!"));
-
-//     const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
-//     if (!isPasswordCorrect) return next(createError(401, "Incorrect username or password!"));
-
-//     const { password,email, ...otherDetails } = user._doc;
-
-//     // Determine admin flags
-//     const adminFields = [
-//       user.adminCars,
-//       user.adminHotes,
-//       user.adminHouses,
-//       user.adminShops,
-//       user.adminUsers,
-//     ];
-
-//     const adminCount = adminFields.filter(Boolean).length;
-//     const isFullAdmin = adminCount === adminFields.length;
-//     const isAnyAdmin = adminCount > 0;
-
-//     // Set token duration based on admin level
-//     let tokenExpiry;
-//     let cookieMaxAge;
-
-//     if (!isAnyAdmin) {
-//       tokenExpiry = undefined; // No expiration
-//       cookieMaxAge = undefined;
-//     } else if (isFullAdmin) {
-//       tokenExpiry = '30d';
-//       cookieMaxAge = 1000 * 60 * 60 * 24 * 30;
-//     } else {
-//       tokenExpiry = '6h';
-//       cookieMaxAge = 1000 * 60 * 60 * 6;
-//     }
-
-//     const token = jwt.sign(
-//       {
-//         id: user._id,
-//         email : email,
-//         isAdmin: isAnyAdmin,
-//       },
-//       process.env.JWT_SECRET,
-//       tokenExpiry ? { expiresIn: tokenExpiry } : undefined
-//     );
-
-
-//     res.json({ token, user: { id: user._id, email: email, isAdmin: isAnyAdmin, roles: {
-//       cars : user.adminCars,
-//       users : user.adminUsers,
-//       hotels : user.adminHotes,
-//       houses : user.adminHouses,
-//       shops : user.adminShops,
-//     } } });
-
-
-//     // res.cookie("access_token", token, {
-//     //   httpOnly: true,
-//     //   maxAge: cookieMaxAge,
-//     //   secure: process.env.NODE_ENV === "production",
-//     //   sameSite: 'None',
-//     // })
-//     // .status(200)
-//     // .json({
-//     //   message: "Login successful",
-//     //   details: { ...otherDetails },
-//     //   isAdmin: isAnyAdmin,
-//     // });
-
-//   } catch (err) {
-//     console.error(err);
-//     next(err);
-//   }
-// };
-
-
 export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+
+    // Hero security check
+    if (!username || !password) {
+      return next(createError(400, "Username and password are required"));
+    }
+
+    // Check waiting time
+    const waitTime = getWaitTime(username);
+    if (waitTime > 0) {
+      return next(createError(429, `Please wait ${Math.ceil(waitTime/1000)} seconds before trying again`));
+    }
+
+    // Rate limiting check
+    const loginAttempts = await checkLoginAttempts(username);
+    if (loginAttempts > 5) {
+      return next(createError(429, "Too many login attempts. Please try again later"));
+    }
 
     const user = await User.findOne({
       $or: [{ username }, { email: username }]
     });
     
-    if (!user) return next(createError(401, "User not found!"));
+    if (!user) {
+      await incrementLoginAttempts(username);
+      return next(createError(401, "Incorrect username or password!"));
+    }
+
+    // Check if account is locked
+    if (user.isLocked && user.lockUntil > Date.now()) {
+      return next(createError(403, "Account is temporarily locked. Please try again later"));
+    }
 
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) return next(createError(401, "Incorrect username or password!"));
+    if (!validPassword) {
+      await incrementLoginAttempts(username);
+      if (loginAttempts >= 4) {
+        // Lock account for 30 minutes after 5 failed attempts
+        user.isLocked = true;
+        user.lockUntil = Date.now() + 30 * 60 * 1000;
+        await user.save();
+      }
+      return next(createError(401, "Incorrect username or password!"));
+    }
+
+    // Reset login attempts on successful login
+    await resetLoginAttempts(username);
+    if (user.isLocked) {
+      user.isLocked = false;
+      user.lockUntil = undefined;
+      await user.save();
+    }
 
     const {
       password: _,
@@ -234,35 +238,30 @@ export const login = async (req, res, next) => {
     const isAnyAdmin = Object.values(roles).some(Boolean);
     const isFullAdmin = Object.values(roles).every(Boolean);
 
-    // 4. إعداد صلاحية التوكن
     const expiresIn = !isAnyAdmin ? undefined : isFullAdmin ? "30d" : "6h";
     const cookieMaxAge = !isAnyAdmin ? undefined : isFullAdmin ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 6;
 
-    // 5. إنشاء التوكن
     const token = jwt.sign(
       { id: _id, email, isAdmin: isAnyAdmin },
       process.env.JWT_SECRET,
       expiresIn ? { expiresIn } : undefined
     );
 
-    res.status(200).json({
+    // Only include admin-related fields if user is an admin
+    const responseData = {
       message: "Login successful",
       token,
       user: {
         id: _id,
         email,
-        isAdmin: isAnyAdmin,
-        roles,
+        ...(isAnyAdmin && {
+          isAdmin: isAnyAdmin,
+          roles
+        })
       },
-    });
+    };
 
-    // ✅ لو تبغى تفعل الكوكيز:
-    // res.cookie("access_token", token, {
-    //   httpOnly: true,
-    //   maxAge: cookieMaxAge,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: 'None',
-    // });
+    res.status(200).json(responseData);
 
   } catch (err) {
     console.error("Login Error:", err);
@@ -302,7 +301,6 @@ export const verifyAdmin = async (req, res, next) => {
 export const verifyUserCode = async (req, res, next) => {
   try {
     const { code, newPassword, email } = req.body;
-
 
     // Find the user by ID
     const user = await User.findOne({ email: email });

@@ -12,8 +12,8 @@ import { FaHouse } from 'react-icons/fa6';
 const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   const { state } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
-  
   const [itemsPerPage, setItemsPerPage] = useState(() => {
     const storedItemsPerPage = localStorage.getItem('propertiesItemsPerPage');
     return storedItemsPerPage ? parseInt(storedItemsPerPage, 10) : 5;
@@ -31,8 +31,6 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
     direction: 'asc'
   });
 
-
-
   // Update localStorage when items per page changes
   useEffect(() => {
     localStorage.setItem('propertiesItemsPerPage', itemsPerPage.toString());
@@ -40,6 +38,7 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
 
   const getData = async () => {
     try {
+      setIsLoading(true);
       const response = await getProperties('', 'multi');
       const formattedData = response.data.map(property => ({
         id: property._id,
@@ -56,6 +55,8 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
       setProperties(formattedData);
     } catch (error) {
       console.error("Error fetching properties:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -195,204 +196,213 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
             </button>
           </div>
 
-          {/* Status Filter Buttons */}
-          <div className="mb-6 flex flex-wrap gap-2">
-            {['all', 'active', 'pending', 'rejected'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                  ${status === statusFilter
-                    ? 'bg-blue text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-              >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          {/* Table View */}
-          <div className="bg-white rounded-lg shadow-sm p-4 overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th
-                    onClick={() => handleSort('title')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Listing Name {renderSortIcon('title')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('type')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Type {renderSortIcon('type')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('location')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Location {renderSortIcon('location')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('roomsCount')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Rooms Count {renderSortIcon('roomsCount')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('available')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Available {renderSortIcon('available')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('booked')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Booked {renderSortIcon('booked')}
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('maintenance')}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">
-                      Maintenance {renderSortIcon('maintenance')}
-                    </div>
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {currentItems.map((property) => (
-                  <tr
-                    key={property.id}
-                    onClick={() => navigate(`/host/properties/${property.id}/details`)}
-                    className="cursor-pointer hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{property.title}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{property.location}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {property.roomsCount}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-green-600">{property.available}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-blue-600">{property.booked}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-amber-600">{property.maintenance}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => navigate(`/host/properties/${property.id}/details`)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          <FaEye />
-                        </button>
-                        <button
-                          onClick={() => navigate(`/host/properties/${property.id}/edit`)}
-                          className="text-amber-600 hover:text-amber-900"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => deletePropertyHandler(property.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination Controls */}
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-700">Items per page:</span>
-              <select
-                className="p-1 border rounded-md text-sm"
-                value={itemsPerPage}
-                onChange={(e) => {
-                  const newItemsPerPage = Number(e.target.value);
-                  setItemsPerPage(newItemsPerPage);
-                  setCurrentPage(1);
-                }}
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-              </select>
+          {/* Add loading state */}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
             </div>
+          ) : (
+            <>
+              {/* Status Filter Buttons */}
+              <div className="mb-6 flex flex-wrap gap-2">
+                {['all', 'active', 'pending', 'rejected'].map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setStatusFilter(status)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                      ${status === statusFilter
+                        ? 'bg-blue text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </button>
+                ))}
+              </div>
 
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                Page {currentPage} of {totalPages || 1}
-              </span>
+              {/* Table View */}
+              <div className="bg-white rounded-lg shadow-sm p-4 overflow-x-auto">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th
+                        onClick={() => handleSort('title')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Listing Name {renderSortIcon('title')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('type')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Type {renderSortIcon('type')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('location')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Location {renderSortIcon('location')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('roomsCount')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Rooms Count {renderSortIcon('roomsCount')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('available')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Available {renderSortIcon('available')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('booked')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Booked {renderSortIcon('booked')}
+                        </div>
+                      </th>
+                      <th
+                        onClick={() => handleSort('maintenance')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Maintenance {renderSortIcon('maintenance')}
+                        </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentItems.map((property) => (
+                      <tr
+                        key={property.id}
+                        onClick={() => navigate(`/host/properties/${property.id}/details`)}
+                        className="cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{property.title}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-500">{property.location}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {property.roomsCount}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-green-600">{property.available}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-blue-600">{property.booked}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-amber-600">{property.maintenance}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => navigate(`/host/properties/${property.id}/details`)}
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              <FaEye />
+                            </button>
+                            <button
+                              onClick={() => navigate(`/host/properties/${property.id}/edit`)}
+                              className="text-amber-600 hover:text-amber-900"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => deletePropertyHandler(property.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div className="flex space-x-2">
-                <button
-                  className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-
-                {/* Page Numbers */}
-                <div className="flex space-x-1">
-                  {[...Array(totalPages || 1)].map((_, index) => (
-                    <button
-                      key={index + 1}
-                      className={`px-3 py-1 border rounded-md ${currentPage === index + 1 ? 'bg-blue text-white' : 'hover:bg-gray-100'
-                        }`}
-                      onClick={() => setCurrentPage(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+              {/* Pagination Controls */}
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-700">Items per page:</span>
+                  <select
+                    className="p-1 border rounded-md text-sm"
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      const newItemsPerPage = Number(e.target.value);
+                      setItemsPerPage(newItemsPerPage);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
                 </div>
 
-                <button
-                  className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage === totalPages || totalPages === 0}
-                >
-                  Next
-                </button>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-700">
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+
+                  <div className="flex space-x-2">
+                    <button
+                      className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex space-x-1">
+                      {[...Array(totalPages || 1)].map((_, index) => (
+                        <button
+                          key={index + 1}
+                          className={`px-3 py-1 border rounded-md ${currentPage === index + 1 ? 'bg-blue text-white' : 'hover:bg-gray-100'
+                            }`}
+                          onClick={() => setCurrentPage(index + 1)}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      className="px-3 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      disabled={currentPage === totalPages || totalPages === 0}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </main>
     </HostLayout>

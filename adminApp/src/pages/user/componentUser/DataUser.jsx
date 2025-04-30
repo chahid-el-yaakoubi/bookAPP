@@ -18,12 +18,22 @@ const DataUser = (props) => {
     const { data: fetchedData, loading, error } = useFetch(`/api/users`);
     // console.log(fetchedData);
     const [data, setData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         if (fetchedData) {
             setData(fetchedData);
         }
     }, [fetchedData]);
+
+    const filteredData = data.filter((user) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            user.username?.toLowerCase().includes(searchLower) ||
+            user.fullName?.toLowerCase().includes(searchLower) ||
+            user.email?.toLowerCase().includes(searchLower)
+        );
+    });
 
     const userColumns = [
         { field: "_id", headerName: "ID", flex: 1, minWidth: 200 },
@@ -112,13 +122,22 @@ const DataUser = (props) => {
         <div className={`my-2 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 w-[calc(100vw-110px)]`}>
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold mb-4 md:mb-0">Users List</h2>
-                <Link to="/users/new" className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center ">
-                    Ajouter utilisateur
-                </Link>
+                <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                    <input
+                        type="text"
+                        placeholder="Search by name, username, or email..."
+                        className="px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <Link to="/users/new" className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center">
+                        Ajouter utilisateur
+                    </Link>
+                </div>
             </div>
-            <div  style={{ height: 800, width: '100%' }}>
+            <div style={{ height: 800, width: '100%' }}>
                 <DataGrid style={{ fontSize: "11px"}}
-                    rows={data}
+                    rows={filteredData}
                     columns={userColumns.concat(actionColumn)}
                     getRowId={(row) => row._id.$oid || row._id}
                     loading={loading}

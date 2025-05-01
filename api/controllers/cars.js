@@ -54,7 +54,7 @@ export const getCar = async (req, res, next) => {
 
 export const getAdminCars = async (req, res, next) => {
     try {
-        const cars = await CarRental.find({ isA: req.params.id });
+        const cars = await CarRental.find({ created_by: req.params.id });
         res.status(200).json(cars);
     } catch (err) {
         next(err);

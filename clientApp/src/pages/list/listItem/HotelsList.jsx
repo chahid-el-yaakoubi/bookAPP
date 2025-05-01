@@ -38,21 +38,15 @@ const HotelsList = ({ city }) => {
   const [showModel, setShowModel] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // Fetch hotels on component mount
+  // const { data, loading, error, reFetch } =  useFetch(`/api/hotels`);
+  const { data, loading, error, reFetch } = useFetch(`/api/hotels`);
+
   useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const conditions = city ? `?city=${city}` : '';
-        const { data } = await useFetch(`/api/hotels${conditions}`);
-        dispatch(setHotels(data));
-        dispatch(applyFilters(filters));
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
-      }
-    };
-    fetchHotels();
-  }, [dispatch, city, filters]); // Added filters to dependency array
+    dispatch(setHotels(data));
+  }, [data]); // Added filters to dependency array
 
   // Re-apply filters whenever filters change
   useEffect(() => {

@@ -182,7 +182,61 @@ export const getHotels = async (req, res, next) => {
   }
 
   try {
-    const listings = await Hotel.find(query).limit(limit ? parseInt(limit) : 0);
+    let listings;
+    if (type === 'multi') {
+      listings = await Hotel.find(query)
+        .populate({
+          path: 'rooms',
+          select: 'status roomNumber type price capacity amenities beds bathrooms photos'
+        })
+        .limit(limit ? parseInt(limit) : 0);
+      
+      // Transform the data to include detailed room information
+      listings = listings.map(hotel => ({
+        ...hotel.toObject(),
+        roomSummary: {
+          totalRooms: hotel.rooms?.length || 0,
+          roomStatus: {
+            available: hotel.rooms?.filter(room => room.status === 'available').length || 0,
+            booked: hotel.rooms?.filter(room => room.status === 'booked').length || 0,
+            maintenance: hotel.rooms?.filter(room => room.status === 'maintenance').length || 0
+          },
+          roomTypes: hotel.rooms?.reduce((acc, room) => {
+            if (!acc[room.type]) {
+              acc[room.type] = {
+                count: 0,
+                minPrice: Infinity,
+                maxPrice: 0,
+                totalCapacity: 0,
+                totalBeds: 0
+              };
+            }
+            acc[room.type].count++;
+            acc[room.type].minPrice = Math.min(acc[room.type].minPrice, room.price || 0);
+            acc[room.type].maxPrice = Math.max(acc[room.type].maxPrice, room.price || 0);
+            acc[room.type].totalCapacity += room.capacity || 0;
+            acc[room.type].totalBeds += room.beds || 0;
+            return acc;
+          }, {}) || {}
+        },
+        rooms: hotel.rooms?.map(room => ({
+          id: room._id,
+          roomNumber: room.roomNumber,
+          type: room.type,
+          status: room.status,
+          price: room.price,
+          capacity: room.capacity,
+          amenities: room.amenities,
+          beds: room.beds,
+          bathrooms: room.bathrooms,
+          photos: room.photos
+        })) || []
+      }));
+    } else {
+      listings = await Hotel.find(query).limit(limit ? parseInt(limit) : 0);
+    }
+
+    console.log(listings[1].roomSummary)
     res.status(200).json(listings);
   } catch (err) {
     next(err);

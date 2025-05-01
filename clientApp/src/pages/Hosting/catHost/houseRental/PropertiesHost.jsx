@@ -37,6 +37,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     });
 
     const [selectedHouseForStatusUpdate, setSelectedHouseForStatusUpdate] = useState(null);
+    const [selectedHouseForDeletion, setSelectedHouseForDeletion] = useState(null);
+    const [showStatusModal, setShowStatusModal] = useState(false);
 
     // Update localStorage when view changes
     useEffect(() => {
@@ -57,9 +59,11 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                 name: hotel.title,
                 location: hotel.location.city,
                 price: hotel.pricing.nightly_rate,
+                bookingStatus: hotel.status.bookingStatus,
                 status: hotel.status.status,
                 createdAt: moment(new Date(hotel.createdAt)),
-                updatedAt: moment(new Date(hotel.updatedAt))
+                updatedAt: moment(new Date(hotel.updatedAt)),
+                image: hotel.images?.[0]
             }));
             setHouses(data);
         } catch (error) {
@@ -87,7 +91,10 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
 
     // Filtering function
     const filteredHouses = sortedHouses
-        .filter(house => statusFilter === 'all' ? true : house.status === statusFilter)
+        .filter(house => {
+            if (statusFilter === 'all') return true;
+            return house.bookingStatus === statusFilter;
+        })
         .filter(house =>
             searchQuery === '' ||
             house.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -120,8 +127,6 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
         switch (view) {
             case 'table':
                 return renderTableView();
-            case 'list':
-                return renderListView();
             case 'card':
                 return renderCardView();
             default:
@@ -130,14 +135,12 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     };
 
     const StatusUpdateModal = ({ house, onClose, onUpdateStatus }) => {
-        const statuses = ['active', 'pending', 'rejected'];
-
         return (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                 <div className="bg-white rounded-lg p-6 shadow-xl w-96">
-                    <h2 className="text-xl font-bold mb-4">Update Status for {house.name}</h2>
+                    <h2 className="text-xl font-bold mb-4">Update Booking Status for {house.name}</h2>
                     <div className="space-y-3">
-                        {statuses.map((status) => (
+                        {['available', 'maintenance', 'booked'].map((status) => (
                             <button
                                 key={status}
                                 onClick={() => {
@@ -145,9 +148,10 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                                     onClose();
                                 }}
                                 className={`w-full py-2 rounded-md transition-colors 
-                                    ${status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
-                                        status === 'pending' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
-                                            'bg-red-100 text-red-800 hover:bg-red-200'}`}
+                                    ${status === 'available' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
+                                        status === 'booked' ? 'bg-blue/20 text-blue hover:bg-blue/40' :
+                                        status === 'maintenance' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
+                                        'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
                             >
                                 {status.charAt(0).toUpperCase() + status.slice(1)}
                             </button>
@@ -164,81 +168,144 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
         );
     };
 
+    // Add notification component for property status
+    const PropertyStatusNotification = ({ house }) => {
+        if (state.user?.role === 'partner' && house.status !== 'accepted') {
+            return (
+                <div className="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-md">
+                    <p>This property needs to be accepted by an admin before you can manage its status.</p>
+                </div>
+            );
+        }
+        return null;
+    };
+
     const updatePropertyStatus = async (propertyId, newStatus) => {
         try {
             // Use updateProperty to update the status
-            await updateProperty(propertyId, { status: { status: newStatus } });
+            await updateProperty(propertyId, { status: { bookingStatus: newStatus } });
 
-            // Optimistically update the local state
-            setHouses(prevHouses =>
-                prevHouses.map(house =>
-                    house.id === propertyId
-                        ? { ...house, status: newStatus }
-                        : house
-                )
-            );
+            // Refresh the data after successful update
+            await getData();
+
+            // Close the modal
+            setSelectedHouseForStatusUpdate(null);
         } catch (error) {
             console.error("Error updating property status:", error);
             // Optionally, show an error notification to the user
         }
     };
 
+    // Update the status badge colors in both table and card views
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case 'available':
+                return 'bg-green-100 text-green-800';
+            case 'booked':
+                return 'bg-blue/20 text-blue';
+            case 'maintenance':
+                return 'bg-yellow-100 text-yellow-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    // Add DeleteConfirmationModal component
+    const DeleteConfirmationModal = ({ house, onClose, onConfirm }) => {
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white rounded-lg p-6 shadow-xl w-96">
+                    <h2 className="text-xl font-bold mb-4">Delete Property</h2>
+                    <p className="text-gray-600 mb-4">
+                        Are you sure you want to delete "{house.name}"? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end space-x-4">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={() => {
+                                onConfirm(house.id);
+                                onClose();
+                            }}
+                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const deleteHouse = async (houseId) => {
+        try {
+            await deleteProperty(houseId);
+            setHouses(houses.filter(house => house.id !== houseId));
+        } catch (error) {
+            console.error("Error deleting house:", error);
+        }
+    };
+
+    // Update the table view to show status badge as clickable
     const renderTableView = () => (
         <div className="bg-white rounded-lg shadow-sm p-4 overflow-x-auto">
             <table className="min-w-full">
                 <thead>
                     <tr className="bg-gray-50">
-                        {['name', 'price', 'status', 'createdAt', 'updatedAt'].map((key) => (
+                        {['name', 'price', 'status', 'createdAt', 'updatedAt', 'actions'].map((key) => (
                             <th
                                 key={key}
-                                onClick={() => key !== 'status' && handleSort(key)}
-                                className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider 
-                                    ${key !== 'status' ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                                onClick={() => key !== 'status' && key !== 'actions' && handleSort(key)}
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             >
                                 <div className="flex items-center">
-                                    {key === 'name' ? 'Name' :
-                                        key === 'price' ? 'Price/Night' :
-                                            key === 'status' ? 'Status' :
-                                                key === 'createdAt' ? 'Created At' :
-                                                    'Updated At'}
-                                    {key !== 'status' && <span className="ml-2">{renderSortIcon(key)}</span>}
+                                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                                    {key !== 'status' && key !== 'actions' && renderSortIcon(key)}
                                 </div>
                             </th>
                         ))}
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {currentItems.map((house) => (
                         <tr
-                            key={house.id}
-                            onClick={() => navigate(`/host/properties/${house.id}/details`)}
-                            className="cursor-pointer hover:bg-gray-50 transition-colors"
-                        >
-                            <td className="px-6 py-4 whitespace-nowrap">{house.name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">MAD {house.price}</td>
-                            <td
-                                className="px-6 py-4 whitespace-nowrap"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedHouseForStatusUpdate(house);
-                                }}
-                            >
-                                <span className={`px-2 py-1 rounded-full text-xs cursor-pointer
-                                    ${house.status === 'active' ? 'bg-green-100 text-green-800' :
-                                        house.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            'bg-red-100 text-red-800'}`}>
-                                    {house.status}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">{house.createdAt.fromNow()}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{house.updatedAt.fromNow()}</td>
+                        onClick={() => navigate(`/host/properties/${house.id}/details/rooms`)  } 
+                        key={house.id} className="hover:bg-gray-100 cursor-move">
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <button
+                                <div className="flex items-center">
+                                    <div className="text-sm font-medium text-gray-900">
+                                        {house.name}
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">MAD {house.price}/night</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <span 
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        deleteHouse(house.id);
+                                        setSelectedHouseForStatusUpdate(house);
+                                        setShowStatusModal(true);
                                     }}
+                                    className={`px-2 py-1 rounded-full text-xs cursor-pointer ${getStatusBadgeClass(house.bookingStatus)}`}
+                                >
+                                    {house.bookingStatus}
+                                </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {house.createdAt.fromNow()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {house.updatedAt.fromNow()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <button
+                                    onClick={() => setSelectedHouseForDeletion(house)}
                                     className="text-red-600 hover:text-red-800"
                                 >
                                     Delete
@@ -257,78 +324,76 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                     onUpdateStatus={updatePropertyStatus}
                 />
             )}
+
+            {/* Delete Confirmation Modal */}
+            {selectedHouseForDeletion && (
+                <DeleteConfirmationModal
+                    house={selectedHouseForDeletion}
+                    onClose={() => setSelectedHouseForDeletion(null)}
+                    onConfirm={deleteHouse}
+                />
+            )}
         </div>
     );
 
-    const renderListView = () => (
-        <div className="space-y-4">
-            {currentItems.map((house) => (
-                <div
-                    key={house.id}
-                    className="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center hover:bg-gray-50 cursor-pointer"
-                    onClick={() => navigate(`/host/properties/${house.id}/details`)}
-                >
-                    <div>
-                        <h3 className="text-lg font-semibold">{house.name}</h3>
-                        <p className="text-gray-600">Location: {house.location}</p>
-                        <p className="text-gray-600">Price: MAD {house.price}/night</p>
-                    </div>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            deleteHouse(house.id);
-                        }}
-                        className="text-red-600 hover:text-red-800"
-                    >
-                        Delete
-                    </button>
-                </div>
-            ))}
-        </div>
-    );
-
+    // Update the card view to show status badge as clickable
     const renderCardView = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentItems.map((house) => (
                 <div
                     key={house.id}
-                    className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => navigate(`/host/properties/${house.id}/details`)}
+                    className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                    onClick={(e) => {
+                        // Only navigate if clicking on the card itself, not on status or delete buttons
+                        if (e.target.closest('button') || e.target.closest('span')) return;
+                        navigate(`/host/properties/${house.id}/details`);
+                    }}
                 >
-                    <h3 className="text-lg font-semibold mb-2">{house.name}</h3>
-                    <p className="text-gray-600 mb-1">Location: {house.location}</p>
-                    <p className="text-gray-600 mb-1">Price: MAD {house.price}/night</p>
-                    <p className="text-gray-500 text-sm">Created {house.createdAt.fromNow()}</p>
-                    <div className="mt-4 flex justify-between items-center">
-                        <span className={`px-2 py-1 rounded-full text-xs 
-                            ${house.status === 'active' ? 'bg-green-100 text-green-800' :
-                                house.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-red-100 text-red-800'}`}>
-                            {house.status}
-                        </span>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                deleteHouse(house.id);
-                            }}
-                            className="text-red-600 hover:text-red-800"
-                        >
-                            Delete
-                        </button>
+                    <div className="h-48 bg-gray-200">
+                        {house.image ? (
+                            <img 
+                                src={house.image} 
+                                alt={house.name}
+                                className="w-full h-full object-cover"
+                                loading='lazy'
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                <FaHouse className="w-12 h-12 text-gray-400" />
+                            </div>
+                        )}
+                    </div>
+                    <div className="p-4">
+                        <h3 className="text-lg font-semibold mb-2">{house.name}</h3>
+                        <p className="text-gray-600 mb-1">Location: {house.location}</p>
+                        <p className="text-gray-600 mb-1">Price: MAD {house.price}/night</p>
+                        <p className="text-gray-500 text-sm">Created {house.createdAt.fromNow()}</p>
+                        <div className="mt-4 flex justify-between items-center">
+                            <span 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedHouseForStatusUpdate(house);
+                                    setShowStatusModal(true);
+                                }}
+                                className={`px-2 py-1 rounded-full text-xs cursor-pointer ${getStatusBadgeClass(house.bookingStatus)}`}
+                            >
+                                {house.bookingStatus}
+                            </span>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedHouseForDeletion(house);
+                                }}
+                                className="text-red-600 hover:text-red-800"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             ))}
         </div>
     );
-
-    const deleteHouse = async (houseId) => {
-        try {
-            await deleteProperty(houseId);
-            setHouses(houses.filter(house => house.id !== houseId));
-        } catch (error) {
-            console.error("Error deleting house:", error);
-        }
-    };
 
     return (
         <HostLayout>
@@ -396,12 +461,6 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                                 <FaList />
                             </button>
                             <button
-                                onClick={() => setView('list')}
-                                className={`p-2 rounded ${view === 'list' ? 'bg-blue text-white' : 'hover:bg-gray-100'}`}
-                            >
-                                <FaList />
-                            </button>
-                            <button
                                 onClick={() => setView('card')}
                                 className={`p-2 rounded ${view === 'card' ? 'bg-blue text-white' : 'hover:bg-gray-100'}`}
                             >
@@ -440,19 +499,25 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                         <>
                             {/* Status Filter Buttons */}
                             <div className="mb-6 flex flex-wrap gap-2">
-                                {['all', 'active', 'pending', 'rejected'].map((status) => (
-                                    <button
-                                        key={status}
-                                        onClick={() => setStatusFilter(status)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                                        ${status === statusFilter
-                                                ? 'bg-blue text-white'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                            }`}
-                                    >
-                                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                                    </button>
-                                ))}
+                                {['all', 'available', 'maintenance', 'booked'].map((status) => {
+                                    const count = status === 'all' 
+                                        ? filteredHouses.length 
+                                        : filteredHouses.filter(house => house.bookingStatus === status).length;
+                                    
+                                    return (
+                                        <button
+                                            key={status}
+                                            onClick={() => setStatusFilter(status)}
+                                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                                                ${status === statusFilter
+                                                    ? 'bg-blue text-white'
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {status.charAt(0).toUpperCase() + status.slice(1)} ({count})
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             {/* Render properties based on selected view */}

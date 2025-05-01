@@ -112,6 +112,19 @@ const RoomLayout = ({ job }) => {
 
     }
 
+    const handleStatusChange = async (roomId, newStatus) => {
+        try {
+            const response = await updateRoom(roomId, { status: newStatus });
+            
+            if (response.status === 200) {
+                reFetch(); // This will refresh the room data
+            }
+        } catch (error) {
+            console.error('Error updating room status:', error);
+            alert('Failed to update room status');
+        }
+    };
+
     // alert(typeProperty)
 
     return (
@@ -171,6 +184,7 @@ const RoomLayout = ({ job }) => {
                                             handleDelete={show}
                                             openConfirmDelete={openConfirmDelete}
                                             setOpenConfirmDelete={setopenConfirmDelete}
+                                            handleStatusChange={handleStatusChange}
                                         /></>) : (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
                                             {data?.map((room) => (
                                                 <RoomCardHouse

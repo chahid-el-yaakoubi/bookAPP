@@ -67,18 +67,18 @@ const BathroomSchema = new mongoose.Schema({
   });
 
   
-const RoomsSchema = new mongoose.Schema({
-    id: { type: Number, required: true },
-    features: {
-      type: Map,
-      of: Boolean,
-      default: {}
-    },
-    beds : [{
-        type: { type: String,  }, 
-        count: { type: Number,   }   
-    }],
-  });
+// const RoomsSchema = new mongoose.Schema({
+//     id: { type: Number, required: true },
+//     features: {
+//       type: Map,
+//       of: Boolean,
+//       default: {}
+//     },
+//     beds : [{
+//         type: { type: String,  }, 
+//         count: { type: Number,   }   
+//     }],
+//   });
   
 // Update the property_details schema to include spaces
 const PropertyDetailsSchema = new Schema({
@@ -101,7 +101,7 @@ const PropertyDetailsSchema = new Schema({
         default: []
     },
     bathrooms: [BathroomSchema ],
-    rooms :  [RoomsSchema ],
+    // rooms :  [RoomsSchema ],
 });
 
 
@@ -177,8 +177,16 @@ const HotelSchema = new mongoose.Schema({
         smoking_allowed: { type: Boolean, default: false },
     },
     status: {
-        bookingStatus: { type: String },
-        status: { type: String, enum: ['pending', 'accepted', 'declined'], default: 'pending' },
+        bookingStatus: { 
+            type: String, 
+            enum: ['available', 'booked', 'maintenance'],
+            default: 'maintenance'
+        },
+        status: { 
+            type: String, 
+            enum: ['pending', 'accepted', 'declined'],
+            default: 'pending' 
+        },
         message: { type: String },
     },
     description: {
@@ -286,7 +294,10 @@ const HotelSchema = new mongoose.Schema({
             trim: true
         },
     },
-    rooms: { type: [String], default: [] },
+    rooms: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Room' 
+    }],
 }, {
     timestamps: true,
 });

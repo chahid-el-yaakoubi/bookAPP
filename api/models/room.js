@@ -38,7 +38,16 @@ const roomSchema = new mongoose.Schema({
       url: String
     }], // Example: ["WiFi", "Air Conditioning"]
     extraData: mongoose.Schema.Types.Mixed, // Any flexible data
-    categorizedAmenities: { type: Map, of: [String] } // Example: { "Luxury": ["Jacuzzi", "Mini Bar"] }
+    categorizedAmenities: { type: Map, of: [String] }, // Example: { "Luxury": ["Jacuzzi", "Mini Bar"] }
+    status: { 
+        type: String, 
+        enum: ['available', 'booked', 'maintenance'],
+        default: 'maintenance' 
+    },
+    roomTitle: { 
+        type: String, 
+        required: true 
+    },
 }, {timestamps: true} );
   
 

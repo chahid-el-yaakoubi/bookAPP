@@ -47,8 +47,12 @@ export const Home = () => {
         };
     }, [lastScrollY]);
 
+    useEffect(()=>{
+        <HotelsList  city={''} />    
+    }, [])
+
     return (
-        <div className="home bg-blue/50 ">
+        <div className="home bg-blue/50  ">
             <div className="fixed bg-blue/90   top-0 left-0 right-0 -z-10 max-h-screen"></div>
 
             {/* <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
@@ -75,8 +79,8 @@ export const Home = () => {
             <Navbar />
             <Header type = {"house_rental"}  />
             <div className="mb-10 md:mb-10"> </div>
-            <HotelsList city={''} />    
 
+            <HotelsList  city={''} />    
 
             {/* <Featured /> */}
 

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { TransContext } from '../contextApi/TransContext';
 import SearchMobile from './searchMobile';
 import { NavbarMobel } from './NavbarMobile';
+import AuthForm from './Login/login';
 
 
 export const Logo = () => {
@@ -303,6 +304,10 @@ export const Navbar = () => {
                             )}
                         </div>
 
+                        {/* <div className="">
+                        <AuthForm />
+                        </div> */}
+
                         {/* User Menu */}
                         {user ? (
                             <div className="relative dropdown-container">
@@ -353,6 +358,8 @@ export const Navbar = () => {
                                         </div>
                                     </div>
                                 )}
+
+                                
                             </div>
                         ) : (
                             <div className="space-x-2">

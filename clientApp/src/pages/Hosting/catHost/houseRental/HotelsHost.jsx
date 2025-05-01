@@ -5,7 +5,7 @@ import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
-import { deleteProperty, getProperties, updateProperty } from '../../../../Lib/api';
+import {  getProperties } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { FaHouse } from 'react-icons/fa6';
 
@@ -45,10 +45,10 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
         title: property.title,
         type: property.type?.type || 'N/A',
         location: property.location?.city || 'N/A',
-        roomsCount: property.property_details?.rooms?.length || 0,
-        available: property.property_details?.rooms?.filter(room => room.status === 'available')?.length || 0,
-        booked: property.property_details?.rooms?.filter(room => room.status === 'booked')?.length || 0,
-        maintenance: property.property_details?.rooms?.filter(room => room.status === 'maintenance')?.length || 0,
+        roomsCount: property?.roomSummary?.totalRooms || 0,
+        available: property.roomSummary?.roomStatus?.available || 0,
+        booked: property.roomSummary?.roomStatus?.booked || 0,
+        maintenance: property.roomSummary?.roomStatus?.maintenance || 0,
         status: property.status?.status || 'pending',
         createdAt: moment(new Date(property.createdAt)),
       }));
@@ -107,16 +107,7 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
     return sortConfig.direction === 'asc' ? <FaSortUp className="ml-1" /> : <FaSortDown className="ml-1" />;
   };
 
-  const deletePropertyHandler = async (propertyId) => {
-    if (window.confirm("Are you sure you want to delete this property?")) {
-      try {
-        await deleteProperty(propertyId);
-        setProperties(properties.filter(property => property.id !== propertyId));
-      } catch (error) {
-        console.error("Error deleting property:", error);
-      }
-    }
-  };
+ 
 
   return (
     <HostLayout>
@@ -281,8 +272,13 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                           Maintenance {renderSortIcon('maintenance')}
                         </div>
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
+                      <th
+                        onClick={() => handleSort('status')}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Status {renderSortIcon('status')}
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -316,27 +312,15 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-amber-600">{property.maintenance}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
-                            <button
-                              onClick={() => navigate(`/host/properties/${property.id}/details`)}
-                              className="text-blue-600 hover:text-blue-900"
-                            >
-                              <FaEye />
-                            </button>
-                            <button
-                              onClick={() => navigate(`/host/properties/${property.id}/edit`)}
-                              className="text-amber-600 hover:text-amber-900"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() => deletePropertyHandler(property.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <FaTrash />
-                            </button>
-                          </div>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            property.status === 'active' ? 'bg-green-100 text-green-800' :
+                            property.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            property.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
+                          </span>
                         </td>
                       </tr>
                     ))}

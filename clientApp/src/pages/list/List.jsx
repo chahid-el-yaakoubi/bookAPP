@@ -31,40 +31,23 @@ export const List = () => {
 const location = useLocation();
 
 
-  const dispatch = useDispatch();
   const hotels = useSelector((state) => state.hotels.filteredHotels);
-  const selectedFilter = useSelector((state) => state.hotels.selectedFilter);
 
   const City = city?.toLowerCase();
-  const { data, loading, error, reFetch } = useFetch(`/api/hotels?city=${City}`);
-
-  useEffect(() => {
-    if (data) {
-      dispatch(setHotels(data));
-
-    }
-  }, [data])
-
-
-
-  // Fetch data when location changes
-  useEffect(() => {
-    reFetch();
-  }, [location]);
 
 
 
   // Handle errors
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="p-6 bg-red-50 rounded-lg border border-red-200">
-          <h2 className="text-xl font-semibold text-red-600">Error loading data</h2>
-          <p className="text-red-500">{error.message}</p>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="p-6 bg-red-50 rounded-lg border border-red-200">
+  //         <h2 className="text-xl font-semibold text-red-600">Error loading data</h2>
+  //         <p className="text-red-500">{error.message}</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="bg-blue/30 min-h-screen">

@@ -23,12 +23,7 @@ const HotelsDisplay = () => {
   const dispatch = useDispatch()
 
 
-  const { data } = useFetch(`/api/hotels`)
-  useEffect(() => {
-
-    dispatch(setHotels(data));
-
-  }, [data]); //filters
+ 
   const hotels = useSelector(state => state.hotels.filteredHotels);
 
   return (
@@ -161,7 +156,7 @@ export const HotelCard = ({ hotel }) => {
 
   // Navigate to hotel details page when card is clicked
   const handleClick = () => {
-    navigate(`/hotel/${hotel._id}`);
+    window.open(`/hotel/${hotel._id}`, '_blank');
   };
 
   // Get photos array or create an array with a placeholder
@@ -171,7 +166,7 @@ export const HotelCard = ({ hotel }) => {
     : [{ url: 'https://via.placeholder.com/300x200?text=No+Image' }];
 
   // Format location
-  const location = hotel?.location.neighborhood || hotel?.location.city || hotel?.location.country || t('hotelsDisplay.noLocation');
+  const location = hotel?.location.region +', '+ hotel?.location.city +', '+   hotel?.location.neighborhood  || t('hotelsDisplay.noLocation');
 
   // Handle next image
   const handleNextImage = (e) => {
@@ -200,6 +195,7 @@ export const HotelCard = ({ hotel }) => {
           src={photos[currentImageIndex].url}
           alt={hotel?.title || t('hotelsDisplay.untitledHotel')}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
 
         {/* Navigation buttons - Swap positions for RTL */}
@@ -241,18 +237,26 @@ export const HotelCard = ({ hotel }) => {
           {hotel?.title || t('hotelsDisplay.untitledHotel')}
         </h3>
         <p className="text-sm text-gray-500 mb-2 line-clamp-1">{location}</p>
+        
+        {/* Star Rating Section */}
+        <div className="flex items-center mb-2">
+          {Array.from({ length: 5 }, (_, index) => (
+            <FontAwesomeIcon
+              key={index}
+              icon={faStar}
+              className={`text-${index < 5 ? 'yellow-500' : 'gray-300'}`}
+            />
+          ))}
+        </div>
+
         <div className="grid grid-cols-2 gap-2">
-          {hotel?.rooms && (
+          {/* Conditional rendering for rooms and pricing based on hotel type */}
+          {!(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.rooms && (
             <p className="text-sm md:text-base font-bold text-gray-800">
               {t('hotelsDisplay.rooms', { count: hotel.rooms.length })}
             </p>
           )}
-          {hotel?.property_details?.bathrooms && (
-            <p className="text-sm md:text-base font-bold text-gray-600">
-              {t('hotelsDisplay.bathrooms', { count: hotel.property_details.bathrooms.length })}
-            </p>
-          )}
-          {hotel?.pricing && (
+          {!(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.pricing && (
             <p className="text-sm md:text-base font-bold text-green-600 col-span-2">
               {t('hotelsDisplay.pricePerNight', { price: hotel.pricing.nightly_rate })}
             </p>

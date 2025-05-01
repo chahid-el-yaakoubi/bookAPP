@@ -8,6 +8,7 @@ const VehiclesHost = () => {
                 <div className="bg-white rounded-lg shadow-sm p-4">
                     {/* Add your vehicles content here */}
                 </div>
+                test
             </main>
         </HostLayout>
     );

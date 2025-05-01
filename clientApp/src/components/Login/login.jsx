@@ -50,16 +50,9 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-cover bg-center" style={{ backgroundImage: "url('https://img.freepik.com/photos-premium/effets-lumineux-brillants-bleu-picton-sombre-conception-fond-abstraite_851755-198657.jpg?w=996')" }}>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full md:w-3/4  md:h-4/5 bg-white shadow-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-          {/* Left side - Background Image */}
-          <div className="hidden lg:block p-4">
-            <div className="bg-cover bg-center h-full rounded-md"
-              style={{ backgroundImage: "url('https://img.freepik.com/vecteurs-libre/illustration-du-concept-connexion_114360-739.jpg?t=st=1744465201~exp=1744468801~hmac=65340cf6e8c94ea03d2af0e6a3c97d7f73ca1fc27a211fd17d84b348168bcfae&w=740')" }} />
-          </div>
-
-          {/* Right side - Form */}
+    <div className="h-screen w-full bg-cover bg-center bg-black bg-opacity-60 fixed inset-0 z-50 " >
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full md:w-2/5  md:h-4/5  shadow-2xl">
+       
           <div className="bg-indigo-800 flex flex-col h-full">
             <button
               onClick={() => navigate('/')}
@@ -155,7 +148,6 @@ const AuthForm = () => {
               </div>
             </form>
           </div>
-        </div>
       </div>
     </div>
   );

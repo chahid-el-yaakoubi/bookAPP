@@ -108,6 +108,8 @@ const PropertyDetailsSchema = new Schema({
 const HotelSchema = new mongoose.Schema({
     created_by: { type: String, require : true , ref: "User",},
     title: { type: String },
+    rating: { type: Number, default: 0 },
+    featured: { type: Boolean, default: false },
     type: {
         type: {
             type: String,
@@ -146,7 +148,8 @@ const HotelSchema = new mongoose.Schema({
     },
     checkout_instructions: { tasks: [TaskSchema], },
     location: {
-        address: { type: String },
+        addressEn: { type: String },
+        addressAr: { type: String },
         city: { type: String },
         country: { type: String, default: 'morocco' },
         region: { type: String },

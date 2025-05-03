@@ -175,7 +175,7 @@ const RoomLayout = ({ job }) => {
 
 
                                 {
-                                    selectedProperty?.type?.type === "hotel" ? (<>
+                                    (selectedProperty?.type?.type === "hotel" || selectedProperty?.type?.type === "guesthouse")  ? (<>
                                         <h1 className="text-4xl mt-6">Your Room Management</h1>
                                         <RoomDisplay
                                             data={data}

@@ -179,7 +179,7 @@ export const FilterModule = ({ onClose }) => {
   );
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
-      <div className={`bg-white rounded-2xl max-w-[480px] w-full max-h-[90vh] shadow-xl ${isRTL ? 'text-right' : 'text-left'}`}>
+      <div className={`bg-white rounded-2xl max-w-[480px]  w-full max-h-[90vh] shadow-xl ${isRTL ? 'text-right' : 'text-left'}`}>
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b p-4 flex items-center justify-between rounded-t-2xl">
           <button
@@ -319,7 +319,7 @@ export const FilterModule = ({ onClose }) => {
           </button>
           <button
             onClick={handleApplyFilters}
-            className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
+            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
           >
             {t('FilterModule.filters.showProperties', { count: filteredHotels.length })}
           </button>

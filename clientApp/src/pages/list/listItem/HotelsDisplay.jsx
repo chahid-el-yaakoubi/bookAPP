@@ -20,16 +20,58 @@ import useFetch from "../../../hooks/useFetch";
 
 const HotelsDisplay = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch()
 
 
- 
+
   const hotels = useSelector(state => state.hotels.filteredHotels);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(40); // Default to 40 for desktop
+
+  useEffect(() => {
+    // Set items per page based on window width
+    const updateItemsPerPage = () => {
+      setItemsPerPage(window.innerWidth <= 768 ? 10 : 40);
+    };
+
+    updateItemsPerPage(); // Set initial value
+    window.addEventListener('resize', updateItemsPerPage); // Update on resize
+
+    return () => {
+      window.removeEventListener('resize', updateItemsPerPage); // Cleanup
+    };
+  }, []);
+
+  // Calculate the current hotels to display
+  const indexOfLastHotel = currentPage * itemsPerPage;
+  const indexOfFirstHotel = indexOfLastHotel - itemsPerPage;
+  const currentHotels = hotels.slice(indexOfFirstHotel, indexOfLastHotel);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(hotels.length / itemsPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
-      {hotels.length > 0 ? <div className="  xl:px-20 py-20 ">
-        <HotelCardGrid hotels={hotels} />
+      {currentHotels.length > 0 ? <div className="  xl:px-20 py-20 ">
+        <HotelCardGrid hotels={currentHotels} />
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-blue text-white' : 'bg-gray-200'}`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
 
       </div> :
         <div className="container py-20">
@@ -130,7 +172,7 @@ const HotelsDisplay = () => {
 
             {/* Loading Text */}
             <p className="mt-6 text-black text-xl font-medium tracking-wide animate-pulse">
-              Loading...
+              Loading, please wait...
             </p>
           </div>
 
@@ -166,7 +208,7 @@ export const HotelCard = ({ hotel }) => {
     : [{ url: 'https://via.placeholder.com/300x200?text=No+Image' }];
 
   // Format location
-  const location = hotel?.location.region +', '+ hotel?.location.city +', '+   hotel?.location.neighborhood  || t('hotelsDisplay.noLocation');
+  const location = (isRTL ?  hotel?.location?.addressAr  :  hotel?.location?.addressEn )|| t('hotelsDisplay.noLocation');
 
   // Handle next image
   const handleNextImage = (e) => {
@@ -205,15 +247,15 @@ export const HotelCard = ({ hotel }) => {
             className="bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10"
             aria-label={t('hotelsDisplay.previousImage')}
           >
-            {isRTL ? <ChevronRight size={20} /> :  <ChevronLeft size={20} /> }
-           
+            {isRTL ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+
           </button>
           <button
             onClick={isRTL ? handlePrevImage : handleNextImage}
             className="bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all z-10"
             aria-label={t('hotelsDisplay.nextImage')}
           >
-                        {isRTL ? <ChevronLeft size={20} /> :  <ChevronRight size={20} /> }
+            {isRTL ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
 
           </button>
         </div>
@@ -224,9 +266,9 @@ export const HotelCard = ({ hotel }) => {
         </div>
 
         {/* Type badge - Adjust position for RTL */}
-        {hotel?.type && hotel?.type.listingType && (
+        {hotel?.type && hotel?.type.type && (
           <span className={`absolute top-3 ${isRTL ? 'right-3' : 'left-3'} bg-white bg-opacity-90 px-2 py-1 text-xs font-semibold rounded z-10`}>
-            {t(`${hotel.type.listingType}`)}
+            {t(`hotelsDisplay.listingTypes.${hotel.type.type}`)}
           </span>
         )}
       </div>
@@ -237,29 +279,51 @@ export const HotelCard = ({ hotel }) => {
           {hotel?.title || t('hotelsDisplay.untitledHotel')}
         </h3>
         <p className="text-sm text-gray-500 mb-2 line-clamp-1">{location}</p>
-        
+
         {/* Star Rating Section */}
-        <div className="flex items-center mb-2">
-          {Array.from({ length: 5 }, (_, index) => (
-            <FontAwesomeIcon
-              key={index}
-              icon={faStar}
-              className={`text-${index < 5 ? 'yellow-500' : 'gray-300'}`}
-            />
-          ))}
-        </div>
+        {(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && (
+          <p className="text-sm text-gray-800 mb-2">
+             {t(`hotelsDisplay.listingTypes.${hotel.type.type}`)}
+            {` ${hotel?.rating} `}
+            {Array.from({ length: 5 }, (_, index) => (
+              <FontAwesomeIcon
+                key={index}
+                icon={faStar}
+                className={`text-${index < (hotel?.rating || 0) ? 'yellow-500' : 'gray-300'}`}
+              />
+            ))}
+          </p>
+        )}
 
         <div className="grid grid-cols-2 gap-2">
           {/* Conditional rendering for rooms and pricing based on hotel type */}
           {!(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.rooms && (
             <p className="text-sm md:text-base font-bold text-gray-800">
-              {t('hotelsDisplay.rooms', { count: hotel.rooms.length })}
+              {t('hotelsDisplay.rooms', { count: hotel?.roomSummary?.totalRooms })}
+              {` (${hotel?.roomSummary?.totalBeds} ${t('hotelsDisplay.beds')})`}
             </p>
           )}
           {!(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.pricing && (
-            <p className="text-sm md:text-base font-bold text-green-600 col-span-2">
-              {t('hotelsDisplay.pricePerNight', { price: hotel.pricing.nightly_rate })}
-            </p>
+            <>
+              <p className="text-sm m font-bold text-green-600 col-span-2">
+                {t('hotelsDisplay.pricePerNight', { price: hotel.pricing.nightly_rate })}
+              </p>
+
+            </>
+          )}
+          {(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.roomSummary && (
+            <div className="flex gap-1 ">
+              {/* <span className="text-sm">Start from</span> */}
+              <span className="text-sm"> ({hotel.roomSummary.maxPrice} - {hotel.roomSummary.minPrice }) </span>
+
+              <p className="text-sm  font-bold text-green-600 col-span-2">
+                {t('hotelsDisplay.pricePerNight', { price: ''})}
+
+
+              </p>
+
+            </div>
+
           )}
         </div>
       </div>

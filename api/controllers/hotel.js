@@ -215,7 +215,7 @@ export const getHotels = async (req, res, next) => {
             acc[room.type].minPrice = Math.min(acc[room.type].minPrice, room.price || 0);
             acc[room.type].maxPrice = Math.max(acc[room.type].maxPrice, room.price || 0);
             acc[room.type].totalCapacity += room.capacity || 0;
-            acc[room.type].totalBeds += room.beds || 0;
+            acc[room.type].totalBeds += room.beds?.reduce((sum, bed) => sum + (bed.count || 0), 0) || 0;
             return acc;
           }, {}) || {}
         },
@@ -234,9 +234,26 @@ export const getHotels = async (req, res, next) => {
       }));
     } else {
       listings = await Hotel.find(query).limit(limit ? parseInt(limit) : 0);
+      
+      // Fetch room details for each hotel
+      listings = await Promise.all(listings.map(async hotel => {
+        const rooms = await Hotel.findById(hotel._id).populate('rooms');
+        return {
+          ...hotel.toObject(),
+          roomSummary: {
+            totalRooms: rooms.rooms.length,
+            totalBeds: rooms.rooms.reduce((sum, room) => {
+              // Sum the count of beds for each room
+              return sum + (room.beds ? room.beds.reduce((bedSum, bed) => bedSum + (bed.count || 0), 0) : 0);
+            }, 0), // Ensure this is a number
+            minPrice: Math.min(...rooms.rooms.map(room => room.price || Infinity)),
+            maxPrice: Math.max(...rooms.rooms.map(room => room.price || 0))
+          }
+        };
+      }));
     }
 
-    console.log(listings[1].roomSummary)
+    console.log(listings[0])
     res.status(200).json(listings);
   } catch (err) {
     next(err);

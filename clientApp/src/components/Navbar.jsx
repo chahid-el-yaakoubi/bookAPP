@@ -33,7 +33,8 @@ export const Logo = () => {
 
 
 export const Navbar = () => {
-    const { t } = useTranslation(['translation', 'head']);
+    const { t , i18n} = useTranslation(['translation', 'head']);
+    const isRTL = i18n.dir() === 'rtl';
     const [loginForm, setLoginForm] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -215,7 +216,7 @@ export const Navbar = () => {
 
 
     return (
-        <div className="relative w-full max-h-[100px]">
+        <div className="relative w-full max-h-[100px]" dir='ltr'>
             <div className="shadow-xl w-full bg-primary">
                 <nav className="container-fluid px-10 lg:px-32 2xl:px-32 navbar w-full flex items-center justify-between py-0 md:py-4">
                     {/* Logo */}
@@ -265,7 +266,7 @@ export const Navbar = () => {
                         {/* Language Dropdown */}
                         <div className="language-dropdown-container relative">
                             <div
-                                className="language-selector flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-black/80 cursor-pointer transition-all duration-300 shadow-xl"
+                                className="language-selector flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-black/80 cursor-pointer transition-all duration-300 shadow-xl me-4"
                                 onClick={() => setLanguageDropdown(!languageDropdown)}
                             >
                                 <img

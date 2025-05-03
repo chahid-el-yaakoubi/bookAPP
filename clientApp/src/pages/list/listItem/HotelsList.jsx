@@ -38,17 +38,21 @@ const HotelsList = ({ city }) => {
   const [showModel, setShowModel] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
-  // const [loading, setLoading] = useState(false);
-
-  // Fetch hotels on component mount
-  // const { data, loading, error, reFetch } =  useFetch(`/api/hotels`);
+  
   const { data, loading, error, reFetch } = useFetch(`/api/hotels`);
 
   useEffect(() => {
     dispatch(setHotels(data));
+    dispatch(applyFilters(filters));
   }, [data]); // Added filters to dependency array
 
-  // Re-apply filters whenever filters change
+  // Set default selection to "all" property types on mount
+  useEffect(() => {
+    PROPERTY_TYPES.forEach(({ type }) => {
+      dispatch(togglePropertyType(type));
+    });
+  }, [dispatch]); // Added dispatch to dependency array
+
   useEffect(() => {
     dispatch(applyFilters(filters));
   }, [dispatch, filters]);
@@ -115,6 +119,7 @@ const HotelsList = ({ city }) => {
 
   return (
     <div className="w-full relative mt-10">
+      
       {/* Existing content with higher z-index */}
       <div className="relative">
         {/* Navigation Bar - Remove decorative elements for cleaner look */}
@@ -228,6 +233,7 @@ const HotelsList = ({ city }) => {
           </button>
         )}
       </div>
+      
     </div>
   );
 };

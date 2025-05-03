@@ -287,6 +287,7 @@
       "price": "From $45"
     }
   },
+
   "FeaturedProperties": {
     "propertyDetails": "Property Details",
     "totalReviews": "Total Reviews",
@@ -432,7 +433,8 @@
       "house": "House",
       "villa": "Villa",
       "guesthouse": "Guesthouse"
-    }
+    },
+    "beds": "beds"
   },
   "FilterModule": {
     "common": {
@@ -684,5 +686,11 @@
   "room_features": "Room Features",
   "bathroom_amenities": "Bathroom Amenities",
   "more": "more",
-  "default_room_description": "Experience the height of luxury in our Deluxe Room, offering a perfect blend of modern amenities and traditional Moroccan design elements. The room is spacious, comfortable, and designed with your relaxation in mind."
+  "default_room_description": "Experience the height of luxury in our Deluxe Room, offering a perfect blend of modern amenities and traditional Moroccan design elements. The room is spacious, comfortable, and designed with your relaxation in mind.",
+  "descriptionCities":{
+    "less" : "less",
+    "more" : "more",
+    "wlcmnador": "WELCOME TO NADOR",
+    "desc": "Nador is a coastal city in northeastern Morocco, located along the Mediterranean Sea.It is part of the Oriental region and serves as the capital of Nador Province.The city lies near the Spanish enclave of Melilla, making it a key trade location.Nador is home to many Rifians, a Berber-speaking ethnic group.It has a Mediterranean climate with hot summers and mild winters.Marchica Lagoon, next to the city, is a major natural attraction.The local economy relies on trade, fishing, agriculture, and remittances.Nador is growing quickly, with modern infrastructure and an international airport.Tourists enjoy its beaches, souks, and natural landscapes.It is a cultural blend of Berber heritage and modern Moroccan life."
+  }
 }

@@ -67,7 +67,9 @@ const hotelsSlice = createSlice({
       // First filter the hotels with efficient single-pass filtering
       let filtered = state.hotels.filter((hotel) => {
         // Apply price filter
-        const price = hotel.pricing?.nightly_rate || hotel.price || 0;
+        const price = (hotel.type?.type === 'hotel' || hotel.type?.type === 'guesthouse') 
+          ? hotel.roomSummary.minPrice // Use minPrice for filtering
+          : (hotel.pricing?.nightly_rate || hotel.price || 0);
         const priceMatch = price >= filters.priceRange.min && 
                           price <= filters.priceRange.max;
         if (!priceMatch) return false;
@@ -118,21 +120,39 @@ const hotelsSlice = createSlice({
         );
       }
       
-      // Then apply sorting
+      // New sorting logic to prioritize featured hotels first
+      filtered.sort((a, b) => {
+        const featuredA = a.featured ? 1 : 0; // 1 if featured, 0 otherwise
+        const featuredB = b.featured ? 1 : 0; // 1 if featured, 0 otherwise
+        if (featuredA !== featuredB) {
+          return featuredB - featuredA; // Sort featured first
+        }
+        return 0; // No change in order if both are featured or not
+      });
+
+      // Then apply sorting based on price if specified
       if (filters.sortByPrice) {
         switch (filters.sortByPrice) {
           case 'low-to-high':
             filtered.sort((a, b) => {
-              const priceA = a.pricing?.nightly_rate || a.price || 0;
-              const priceB = b.pricing?.nightly_rate || b.price || 0;
-              return priceA - priceB;
+              const priceA = (a.type?.type === 'hotel' || a.type?.type === 'guesthouse') 
+                ? a.roomSummary.minPrice // Use minPrice for sorting
+                : (a.pricing?.nightly_rate || a.price || 0);
+              const priceB = (b.type?.type === 'hotel' || b.type?.type === 'guesthouse') 
+                ? b.roomSummary.minPrice // Use minPrice for sorting
+                : (b.pricing?.nightly_rate || b.price || 0);
+              return priceA - priceB; // Sort low to high
             });
             break;
           case 'high-to-low':
             filtered.sort((a, b) => {
-              const priceA = a.pricing?.nightly_rate || a.price || 0;
-              const priceB = b.pricing?.nightly_rate || b.price || 0;
-              return priceB - priceA;
+              const priceA = (a.type?.type === 'hotel' || a.type?.type === 'guesthouse') 
+                ? a.roomSummary.maxPrice // Use maxPrice for sorting
+                : (a.pricing?.nightly_rate || a.price || 0);
+              const priceB = (b.type?.type === 'hotel' || b.type?.type === 'guesthouse') 
+                ? b.roomSummary.maxPrice // Use maxPrice for sorting
+                : (b.pricing?.nightly_rate || b.price || 0);
+              return priceB - priceA; // Sort high to low
             });
             break;
           // Default - leave as is (default sort)

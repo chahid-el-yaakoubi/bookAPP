@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { SearchContext } from '../contextApi/SearchContext';
 import { useTranslation } from 'react-i18next';
+import { getRegions } from '../Lib/api';
 
 export const SearchForm = () => {
   const { t, i18n } = useTranslation();
@@ -53,7 +54,7 @@ export const SearchForm = () => {
 
   // State for dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const cities = ["Nador", "Madrid", "Miami", "Casablanca", "Paris", "Berlin", "Dubai", "New York", "Casablanca", "Paris", "Berlin", "Dubai",];
+  const cities = ["Nador"];
   const [filteredCities, setFilteredCities] = useState(cities);
 
   // Add useEffect for handling clicks outside
@@ -119,17 +120,17 @@ export const SearchForm = () => {
 
   return (
     <div className="searchbar sticky md:absolute left-0 right-0 mx-4 top-24 md:mx-auto max-w-[1024px] w-full z-40">
-      <div className={`searchItem flex flex-col md:flex-row border-4 border-gray-500 text-black justify-between items-stretch md:items-center rounded-lg bg-white ${isRTL ? 'rtl' : 'ltr'}`}>
+      <div className={`searchItem flex flex-col md:flex-row border-4 border-gray-500 text-black justify-between items-stretch md:items-center rounded-lg  ${showAlert ? 'bg-red-500': 'bg-white' } ${isRTL ? 'rtl' : 'ltr'}`}>
         {/* Destination Input */}
 
         <div className="relative w-full md:w-1/3">
-          <div className={`searchComponent rounded bg-white test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full`}>
+          <div className={`searchComponent rounded  ${showAlert ? 'bg-red-500': 'bg-white' } test border-b-4 md:border-b-0 ${isRTL ? 'md:border-l-4' : 'md:border-r-4'} ps-4 border-blue relative flex items-center w-full`}>
             <FontAwesomeIcon icon={faMagnifyingGlassLocation} className={isRTL ? 'ml-2' : 'mr-2'} />
 
             {/* Search Input */}
             <input
               type="search"
-              className="placeholder:text-gray-600 w-full h-[50px] p-2 text-gray-900 outline-none"
+              className={` ${showAlert ? 'placeholder:text-red-500' : 'placeholder:text-gray-600'} w-full h-[50px] p-2 text-gray-900 outline-none ${isRTL ? 'text-right' : 'text-left' }  `}
               placeholder={t('search.whereTo')}
               value={destination}
               onFocus={() => setIsDropdownOpen(true)} // Show dropdown on focus
@@ -185,7 +186,7 @@ export const SearchForm = () => {
                 onClick={handleCloseDatePicker}
               ></div>
 
-              <div className="date-picker-container fixed md:absolute top-0 md:top-14 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-auto z-50   bg-blue">
+              <div className="date-picker-container fixed md:absolute top-0 md:top-14 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-auto z-50 bg-blue" dir='ltr'>
                 <div className="date-picker-header md:hidden flex justify-between items-center p-4 w-full bg-white border-b sticky top-0 ">
                   <h2 className="text-lg font-semibold text-gray-800">{t('search.selectDates')}</h2>
                   <button

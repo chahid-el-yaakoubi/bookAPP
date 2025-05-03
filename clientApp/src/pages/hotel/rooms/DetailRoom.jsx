@@ -68,7 +68,7 @@ function RoomDetail({ room, onClose }) {
 
     return (
         <div className={`fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4`}>
-            <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] h-full overflow-hidden flex flex-col">
+            <div className="bg-white rounded-lg w-full  h-full overflow-hidden flex flex-col">
                 {/* Header with close button */}
                 <div className={`flex justify-between items-center p-4 border-b`}>
                     <h2 className={`text-xl font-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h2>

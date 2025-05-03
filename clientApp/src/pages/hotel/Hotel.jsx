@@ -20,7 +20,6 @@ import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
 import PropertyFeatures from './componentHotel/Features.jsx';
 import { LayoutRoom } from './rooms/LayoutRoom.jsx';
 
-const apiUrl = import.meta.env.VITE_API_URL;
 
 // Improved MapIframe component with responsive design
 const MapIframe = () => {
@@ -286,7 +285,7 @@ export function Hotel() {
 
       <BookingProvider>
         <div className="bg-blue/10 shadow-sm">
-          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:pt-20 bg-primary/10">
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:pt-20 ">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold mb-1 hidden md:block">{hotel?.title}</h1>
 

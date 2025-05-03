@@ -140,7 +140,9 @@ const Location = () => {
                 neighborhood: neighborhoodObj?.valueEnglish || '',
                 latitude: latitude ? parseFloat(latitude) : null,
                 longitude: longitude ? parseFloat(longitude) : null,
-                postal_code : postal_code || ''
+                postal_code: postal_code || '',
+                addressEn: `${regionObj?.regionNameEnglish || ''}- ${cityObj?.cityNameEnglish || ''}- ${neighborhoodObj?.valueEnglish || ''}`,
+                addressAr: `${regionObj?.regionNameArabic || ''}- ${cityObj?.cityNameArabic || ''}- ${neighborhoodObj?.valueArabic || ''}`,
             }
         };
 

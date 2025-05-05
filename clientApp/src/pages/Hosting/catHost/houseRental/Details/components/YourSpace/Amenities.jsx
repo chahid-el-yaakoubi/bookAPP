@@ -184,8 +184,11 @@ const Amenities = ({ mode }) => {
         { id: 'fullyEquippedKitchen', label: t('amenities.items.fullyEquippedKitchen'), icon: GiKitchenKnives, category: t('amenities.categories.essentials') },
         { id: 'freeParking', label: t('amenities.items.freeParking'), icon: FaParking, category: t('amenities.categories.essentials') },
         { id: 'elevator', label: t('amenities.items.elevator'), icon: FaArrowUp, category: t('amenities.categories.essentials') },
+        { id: 'tv', label: t('amenities.items.tv'), icon: FaTv, category: t('amenities.categories.essentials') },
+        { id: 'hotWater', label: t('amenities.items.hotWater'), icon: FaShower, category: t('amenities.categories.essentials') },
 
         // Outdoor
+        { id: 'jacuzzi', label: t('amenities.items.jacuzzi'), icon: FaHotTub, category: t('amenities.categories.outdoor') },
         { id: 'garden', label: t('amenities.items.garden'), icon: FaLeaf, category: t('amenities.categories.outdoor') },
         { id: 'terraceBalcony', label: t('amenities.items.terraceBalcony'), icon: MdBalcony, category: t('amenities.categories.outdoor') },
         { id: 'bbqArea', label: t('amenities.items.bbqArea'), icon: ImSpoonKnife, category: t('amenities.categories.outdoor') },
@@ -216,6 +219,7 @@ const Amenities = ({ mode }) => {
         { id: 'conferenceRoom', label: t('amenities.items.conferenceRoom'), icon: IoMdBusiness, category: t('amenities.categories.business') },
         { id: 'printingScanning', label: t('amenities.items.printingScanning'), icon: BsPrinter, category: t('amenities.categories.business') },
         { id: 'businessCenter', label: t('amenities.items.businessCenter'), icon: FaBriefcase, category: t('amenities.categories.business') },
+        { id: 'workspace', label: t('amenities.items.workspace'), icon: FaBriefcase, category: t('amenities.categories.business') },
 
         // Services
         { id: 'dailyHousekeeping', label: t('amenities.items.dailyHousekeeping'), icon: FaBroom, category: t('amenities.categories.services') },
@@ -383,7 +387,7 @@ const Amenities = ({ mode }) => {
 
             const updatedProperty = {
                 property_details: {
-                   ...selectedProperty.property_details,
+                    ...selectedProperty.property_details,
                     [mode === 'amenities' ? 'amenities' : 'propertyFeatures']: payload[mode === 'amenities' ? 'amenities' : 'propertyFeatures']
                 }
             }
@@ -391,8 +395,8 @@ const Amenities = ({ mode }) => {
             const res = await updateProperty(selectedProperty?._id, updatedProperty);
 
             if (res.status === 200) {
-              dispatch(selectProperty(res.data));
-        
+                dispatch(selectProperty(res.data));
+
             }
 
             // Optional: Show success toast
@@ -419,8 +423,8 @@ const Amenities = ({ mode }) => {
             <div className="mb-6">
                 <input
                     type="text"
-                    placeholder={mode === 'amenities' 
-                        ? t('amenities.searchPlaceholder') 
+                    placeholder={mode === 'amenities'
+                        ? t('amenities.searchPlaceholder')
                         : t('amenities.searchPlaceholder')
                     }
                     value={searchTerm}
@@ -446,8 +450,8 @@ const Amenities = ({ mode }) => {
                                     <div
                                         key={item.id}
                                         className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors   ${selectedItems.has(item.id)
-                                                ? 'bg-green-200 border border-green-400'
-                                                : 'hover:bg-gray-100 border border-transparent'
+                                            ? 'bg-green-200 border border-green-400'
+                                            : 'hover:bg-gray-100 border border-transparent'
                                             }`}
                                         onClick={() => toggleItem(item.id)}
                                     >
@@ -507,12 +511,12 @@ const Amenities = ({ mode }) => {
                     className={`flex items-center space-x-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}
                 >
                     <span>
-                        {isSaving 
-                            ? (mode === 'amenities' 
-                                ? t('amenities.savingButton') 
+                        {isSaving
+                            ? (mode === 'amenities'
+                                ? t('amenities.savingButton')
                                 : t('amenities.savingButton'))
-                            : (mode === 'amenities' 
-                                ? t('amenities.saveButton') 
+                            : (mode === 'amenities'
+                                ? t('amenities.saveButton')
                                 : t('amenities.saveButton'))
                         }
                     </span>

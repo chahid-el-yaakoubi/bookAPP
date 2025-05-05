@@ -32,7 +32,6 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
         floorNumber: 1,
         yearBuilt: '',
         propertySize: '',
-        sizeUnit: 'sq m',
         showSuccess: false,
         successTimeout: null
     });
@@ -44,7 +43,7 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
 
     // Destructure propertyData
     const { type } = propertyData;
-    const { type: propertyType, category: propertyCategory, listingType, viewType } = type || {};
+    const { type: propertyType, category: propertyCategory, listingType, viewType = [] } = type || {};
 
     // Helper function to update form fields
     const updateFormField = (field, value) => {
@@ -81,6 +80,35 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
         }));
     };
 
+    // Toggle view type selection (add or remove from array)
+    const toggleViewType = (viewId) => {
+        // Get current viewType array or initialize empty array
+        const currentViewTypes = Array.isArray(viewType) ? [...viewType] : [];
+        
+        // Special case for "No special view" - selecting it clears all other selections
+        if (viewId === 'noView') {
+            updatePropertyData('viewType', ['noView']);
+            return;
+        }
+
+        // If "No special view" was previously selected, remove it
+        let updatedViews = currentViewTypes.filter(v => v !== 'noView');
+        
+        // Toggle the selected view
+        if (updatedViews.includes(viewId)) {
+            updatedViews = updatedViews.filter(v => v !== viewId);
+        } else {
+            updatedViews.push(viewId);
+        }
+        
+        // If no views are selected after removing one, add "No special view"
+        if (updatedViews.length === 0) {
+            updatedViews = ['noView'];
+        }
+        
+        updatePropertyData('viewType', updatedViews);
+    };
+
     // Filtered property types based on active filter
     const filteredPropertyTypes = useMemo(() => {
         if (activeFilter === 'all') {
@@ -109,14 +137,25 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
     // Get view types based on property category
     const getFilteredViewTypes = useMemo(() => (category) => {
         const allViewTypes = [
-            { id: 'cityView', label: 'City view' },
-            { id: 'oceanView', label: 'Ocean view' },
-            { id: 'mountainView', label: 'Mountain view' },
-            { id: 'gardenView', label: 'Garden view' },
-            { id: 'parkView', label: 'Park view' },
-            { id: 'poolView', label: 'Pool view' },
-            { id: 'valleyView', label: 'Valley view' },
-            { id: 'noView', label: 'No special view' }
+            { id: 'cityView', label: 'City view' },                 // منظر المدينة
+            { id: 'oceanView', label: 'Ocean view' },               // منظر المحيط
+            { id: 'seaView', label: 'Sea view' },                   // منظر البحر
+            { id: 'mountainView', label: 'Mountain view' },         // منظر الجبال
+            { id: 'gardenView', label: 'Garden view' },             // منظر الحديقة
+            { id: 'parkView', label: 'Park view' },                 // منظر المنتزه
+            { id: 'poolView', label: 'Pool view' },                 // منظر المسبح
+            { id: 'valleyView', label: 'Valley view' },             // منظر الوادي
+            { id: 'desertView', label: 'Desert view' },             // منظر الصحراء (مثلاً في مرزوكة أو زاكورة)
+            { id: 'kasbahView', label: 'Kasbah view' },             // منظر القصبة (شائع في الجنوب المغربي)
+            { id: 'forestView', label: 'Forest view' },             // منظر الغابة
+            { id: 'riverView', label: 'River view' },               // منظر النهر
+            { id: 'lakeView', label: 'Lake view' },                 // منظر البحيرة (مثلاً بنصميم أو إفران)
+            { id: 'harborView', label: 'Harbor view' },             // منظر الميناء
+            { id: 'medinaView', label: 'Medina (Old Town) view' },  // منظر المدينة القديمة
+            { id: 'mountainVillageView', label: 'Berber village view' }, // منظر قرية جبلية
+            { id: 'streetView', label: 'Street view' },             // منظر الشارع
+            { id: 'courtyardView', label: 'Courtyard view' },       // منظر الفناء الداخلي (شائع في الرياض)
+            { id: 'noView', label: 'No special view' }              // لا يوجد منظر خاص
         ];
 
         return allViewTypes;
@@ -136,38 +175,7 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
         updateFormField('successTimeout', timeout);
     };
 
-    // Save handler with validation
-    const handleSave = (e) => {
-        e.preventDefault();
-
-        // Validate form
-        const validationErrors = [];
-        if (!propertyType) validationErrors.push("Property type");
-        if (!propertyCategory) validationErrors.push("Property category");
-        if (!listingType) validationErrors.push("Listing type");
-        if (!isHotelLike && !viewType) validationErrors.push("View type");
-
-        if (validationErrors.length > 0) {
-            alert(`Please fill in the following required fields: ${validationErrors.join(", ")}.`);
-            return;
-        }
-
-        // Update property data with additional fields for non-hotel properties
-        if (!isHotelLike) {
-            setPropertyData(prev => ({
-                ...prev,
-                type: {
-                    ...prev.type,
-                    yearBuilt: formState.yearBuilt,
-                    propertySize: formState.propertySize,
-                    sizeUnit: formState.sizeUnit
-                }
-            }));
-        }
-
-        showSuccessMessage();
-    };
-
+  
     return (
         <div className="mx-auto bg-white rounded-lg shadow-md mb-20">
             {/* Header */}
@@ -258,21 +266,21 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
                         {!isHotelLike && (
                             <>
                                 <div>
-                                    <label className={`block text-base font-medium mb-3 flex items-center ${viewType ? 'text-gray-700' : 'text-red-500'}`}>
-                                        <FaMapMarkerAlt className="mr-2 text-blue" /> View Type
+                                    <label className={`block text-base font-medium mb-3 flex items-center ${viewType && viewType.length > 0 ? 'text-gray-700' : 'text-red-500'}`}>
+                                        <FaMapMarkerAlt className="mr-2 text-blue" /> View Types (Select all that apply)
                                     </label>
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                                         {getFilteredViewTypes(propertyCategory).map(option => (
                                             <button
                                                 key={option.id}
-                                                onClick={() => updatePropertyData('viewType', option.id)}
-                                                className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 ${viewType === option.id
+                                                onClick={() => toggleViewType(option.id)}
+                                                className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-200 ${Array.isArray(viewType) && viewType.includes(option.id)
                                                     ? 'bg-blue text-white'
                                                     : 'bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100'
                                                     }`}
                                             >
                                                 <span>{option.label}</span>
-                                                {viewType === option.id && (
+                                                {Array.isArray(viewType) && viewType.includes(option.id) && (
                                                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                                     </svg>
@@ -280,15 +288,26 @@ const PropertyTypeForm = ({ propertyData, setPropertyData }) => {
                                             </button>
                                         ))}
                                     </div>
+                                    {Array.isArray(viewType) && viewType.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-3">
+                                            <span className="font-medium">Selected views:</span>
+                                            {viewType.map(v => {
+                                                const viewOption = getFilteredViewTypes(propertyCategory).find(opt => opt.id === v);
+                                                return (
+                                                    <span key={v} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                                        {viewOption?.label || v}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
- 
- 
                             </>
                         )}
                     </>
                 )}
 
-               
+                
             </div>
         </div>
     );

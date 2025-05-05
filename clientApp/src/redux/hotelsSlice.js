@@ -1,27 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Function to load state from local storage
-const loadFromLocalStorage = (key, defaultValue) => {
+const saveFilterCountToLocalStorage = (count) => {
   try {
     if (typeof window !== 'undefined') {
-      const storedState = localStorage.getItem(key);
-      return storedState ? JSON.parse(storedState) : defaultValue;
+      localStorage.setItem("applied-filters-count", count);
     }
-    return defaultValue;
   } catch (error) {
-    console.error("Error loading from localStorage", error);
-    return defaultValue;
+    console.error("Error saving filter count to localStorage", error);
   }
 };
 
-// Function to save state to local storage
-const saveToLocalStorage = (key, value) => {
+// Function to load the number of applied filters from local storage
+const loadFilterCountFromLocalStorage = () => {
   try {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(key, JSON.stringify(value));
+      const storedCount = localStorage.getItem("applied-filters-count");
+      return storedCount ? parseInt(storedCount, 10) : 0;
     }
+    return 0;
   } catch (error) {
-    console.error("Error saving to localStorage", error);
+    console.error("Error loading filter count from localStorage", error);
+    return 0;
   }
 };
 
@@ -29,11 +28,13 @@ const initialState = {
   hotels: [],
   filteredHotels: [],
   selectedFilter: null,
+  appliedFilterCount: loadFilterCountFromLocalStorage(), // Load initial count from local storage
 };
 
 const hotelsSlice = createSlice({
   name: "hotels",
-  initialState: loadFromLocalStorage("hotels-state", initialState),
+  // initialState : [],
+  initialState: initialState,
   reducers: {
     setHotels: (state, action) => {
       state.hotels = action.payload;
@@ -41,7 +42,7 @@ const hotelsSlice = createSlice({
         ...hotel,
         spaces: hotel.property_details?.spaces || [],
       }));
-      saveToLocalStorage("hotels-data", action.payload); // Save just the data
+      // saveToLocalStorage("hotels-data", action.payload); // Save just the data
     },
     
     setSelectedFilter: (state, action) => {
@@ -55,14 +56,26 @@ const hotelsSlice = createSlice({
         state.filteredHotels = state.hotels;
       }
       
-      saveToLocalStorage("hotels-state", {
-        ...state,
-        filteredHotels: [] // Don't store filtered results in localStorage to save space
-      });
+      // saveToLocalStorage("hotels-state", {
+      //   ...state,
+      //   filteredHotels: [] // Don't store filtered results in localStorage to save space
+      // });
     },
     
     applyFilters: (state, action) => {
       const filters = action.payload;
+
+      
+      // Count the number of applied filters
+      const appliedFilterCount = Object.values(filters).reduce((count, filter) => {
+        return count + (typeof filter === 'object' ? Object.values(filter).filter(Boolean).length : (filter ? 1 : 0));
+      }, 0);
+      
+      // Save the count to local storage
+      saveFilterCountToLocalStorage(appliedFilterCount);
+      
+      // Update the state with the new count
+      state.appliedFilterCount = appliedFilterCount;
       
       // First filter the hotels with efficient single-pass filtering
       let filtered = state.hotels.filter((hotel) => {
@@ -75,37 +88,36 @@ const hotelsSlice = createSlice({
         if (!priceMatch) return false;
         
         // Apply amenities filter - handle both object and array data structures
-        const amenitiesMatch = Object.entries(filters.amenities).every(
-          ([id, isSelected]) => {
-            if (!isSelected) return true; // Skip if not selected
-            
-            // Check if amenities is an object with boolean flags
-            if (hotel.amenities && typeof hotel.amenities === 'object' && !Array.isArray(hotel.amenities)) {
-              return hotel.amenities[id];
-            }
-            
-            // Or if it's an array of strings
-            return Array.isArray(hotel.amenities) && hotel.amenities.includes(id);
-          }
+        const amenitiesMatch = Object.entries(filters.amenities || {}).every(
+          ([id, isSelected]) => isSelected === true && // Only include amenities that are true
+            (hotel.property_details.propertyFeatures?.standard?.includes(id) || 
+             hotel.property_details.propertyFeatures?.custom?.includes(id))
         );
         if (!amenitiesMatch) return false;
+
+        // Apply safety features filter
+        const safetyFeaturesMatch = Object.entries(filters.safety_features || {}).every(
+          ([id, isSelected]) => isSelected  && 
+            hotel.safety_features.safety.includes(id)
+        );
+        if (!safetyFeaturesMatch) return false;
         
         // Apply booking options filter
-        const bookingOptionsMatch = Object.entries(filters.bookingOptions).every(
+        const bookingOptionsMatch = Object.entries(filters.bookingOptions || {}).every(
           ([id, isSelected]) => !isSelected || 
             (Array.isArray(hotel.bookingOptions) && hotel.bookingOptions.includes(id))
         );
         if (!bookingOptionsMatch) return false;
         
         // Apply exceptional properties filter
-        const exceptionalPropertiesMatch = Object.entries(filters.exceptionalProperties).every(
+        const exceptionalPropertiesMatch = Object.entries(filters.exceptionalProperties || {}).every(
           ([id, isSelected]) => !isSelected || 
             (Array.isArray(hotel.exceptionalProperties) && hotel.exceptionalProperties.includes(id))
         );
         if (!exceptionalPropertiesMatch) return false;
         
         // Apply property types filter
-        const propertyTypesSelected = Object.values(filters.propertyTypes).some(isSelected => isSelected);
+        const propertyTypesSelected = Object.values(filters.propertyTypes || {}).some(isSelected => isSelected);
         const propertyTypeMatch = !propertyTypesSelected || 
                                 (hotel.type?.type && filters.propertyTypes[hotel.type.type.toLowerCase()]);
         if (!propertyTypeMatch) return false;

@@ -28,6 +28,7 @@ const saveToLocalStorage = (key, value) => {
 const initialState = {
   priceRange: { min: 200, max: 2000 },
   amenities: {},
+  safety_features: {},
   bookingOptions: {},
   exceptionalProperties: {},
   propertyTypes: {},
@@ -45,7 +46,21 @@ const filtersSlice = createSlice({
     },
     toggleAmenity: (state, action) => {
       const amenityId = action.payload;
-      state.amenities[amenityId] = !state.amenities[amenityId];
+      // Only add the amenity if true, otherwise remove it
+      if (state.amenities[amenityId]) {
+        delete state.amenities[amenityId]; // Remove if it exists
+      } else {
+        state.amenities[amenityId] = true; // Add if it doesn't exist
+      }
+      saveToLocalStorage("filters", state);
+    },
+    toggleSafetyFeature: (state, action) => {
+      const featureId = action.payload;
+      if (state.safety_features[featureId]) {
+        delete state.safety_features[featureId];
+      } else {
+        state.safety_features[featureId] = true;
+      }
       saveToLocalStorage("filters", state);
     },
     toggleBookingOption: (state, action) => {
@@ -72,6 +87,7 @@ const filtersSlice = createSlice({
     clearFilters: (state) => {
       state.priceRange = { min: 100, max: 2000 };
       state.amenities = {};
+      state.safety_features = {};
       state.bookingOptions = {};
       state.exceptionalProperties = {};
       state.propertyTypes = {};
@@ -84,6 +100,7 @@ const filtersSlice = createSlice({
 export const {
   setPriceRange,
   toggleAmenity,
+  toggleSafetyFeature,
   toggleBookingOption,
   toggleExceptionalProperty,
   togglePropertyType,

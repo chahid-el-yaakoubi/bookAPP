@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { ImageGallery } from './componentHotel/ImageGallery';
 import { BookingCard } from './componentHotel/BookingCard';
 import { ThingsToKnow } from './componentHotel/ThingsToKnow';
@@ -20,6 +20,8 @@ import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
 import PropertyFeatures from './componentHotel/Features.jsx';
 import { LayoutRoom } from './rooms/LayoutRoom.jsx';
 
+// Lazy load LayoutReviews component
+const LayoutReviews = lazy(() => import('./Reviews/LayoutReviews.jsx'));
 
 // Improved MapIframe component with responsive design
 const MapIframe = () => {
@@ -67,6 +69,7 @@ const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities, ty
   if (typePrperty === 'hotel' || typePrperty === 'guesthouse') {
     tabs = tabs.filter(tab => tab.id !== 'amenities');
   }
+
 
 
   const renderNearbyPlaces = () => (
@@ -292,9 +295,9 @@ export function Hotel() {
               <button
                 onClick={() => { navigate(-1) }}
                 className='flex items-center gap-2 justify-start shadow-lg p-2 rounded hover:bg-gray-100 md:hidden'>
-               
+
                 {
-                  isRTL ?  <TfiAngleRight className="w-4 h-4" /> :  <TfiAngleLeft className="w-4 h-4" />
+                  isRTL ? <TfiAngleRight className="w-4 h-4" /> : <TfiAngleLeft className="w-4 h-4" />
                 }
                 <span className="underline">{t('singleProperty.back')}</span>
               </button>
@@ -333,27 +336,10 @@ export function Hotel() {
                 <div className="flex justify-between pb-6 border-b">
                   <div>
                     <h2 className="text-md md:text-lg flex items-start font-semibold mb-2 text-gray-900">
-                      {type.type ? type.type.charAt(0).toUpperCase() + type.type.slice(1).toLowerCase() : ''}
-                      <span className='px-1'> at </span>
-                      {location.country ? location.country.charAt(0).toUpperCase() + location.country.slice(1).toLowerCase() : ''}
-                      <MdArrowRight />
-                      {location.region ? location.region.charAt(0).toUpperCase() + location.region.slice(1).toLowerCase() : ''}
-                      <MdArrowRight />
-                      {location.city ? location.city.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase() : ''}
-                      {location.neighborhood && (
-                        <>
-                          <MdArrowRight />
-                          {location.neighborhood.charAt(0).toUpperCase() + location.neighborhood.slice(1).toLowerCase()}
-                        </>
-                      )}
+                      {t(`hotelsDisplay.listingTypes.${type.type}`)} {t('general.at')} {isRTL ? location.addressAr : location.addressEn}
                     </h2>
 
-                    <div className="flex items-center mt-2">
-                      <FaBed className="text-gray-500 mr-2" />
-                      <span className="text-gray-700">
-                        {rooms.length} {rooms.length === 1 ? t('singleProperty.room') : t('singleProperty.rooms')}
-                      </span>
-                    </div>
+
                   </div>
                 </div>
 
@@ -381,7 +367,7 @@ export function Hotel() {
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <LayoutRoom rooms={rooms} />
+                <><LayoutRoom rooms={rooms} type={type?.type} /></>
               )}
             </div>
 
@@ -394,7 +380,13 @@ export function Hotel() {
             />
 
             <ThingsToKnow propertyData={propertyData} />
+            {/* reviews */}
 
+            <div>
+              <Suspense fallback={<div className="flex justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div></div>}>
+                <LayoutReviews />
+              </Suspense>
+            </div>
             <div className="py-6">
               <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.location')}</h2>
               <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
@@ -406,6 +398,8 @@ export function Hotel() {
           </div>
         </div>
       </BookingProvider>
+
+
 
       <Footer />
     </div>

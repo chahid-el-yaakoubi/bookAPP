@@ -136,6 +136,10 @@ export const getBookings = async () => {
   const response = await api.get('/api/bookings');
   return response;
 };
+export const getBooking = async (id) => {
+  const response = await api.get(`/api/bookings${id}`);
+  return response;
+};
 
 // USERS
 export const getUsers = async () => {
@@ -187,4 +191,30 @@ export const deleteRegion = async (id) => {
 export const logout = () => {
   localStorage.removeItem('user');
   localStorage.removeItem('token');
+};
+
+// REVIEWS: CRUD (create, read, update, delete)
+export const createReview = async (reviewData) => {
+  const response = await api.post('/api/reviews', reviewData);
+  return response;
+};
+ 
+export const likeReview = async (id, reviewData) => {
+  const response = await api.post(`/api/reviews/${id}/like`, reviewData);
+  return response;
+};
+
+export const getReviewsForListing = async (listingId) => {
+  const response = await api.get(`/api/reviews/listing/${listingId}`);
+  return response;
+};
+
+export const updateReview = async (reviewId, reviewData) => {
+  const response = await api.put(`/api/reviews/${reviewId}`, reviewData);
+  return response;
+};
+
+export const deleteReview = async (reviewId) => {
+  const response = await api.delete(`/api/reviews/${reviewId}`);
+  return response;
 };

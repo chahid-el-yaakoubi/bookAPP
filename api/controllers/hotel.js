@@ -175,6 +175,8 @@ export const getHotels = async (req, res, next) => {
     query["location.city"] = city;
   }
 
+  console.log(city)
+
   if (type === 'multi') {
     query["type.type"] = { $in: ['hotel', 'guesthouse'] };
   } else if (type === 'single') {
@@ -253,7 +255,6 @@ export const getHotels = async (req, res, next) => {
       }));
     }
 
-    console.log(listings[0])
     res.status(200).json(listings);
   } catch (err) {
     next(err);

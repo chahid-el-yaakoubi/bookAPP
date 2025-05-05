@@ -112,10 +112,10 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   return (
     <HostLayout>
       <TopNavHost category="properties" />
-      <div className="flex items-center justify-center gap-4 w-full mt-20 mb-3 ">
+      <div className="flex items-center justify-center gap-4 w-full mt-20  ">
         <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
           <FaHouse />
-          <span>Properties</span>
+          <span>Houses</span>
         </button>
         <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
           <FaHotel />

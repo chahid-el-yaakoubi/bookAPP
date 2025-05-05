@@ -1,13 +1,14 @@
 import HostLayout from '../../ComponentHost/HostLayout';
 import { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaHotel } from 'react-icons/fa';
+import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaHotel, FaEye, FaEdit } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
 import { deleteProperty, getProperties, updateProperty } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { FaHouse } from 'react-icons/fa6';
+import { Edit2, EyeIcon, Trash2 } from 'lucide-react';
 
 const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     const { state } = useContext(AuthContext);
@@ -63,7 +64,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                 status: hotel.status.status,
                 createdAt: moment(new Date(hotel.createdAt)),
                 updatedAt: moment(new Date(hotel.updatedAt)),
-                image: hotel.images?.[0]
+                image: hotel.images?.[0],
+                type: hotel.type?.type || 'N/A'
             }));
             setHouses(data);
         } catch (error) {
@@ -150,8 +152,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                                 className={`w-full py-2 rounded-md transition-colors 
                                     ${status === 'available' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
                                         status === 'booked' ? 'bg-blue/20 text-blue hover:bg-blue/40' :
-                                        status === 'maintenance' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
-                                        'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+                                            status === 'maintenance' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
+                                                'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
                             >
                                 {status.charAt(0).toUpperCase() + status.slice(1)}
                             </button>
@@ -256,7 +258,7 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
             <table className="min-w-full">
                 <thead>
                     <tr className="bg-gray-50">
-                        {['name', 'price', 'status', 'createdAt', 'updatedAt', 'actions'].map((key) => (
+                        {['name', 'type', 'price', 'status', 'createdAt', 'updatedAt', 'actions'].map((key) => (
                             <th
                                 key={key}
                                 onClick={() => key !== 'status' && key !== 'actions' && handleSort(key)}
@@ -273,20 +275,24 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                 <tbody className="bg-white divide-y divide-gray-200">
                     {currentItems.map((house) => (
                         <tr
-                        onClick={() => navigate(`/host/properties/${house.id}/details/rooms`)  } 
-                        key={house.id} className="hover:bg-gray-100 cursor-move">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
+                            key={house.id} className="hover:bg-gray-100">
+                            <td className="px-6 py-4 whitespace-nowrap cursor-pointer hover:bg-orange-500">
+                                <div
+                                    onClick={() => navigate(`/host/properties/${house.id}/details/rooms`)}
+                                    className="flex items-center">
                                     <div className="text-sm font-medium text-gray-900">
                                         {house.name}
                                     </div>
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">{house.type}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900">MAD {house.price}/night</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <span 
+                                <span
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setSelectedHouseForStatusUpdate(house);
@@ -297,18 +303,31 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                                     {house.bookingStatus}
                                 </span>
                             </td>
+
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {house.createdAt.fromNow()}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {house.updatedAt.fromNow()}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-4  ">
                                 <button
                                     onClick={() => setSelectedHouseForDeletion(house)}
-                                    className="text-red-600 hover:text-red-800"
+                                    className="text-red-600 hover:text-red-800  hover:scale-125"
                                 >
-                                    Delete
+                                    <Trash2 />
+                                </button>
+                                <button
+                                    onClick={() => window.open(`/hotel/${house.id}`, '_blank')}
+                                    className="text-blue hover:text-blue/90 hover:scale-125"
+                                >
+                                    <EyeIcon />
+                                </button>
+                                <button
+                                    onClick={() => navigate(`/host/properties/${house.id}/details/rooms`)}
+                                    className="text-orange-500 hover:text-orange-600  hover:scale-125"
+                                >
+                                    <Edit2 />
                                 </button>
                             </td>
                         </tr>
@@ -351,8 +370,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                 >
                     <div className="h-48 bg-gray-200">
                         {house.image ? (
-                            <img 
-                                src={house.image} 
+                            <img
+                                src={house.image}
                                 alt={house.name}
                                 className="w-full h-full object-cover"
                                 loading='lazy'
@@ -369,7 +388,7 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                         <p className="text-gray-600 mb-1">Price: MAD {house.price}/night</p>
                         <p className="text-gray-500 text-sm">Created {house.createdAt.fromNow()}</p>
                         <div className="mt-4 flex justify-between items-center">
-                            <span 
+                            <span
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedHouseForStatusUpdate(house);
@@ -399,10 +418,10 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
         <HostLayout>
             <TopNavHost category="properties" />
 
-            <div className="flex items-center justify-center gap-4 w-full mt-20 mb-3 ">
+            <div className="flex items-center justify-center gap-4 w-full mt-20  ">
                 <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
                     <FaHouse />
-                    <span>Properties</span>
+                    <span>Houses</span>
                 </button>
                 <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
                     <FaHotel />
@@ -500,10 +519,10 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                             {/* Status Filter Buttons */}
                             <div className="mb-6 flex flex-wrap gap-2">
                                 {['all', 'available', 'maintenance', 'booked'].map((status) => {
-                                    const count = status === 'all' 
-                                        ? filteredHouses.length 
+                                    const count = status === 'all'
+                                        ? filteredHouses.length
                                         : filteredHouses.filter(house => house.bookingStatus === status).length;
-                                    
+
                                     return (
                                         <button
                                             key={status}

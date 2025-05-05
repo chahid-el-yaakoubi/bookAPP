@@ -46,7 +46,7 @@ const roomSchema = new mongoose.Schema({
     },
     roomTitle: { 
         type: String, 
-        required: true 
+        
     },
 }, {timestamps: true} );
   

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -272,7 +272,12 @@ const PropertyFeatures = ({ propertyFeaturesData }) => {
 
   // Toggle the All Features modal
   const toggleAllFeaturesModal = () => {
-    setShowAllFeaturesModal(prev => !prev);
+    setShowAllFeaturesModal(prev => {
+        const isOpen = !prev;
+        // Add or remove the 'overflow-hidden' class to the body
+        document.body.classList.toggle('overflow-hidden', isOpen);
+        return isOpen;
+    });
   };
 
   // Count total number of features for better context
@@ -301,6 +306,13 @@ const PropertyFeatures = ({ propertyFeaturesData }) => {
       </div>
     );
   }
+
+  // Cleanup: Remove the class when the component unmounts
+  useEffect(() => {
+    return () => {
+        document.body.classList.remove('overflow-hidden');
+    };
+  }, []);
 
   return (
     <>

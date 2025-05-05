@@ -46,7 +46,7 @@ const HotelsDisplay = () => {
   // Calculate the current hotels to display
   const indexOfLastHotel = currentPage * itemsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - itemsPerPage;
-  const currentHotels = hotels.slice(indexOfFirstHotel, indexOfLastHotel);
+  const currentHotels = hotels?.slice(indexOfFirstHotel, indexOfLastHotel);
 
   // Calculate total pages
   const totalPages = Math.ceil(hotels.length / itemsPerPage);
@@ -58,7 +58,7 @@ const HotelsDisplay = () => {
 
   return (
     <>
-      {currentHotels.length > 0 ? <div className="  xl:px-20 py-20 ">
+      {currentHotels.length > 0 && <div className="  xl:px-20 py-20 ">
         <HotelCardGrid hotels={currentHotels} />
         {/* Pagination Controls */}
         <div className="flex justify-center mt-4">
@@ -73,111 +73,18 @@ const HotelsDisplay = () => {
           ))}
         </div>
 
-      </div> :
-        <div className="container py-20">
+      </div>
+      }
 
-          <div className="flex flex-col items-center justify-center min-h-[40vh]">
-            {/* Cube */}
-            <div className="relative w-[100px] h-[100px] animate-spinCube [transform-style:preserve-3d]">
-              {["front", "back", "right", "left", "top", "bottom"].map((face, i) => (
-                <div
-                  key={face}
-                  className={`absolute w-full h-full ${i % 2 === 0 ? "bg-cyan-500" : "bg-orange-500"
-                    } border-2 border-white rounded shadow-[0_0_15px_white] face-${face}`}
-                />
-              ))}
+      {/* {
+        (currentHotels.length === 0) && <div className="container py-20 h-[40vh]">
+
+          <h1 className="text-2xl font-bold text-center text-red-500">Sorry, no results found. Please adjust your filters.</h1>
+
+        </div>
 
 
-              <style>{`
-          @keyframes spinCube {
-            33% {
-              transform: rotateX(-36deg) rotateY(-405deg);
-            }
-            100% {
-              transform: rotateX(-36deg) rotateY(-405deg);
-            }
-          }
-
-          .animate-spinCube {
-            animation: spinCube 3s infinite cubic-bezier(0.16, 0.61, 0.49, 0.91);
-          }
-
-          .face-top {
-            transform: rotateX(90deg) translateZ(50px);
-            animation: shiftTop 3s infinite ease-out;
-          }
-
-          .face-bottom {
-            transform: rotateX(-90deg) translateZ(50px);
-            animation: shiftBottom 3s infinite ease-out;
-          }
-
-          .face-right {
-            transform: rotateY(90deg) translateZ(50px);
-            animation: shiftRight 3s infinite ease-out;
-          }
-
-          .face-left {
-            transform: rotateY(-90deg) translateZ(50px);
-            animation: shiftLeft 3s infinite ease-out;
-          }
-
-          .face-front {
-            transform: translateZ(50px);
-            animation: shiftFront 3s infinite ease-out;
-          }
-
-          .face-back {
-            transform: rotateY(-180deg) translateZ(50px);
-            animation: shiftBack 3s infinite ease-out;
-          }
-
-          @keyframes shiftTop {
-            33% { transform: rotateX(90deg) translateZ(50px); }
-            50%, 60% { transform: rotateX(90deg) translateZ(100px); }
-            75% { transform: rotateX(90deg) translateZ(50px); }
-          }
-
-          @keyframes shiftBottom {
-            33% { transform: rotateX(-90deg) translateZ(50px); }
-            50%, 60% { transform: rotateX(-90deg) translateZ(100px); }
-            75% { transform: rotateX(-90deg) translateZ(50px); }
-          }
-
-          @keyframes shiftRight {
-            33% { transform: rotateY(90deg) translateZ(50px); }
-            50%, 60% { transform: rotateY(90deg) translateZ(100px); }
-            75% { transform: rotateY(90deg) translateZ(50px); }
-          }
-
-          @keyframes shiftLeft {
-            33% { transform: rotateY(-90deg) translateZ(50px); }
-            50%, 60% { transform: rotateY(-90deg) translateZ(100px); }
-            75% { transform: rotateY(-90deg) translateZ(50px); }
-          }
-
-          @keyframes shiftFront {
-            33% { transform: translateZ(50px); }
-            50%, 60% { transform: translateZ(100px); }
-            75% { transform: translateZ(50px); }
-          }
-
-          @keyframes shiftBack {
-            33% { transform: rotateY(-180deg) translateZ(50px); }
-            50%, 60% { transform: rotateY(-180deg) translateZ(100px); }
-            75% { transform: rotateY(-180deg) translateZ(50px); }
-          }
-        `}</style>
-            </div>
-
-            {/* Loading Text */}
-            <p className="mt-6 text-black text-xl font-medium tracking-wide animate-pulse">
-              Loading, please wait...
-            </p>
-          </div>
-
-        </div>}
-
+      } */}
     </>
   );
 };
@@ -202,13 +109,12 @@ export const HotelCard = ({ hotel }) => {
   };
 
   // Get photos array or create an array with a placeholder
-  const photos = hotel.property_details.photos &&
-    hotel.property_details.photos.length > 0
+  const photos = hotel?.property_details?.photos && hotel.property_details.photos.length > 0
     ? hotel.property_details.photos
     : [{ url: 'https://via.placeholder.com/300x200?text=No+Image' }];
 
   // Format location
-  const location = (isRTL ?  hotel?.location?.addressAr  :  hotel?.location?.addressEn )|| t('hotelsDisplay.noLocation');
+  const location = (isRTL ? hotel?.location?.addressAr : hotel?.location?.addressEn) || t('hotelsDisplay.noLocation');
 
   // Handle next image
   const handleNextImage = (e) => {
@@ -266,7 +172,7 @@ export const HotelCard = ({ hotel }) => {
         </div>
 
         {/* Type badge - Adjust position for RTL */}
-        {hotel?.type && hotel?.type.type && (
+        {hotel?.type && hotel?.type?.type && (
           <span className={`absolute top-3 ${isRTL ? 'right-3' : 'left-3'} bg-white bg-opacity-90 px-2 py-1 text-xs font-semibold rounded z-10`}>
             {t(`hotelsDisplay.listingTypes.${hotel.type.type}`)}
           </span>
@@ -283,7 +189,7 @@ export const HotelCard = ({ hotel }) => {
         {/* Star Rating Section */}
         {(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && (
           <p className="text-sm text-gray-800 mb-2">
-             {t(`hotelsDisplay.listingTypes.${hotel.type.type}`)}
+            {t(`hotelsDisplay.listingTypes.${hotel.type.type}`)}
             {` ${hotel?.rating} `}
             {Array.from({ length: 5 }, (_, index) => (
               <FontAwesomeIcon
@@ -306,7 +212,7 @@ export const HotelCard = ({ hotel }) => {
           {!(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.pricing && (
             <>
               <p className="text-sm m font-bold text-green-600 col-span-2">
-                {t('hotelsDisplay.pricePerNight', { price: hotel.pricing.nightly_rate })}
+                {t('hotelsDisplay.pricePerNight', { price: hotel?.pricing?.nightly_rate })}
               </p>
 
             </>
@@ -314,10 +220,10 @@ export const HotelCard = ({ hotel }) => {
           {(hotel?.type?.type === 'hotel' || hotel?.type?.type === 'guesthouse') && hotel?.roomSummary && (
             <div className="flex gap-1 ">
               {/* <span className="text-sm">Start from</span> */}
-              <span className="text-sm"> ({hotel.roomSummary.maxPrice} - {hotel.roomSummary.minPrice }) </span>
+              <span className="text-sm"> ({hotel.roomSummary.maxPrice} - {hotel.roomSummary.minPrice}) </span>
 
               <p className="text-sm  font-bold text-green-600 col-span-2">
-                {t('hotelsDisplay.pricePerNight', { price: ''})}
+                {t('hotelsDisplay.pricePerNight', { price: '' })}
 
 
               </p>

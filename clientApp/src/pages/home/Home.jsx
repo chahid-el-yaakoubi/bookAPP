@@ -28,8 +28,12 @@ export const Home = () => {
     const [showHotelsMap, setShowHotelsMap] = React.useState(false);
 
     const [isVisible, setIsVisible] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
+    const handleLoading= ()=>{
+        setIsLoading(!isLoading)
+    };
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -47,9 +51,7 @@ export const Home = () => {
         };
     }, [lastScrollY]);
 
-    useEffect(()=>{
-        <HotelsList  city={''} />    
-    }, [])
+  
 
     return (
         <div className="home bg-blue/50  ">
@@ -80,7 +82,7 @@ export const Home = () => {
             <Header type = {"house_rental"}  />
             <div className="mb-10 md:mb-10"> </div>
 
-            <HotelsList  city={''} />    
+            <HotelsList  city={''}  handleLoading={handleLoading}/>    
 
             {/* <Featured /> */}
 

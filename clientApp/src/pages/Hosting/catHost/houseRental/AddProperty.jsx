@@ -5,6 +5,7 @@ import LocationInfo from './steps/LocationInfo';
 import TitleProperty from './steps/Title';
 import BookingRules from './steps/BookingRules';
 import PricingSection from './steps/PricingSection';
+import PropertyFeatures from './steps/PropertyFeatures';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -51,6 +52,8 @@ const AddProperty = () => {
         city: '',
         country: 'morocco',
         region: '',
+        addressAr: '',
+        addressEn: '',
         postal_code: '',
         latitude: '',
         longitude: '',
@@ -59,7 +62,7 @@ const AddProperty = () => {
         floors : 1,
       },
       property_details: {
-        amenities: {
+        propertyFeatures: {
           standard: [],
           custom: []
         }
@@ -152,9 +155,10 @@ const AddProperty = () => {
   const steps = [
     { number: 0, title: "Property Type", key: "type" },
     { number: 1, title: "Location", key: "location" },
-    { number: 2, title: "Title", key: "title" },
-    { number: 3, title: "Rules", key: "rules" },
-    { number: 4, title: "Pricing", key: "pricing" },
+    { number: 2, title: "Property Features", key: "features" },
+    { number: 3, title: "Title", key: "title" },
+    { number: 4, title: "Rules", key: "rules" },
+    { number: 5, title: "Pricing", key: "pricing" },
   ];
 
   const handleSaveAndExit = () => {
@@ -174,10 +178,12 @@ const AddProperty = () => {
       case 1:
         return <LocationInfo propertyData={propertyData} setPropertyData={setPropertyData} />;
       case 2:
-        return <TitleProperty propertyData={propertyData} setPropertyData={setPropertyData} />;
+        return <PropertyFeatures propertyData={propertyData} setPropertyData={setPropertyData} />;
       case 3:
-        return <BookingRules propertyData={propertyData} setPropertyData={setPropertyData} />;
+        return <TitleProperty propertyData={propertyData} setPropertyData={setPropertyData} />;
       case 4:
+        return <BookingRules propertyData={propertyData} setPropertyData={setPropertyData} />;
+      case 5:
         return <PricingSection propertyData={propertyData} setPropertyData={setPropertyData} />;
       default:
         return null;
@@ -198,13 +204,17 @@ const AddProperty = () => {
                propertyData?.location?.neighborhood !== '' &&
                propertyData?.location?.region?.trim() !== '' ;
       
-      case 2: // Title
+      case 2: // Property Features
+        return propertyData?.property_details?.propertyFeatures?.standard?.length > 0 || 
+               propertyData?.property_details?.propertyFeatures?.custom?.length > 0;
+      
+      case 3: // Title
         return propertyData?.title?.trim() !== '';
       
-      case 3: // Rules
+      case 4: // Rules
         return propertyData?.policies?.rules?.max_guests > 0;
       
-      case 4: // Pricing
+      case 5: // Pricing
         return propertyData?.pricing?.nightly_rate !== '' && 
                parseFloat(propertyData?.pricing?.nightly_rate) > 0 || ( propertyData?.pricing?.smart_pricing?.enabled === true && propertyData?.pricing?.smart_pricing?.max > propertyData?.pricing?.smart_pricing?.min);
       

@@ -401,7 +401,6 @@ export const ConfirmLogoutModal = ({ onConfirm, onCancel, t }) => {
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="fixed inset-0 bg-black opacity-50"></div>
             <div className="bg-gray-800 rounded-lg p-6 max-w-sm w-full z-10 relative">
-                <h3 className="text-xl font-bold text-white mb-4">{t('navbar.logoutConfirmation')}</h3>
                 <p className="text-gray-300 mb-6">{t('navbar.logoutMessage')}</p>
                 <div className="flex justify-end space-x-3">
                     <button

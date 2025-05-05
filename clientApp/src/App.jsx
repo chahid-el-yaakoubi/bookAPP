@@ -36,6 +36,7 @@ import { BookingsPage } from './pages/Hosting/catHost/houseRental/Bookings/Booki
 import { Cities } from './pages/Hosting/pagesHost/Cities';
 import Callender from './pages/Hosting/pagesHost/Callender';
 import { HomePrperty } from './pages/Hosting/catHost/houseRental/HomePrperty';
+import BookingConfirmation from './pages/Hosting/catHost/houseRental/Bookings/BookingPdf/page';
 
 function App() {
   const { t } = useTranslation();
@@ -90,7 +91,8 @@ function App() {
 
               {/* bookings */}
               <Route path="/host/properties/bookings" element={<BookingsPage />} />
-              <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} />
+              <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} /> 
+              <Route path="/bookings" element={<BookingConfirmation />} />
               
               
               

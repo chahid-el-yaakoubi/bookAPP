@@ -94,7 +94,7 @@ const ImageGallery = () => {
       data: { images: imagesToDelete }
     };
     try {
-      const response = await deletePhotosProperty(id, formdata) ;
+      const response = await deletePhotosProperty(id, formdata);
 
       if (response.data.success) {
         setImagesToDelete([]);
@@ -146,7 +146,7 @@ const ImageGallery = () => {
         photoUrl: selectedImageData.url,  // Ensure this matches the server's expected field
         newType: imageTypeToSave          // Send the custom type or selected type
       };
-      const response = await updatePhotosProperty(id, formdata );
+      const response = await updatePhotosProperty(id, formdata);
 
       if (response.status === 200) {  // Corrected to check response.status
         setEditingType(false);
@@ -215,14 +215,25 @@ const ImageGallery = () => {
                     className="flex-1 p-2 border rounded-md"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {/* List predefined types (e.g., 'Living Room', 'Bedroom', etc.) */}
                     <option value="">Select image type...</option>
                     <option value="Living Room">Living Room</option>
                     <option value="Bedroom">Bedroom</option>
                     <option value="Kitchen">Kitchen</option>
                     <option value="Bathroom">Bathroom</option>
                     <option value="Exterior">Exterior</option>
-                    <option value="Other">Other...</option> {/* Option for custom type */}
+                    <option value="Dining Room">Dining Room</option>
+                    <option value="Balcony / Terrace">Balcony / Terrace</option>
+                    <option value="Pool">Pool</option>
+                    <option value="Gym / Fitness Area">Gym / Fitness Area</option>
+                    <option value="Lobby / Entrance">Lobby / Entrance</option>
+                    <option value="Reception / Front Desk">Reception / Front Desk</option>
+                    <option value="Hallway / Corridor">Hallway / Corridor</option>
+                    <option value="Parking Area">Parking Area</option>
+                    <option value="Garden / Yard">Garden / Yard</option>
+                    <option value="View / Panorama">View / Panorama</option>
+                    <option value="Meeting Room / Business Area">Meeting Room / Business Area</option>
+                    {/* <option value="Other">Other</option> */}
+
                   </select>
 
                   {/* Input field for custom type if "Other" is selected */}

@@ -7,7 +7,7 @@ const Location = ({ propertyData, setPropertyData }) => {
     const [regions, setRegions] = useState([]);
     const [cities, setCities] = useState([]);
     const [neighborhoods, setNeighborhoods] = useState([]);
-    
+
     // State for selected values
     const [selectedRegion, setSelectedRegion] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
@@ -47,20 +47,20 @@ const Location = ({ propertyData, setPropertyData }) => {
         if (regions.length > 0 && propertyData?.location) {
             // Find region by name
             const regionObj = regions.find(r => r.regionNameEnglish === propertyData.location.region);
-            
+
             if (regionObj) {
                 setSelectedRegion(regionObj._id);
                 setCities(regionObj.cities || []);
-                
+
                 // Use setTimeout to ensure cities state is updated
                 setTimeout(() => {
                     // Find city by name
                     const cityObj = regionObj.cities.find(c => c.cityNameEnglish === propertyData.location.city);
-                    
+
                     if (cityObj) {
                         setSelectedCity(cityObj.id);
                         setNeighborhoods(cityObj.neighborhoods || []);
-                        
+
                         // Use setTimeout to ensure neighborhoods state is updated
                         setTimeout(() => {
                             // Find neighborhood by name
@@ -135,6 +135,11 @@ const Location = ({ propertyData, setPropertyData }) => {
             }
         }
 
+        // Get region, city, and neighborhood names from selections
+        const regionObj = regions.find(r => r._id === selectedRegion);
+        const cityObj = cities.find(c => c.id === selectedCity);
+        const neighborhoodObj = neighborhoods.find(n => n.id === selectedNeighborhood);
+
         setPropertyData(prevData => ({
             ...prevData,
             location: {
@@ -145,7 +150,9 @@ const Location = ({ propertyData, setPropertyData }) => {
                 country: 'morocco', // Set default country as specified in the schema
                 latitude: latitude,
                 longitude: longitude,
-                neighborhood: neighborhoodName
+                neighborhood: neighborhoodName,
+                addressEn: `${regionObj?.regionNameEnglish || ''}- ${cityObj?.cityNameEnglish || ''}- ${neighborhoodObj?.valueEnglish || ''}`,
+                addressAr: `${regionObj?.regionNameArabic || ''}- ${cityObj?.cityNameArabic || ''}- ${neighborhoodObj?.valueArabic || ''}`,
             }
         }));
     }, [selectedRegion, selectedCity, selectedNeighborhood, postalCode, latitude, longitude]);
@@ -193,22 +200,22 @@ const Location = ({ propertyData, setPropertyData }) => {
     const handleCoordinateChange = (e) => {
         const value = e.target.value;
         setCoordinateInput(value);
-        
+
         // Handle empty input - clear coordinates
         if (!value.trim()) {
             setLatitude(null);
             setLongitude(null);
             return;
         }
-        
+
         // Parse coordinates if comma is present
         if (value.includes(',')) {
             const coords = value.split(',').map(coord => coord.trim());
-            
+
             if (coords.length >= 2) {
                 const lat = parseFloat(coords[0]);
                 const lng = parseFloat(coords[1]);
-                
+
                 if (!isNaN(lat) && !isNaN(lng)) {
                     setLatitude(lat.toFixed(6));
                     setLongitude(lng.toFixed(6));
@@ -316,7 +323,7 @@ const Location = ({ propertyData, setPropertyData }) => {
                                 <label className="block text-sm font-medium text-gray-700">
                                     Latitude, Longitude
                                 </label>
-                                <button 
+                                <button
                                     type="button"
                                     onClick={handleGetCurrentLocation}
                                     className="text-sm text-blue flex items-center hover:text-blue"

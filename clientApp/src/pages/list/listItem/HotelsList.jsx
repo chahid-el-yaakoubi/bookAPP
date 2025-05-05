@@ -6,7 +6,6 @@ import { togglePropertyType } from "../../../redux/filtersSlice";
 import { FilterModule } from "../../../components/FilterModule";
 import { Logo } from "../../../components/Navbar";
 import SearchMobile from '../../../components/searchMobile';
-import { getProperties } from "../../../Lib/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
@@ -15,7 +14,10 @@ import {
   faHouseFlag,
   faSwimmingPool,
   faSliders,
-  faArrowUp
+  faArrowUp,
+  faSpinner,
+  faExclamationTriangle,
+  faRedoAlt
 } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../../hooks/useFetch";
 
@@ -28,7 +30,11 @@ const PROPERTY_TYPES = [
   { type: "villa", icon: faSwimmingPool, labelKey: "villa" },
 ];
 
-const HotelsList = ({ city }) => {
+
+const HotelsList = ({ city, }) => {
+
+  const itemapplied = localStorage.getItem('applied-filters-count');
+
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const hotels = useSelector((state) => state.hotels.filteredHotels);
@@ -38,20 +44,34 @@ const HotelsList = ({ city }) => {
   const [showModel, setShowModel] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const [showButton, setShowButton] = useState(false);
-  
-  const { data, loading, error, reFetch } = useFetch(`/api/hotels`);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const req = city.length > 0 ? `?city=${city}` : '';
+  const { data, loading, error, reFetch } = useFetch(`/api/hotels${req}`);
+  const [errorL, setErrorL] = useState(null);
+
+
 
   useEffect(() => {
-    dispatch(setHotels(data));
-    dispatch(applyFilters(filters));
-  }, [data]); // Added filters to dependency array
+    if (data) {
+      dispatch(setHotels(data));
+      dispatch(applyFilters(filters));
+    }
+    if (error) {
+      setErrorL(error)
+    } else {
+    }
+    if (data) {
+      setErrorL(null)
+    }
+  }, [data, dispatch, filters, error]);
 
   // Set default selection to "all" property types on mount
   useEffect(() => {
     PROPERTY_TYPES.forEach(({ type }) => {
       dispatch(togglePropertyType(type));
     });
-  }, [dispatch]); // Added dispatch to dependency array
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(applyFilters(filters));
@@ -117,9 +137,61 @@ const HotelsList = ({ city }) => {
     return !!propertyTypes[type.toLowerCase()];
   }, [propertyTypes]);
 
+  // Function to handle data refresh
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await reFetch();
+    } finally {
+      // Set a small timeout to ensure UI updates properly
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 500);
+    }
+  }, [reFetch]);
+
   return (
     <div className="w-full relative mt-10">
-      
+      {/* Loading Indicator - Enhanced version */}
+      {(loading || isRefreshing) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50 backdrop-blur-sm">
+          <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+            <FontAwesomeIcon
+              icon={faSpinner}
+              className="text-blue text-4xl animate-spin mb-3"
+              aria-hidden="true"
+            />
+            <span className="text-lg font-medium text-gray-800">
+              {isRefreshing ? t('hotelsList.refreshing') || 'Refreshing data...' : t('hotelsList.loading') || 'Loading...'}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Error Handling - Enhanced version */}
+      {errorL && !loading && !isRefreshing && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
+          <div className="flex flex-col items-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+            <FontAwesomeIcon
+              icon={faExclamationTriangle}
+              className="text-red-500 text-4xl mb-4"
+              aria-hidden="true"
+            />
+            <span className="text-lg font-medium text-gray-800 mb-4 text-center">
+              {t('hotelsList.errorLoading') || 'Error loading data. Please try again.'}
+            </span>
+            <button
+              onClick={handleRefresh}
+              className="flex items-center gap-2 px-4 py-2 bg-blue text-white rounded-md hover:bg-blue-dark transition-colors"
+              disabled={loading || isRefreshing}
+            >
+              <FontAwesomeIcon icon={faRedoAlt} className={isRefreshing ? 'animate-spin' : ''} />
+              <span>{t('hotelsList.refresh') || 'Refresh Data'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Existing content with higher z-index */}
       <div className="relative">
         {/* Navigation Bar - Remove decorative elements for cleaner look */}
@@ -181,6 +253,7 @@ const HotelsList = ({ city }) => {
                         }
                         ${isFilterActive(type) ? 'ring-2 ring-blue ring-opacity-50' : ''}
                       `}
+                      disabled={loading || isRefreshing}
                     >
                       <FontAwesomeIcon icon={icon} className="text-lg" />
                       <span className="text-sm font-medium whitespace-nowrap">
@@ -211,10 +284,27 @@ const HotelsList = ({ city }) => {
               <button
                 onClick={toggleFilterModal}
                 className="flex items-center gap-2 py-2.5 px-4 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-700 text-sm font-medium bg-white hover:bg-gray-50"
+                disabled={loading || isRefreshing}
               >
                 <FontAwesomeIcon icon={faSliders} />
                 <span>{t('hotelsList.filters')}</span>
+                {itemapplied - 3}
+
               </button>
+
+              {/* Refresh Button */}
+              {hotels.length <= 0 ? <button
+                onClick={handleRefresh}
+                className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:shadow-md transition-all duration-200 text-gray-700 bg-white hover:bg-gray-50"
+                disabled={loading || isRefreshing}
+                aria-label={t('hotelsList.refresh') || 'Refresh Data'}
+              >
+                <FontAwesomeIcon
+                  icon={faRedoAlt}
+                  className={`text-lg ${isRefreshing ? 'animate-spin text-blue' : ''}`}
+                />
+              </button> : ''}
+
             </div>
           </div>
         </div>
@@ -233,7 +323,7 @@ const HotelsList = ({ city }) => {
           </button>
         )}
       </div>
-      
+
     </div>
   );
 };

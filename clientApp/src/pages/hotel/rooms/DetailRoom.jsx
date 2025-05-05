@@ -243,14 +243,7 @@ function RoomDetail({ room, onClose }) {
                                     <div>
                                         <h3 className={`text-xl font-semibold text-gray-900 mb-4 `}>{t('room_features')}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                            {(room.roomFeatures || [
-                                                "air_conditioning",
-                                                "blackout_curtains",
-                                                "soundproofing",
-                                                "safe",
-                                                "minibar",
-                                                "wardrobe"
-                                            ]).map((feature, index) => (
+                                            {(room.roomFeatures || [ ]).map((feature, index) => (
                                                 <div key={index} className={`flex items-center`}>
                                                     <div className={`h-2 w-2 rounded-full bg-blue ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
                                                     <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(feature)}</span>

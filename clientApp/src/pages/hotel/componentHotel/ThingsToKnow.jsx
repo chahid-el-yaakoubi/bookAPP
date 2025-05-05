@@ -308,16 +308,16 @@ export function ThingsToKnow({ propertyData }) {
           value: `${getRefundDays()} ${t('rules.days')}`,
           description: t('rules.cancellationDescription')
         },
-        {
-          label: t('rules.reviewThePolicy'),
-          value: t('rules.viewDetails'),
-          description: t('rules.policyReviewDescription')
-        },
-        {
-          label: t('rules.damageProtection'),
-          value: t('rules.required'),
-          description: t('rules.damageProtectionDescription')
-        }
+        // {
+        //   label: t('rules.reviewThePolicy'),
+        //   value: t('rules.viewDetails'),
+        //   description: t('rules.policyReviewDescription')
+        // },
+        // {
+        //   label: t('rules.damageProtection'),
+        //   value: t('rules.required'),
+        //   description: t('rules.damageProtectionDescription')
+        // }
       ]
     }
   };

@@ -144,7 +144,7 @@ const HotelSchema = new mongoose.Schema({
         totalUsers: {
             type: Number
         },
-        viewType : {type: String},
+        viewType : { type: [String] },
     },
     checkout_instructions: { tasks: [TaskSchema], },
     location: {

@@ -11,6 +11,8 @@ import citiesRouter from "./routes/cities.js";
 import houseRentalRouter from "./routes/houseRental.js";
 import shopsRouter from "./routes/shopSaleRent.js";
 import carsRouter from "./routes/cars.js";
+import reviewsRouter from "./routes/reviewRoutes.js";
+
 import BookingsRouter from './routes/bookings.js'
 
 dotenv.config();
@@ -51,6 +53,7 @@ app.use('/api/cities', citiesRouter);
 app.use('/api/house-rentals', houseRentalRouter);
 app.use('/api/shops', shopsRouter);
 app.use('/api/cars', carsRouter);
+app.use('/api/reviews', reviewsRouter);
 
 
 

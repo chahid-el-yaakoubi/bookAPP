@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react"
 import {
   format,
@@ -16,24 +15,35 @@ import {
 import { getPropertiesRooms } from "../../../../../../Lib/api"
 
 export function BookingForm({ booking, onSubmit, onCancel, houses, created_by }) {
-  console.log(houses)
+  console.log(booking?.propertyId?._id)
   // Form state
   const [formData, setFormData] = useState(
     booking
       ? {
         guestName: booking.guestName,
-        propertyId: booking.propertyId,
-        roomType: "standard", // Assuming this is not in the original data
+        guestPhone: booking.guestPhone || "", // Added guest phone field
+        propertyId: booking?.propertyId?._id,
+        roomType: booking.roomId._id || "", // Changed from roomType to roomId
         dateRange: {
           from: new Date(booking.startDate),
           to: new Date(booking.endDate),
         },
-        numberOfGuests: 2, // Assuming this is not in the original data
-        specialRequests: "", // Assuming this is not in the original data
+        numberOfGuests: booking?.guests,
+        specialRequests: booking?.notes || "", // Changed to match schema field
         status: booking.status,
+        // Payment fields
+        payment: booking.payment || {
+          method: "cash",
+          cardLast4: "",
+          cardBrand: "",
+          transactionId: "",
+          cashReceived: true,
+          receiptNumber: "",
+        }
       }
       : {
         guestName: "",
+        guestPhone: "", // Added guest phone field
         propertyId: "",
         roomType: "",
         dateRange: {
@@ -43,6 +53,15 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
         numberOfGuests: 2,
         specialRequests: "",
         status: "pending",
+        // Default payment fields
+        payment: {
+          method: "cash",
+          cardLast4: "",
+          cardBrand: "",
+          transactionId: "",
+          cashReceived: true,
+          receiptNumber: "",
+        }
       }
   )
 
@@ -53,7 +72,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
 
   const getData = async () => {
     if (!formData.propertyId) return;
-    
+
     try {
       const response = await getPropertiesRooms(formData.propertyId);
       const data = response.data.map(room => ({
@@ -62,20 +81,20 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
         price: room.price
       }));
       setRooms(data);
-  
+
       const gethouse = houses.find(house => house.id === formData.propertyId);
       setSelectedhouse(gethouse);
-      
+
       // Set default price based on house price
       if (gethouse) {
         setBasePrice(gethouse.price || 100);
       }
-  
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   // Call getData when the component mounts or propertyId changes
   useEffect(() => {
     getData();
@@ -97,7 +116,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
       ...prev,
       guestName: value
     }));
-    
+
     // Update suggestions
 
     // Clear error for this field
@@ -149,6 +168,28 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
       setErrors(prev => {
         const newErrors = { ...prev }
         delete newErrors[name]
+        return newErrors
+      })
+    }
+  }
+
+  // Handle payment field changes
+  const handlePaymentChange = (e) => {
+    const { name, value, type, checked } = e.target
+
+    setFormData(prev => ({
+      ...prev,
+      payment: {
+        ...prev.payment,
+        [name]: type === 'checkbox' ? checked : value
+      }
+    }))
+
+    // Clear error for this field when user changes it
+    if (errors[`payment.${name}`]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[`payment.${name}`]
         return newErrors
       })
     }
@@ -206,6 +247,12 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
       newErrors.guestName = "Guest name must be at least 2 characters."
     }
 
+    if (!formData.guestPhone) {
+      newErrors.guestPhone = "Guest phone number is required."
+    } else if (!/^\+?[0-9\s\-()]{8,15}$/.test(formData.guestPhone)) {
+      newErrors.guestPhone = "Please enter a valid phone number."
+    }
+
     if (!formData.propertyId) {
       newErrors.propertyId = "Please select a property."
     }
@@ -233,6 +280,34 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
       newErrors.numberOfGuests = "Maximum 10 guests allowed."
     }
 
+    // Payment validation
+    if (!formData.payment.method) {
+      newErrors["payment.method"] = "Payment method is required."
+    }
+
+    // Validate card details if payment method is card
+    if (formData.payment.method === "card") {
+      if (!formData.payment.cardLast4 || !/^\d{4}$/.test(formData.payment.cardLast4)) {
+        newErrors["payment.cardLast4"] = "Last 4 digits of card are required."
+      }
+      if (!formData.payment.cardBrand) {
+        newErrors["payment.cardBrand"] = "Card brand is required."
+      }
+      if (!formData.payment.transactionId) {
+        newErrors["payment.transactionId"] = "Transaction ID is required for card payments."
+      }
+    }
+
+    // Validate bank transfer details
+    if (formData.payment.method === "bank_transfer" && !formData.payment.receiptNumber) {
+      newErrors["payment.receiptNumber"] = "Receipt number is required for bank transfers."
+    }
+
+    // Validate transaction ID for online payments
+    if (["bank_transfer", "paypal"].includes(formData.payment.method) && !formData.payment.transactionId) {
+      newErrors["payment.transactionId"] = "Transaction ID is required."
+    }
+
     return newErrors
   }
 
@@ -252,17 +327,27 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
       // id: booking?.id || `BK${Math.floor(Math.random() * 10000)}`,
       created_by: created_by,
       guestName: formData.guestName,
+      guestPhone: formData.guestPhone,
       userId: 'rfr',
       propertyId: formData.propertyId,
-      roomType: formData.roomType || null,
+      roomId: formData.roomType || null, // Changed from roomType to roomId
       startDate: format(formData.dateRange.from, "yyyy-MM-dd"),
       endDate: format(formData.dateRange.to, "yyyy-MM-dd"),
       status: formData.status,
       guests: formData.numberOfGuests,
       totalPrice: totalPrice,
+      notes: formData.specialRequests, // Changed from specialRequests to notes
+      payment: {
+        method: formData.payment.method,
+        cardLast4: formData.payment.cardLast4 || undefined,
+        cardBrand: formData.payment.cardBrand || undefined,
+        transactionId: formData.payment.transactionId || undefined,
+        cashReceived: formData.payment.method === "cash" ? formData.payment.cashReceived : undefined,
+        receiptNumber: formData.payment.method === "bank_transfer" ? formData.payment.receiptNumber : undefined
+      }
     }
     booking ? onSubmit(booking._id, newBooking) : onSubmit(newBooking);
-    
+
   }
 
   // Calendar helper functions
@@ -460,7 +545,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Guest Name - Changed to input with datalist for suggestions */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Guest Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Guest Name*</label>
               <div className="relative">
                 <input
                   type="text"
@@ -470,6 +555,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
                   list="guestSuggestions"
                   className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
                   placeholder="Enter guest name"
+                  required
                 />
                 <datalist id="guestSuggestions">
                   {suggestedGuests.map((guest) => (
@@ -480,18 +566,34 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
               {errors.guestName && <p className="mt-1 text-sm text-red-600">{errors.guestName}</p>}
             </div>
 
+            {/* Guest Phone Number - New field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Guest Phone*</label>
+              <input
+                type="tel"
+                name="guestPhone"
+                value={formData.guestPhone}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                placeholder="+1234567890"
+                required
+              />
+              {errors.guestPhone && <p className="mt-1 text-sm text-red-600">{errors.guestPhone}</p>}
+            </div>
+
             {/* Property */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Property</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Property*</label>
               <select
                 name="propertyId"
                 value={formData.propertyId}
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                required
               >
                 <option value="">Select a property</option>
                 {houses?.map((property) => (
-                  <option selected={property.id === formData.propertyId } key={property.id} value={property.id}>
+                  <option selected={property.id === formData.propertyId} key={property.id} value={property.id}>
                     {property.name}
                   </option>
                 ))}
@@ -502,12 +604,13 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
             {/* Room Type - Only show for hotel or guesthouse types */}
             {(selectedHouse?.type?.includes('hotel') || selectedHouse?.type?.includes('guesthouse')) && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Room Type*</label>
                 <select
                   name="roomType"
                   value={formData.roomType}
                   onChange={handleRoomTypeChange}
                   className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                  required
                 >
                   <option value="">Select room type</option>
                   {rooms?.map(room => (
@@ -522,7 +625,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
 
             {/* Number of Guests */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Number of Guests</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Number of Guests*</label>
               <input
                 type="number"
                 name="numberOfGuests"
@@ -531,13 +634,14 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
                 value={formData.numberOfGuests}
                 onChange={handleNumberChange}
                 className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                required
               />
               {errors.numberOfGuests && <p className="mt-1 text-sm text-red-600">{errors.numberOfGuests}</p>}
             </div>
 
             {/* Date Range */}
             <div className="col-span-2 relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stay Dates</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stay Dates*</label>
               <button
                 type="button"
                 onClick={() => setShowCalendar(!showCalendar)}
@@ -591,8 +695,159 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
               )}
             </div>
 
+            {/* Payment Section */}
+            <div className="col-span-2 border-t pt-4 mt-2">
+              <h3 className="text-lg font-medium mb-4">Payment Information</h3>
+
+              {/* Payment Method */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method*</label>
+                <select
+                  name="method"
+                  value={formData.payment.method}
+                  onChange={handlePaymentChange}
+                  className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                  required
+                >
+                  <option value="cash">Cash</option>
+                  <option value="card">Credit/Debit Card</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="paypal">PayPal</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors["payment.method"] && <p className="mt-1 text-sm text-red-600">{errors["payment.method"]}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Card Payment Fields */}
+                {formData.payment.method === "card" && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Last 4 Digits*</label>
+                      <input
+                        type="text"
+                        name="cardLast4"
+                        value={formData.payment.cardLast4}
+                        onChange={handlePaymentChange}
+                        maxLength="4"
+                        pattern="\d{4}"
+                        className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                        placeholder="1234"
+                        required
+                      />
+                      {errors["payment.cardLast4"] && <p className="mt-1 text-sm text-red-600">{errors["payment.cardLast4"]}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Card Brand*</label>
+                      <select
+                        name="cardBrand"
+                        value={formData.payment.cardBrand}
+                        onChange={handlePaymentChange}
+                        className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm
+
+                        focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                        required
+                      >
+                        <option value="">Select card brand</option>
+                        <option value="visa">Visa</option>
+                        <option value="mastercard">MasterCard</option>
+                        <option value="amex">American Express</option>
+                        <option value="discover">Discover</option>
+                        <option value="other">Other</option>
+                      </select>
+                      {errors["payment.cardBrand"] && <p className="mt-1 text-sm text-red-600">{errors["payment.cardBrand"]}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID*</label>
+                      <input
+                        type="text"
+                        name="transactionId"
+                        value={formData.payment.transactionId}
+                        onChange={handlePaymentChange}
+                        className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                        placeholder="Enter transaction ID"
+                        required
+                      />
+                      {errors["payment.transactionId"] && <p className="mt-1 text-sm text-red-600">{errors["payment.transactionId"]}</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* Cash Payment Fields */}
+                {formData.payment.method === "cash" && (
+                  <div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="cashReceived"
+                        name="cashReceived"
+                        checked={formData.payment.cashReceived}
+                        onChange={handlePaymentChange}
+                        className="h-4 w-4 text-blue focus:ring-blue border-gray-300 rounded"
+                      />
+                      <label htmlFor="cashReceived" className="ml-2 block text-sm text-gray-700">
+                        Cash received
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {/* Bank Transfer Fields */}
+                {formData.payment.method === "bank_transfer" && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Receipt Number*</label>
+                      <input
+                        type="text"
+                        name="receiptNumber"
+                        value={formData.payment.receiptNumber}
+                        onChange={handlePaymentChange}
+                        className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                        placeholder="Enter receipt number"
+                        required
+                      />
+                      {errors["payment.receiptNumber"] && <p className="mt-1 text-sm text-red-600">{errors["payment.receiptNumber"]}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID*</label>
+                      <input
+                        type="text"
+                        name="transactionId"
+                        value={formData.payment.transactionId}
+                        onChange={handlePaymentChange}
+                        className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                        placeholder="Enter transaction ID"
+                        required
+                      />
+                      {errors["payment.transactionId"] && <p className="mt-1 text-sm text-red-600">{errors["payment.transactionId"]}</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* PayPal Fields */}
+                {formData.payment.method === "paypal" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID*</label>
+                    <input
+                      type="text"
+                      name="transactionId"
+                      value={formData.payment.transactionId}
+                      onChange={handlePaymentChange}
+                      className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
+                      placeholder="Enter transaction ID"
+                      required
+                    />
+                    {errors["payment.transactionId"] && <p className="mt-1 text-sm text-red-600">{errors["payment.transactionId"]}</p>}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Status */}
-            <div className="col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select
                 name="status"
@@ -600,58 +855,48 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
               >
-                <option value="confirmed">Confirmed</option>
                 <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="checked_in">Checked In</option>
+                <option value="checked_out">Checked Out</option>
                 <option value="cancelled">Cancelled</option>
               </select>
-              {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status}</p>}
             </div>
 
-            {/* Special Requests */}
+            {/* Total Price Display */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Total Price</label>
+              <div className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3">
+                ${totalPrice.toFixed(2)}
+              </div>
+            </div>
+
+            {/* Special Requests - Full width */}
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
               <textarea
                 name="specialRequests"
                 value={formData.specialRequests}
                 onChange={handleChange}
-                rows={3}
+                rows="3"
                 className="w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:border-blue focus:outline-none focus:ring-1 focus:ring-blue"
-                placeholder="Any special requests or notes..."
-              />
-              {errors.specialRequests && <p className="mt-1 text-sm text-red-600">{errors.specialRequests}</p>}
+                placeholder="Enter any special requests or notes"
+              ></textarea>
             </div>
           </div>
 
-          {/* Price Display */}
-          <div className="bg-gray-100 p-4 rounded-md">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Total Price:</span>
-              <span className="text-xl font-bold">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "MAD",
-                }).format(totalPrice)}
-              </span>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {basePrice > 0 ? `MAD${basePrice} per night × {formData.dateRange?.from && formData.dateRange?.to ? 
-                Math.ceil((new Date(formData.dateRange.to).getTime() - new Date(formData.dateRange.from).getTime()) / (1000 * 60 * 60 * 24)) : 
-                1} nights` : 'Select property and dates to calculate price'}
-            </p>
-          </div>
-
-          {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-4 border-t">
+          {/* Form Buttons */}
+          <div className="flex justify-end space-x-3 border-t pt-4">
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue rounded-md hover:bg-blue"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue border border-transparent rounded-md shadow-sm hover:bg-blue-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
             >
               {booking ? "Update Booking" : "Create Booking"}
             </button>

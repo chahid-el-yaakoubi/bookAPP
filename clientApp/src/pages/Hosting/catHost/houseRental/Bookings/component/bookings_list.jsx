@@ -3,12 +3,14 @@ import { useContext, useEffect, useState } from "react"
 import { BookingForm } from "./booking_form"
 import { createBooking, deleteBooking, getBookings, getProperties, updateBooking } from "../../../../../../Lib/api"
 import { AuthContext } from "../../../../../../contextApi/AuthContext"
+import BookingConfirmation from "../BookingPdf/page"
 
 export function BookingsList() {
   const [data, setData] = useState([])
   const [isAddingBooking, setIsAddingBooking] = useState(false)
   const [editingBooking, setEditingBooking] = useState(null)
-  const [removeBooking, setRemoveBooking] = useState(null)
+  const [showPDFModal, setShowPDFModal] = useState(null)
+  const [selectedBooking, setSelectedBooking] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchTerm, setSearchTerm] = useState("")
@@ -39,12 +41,12 @@ export function BookingsList() {
     }
   };
 
- 
+
   // Handle deleting a booking
   const handleDeleteBooking = async (id) => {
     if (window.confirm("Are you sure you want to delete this booking?")) {
       const res = await deleteBooking(id);
-      if(res.status === 200){
+      if (res.status === 200) {
         getData()
       }
 
@@ -82,7 +84,10 @@ export function BookingsList() {
   const filteredData = sortedData.filter((booking) => {
     const matchesSearch =
       booking.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking?.bookingId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+
       booking._id.toLowerCase().includes(searchTerm.toLowerCase())
+
     const matchesStatus = statusFilter === "all" || booking.status === statusFilter
 
     return matchesSearch && matchesStatus
@@ -277,10 +282,12 @@ export function BookingsList() {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentRows.length > 0 ? (
               currentRows.map((booking, i) => (
+
                 <tr key={booking._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{i<10 ? ("BK_0" + (i+1)) : 'BK_' +(i+1)}</td>
+                  {console.log(booking)}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.bookingId}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking.guestName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{getPropertyName(booking.propertyId)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking?.propertyId?.title}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(booking.startDate)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(booking.endDate)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -312,6 +319,15 @@ export function BookingsList() {
                         className="text-green-600 hover:text-green-900"
                       >
                         View
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowPDFModal(true);
+                          setSelectedBooking(booking);
+                        }}
+                        className="text-orange-600 hover:text-orange-900"
+                      >
+                        PDF
                       </button>
                     </div>
                   </td>
@@ -383,6 +399,8 @@ export function BookingsList() {
       {editingBooking && (
         <BookingForm booking={editingBooking} onSubmit={handleUpdateBooking} onCancel={() => setEditingBooking(null)} houses={houses} created_by={created_by} />
       )}
+
+      {showPDFModal && <BookingConfirmation Data={selectedBooking} onClose={() => setShowPDFModal(false)} />}
     </div>
   )
 }

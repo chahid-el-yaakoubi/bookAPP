@@ -17,6 +17,7 @@ import {
   toggleBookingOption,
   toggleExceptionalProperty,
   togglePropertyType,
+  toggleSafetyFeature,
   clearFilters,
   setPriceRange,
   setSortByPrice
@@ -31,6 +32,7 @@ export const FilterModule = ({ onClose }) => {
   const filters = useSelector((state) => state.filters) || {
     priceRange: { min: 200, max: 2000 },
     amenities: {},
+    safety_features: {},
     bookingOptions: {},
     exceptionalProperties: {},
     propertyTypes: {},
@@ -42,6 +44,16 @@ export const FilterModule = ({ onClose }) => {
   useEffect(() => {
     dispatch(applyFilters(filters));
   }, [dispatch, filters]);
+
+  useEffect(() => {
+    // Disable scrolling on the body when the modal is open
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      // Re-enable scrolling when the modal is closed
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const priceSortOptions = [
     { id: 'default', label: t('FilterModule.filters.recommended'), },
@@ -58,6 +70,7 @@ export const FilterModule = ({ onClose }) => {
   };
 
   const handleAmenityToggle = (id) => handleToggle(toggleAmenity, id);
+  const handleSafetyFeatureToggle = (id) => handleToggle(toggleSafetyFeature, id);
   const handlePropertyTypeToggle = (id) => handleToggle(togglePropertyType, id);
 
   const handleClearFilters = () => {
@@ -112,17 +125,17 @@ export const FilterModule = ({ onClose }) => {
       items: [
         { id: 'wifi', label: t('FilterModule.amenities.wifi'), icon: <FaWifi /> },
         { id: 'tv', label: t('FilterModule.amenities.tv'), icon: <FaTv /> },
-        { id: 'ac', label: t('FilterModule.amenities.ac'), icon: <FaSnowflake /> },
+        { id: 'airConditioning', label: t('FilterModule.amenities.ac'), icon: <FaSnowflake /> },
         { id: 'heating', label: t('FilterModule.amenities.heating'), icon: <FaFire /> },
-        { id: 'hot-water', label: t('FilterModule.amenities.hotWater'), icon: <FaShower /> },
-        { id: 'parking', label: t('FilterModule.amenities.parking'), icon: <FaParking /> },
+        { id: 'hotWater', label: t('FilterModule.amenities.hotWater'), icon: <FaShower /> },
+        { id: 'freeParking', label: t('FilterModule.amenities.parking'), icon: <FaParking /> },
       ]
     },
     {
       title: t('FilterModule.amenities.essentials'),
       items: [
-        { id: 'kitchen', label: t('FilterModule.amenities.kitchen'), icon: <FaUtensils /> },
-        { id: 'washer', label: t('FilterModule.amenities.washer'), icon: <FaTshirt /> },
+        { id: 'fullyEquippedKitchen', label: t('FilterModule.amenities.kitchen'), icon: <FaUtensils /> },
+        { id: 'washingMachine', label: t('FilterModule.amenities.washer'), icon: <FaTshirt /> },
         { id: 'workspace', label: t('FilterModule.amenities.workspace'), icon: <FaBriefcase /> },
         { id: 'elevator', label: t('FilterModule.amenities.elevator'), icon: <MdElevator /> },
       ]
@@ -131,34 +144,35 @@ export const FilterModule = ({ onClose }) => {
       title: t('FilterModule.amenities.features'),
       items: [
         { id: 'garden', label: t('FilterModule.amenities.garden'), icon: <FaTree /> },
-        { id: 'pool', label: t('FilterModule.amenities.pool'), icon: <FaSwimmingPool /> },
-        { id: 'terrace', label: t('FilterModule.amenities.terrace'), icon: <FaChair /> },
+        { id: 'indoorPool', label: t('FilterModule.amenities.pool'), icon: <FaSwimmingPool /> },
+        { id: 'terraceBalcony', label: t('FilterModule.amenities.terrace'), icon: <FaChair /> },
         { id: 'jacuzzi', label: t('FilterModule.amenities.jacuzzi'), icon: <FaHotTub /> },
-        { id: 'bbq', label: t('FilterModule.amenities.bbq'), icon: <FaFire /> },
-        { id: 'breakfast', label: t('FilterModule.amenities.breakfast'), icon: <FaCoffee /> },
+        { id: 'bbqArea', label: t('FilterModule.amenities.bbq'), icon: <FaFire /> },
+        { id: 'breakfastIncluded', label: t('FilterModule.amenities.breakfast'), icon: <FaCoffee /> },
       ]
     },
     {
       title: t('FilterModule.amenities.security'),
       items: [
-        { id: 'smoke-detector', label: t('FilterModule.amenities.smokeDetector'), icon: <FaLockOpen /> },
-        { id: 'carbon-detector', label: t('FilterModule.amenities.carbonDetector'), icon: <FaLock /> },
-        { id: 'security', label: t('FilterModule.amenities.security24'), icon: <FaLock /> },
-        { id: 'camera', label: t('FilterModule.amenities.camera'), icon: <FaCamera /> },
+        { id: 'smoke_detector', label: t('FilterModule.amenities.smokeDetector'), icon: <FaLockOpen /> },
+        { id: 'carbon_monoxide_detector', label: t('FilterModule.amenities.carbonDetector'), icon: <FaLock /> },
+        { id: 'security_guard', label: t('FilterModule.amenities.security24'), icon: <FaLock /> },
+        { id: 'security_camera', label: t('FilterModule.amenities.camera'), icon: <FaCamera /> },
       ]
-    },
+    }, 
   ];
 
   const hasActiveFilters = () => {
     const propertyTypesActive = filters.propertyTypes && Object.values(filters.propertyTypes).some(value => value);
     const amenitiesActive = filters.amenities && Object.values(filters.amenities).some(value => value);
+    const safetyFeaturesActive = filters.safety_features && Object.values(filters.safety_features).some(value => value);
     const bookingOptionsActive = filters.bookingOptions && Object.values(filters.bookingOptions).some(value => value);
     const exceptionalPropertiesActive = filters.exceptionalProperties && Object.values(filters.exceptionalProperties).some(value => value);
-    const priceRangeActive = filters.priceRange?.min !== 200 || filters.priceRange?.max !== 2000;
+    const priceRangeActive = filters.priceRange?.min !== 100 || filters.priceRange?.max !== 2000;
     const sortActive = filters.sortByPrice !== 'default';
 
-    return propertyTypesActive || amenitiesActive || bookingOptionsActive ||
-      exceptionalPropertiesActive || priceRangeActive || sortActive;
+    return propertyTypesActive || amenitiesActive || safetyFeaturesActive ||
+      bookingOptionsActive || exceptionalPropertiesActive || priceRangeActive || sortActive;
   };
 
   const isFilterActive = (type, id) => {
@@ -177,6 +191,7 @@ export const FilterModule = ({ onClose }) => {
       {children}
     </button>
   );
+
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center px-4 z-50">
       <div className={`bg-white rounded-2xl max-w-[480px]  w-full max-h-[90vh] shadow-xl ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -199,7 +214,6 @@ export const FilterModule = ({ onClose }) => {
           <section className="p-4 border-b">
             <h3 className="text-lg font-medium mb-4">{t('FilterModule.filters.propertyType')}</h3>
             <div className="grid grid-cols-2 gap-3">
-
               {propertyTypes.map(type => (
                 <FilterButton
                   key={type.id}
@@ -213,12 +227,8 @@ export const FilterModule = ({ onClose }) => {
                     {type.icon}
                   </span>
                   <span>{type.label}</span>
-
-                 
                 </FilterButton>
               ))}
-
-
             </div>
           </section>
 
@@ -228,9 +238,9 @@ export const FilterModule = ({ onClose }) => {
             <div className="space-y-6">
               {/* Display current price range */}
               <div className="flex justify-between items-center px-2">
-                <span className="font-medium text-lg">${filters.priceRange?.min || 200}</span>
+                <span className="font-medium text-lg">MAD {filters.priceRange?.min || 100}</span>
                 <span className="text-gray-500">{t('FilterModule.filters.to')}</span>
-                <span className="font-medium text-lg">${filters.priceRange?.max || 2000}</span>
+                <span className="font-medium text-lg">MAD {filters.priceRange?.max || 2000}</span>
               </div>
 
               {/* Min price slider */}
@@ -291,13 +301,13 @@ export const FilterModule = ({ onClose }) => {
                 {category.items.map(item => (
                   <FilterButton
                     key={item.id}
-                    type="amenities"
+                    type={category.title === t('FilterModule.amenities.security') ? 'safety_features' : 'amenities'}
                     id={item.id}
-                    isActive={isFilterActive('amenities', item.id)}
-                    onClick={() => handleAmenityToggle(item.id)}
+                    isActive={isFilterActive(category.title === t('FilterModule.amenities.security') ? 'safety_features' : 'amenities', item.id)}
+                    onClick={() => (category.title === t('FilterModule.amenities.security') ? handleSafetyFeatureToggle(item.id) : handleAmenityToggle(item.id))}
                     className="flex items-center gap-2 px-4 py-2 rounded-full"
                   >
-                    <span className={isFilterActive('amenities', item.id) ? 'text-white' : 'text-gray-700'}>
+                    <span className={isFilterActive(category.title === t('FilterModule.amenities.security') ? 'safety_features' : 'amenities', item.id) ? 'text-white' : 'text-gray-700'}>
                       {item.icon}
                     </span>
                     <span>{item.label}</span>

@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import HotelsDisplay from '../list/listItem/HotelsDisplay'
 import HotelsList from '../list/listItem/HotelsList'
 import { MapComponent } from '../maps/maps'
+
 import { FaMap } from 'react-icons/fa'
 // import { MoroccanExperiences } from '../../components/moroccanExperiences/MoroccanExperiences'
 

@@ -19,8 +19,8 @@ router.get('/find/:id', getHotel)
 // GET ALL
 router.get('/', getHotels)
 //  get hotels admins
-router.get('/:id', getAdminHotels)
-router.get('/partner/find', getPartners)
+router.get('/:id/:type', verifyAdmin, getAdminHotels)
+router.get('/partner/admin/find', getPartners)
 
 // COUNT BY CITY
 router.get('/contByCity/count/:id', countByCity)

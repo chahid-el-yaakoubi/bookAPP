@@ -91,14 +91,25 @@ export const creatHotel = async (req, res, next) => {
 
 
 export const updateHotel = async (req, res, next) => {
+  const { id } = req.params;
+  const { adminId } = req.query;
 
   try {
-    const updateHotel = await Hotel.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-    res.status(200).json(updateHotel);
+    const hotel = await Hotel.findById(id);
+
+    if (hotel && (hotel.created_by.toString() === adminId || req.user.adminFull)) {
+      const updatedHotel = await Hotel.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+      return res.status(200).json(updatedHotel); 
+    }
+
+    // This will only execute if the above condition fails
+    return res.status(403).json({ message: "Unauthorized: You do not have permission to update this hotel." });
+
   } catch (err) {
     next(err);
   }
-}
+};
+
 
 export const updatePhotoType = async (req, res, next) => {
   const { id } = req.params; // Hotel ID
@@ -192,7 +203,7 @@ export const getHotels = async (req, res, next) => {
           select: 'status roomNumber type price capacity amenities beds bathrooms photos'
         })
         .limit(limit ? parseInt(limit) : 0);
-      
+
       // Transform the data to include detailed room information
       listings = listings.map(hotel => ({
         ...hotel.toObject(),
@@ -236,7 +247,7 @@ export const getHotels = async (req, res, next) => {
       }));
     } else {
       listings = await Hotel.find(query).limit(limit ? parseInt(limit) : 0);
-      
+
       // Fetch room details for each hotel
       listings = await Promise.all(listings.map(async hotel => {
         const rooms = await Hotel.findById(hotel._id).populate('rooms');
@@ -263,16 +274,84 @@ export const getHotels = async (req, res, next) => {
 
 
 export const getAdminHotels = async (req, res, next) => {
-  const { id } = req.params;
+  const { id, type } = req.params;
   try {
-    const hotels = await Hotel.find({ created_by: id });
-    res.status(200).json(hotels);
+    const query = { created_by: id };
+
+    if (type === 'multi') {
+      query["type.type"] = { $in: ['hotel', 'guesthouse'] };
+    } else if (type === 'single') {
+      query["type.type"] = { $in: ['house', 'apartment', 'villa'] };
+    }
+
+    let listings;
+    if (type === 'multi') {
+      listings = await Hotel.find(query)
+        .populate({
+          path: 'rooms',
+          select: 'status roomNumber type price capacity amenities beds bathrooms photos'
+        });
+
+      // Transform the data to include detailed room information
+      listings = listings.map(hotel => ({
+        ...hotel.toObject(),
+        roomSummary: {
+          totalRooms: hotel.rooms?.length || 0,
+          roomStatus: {
+            available: hotel.rooms?.filter(room => room.status === 'available').length || 0,
+            booked: hotel.rooms?.filter(room => room.status === 'booked').length || 0,
+            maintenance: hotel.rooms?.filter(room => room.status === 'maintenance').length || 0
+          },
+          roomTypes: hotel.rooms?.reduce((acc, room) => {
+            if (!acc[room.type]) {
+              acc[room.type] = {
+                count: 0,
+                minPrice: Infinity,
+                maxPrice: 0,
+                totalCapacity: 0,
+                totalBeds: 0
+              };
+            }
+            acc[room.type].count++;
+            acc[room.type].minPrice = Math.min(acc[room.type].minPrice, room.price || 0);
+            acc[room.type].maxPrice = Math.max(acc[room.type].maxPrice, room.price || 0);
+            acc[room.type].totalCapacity += room.capacity || 0;
+            acc[room.type].totalBeds += room.beds?.reduce((sum, bed) => sum + (bed.count || 0), 0) || 0;
+            return acc;
+          }, {}) || {}
+        },
+        rooms: hotel.rooms?.map(room => ({
+          id: room._id,
+          roomNumber: room.roomNumber,
+          type: room.type,
+          status: room.status,
+          price: room.price,
+          capacity: room.capacity,
+          amenities: room.amenities,
+          beds: room.beds,
+          bathrooms: room.bathrooms,
+          photos: room.photos
+        })) || []
+      }));
+    } else {
+      listings = await Hotel.find(query);
+    }
+
+    res.status(200).json(listings);
   } catch (err) {
     next(err);
   }
-}
- 
+};
+
+
+
+
+
+
 export const getPartners = async (req, res, next) => {
+
+  console.log('partners')
+
   try {
     // 1. Find all hotels and populate the created_by user info
     const hotels = await Hotel.find().populate("created_by", "username email phoneNumber");
@@ -297,7 +376,7 @@ export const getPartners = async (req, res, next) => {
       }
 
       partnerMap[partnerId].totalProperties += 1;
-      partnerMap[partnerId].statuses.push(hotel.status.status);  
+      partnerMap[partnerId].statuses.push(hotel.status.status);
     });
 
     // 3. Create the final partner array

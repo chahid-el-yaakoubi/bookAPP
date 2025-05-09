@@ -88,7 +88,7 @@ export async function generatePDF(bookingData) {
   const marginTop = (297 - cardHeight) / 2
   const cornerRadius = 5
 
-  //  Add white background with shadow effect 
+  // Add white background with shadow effect
   // First add a very slight gray background to make the card pop
   doc.setFillColor(240, 240, 240)
   doc.rect(0, 0, 210, 297, 'F')

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import useFetch from "../../../hooks/useFetch";
 import {
     FaEye, FaTrash, FaEdit, FaChevronLeft, FaChevronRight,
     FaSort, FaSortUp, FaSortDown, FaSearch, FaUserFriends, FaPlus
 } from "react-icons/fa";
+import useFetch from "../../../../../hooks/useFetch";
 
 const OptimizedPartnersTable = () => {
     // Use the useFetch hook to get data from the API endpoint
@@ -34,25 +34,12 @@ const OptimizedPartnersTable = () => {
     }, [fetchedData]);
 
 
-    const handleView = (id) => {
-        localStorage.setItem('partnerData', JSON.stringify({ id: 123, name: "John" }));
-        window.open('http://localhost:5174/host/properties', '_blank');
-    };
-
-
-
-
-
-    const handleEdit = (id) => {
-        // Navigate to the edit partner page
-        // This would be implemented with react-router
-        alert(`Navigating to edit partner with ID: ${id}`);
+    const handleView = (id, name) => {
+        navigate(`/iAmAdmin/partners/${id}?partner=${name}`)
     };
 
     const handleAddNew = () => {
-        // This would be implemented with react-router
-        // For example: history.push('/partners/new');
-        alert("Navigating to add new partner page");
+        navigate('/iAmAdmin/users/add')
     };
 
     const requestSort = (key) => {
@@ -65,8 +52,8 @@ const OptimizedPartnersTable = () => {
 
     const getSortIcon = (columnName) => {
         if (sortConfig.key !== columnName) return <FaSort className="text-gray-300" />;
-        if (sortConfig.direction === 'asc') return <FaSortUp className="text-blue-500" />;
-        return <FaSortDown className="text-blue-500" />;
+        if (sortConfig.direction === 'asc') return <FaSortUp className="text-black" />;
+        return <FaSortDown className="text-black" />;
     };
 
     const sortedPartners = React.useMemo(() => {
@@ -122,21 +109,21 @@ const OptimizedPartnersTable = () => {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue-50 p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue/60 p-6">
+            <div className=" px-10 mx-auto">
                 {/* Header with decorative elements */}
                 <div className="relative mb-8">
-                    <div className="absolute inset-0 bg-blue-600 opacity-5 rounded-lg transform -skew-y-2"></div>
+                    <div className="absolute inset-0 bg-blue opacity-5 rounded-lg transform -skew-y-2"></div>
                     <div className="relative flex flex-col md:flex-row justify-between items-center p-6 bg-white rounded-lg shadow-lg">
                         <div className="flex items-center mb-4 md:mb-0">
-                            <div className="bg-blue-600 p-3 rounded-lg mr-4 text-white">
+                            <div className="bg-blue p-3 rounded-lg mr-4 text-white">
                                 <FaUserFriends className="text-2xl" />
                             </div>
                             <h1 className="text-3xl font-bold text-gray-800">Partners Dashboard</h1>
                         </div>
                         <button
                             onClick={handleAddNew}
-                            className="flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors transform hover:scale-105 shadow-md"
+                            className="flex items-center px-6 py-3 bg-blue text-white font-medium rounded-lg hover:bg-blue/80 transition-colors transform hover:scale-105 shadow-md"
                         >
                             <FaPlus className="mr-2" /> Add New Partner
                         </button>
@@ -148,8 +135,8 @@ const OptimizedPartnersTable = () => {
                     <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
                         <div className="flex justify-between items-center">
                             <h2 className="text-lg font-semibold text-gray-700">Total Partners</h2>
-                            <div className="bg-blue-100 p-2 rounded-full">
-                                <FaUserFriends className="text-blue-600" />
+                            <div className="bg-blue p-2 rounded-full">
+                                <FaUserFriends className="text-black" />
                             </div>
                         </div>
                         <p className="text-3xl font-bold text-gray-800 mt-2">{partners.length}</p>
@@ -222,7 +209,7 @@ const OptimizedPartnersTable = () => {
                             </div>
                             <input
                                 type="text"
-                                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue focus:border-blue bg-gray-50"
                                 placeholder="Search partners by name or email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -233,7 +220,7 @@ const OptimizedPartnersTable = () => {
                             <select
                                 value={itemsPerPage}
                                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                                className="border border-gray-300 rounded-lg p-2 mr-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                                className="border border-gray-300 rounded-lg p-2 mr-2 focus:ring-2 focus:ring-blue focus:border-blue bg-gray-50"
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>
@@ -250,15 +237,9 @@ const OptimizedPartnersTable = () => {
                 {/* Main table */}
                 <div className="bg-white rounded-xl shadow-xl overflow-hidden">
                     {/* Table header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6">
+                    <div className="bg-gradient-to-r from-blue to-blue text-white py-4 px-6">
                         <div className="grid grid-cols-12 gap-4 items-center">
-                            <div className="col-span-1">
-                                <input
-                                    type="checkbox"
-                                    className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
-                                //   checked={selectedPartners.length === currentPartners.length && currentPartners.length > 0}
-                                />
-                            </div>
+
                             <div
                                 className="col-span-2 flex items-center cursor-pointer"
                                 onClick={() => requestSort('username')}
@@ -312,7 +293,7 @@ const OptimizedPartnersTable = () => {
                         {loading ? (
                             <div className="py-20 text-center">
                                 <div className="flex justify-center mb-4">
-                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
                                 </div>
                                 <p className="text-gray-500 font-medium">Loading partners data...</p>
                             </div>
@@ -328,15 +309,10 @@ const OptimizedPartnersTable = () => {
                             currentPartners.map((partner, index) => (
                                 <div
                                     key={partner._id}
-                                    className={`border-b border-gray-100 hover:bg-blue-50 transition-colors ${selectedPartners.includes(partner._id) ? 'bg-blue-50' : index % 2 === 0 ? 'bg-gray-50' : ''}`}
+                                    className={`border-b border-gray-100 hover:bg-blue/50 transition-colors ${selectedPartners.includes(partner._id) ? 'bg-blue' : index % 2 === 0 ? 'bg-gray-50' : ''}`}
                                 >
                                     <div className="grid grid-cols-12 gap-4 items-center py-4 px-6">
-                                        <div className="col-span-1">
-                                            <input
-                                                type="checkbox"
-                                                className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500"
-                                            />
-                                        </div>
+
                                         <div className="col-span-2 font-medium text-gray-800">{partner.username}</div>
                                         <div className="col-span-3 text-gray-600">{partner.email}</div>
                                         <div className="col-span-1 text-center font-medium">{partner.totalProperties}</div>
@@ -357,7 +333,7 @@ const OptimizedPartnersTable = () => {
                                         </div>
                                         <div className="col-span-2">
                                             <div className="flex justify-center space-x-3">
-                                                <button onClick={handleView} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                                                <button onClick={() => { handleView(partner._id, partner.username) }} className="p-2 bg-blue text-black rounded-lg hover:bg-blue/50 transition-colors">
                                                     <FaEye />
                                                 </button>
 
@@ -382,7 +358,7 @@ const OptimizedPartnersTable = () => {
                                 disabled={currentPage === 1}
                                 className={`px-3 py-2 rounded-md ${currentPage === 1
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-200 shadow-sm'
+                                    : 'bg-white text-black hover:bg-blue/50 border border-gray-200 shadow-sm'
                                     }`}
                             >
                                 <FaChevronLeft className="text-sm" />
@@ -406,8 +382,8 @@ const OptimizedPartnersTable = () => {
                                         key={pageToShow}
                                         onClick={() => setCurrentPage(pageToShow)}
                                         className={`px-4 py-2 rounded-md ${currentPage === pageToShow
-                                            ? 'bg-blue-600 text-white font-medium shadow-sm'
-                                            : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200 shadow-sm'
+                                            ? 'bg-blue text-white font-medium shadow-sm'
+                                            : 'bg-white text-gray-700 hover:bg-blue/50 border border-gray-200 shadow-sm'
                                             }`}
                                     >
                                         {pageToShow}
@@ -420,7 +396,7 @@ const OptimizedPartnersTable = () => {
                                 disabled={currentPage === totalPages || totalPages === 0}
                                 className={`px-3 py-2 rounded-md ${currentPage === totalPages || totalPages === 0
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-200 shadow-sm'
+                                    : 'bg-white text-black hover:bg-blue/50 border border-gray-200 shadow-sm'
                                     }`}
                             >
                                 <FaChevronRight className="text-sm" />
@@ -429,10 +405,7 @@ const OptimizedPartnersTable = () => {
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="mt-8 text-center text-gray-500 text-sm">
-                    Partners Management System © 2025 - Powered by Hero Coding
-                </div>
+                
             </div>
         </div>
     );

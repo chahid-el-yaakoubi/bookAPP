@@ -1,16 +1,26 @@
 import { useState, useEffect, useContext } from 'react';
 import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaEye, FaHotel } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
-import {  getProperties } from '../../../../Lib/api';
+import { getProperties, getPropertiesAdmin } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { FaHouse } from 'react-icons/fa6';
 
 const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   const { state } = useContext(AuthContext);
+  let adminId = state?.user?.id;
+  const { id } = useParams();
+
+  if (id) {
+    adminId = id
+  }
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const partner = queryParams.get('partner');
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,7 +49,7 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await getProperties('', 'multi');
+      const response = await getPropertiesAdmin(adminId, 'multi');
       const formattedData = response.data.map(property => ({
         id: property._id,
         title: property.title,
@@ -107,31 +117,39 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
     return sortConfig.direction === 'asc' ? <FaSortUp className="ml-1" /> : <FaSortDown className="ml-1" />;
   };
 
- 
+
 
   return (
     <HostLayout>
-      <TopNavHost category="properties" />
-      <div className="flex items-center justify-center gap-4 w-full mt-20  ">
-        <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
-          <FaHouse />
-          <span>Houses</span>
-        </button>
-        <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
-          <FaHotel />
-          <span>Hotels</span>
-        </button>
+      <TopNavHost category="properties" admin={!!id} partner={partner} />
+      <div className="flex items-center justify-around gap-4 w-full mt-16  shadow-xl mb-2 py-4 rounded-b-xl bg-blue/80">
+        {partner && <h1 className='text-xl'>  {partner}</h1>}
+
+        <div className="flex items-center justify-center gap-4">
+          <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black bg-gray-300 hover:shadow-xl hover:scale-105`}>
+            <FaHouse />
+            <span>Houses</span>
+          </button>
+          <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black hover:shadow-xl hover:scale-105 ${ListType === 'hotels' ? 'bg-orange-500 text-white' : 'bg-gray-300  text-gray-800'}`}>
+            <FaHotel />
+            <span>Hotels</span>
+          </button>
+        </div>
+
+
+
       </div>
-      <main className="px-2 flex-1 md:p-10 mt-4 bg-blue/30 overflow-auto">
+      <main className="px-2 flex-1 md:p-10 bg-gradient-to-br from-indigo-100 to-blue/60 overflow-auto">
         <div>
           {/* Header with Search, View Toggle, and Add Property Button */}
-          <div className="flex justify-between items-center mb-6 pt-16">
+          <div className="flex justify-between items-center mb-6 ">
             <div className="flex items-center gap-4">
               {/* <h1 className="text-2xl font-bold">Properties</h1> */}
               <div className="relative">
                 <button
                   onClick={() => setShowSearch(!showSearch)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-2 hover:bg-orange-300 rounded-full transition-colors border-2 border-orange-500  "
+
                 >
                   <FaSearch className="w-5 h-5 text-gray-600" />
                 </button>
@@ -163,28 +181,13 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
               </div>
             </div>
 
-          
 
             <button
               onClick={() => navigate('/host/properties/add')}
-              className="group cursor-pointer outline-none  duration-300 shadow-xl shadow-blue hover:scale-110  w-12 h-12 rounded-full"
-              title="Add New"
-            >
-              <svg
-                className="stroke-primary fill-none group-hover:fill-blue group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
-                viewBox="0 0 40 40"
-                height="50px"
-                width="50px"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeWidth="1.5"
-                  d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-                ></path>
-                <path strokeWidth="1.5" d="M8 12H16"></path>
-                <path strokeWidth="1.5" d="M12 16V8"></path>
-              </svg>
+              className="hidden md:block px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue hover:scale-110">
+              + Add Listing
             </button>
+
           </div>
 
           {/* Add loading state */}
@@ -194,7 +197,9 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
             </div>
           ) : (
             <>
-              {/* Status Filter Buttons */}
+
+              <div className="flex items-center justify-between">
+                {/* Status Filter Buttons */}
               <div className="mb-6 flex flex-wrap gap-2">
                 {['all', 'active', 'pending', 'rejected'].map((status) => (
                   <button
@@ -209,6 +214,23 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                     {status.charAt(0).toUpperCase() + status.slice(1)}
                   </button>
                 ))}
+              </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-700">Items per page:</span>
+                  <select
+                    className="p-1 border rounded-md text-sm"
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      const newItemsPerPage = Number(e.target.value);
+                      setItemsPerPage(newItemsPerPage);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
+                </div>
               </div>
 
               {/* Table View */}
@@ -313,12 +335,11 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                           <div className="text-sm font-medium text-amber-600">{property.maintenance}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            property.status === 'active' ? 'bg-green-100 text-green-800' :
+                          <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${property.status === 'active' ? 'bg-green-100 text-green-800' :
                             property.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            property.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                              property.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                'bg-gray-100 text-gray-800'
+                            }`}>
                             {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
                           </span>
                         </td>
@@ -330,27 +351,12 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
 
               {/* Pagination Controls */}
               <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-700">Items per page:</span>
-                  <select
-                    className="p-1 border rounded-md text-sm"
-                    value={itemsPerPage}
-                    onChange={(e) => {
-                      const newItemsPerPage = Number(e.target.value);
-                      setItemsPerPage(newItemsPerPage);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                  </select>
-                </div>
 
+                <span className="text-sm text-gray-700">
+                  Page {currentPage} of {totalPages || 1}
+                </span>
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-700">
-                    Page {currentPage} of {totalPages || 1}
-                  </span>
+
 
                   <div className="flex space-x-2">
                     <button

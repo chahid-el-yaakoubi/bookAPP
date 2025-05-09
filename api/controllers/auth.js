@@ -82,12 +82,7 @@ export const register = async (req, res, next) => {
 
     await newUser.save();
 
-    // Send welcome email
-    await sendEmail(
-      email,
-      'Welcome to Axistay 🎉',
-      `Hello ${username},\n\nWelcome to Axistay! We're excited to have you with us.`
-    );
+    
 
     res.status(200).json({
       message: 'User registered successfully.',
@@ -172,7 +167,7 @@ export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    // Hero security check
+    // Input validation
     if (!username || !password) {
       return next(createError(400, "Username and password are required"));
     }
@@ -227,27 +222,33 @@ export const login = async (req, res, next) => {
       password: _,
       email,
       adminCars,
-      adminHotes,
+      adminHotels,
       adminHouses,
       adminShops,
       adminUsers,
       _id
     } = user;
 
-    const roles = { cars: adminCars, hotels: adminHotes, houses: adminHouses, shops: adminShops, users: adminUsers };
-    const isAnyAdmin = Object.values(roles).some(Boolean);
-    const isFullAdmin = Object.values(roles).every(Boolean);
+    // Create roles object with only true values
+    const roles = {};
+    if (adminCars) roles.cars = true;
+    if (adminHotels) roles.hotels = true;
+    if (adminHouses) roles.houses = true;
+    if (adminShops) roles.shops = true;
+    if (adminUsers) roles.users = true;
+
+    const isAnyAdmin = Object.keys(roles).length > 0;
+    const isFullAdmin = Object.keys(roles).length === 5;
 
     const expiresIn = !isAnyAdmin ? undefined : isFullAdmin ? "30d" : "6h";
     const cookieMaxAge = !isAnyAdmin ? undefined : isFullAdmin ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 6;
 
     const token = jwt.sign(
-      { id: _id, email, isAdmin: isAnyAdmin },
+      { id: _id, email, isAdmin: isAnyAdmin , adminFull : roles.users},
       process.env.JWT_SECRET,
       expiresIn ? { expiresIn } : undefined
     );
 
-    // Only include admin-related fields if user is an admin
     const responseData = {
       message: "Login successful",
       token,
@@ -255,7 +256,7 @@ export const login = async (req, res, next) => {
         id: _id,
         email,
         ...(isAnyAdmin && {
-          isAdmin: isAnyAdmin,
+          isAdmin: true,
           roles
         })
       },

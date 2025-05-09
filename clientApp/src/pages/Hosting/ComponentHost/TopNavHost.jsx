@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaCalendarAlt, FaList, FaChevronDown } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
 
-const TopNavHost = ({category}) => {
+const TopNavHost = ({category, admin, partner}) => {
+    
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
@@ -37,10 +38,10 @@ const TopNavHost = ({category}) => {
                                 <span>Calendar</span>
                             </Link>
                             <Link
-                                to={`/host/properties`}
+                                to={admin ? `/iAmAdmin/partners/678acc5dd7e451d6253c2aa7?partner=${partner}` : `/host/properties`}
                                 className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium 
-                                    ${location.pathname.includes("properties") && !location.pathname.includes("bookings") 
-                                      ? 'bg-blue text-white' 
+                                    ${(location.pathname.includes("properties") && !location.pathname.includes("bookings") ) || admin
+                                      ? 'bg-orange-500 hover:bg-orange-600 hover:shadow-xl text-white' 
                                       : 'text-gray-600 hover:bg-gray-100'}`}
                                   
                             >
@@ -50,8 +51,8 @@ const TopNavHost = ({category}) => {
                             <Link
                                 to={`/host/properties/bookings`}
                                 className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium 
-                                    ${location.pathname.includes("bookings") 
-                                      ? 'bg-blue text-white' 
+                                    ${location.pathname.includes("bookings") || (admin && location.pathname.includes("partndsds"))
+                                      ? 'bg-orange-500 hover:bg-orange-600 hover:shadow-xl text-white' 
                                       : 'text-gray-600 hover:bg-gray-100'}`}
                                   
                             >

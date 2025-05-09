@@ -37,6 +37,9 @@ import { Cities } from './pages/Hosting/pagesHost/Cities';
 import Callender from './pages/Hosting/pagesHost/Callender';
 import { HomePrperty } from './pages/Hosting/catHost/houseRental/HomePrperty';
 import BookingConfirmation from './pages/Hosting/catHost/houseRental/Bookings/BookingPdf/page';
+import  Partner from './pages/Hosting/catHost/partners/homePage';
+import User from './pages/admin/users/homePage';
+import SingleUserPage from './pages/admin/users/components/SingleUser';
 
 function App() {
   const { t } = useTranslation();
@@ -45,7 +48,7 @@ function App() {
     const { state } = useContext(AuthContext);
     const user = state?.user;
 
-    if (!user || !user.roles?.cars) {
+    if (!user) {
       return <Navigate to="/" replace />;
     }
 
@@ -74,7 +77,7 @@ function App() {
 
             <Route path="/cars" element={<HomeCars />} />
 
-            
+
 
             {/* Protected Hosting Routes */}
             <Route element={<ProtectedRoute />}>
@@ -83,6 +86,16 @@ function App() {
               <Route path="/hosting" element={<HomeHost />} />
               <Route path="/hosting/login" element={<LoginHost />} />
 
+
+              {/* partner */}
+              <Route path="/iAmAdmin/partners" element={<Partner />} />
+              <Route path="/iAmAdmin/partners/:id" element={<HomePrperty />} />
+
+               {/* users */}
+               <Route path="/iAmAdmin/users" element={<User type={'table'} />} />
+              <Route path="/iAmAdmin/users/:id" element={<User type={'user'} />} />
+              <Route path="/iAmAdmin/users/add" element={<User type={'newuser'} />} />
+              <Route path="/iAmAdmin/users/edit/:id" element={<User type={'newuser'} />} />
               {/* cities */}
 
               <Route path="/host/cities" element={<Cities />} />
@@ -91,11 +104,11 @@ function App() {
 
               {/* bookings */}
               <Route path="/host/properties/bookings" element={<BookingsPage />} />
-              <Route path="/host/properties/bookings/:id" element={<BookingsPage  type={'detail'} />} /> 
+              <Route path="/host/properties/bookings/:id" element={<BookingsPage type={'detail'} />} />
               <Route path="/bookings" element={<BookingConfirmation />} />
-              
-              
-              
+
+
+
               {/* Properties */}
               <Route path="/host/properties" element={<HomePrperty />} />
               <Route path="/host/properties/welcome" element={<Welcome />} />
@@ -125,9 +138,14 @@ function App() {
 
               {/* Mobile Menu */}
               <Route path="/host/properties/:id/menu" element={<MobileMenuPage />} />
-              
+
               {/* Vehicles, Services, Shops */}
-              <Route path="/host/vehicles" element={<VehiclesHost />} />
+              <Route path="/host/cars" element={<VehiclesHost type={'table'} />} />
+              <Route path="/host/cars/add" element={<VehiclesHost  type={'addcar'}/>} />
+
+
+
+
               <Route path="/host/services" element={<ServicesHost />} />
               <Route path="/host/shops" element={<ShopsHost />} />
             </Route>

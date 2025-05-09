@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    adminHotes: {
+    adminHotels: {
         type: Boolean,
         default: false
     },

@@ -39,8 +39,8 @@ export default function BookingConfirmation({bookingData }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="flex items-center justify-center bg-blue">
+      <div className="w-full  bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-xl font-bold text-center text-gray-800">Hotel Booking Confirmation</h1>
         </div>

@@ -1,17 +1,27 @@
 import HostLayout from '../../ComponentHost/HostLayout';
 import { useState, useEffect, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaSearch, FaTimes, FaList, FaThLarge, FaSort, FaSortUp, FaSortDown, FaHotel, FaEye, FaEdit } from 'react-icons/fa';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
-import { deleteProperty, getProperties, updateProperty } from '../../../../Lib/api';
+import { deleteProperty, getProperties, getPropertiesAdmin, updateProperty } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
-import { FaHouse } from 'react-icons/fa6';
+import { FaFaceSmile, FaHouse } from 'react-icons/fa6';
 import { Edit2, EyeIcon, Trash2 } from 'lucide-react';
 
 const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     const { state } = useContext(AuthContext);
+    let adminId = state?.user?.id;
+    const { id } = useParams();
+
+    if (id) {
+        adminId = id
+    }
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const partner = queryParams.get('partner');
+
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -54,7 +64,7 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
     const getData = async () => {
         try {
             setIsLoading(true);
-            const response = await getProperties('', 'single');
+            const response = await getPropertiesAdmin(adminId, 'single');
             const data = response.data.map(hotel => ({
                 id: hotel._id,
                 name: hotel.title,
@@ -416,30 +426,35 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
 
     return (
         <HostLayout>
-            <TopNavHost category="properties" />
+            <TopNavHost category="properties" admin={!!id} partner={partner} />
 
-            <div className="flex items-center justify-center gap-4 w-full mt-20  ">
-                <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black ${ListType === 'houses' ? 'bg-blue text-white' : 'bg-gray-300 text-gray-800'}`}>
-                    <FaHouse />
-                    <span>Houses</span>
-                </button>
-                <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black ${ListType === 'hotels' ? 'bg-blue text-white' : 'bg-gray-300  text-gray-800'}`}>
-                    <FaHotel />
-                    <span>Hotels</span>
-                </button>
+
+            <div className="flex items-center justify-around gap-4 w-full mt-16  shadow-xl mb-2 py-4 rounded-b-xl bg-blue/80">
+                {partner && <h1 className='text-xl'>  {partner}</h1>}
+
+                <div className="flex items-center justify-center gap-4">
+                    <button onClick={setHousesType} className={` flex items-center  gap-2 p-2 rounded text-black hover:shadow-xl hover:scale-105 ${ListType === 'houses' ? 'bg-orange-500 text-white' : 'bg-gray-300  text-gray-800'} `}>
+                        <FaHouse />
+                        <span>Houses</span>
+                    </button>
+                    <button onClick={setHotelsType} className={` flex items-center gap-2 p-2 rounded text-black bg-gray-300 hover:shadow-xl hover:scale-105 `}>
+                        <FaHotel />
+                        <span>Hotels</span>
+                    </button>
+                </div>
             </div>
-            <main className="px-2 flex-1 md:p-10 mt-4 bg-blue/30 overflow-auto">
+            <main className="px-2 flex-1 md:p-10  bg-gradient-to-br from-indigo-100 to-blue/60 overflow-auto">
                 <div>
 
                     {/* Header with Search, View Toggle, and Add Property Button */}
-                    <div className="flex justify-between items-center mb-6 pt-16">
+                    <div className="flex justify-between items-center mb-6 ">
 
                         <div className="flex items-center gap-4">
                             {/* <h1 className="text-2xl font-bold">Properties</h1> */}
                             <div className="relative">
                                 <button
                                     onClick={() => setShowSearch(!showSearch)}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                    className="p-2 hover:bg-orange-300 rounded-full transition-colors border-2 border-orange-500  "
                                 >
                                     <FaSearch className="w-5 h-5 text-gray-600" />
                                 </button>
@@ -489,23 +504,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
 
                         <button
                             onClick={() => navigate('/host/properties/add')}
-                            className="group cursor-pointer outline-none  duration-300 shadow-xl shadow-blue hover:scale-110  w-12 h-12 rounded-full"
-                            title="Add New"
-                        >
-                            <svg
-                                className="stroke-primary fill-none group-hover:fill-blue group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
-                                viewBox="0 0 40 40"
-                                height="50px"
-                                width="50px"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    strokeWidth="1.5"
-                                    d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-                                ></path>
-                                <path strokeWidth="1.5" d="M8 12H16"></path>
-                                <path strokeWidth="1.5" d="M12 16V8"></path>
-                            </svg>
+                            className="hidden md:block px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue hover:scale-110">
+                            + Add Listing
                         </button>
                     </div>
 
@@ -516,34 +516,33 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                         </div>
                     ) : (
                         <>
-                            {/* Status Filter Buttons */}
-                            <div className="mb-6 flex flex-wrap gap-2">
-                                {['all', 'available', 'maintenance', 'booked'].map((status) => {
-                                    const count = status === 'all'
-                                        ? filteredHouses.length
-                                        : filteredHouses.filter(house => house.bookingStatus === status).length;
+                            <div className="flex items-center justify-between">
+                                {/* Status Filter Buttons */}
+                                <div className="mb-6 flex flex-wrap gap-2">
+                                    {['all', 'available', 'maintenance', 'booked'].map((status) => {
+                                        const count = status === 'all'
+                                            ? filteredHouses.length
+                                            : filteredHouses.filter(house => house.bookingStatus === status).length;
 
-                                    return (
-                                        <button
-                                            key={status}
-                                            onClick={() => setStatusFilter(status)}
-                                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                                        return (
+                                            <button
+                                                key={status}
+                                                onClick={() => {
+                                                    if (status !== statusFilter) {
+                                                        setStatusFilter(status);
+                                                    }
+                                                }}
+                                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
                                                 ${status === statusFilter
-                                                    ? 'bg-blue text-white'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                }`}
-                                        >
-                                            {status.charAt(0).toUpperCase() + status.slice(1)} ({count})
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Render properties based on selected view */}
-                            {renderProperties()}
-
-                            {/* Pagination Controls */}
-                            <div className="mt-4 flex items-center justify-between">
+                                                        ? 'bg-blue text-white'
+                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    }`}
+                                            >
+                                                {status.charAt(0).toUpperCase() + status.slice(1)} ({count})
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                                 <div className="flex items-center space-x-2">
                                     <span className="text-sm text-gray-700">Items per page:</span>
                                     <select
@@ -560,11 +559,18 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
                                         <option value={20}>20</option>
                                     </select>
                                 </div>
+                            </div>
+                            {/* Render properties based on selected view */}
+                            {renderProperties()}
 
+                            {/* Pagination Controls */}
+                            <div className="mt-4 flex items-center justify-between">
+
+                                <span className="text-sm text-gray-700">
+                                    Page {currentPage} of {totalPages}
+                                </span>
                                 <div className="flex items-center space-x-4">
-                                    <span className="text-sm text-gray-700">
-                                        Page {currentPage} of {totalPages}
-                                    </span>
+
 
                                     <div className="flex space-x-2">
                                         <button

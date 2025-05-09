@@ -1,69 +1,259 @@
 import mongoose from 'mongoose';
 
 const carSchema = new mongoose.Schema({
-    created_by: { type: String, required: true },
+    created_by: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
+        //   
+    },
     // Basic car details
     carDetails: {
-        carMake: { type: String, required: true }, // Car's brand (e.g., Toyota)
-        carModel: { type: String, required: true }, // Model of the car (e.g., Corolla
+        carMake: { type: String,   }, // Brand (e.g., Renault, Dacia, Peugeot)
+        carModel: { type: String,   }, // Model (e.g., Clio, Sandero, 208)
+        year: { type: Number,   }, // Manufacturing year
+        color: { type: String,   },
+        registrationCity: { type: String }, // Moroccan registration city (e.g., Casablanca, Rabat)
+        plateNumber: { 
+            type: String, 
+             
+            // validate: {
+            //     validator: function(v) {
+            //         // Basic validation for Moroccan plate numbers (e.g., A 12345 or 12345 A)
+            //         return /^[A-Za-z]?\s?\d{1,5}\s?[A-Za-z]?$/.test(v);
+            //     },
+            //     message: props => `${props.value} is not a valid Moroccan plate number!`
+            // }
+        }
     },
-    numberplaces: { type: Number, required: true }, // Number of places
-    autoManual: { type: String, required: true }, // Automatic or Manual transmission
+    specifications: {
+        seats: { type: Number,   min: 2, max: 9 }, // Number of seats
+        doors: { type: Number,   min: 2, max: 5 }, // Number of doors
+        transmission: { 
+            type: String, 
+             
+            enum: ['Automatic', 'Manual', 'Semi-automatic'] 
+        },
+        engineSize: { type: Number }, // Engine size in cc
+        horsepower: { type: Number }, // Engine power in CV (cheval-vapeur)
+        fuel: {
+            type: { 
+                type: String, 
+                 
+                enum: ['Gasoline', 'Diesel', 'Electric', 'Hybrid'] 
+            },
+            consumption: { type: String }, // Fuel consumption (e.g., "5L/100km")
+            policy: { 
+                type: String,
+                enum: ['Full-to-Full', 'Full-to-Empty', 'Prepaid'], 
+                default: 'Full-to-Full'
+            },
+        }
+    },
     location: {
-        region: { type: String, required: true }, // Region where the car is located
-        city: { type: String, required: true }, // City where the car is located
-        neighborhood: { type: String }, // Optional neighborhood
-        coordinates: { type: String }, // Optional GPS coordinates
+        region: { 
+            type: String, 
+             
+            // enum: ['Casablanca-Settat', 'Rabat-Salé-Kénitra', 'Marrakech-Safi', 'Fès-Meknès', 
+            //       'Tanger-Tétouan-Al Hoceïma', 'Souss-Massa', 'Oriental', 'Béni Mellal-Khénifra', 
+            //       'Drâa-Tafilalet', 'Laâyoune-Sakia El Hamra', 'Dakhla-Oued Ed-Dahab']
+        },
+        city: { type: String,   }, // e.g., Casablanca, Marrakech
+        exactAddress: { type: String }, // Detailed address
+        coordinates: {
+            latitude: { type: Number }, // GPS coordinates
+            longitude: { type: Number },
+        }
     },
-    type: { type: String }, // Type of car (e.g., Sedan, SUV)
-    price: { type: Number, required: true }, // Price per day or rental period
-    fuel: {
-        type: { type: String, required: true }, // Fuel type (e.g., Petrol, Diesel)
-        policy: { type: String }, // Fuel policy (e.g., Full-to-Full)
+    category: { 
+        type: String,
+        enum: ['Economy', 'Compact', 'Mid-size', 'Full-size', 'Premium', 'Luxury', 
+              'SUV', 'Minivan', 'Convertible', 'Commercial'],
+          
     },
-    amenities: {
-        hasAirConditioning: { type: Boolean, default: false },
-        hasParkingSensors: { type: Boolean, default: false },
-        hasBluetooth: { type: Boolean, default: false },
-        hasNavigation: { type: Boolean, default: false },
-        hasHeatedSeats: { type: Boolean, default: false },
-        hasSunroof: { type: Boolean, default: false },
+    pricing: {
+        dailyRate: { type: Number,   }, // Daily price in MAD
+        weeklyDiscount: { type: Number, default: 0 }, // Weekly discount percentage
+        monthlyDiscount: { type: Number, default: 0 }, // Monthly discount percentage
+        securityDeposit: { type: Number,   }, // Deposit amount in MAD
+        additionalKmPrice: { type: Number, default: 0 }, // Price per extra kilometer
     },
-    // insurance: {
-    //     policyNumber: { type: String }, // Insurance policy ID
-    //     coverageType: { type: String }, // Type of insurance coverage
-    //     expiryDate: { type: Date }, // Expiry date of insurance
-    // },
+    features: {
+        airConditioning: { type: Boolean, default: false },
+        navigation: { type: Boolean, default: false },
+        bluetooth: { type: Boolean, default: false },
+        usbPort: { type: Boolean, default: false },
+        sunroof: { type: Boolean, default: false },
+        childSeat: { type: Boolean, default: false },
+        gpsTracker: { type: Boolean, default: false }, // Important for Moroccan rentals
+        smokingAllowed: { type: Boolean, default: false },
+        additionalFeatures: [{ type: String }]
+    },
+    insurance: {
+        basicCoverage: { type: Boolean, default: true }, // CDW (Collision Damage Waiver)
+        premiumCoverage: { type: Boolean, default: false },
+        theftProtection: { type: Boolean, default: false },
+        roadsideAssistance: { type: Boolean, default: false },
+        policyDetails: { type: String }
+    },
     rentalTerms: {
-        minimumPeriod: { type: Number }, // Minimum rental duration in days
-        maximumMileage: { type: Number }, // Max mileage allowed
-        lateReturnFee: { type: Number }, // Fee for returning the car late
+        minimumAge: { type: Number, default: 21 }, // Minimum age to rent
+        minimumRentalDays: { type: Number, default: 1 },
+        licenseRequirement: { 
+            type: String, 
+            default: 'Moroccan or International license (1+ years)'
+        },
+        deliveryOptions: {
+            airportDelivery: { type: Boolean, default: false },
+            cityDelivery: { type: Boolean, default: false },
+            deliveryFee: { type: Number, default: 0 },
+            freeDeliveryDistance: { type: Number, default: 0 } // km for free delivery
+        },
+        mileageLimit: { type: Number, default: 200 }, // Daily km limit
+        lateReturnPolicy: { type: String },
+        cancellationPolicy: { 
+            type: String,
+            enum: ['Flexible', 'Moderate', 'Strict'],
+            default: 'Moderate'
+        }
     },
-    photos: [{ type: String }],
-    status: { type: String, default: "Available" }, // Car's status (Available, Rented)
+    media: {
+        photos: [{ type: String,   }],
+        videos: [{ type: String }],
+        mainPhoto: { type: String } // URL of the main photo to display
+    },
+    status: { 
+        type: String, 
+        enum: ['Available', 'Rented', 'Maintenance', 'Unavailable'],
+        default: "Available" 
+    },
     availability: {
-        startDate: { type: Date }, // Availability start date
-        endDate: { type: Date }, // Availability end date
+        startDate: { type: Date, default: Date.now },
+        endDate: { type: Date },
+        blackoutDates: [{ type: Date }], // Dates when car is unavailable
+        instantBooking: { type: Boolean, default: true } // Allow instant booking or require approval
     },
-    reviews: [
-        {
-            user: { type: String }, // User who gave the review
-            rating: { type: Number, min: 0, max: 5 }, // Rating (0-5)
-            comment: { type: String }, // Review comment
-        },
-    ],
-    bookingHistory: [
-        {
-            renterName: { type: String }, // Name of the renter
-            startDate: { type: Date }, // Rental start date
-            endDate: { type: Date }, // Rental end date
-            totalAmount: { type: Number }, // Total payment
-        },
-    ],
-    plateNumber: { type: String, required: true }, // Registration plate
-}, { timestamps: true });
+    documents: {
+        registrationCard: { type: String,   }, // Carte Grise scan
+        insuranceCertificate: { type: String,  }, // Attestation d'assurance
+        technicalInspection: { type: String }, // Contrôle technique
+        additionalDocuments: [{ type: String }]
+    },
+    reviews: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        rating: { type: Number, min: 1, max: 5,   },
+        comment: { type: String, maxlength: 500 },
+        date: { type: Date, default: Date.now },
+        response: { // Owner response to review
+            text: { type: String },
+            date: { type: Date }
+        }
+    }],
+    bookingHistory: [{
+        bookingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking' },
+        renterId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        totalPrice: { type: Number },
+        status: { 
+            type: String,
+            enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'No-show']
+        }
+    }],
+    verification: {
+        isVerified: { type: Boolean, default: false }, // Admin verification status
+        verificationDate: { type: Date },
+        verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        verificationNotes: { type: String } // Admin verification comments
+    },
+    popularityMetrics: {
+        views: { type: Number, default: 0 },
+        bookings: { type: Number, default: 0 },
+        favoriteCount: { type: Number, default: 0 }
+    },
+    maintenanceRecords: [{
+        date: { type: Date },
+        description: { type: String },
+        cost: { type: Number },
+        nextScheduled: { type: Date }
+    }]
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
-// Export the schema
-const CarRental = mongoose.model("CarRental", carSchema);
+// Virtual for average rating
+carSchema.virtual('averageRating').get(function() {
+    if (this.reviews.length === 0) return 0;
+    const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+    return (sum / this.reviews.length).toFixed(1);
+});
 
-export default CarRental;
+// Virtual for rental count
+carSchema.virtual('rentalCount').get(function() {
+    return this.bookingHistory.length;
+});
+
+// Virtual for computed price with discounts
+carSchema.virtual('discountedRates').get(function() {
+    const daily = this.pricing.dailyRate;
+    const weekly = daily * 7 * (1 - this.pricing.weeklyDiscount / 100);
+    const monthly = daily * 30 * (1 - this.pricing.monthlyDiscount / 100);
+    
+    return {
+        daily,
+        weekly,
+        monthly
+    };
+});
+
+// Pre-save middleware to ensure mainPhoto is set
+carSchema.pre('save', function(next) {
+    // If photos exist but no main photo is set, use the first photo
+    if (this.media.photos && this.media.photos.length > 0 && !this.media.mainPhoto) {
+        this.media.mainPhoto = this.media.photos[0];
+    }
+    next();
+});
+
+// Methods
+carSchema.methods.isAvailableForDates = function(startDate, endDate) {
+    // Check if car is available for the given date range
+    if (this.status !== 'Available') return false;
+    
+    // Check against blackout dates
+    const blackoutConflict = this.availability.blackoutDates.some(date => {
+        return date >= startDate && date <= endDate;
+    });
+    
+    if (blackoutConflict) return false;
+    
+    // Check against existing bookings
+    const bookingConflict = this.bookingHistory.some(booking => {
+        if (booking.status === 'Cancelled') return false;
+        return (
+            (startDate >= booking.startDate && startDate <= booking.endDate) ||
+            (endDate >= booking.startDate && endDate <= booking.endDate) ||
+            (booking.startDate >= startDate && booking.startDate <= endDate)
+        );
+    });
+    
+    return !bookingConflict;
+};
+
+// Indexes for better query performance
+carSchema.index({ 'location.city': 1 });
+carSchema.index({ 'location.region': 1 });
+carSchema.index({ 'carDetails.carMake': 1 });
+carSchema.index({ 'carDetails.carModel': 1 });
+carSchema.index({ 'pricing.dailyRate': 1 });
+carSchema.index({ status: 1 });
+carSchema.index({ category: 1 });
+carSchema.index({ 'specifications.transmission': 1 });
+carSchema.index({ 'specifications.fuel.type': 1 });
+carSchema.index({ created_by: 1 });
+carSchema.index({ 'verification.isVerified': 1 });
+
+const Car = mongoose.model('Car', carSchema);
+
+export default Car;

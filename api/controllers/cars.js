@@ -1,6 +1,6 @@
-import CarRental from '../models/cars.js'; // Update the model to CarRental
 import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
+import Car from '../models/cars.js';
 dotenv.config();
 
 // Configure cloudinary
@@ -12,10 +12,8 @@ cloudinary.config({
 
 // UPLOAD IMAGES
 export const createCar = async (req, res, next) => {
-    console.log('Received request body:', req.body);
-    const newCar = new CarRental(req.body); // Create a new CarRental instance
+    const newCar = new Car(req.body); // Create a new Car instance
     try {
-        console.log('Creating new car:', newCar);
         const savedCar = await newCar.save(); // Save the new car
         console.log('Car saved successfully:', savedCar);
         res.status(200).json(savedCar);
@@ -27,7 +25,7 @@ export const createCar = async (req, res, next) => {
 
 export const updateCar = async (req, res, next) => {
     try {
-        const updatedCar = await CarRental.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+        const updatedCar = await Car.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
         res.status(200).json(updatedCar);
     } catch (err) {
         next(err);
@@ -36,7 +34,7 @@ export const updateCar = async (req, res, next) => {
 
 export const deleteCar = async (req, res, next) => {
     try {
-        await CarRental.findByIdAndDelete(req.params.id);
+        await Car.findByIdAndDelete(req.params.id);
         res.status(200).json("Car has been deleted.");
     } catch (err) {
         next(err);
@@ -45,7 +43,7 @@ export const deleteCar = async (req, res, next) => {
 
 export const getCar = async (req, res, next) => {
     try {
-        const car = await CarRental.findById(req.params.id);
+        const car = await Car.findById(req.params.id);
         res.status(200).json(car);
     } catch (err) {
         next(err);
@@ -54,7 +52,7 @@ export const getCar = async (req, res, next) => {
 
 export const getAdminCars = async (req, res, next) => {
     try {
-        const cars = await CarRental.find({ created_by: req.params.id });
+        const cars = await Car.find({ created_by: req.params.id });
         res.status(200).json(cars);
     } catch (err) {
         next(err);
@@ -66,7 +64,7 @@ export const getCars = async (req, res, next) => {
     const city = other.city;
     const condition = city ? { "city": city } : {};
     try {
-        const cars = await CarRental.find(condition);
+        const cars = await Car.find(condition);
         res.status(200).json(cars);
     } catch (err) {
         next(err);
@@ -77,7 +75,7 @@ export const countByCity = async (req, res, next) => {
     const {id} = req.params;
     const condition = id === "all" ? {} : {isA: id};
     try {
-        const carCount = await CarRental.countDocuments(condition);
+        const carCount = await Car.countDocuments(condition);
         res.status(200).json(carCount);
     } catch (err) {
         next(err);
@@ -86,11 +84,11 @@ export const countByCity = async (req, res, next) => {
 
 export const countByType = async (req, res, next) => {
     try {
-        const sedanCount = await CarRental.countDocuments({ type: "Sedan" });
-        const suvCount = await CarRental.countDocuments({ type: "SUV" });
-        const truckCount = await CarRental.countDocuments({ type: "Truck" });
-        const coupeCount = await CarRental.countDocuments({ type: "Coupe" });
-        const convertibleCount = await CarRental.countDocuments({ type: "Convertible" });
+        const sedanCount = await Car.countDocuments({ type: "Sedan" });
+        const suvCount = await Car.countDocuments({ type: "SUV" });
+        const truckCount = await Car.countDocuments({ type: "Truck" });
+        const coupeCount = await Car.countDocuments({ type: "Coupe" });
+        const convertibleCount = await Car.countDocuments({ type: "Convertible" });
         res.status(200).json([
             { type: "sedan", count: sedanCount },
             { type: "suv", count: suvCount },
@@ -114,7 +112,7 @@ export const removeImgs = async (req, res, next) => {
             });
         }
         // Find car first
-        const car = await CarRental.findById(carId);
+        const car = await Car.findById(carId);
         if (!car) {
             return res.status(404).json({
                 success: false,
@@ -129,7 +127,7 @@ export const removeImgs = async (req, res, next) => {
         const deleteResults = await Promise.all(deletePromises);
         console.log('Cloudinary delete responses:', deleteResults);
         // Remove images from car's photos array
-        const updatedCar = await CarRental.findByIdAndUpdate(
+        const updatedCar = await Car.findByIdAndUpdate(
             carId,
             { $pull: { photos: { $in: images } } }, // Remove matching images
             { new: true } // Return updated document
@@ -155,7 +153,7 @@ export const uploadImgs = async (req, res, next) => {
             });
         }
         // Find the car first
-        const car = await CarRental.findById(carId);
+        const car = await Car.findById(carId);
         if (!car) {
             return res.status(404).json({
                 success: false,
@@ -175,7 +173,7 @@ export const uploadImgs = async (req, res, next) => {
         const results = await Promise.all(uploadPromises);
         const imageUrls = results.map(result => result.secure_url); // Get the image URLs
         // Add new images to car's photos array
-        const updatedCar = await CarRental.findByIdAndUpdate(
+        const updatedCar = await Car.findByIdAndUpdate(
             carId,
             { $push: { photos: { $each: imageUrls } } }, // Push the image URLs to the photos array
             { new: true } // Return the updated car document

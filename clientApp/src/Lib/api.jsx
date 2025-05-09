@@ -12,6 +12,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const getUserId = () => {
+  const userString = localStorage.getItem('user');
+  if (!userString) return null;
+  try {
+    const user = JSON.parse(userString);
+    return user.id;
+  } catch (error) {
+    console.error('Invalid user data in localStorage:', error);
+    return null;
+  }
+};
+
+
 // Auth API
 export const login = async (username, password) => {
   const response = await api.post('/api/auth/login', { username, password });
@@ -54,9 +67,11 @@ export const createProperty = async (propertyData) => {
 };
 
 export const updateProperty = async (id, propertyData) => {
-  const response = await api.put(`/api/hotels/${id}`, propertyData);
+  const adminId = getUserId();
+  const response = await api.put(`/api/hotels/${id}?adminId=${adminId}`, propertyData);
   return response;
 };
+
 
 
 export const deleteProperty = async (id) => {
@@ -85,8 +100,8 @@ export const deletePhotosProperty = async (id, formdata) => {
 };
 
 // admin properties
-export const getPropertiesAdmin = async (id) => {
-  const response = await api.get(`/api/hotels/${id}`);
+export const getPropertiesAdmin = async (id, type) => {
+  const response = await api.get(`/api/hotels/${id}/${type}`);
 
   return response;
 };
@@ -159,7 +174,7 @@ export const updateUser = async (id, userData) => {
 
 export const deleteUser = async (id) => {
   const response = await api.delete(`/api/users/${id}`);
-  return response.data;
+  return response;
 };
 
 // add region
@@ -216,5 +231,16 @@ export const updateReview = async (reviewId, reviewData) => {
 
 export const deleteReview = async (reviewId) => {
   const response = await api.delete(`/api/reviews/${reviewId}`);
+  return response;
+};
+
+// cars 
+export const deleteCar = async (id) => {
+  const response = await api.delete(`/api/cars/${id}`);
+  return response;
+};
+
+export const addCar = async (formData) => {
+  const response = await api.post(`/api/cars`, formData);
   return response;
 };

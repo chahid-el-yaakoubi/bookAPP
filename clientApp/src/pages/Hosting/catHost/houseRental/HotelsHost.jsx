@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getProperties, getPropertiesAdmin, deleteProperty } from '../../../../Lib/api';
@@ -134,7 +133,6 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
 
   return (
     <HostLayout>
-      <ToastContainer />
       <TopNavHost category="properties" admin={!!id} partner={partner} />
       <div className="flex items-center justify-around gap-4 w-full mt-16  shadow-xl mb-2 py-4 rounded-b-xl bg-blue/80">
         {partner && <h1 className='text-xl'>  {partner}</h1>}

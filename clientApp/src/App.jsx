@@ -40,6 +40,7 @@ import BookingConfirmation from './pages/Hosting/catHost/houseRental/Bookings/Bo
 import  Partner from './pages/Hosting/catHost/partners/homePage';
 import User from './pages/admin/users/homePage';
 import SingleUserPage from './pages/admin/users/components/SingleUser';
+import CarDetails from './pages/cars/pages/CarDetails';
 
 function App() {
   const { t } = useTranslation();
@@ -76,6 +77,7 @@ function App() {
 
 
             <Route path="/cars" element={<HomeCars />} />
+            <Route path="/cars/:id" element={<CarDetails />} />
 
 
 

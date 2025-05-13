@@ -4,8 +4,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { getProperties, getPropertiesAdmin } from '../../../../Lib/api';
+import { getProperties, getPropertiesAdmin, deleteProperty } from '../../../../Lib/api';
 import { AuthContext } from '../../../../contextApi/AuthContext';
 import { FaHouse } from 'react-icons/fa6';
 
@@ -117,10 +119,22 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
     return sortConfig.direction === 'asc' ? <FaSortUp className="ml-1" /> : <FaSortDown className="ml-1" />;
   };
 
+  const handleDelete = async (propertyId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this property?");
+    if (!confirmDelete) return;
 
+    try {
+      await deleteProperty(propertyId);
+      alert("Property deleted successfully!");
+      getData();
+    } catch (error) {
+      alert("Error deleting property.");
+    }
+  };
 
   return (
     <HostLayout>
+      <ToastContainer />
       <TopNavHost category="properties" admin={!!id} partner={partner} />
       <div className="flex items-center justify-around gap-4 w-full mt-16  shadow-xl mb-2 py-4 rounded-b-xl bg-blue/80">
         {partner && <h1 className='text-xl'>  {partner}</h1>}
@@ -302,6 +316,13 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                           Status {renderSortIcon('status')}
                         </div>
                       </th>
+                      <th
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          Actions
+                        </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -342,6 +363,17 @@ const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {
                             }`}>
                             {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row click
+                              handleDelete(property.id);
+                            }}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}

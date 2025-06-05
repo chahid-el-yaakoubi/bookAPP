@@ -18,6 +18,7 @@ const AddProperty = () => {
   const { state } = useContext(AuthContext);
   const created_by = state.user?.id;
 
+  console.log(created_by);
   // alert(created_by)
   const dispatch = useDispatch();
 
@@ -139,7 +140,7 @@ const AddProperty = () => {
 
       if (res.status === 200) {
         showNotification("Property created successfully!", "success");
-        // localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY);
         window.location.href = '/host/properties/listining';
       }
     } catch (error) {

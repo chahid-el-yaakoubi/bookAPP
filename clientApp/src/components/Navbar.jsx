@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contextApi/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMultiply, faGlobe, faSearch, faHeart, faSliders, faUser, faDollarSign, faChevronDown, faHouseUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { TransContext } from '../contextApi/TransContext';
+import { TransContext } from '../contexts/TransContext';
 import SearchMobile from './searchMobile';
 import { NavbarMobel } from './NavbarMobile';
 import AuthForm from './Login/login';

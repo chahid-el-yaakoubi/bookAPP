@@ -48,6 +48,7 @@ const HotelsList = ({ city, }) => {
 
   const req = city.length > 0 ? `?city=${city}` : '';
   const { data, loading, error, reFetch } = useFetch(`/api/hotels${req}`);
+
   const [errorL, setErrorL] = useState(null);
 
 

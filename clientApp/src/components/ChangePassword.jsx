@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { LuCircleArrowLeft } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contextApi/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
 const apiUrl = import.meta.env.VITE_API_URL;
 

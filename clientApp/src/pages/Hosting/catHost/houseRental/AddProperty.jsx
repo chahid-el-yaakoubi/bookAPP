@@ -6,7 +6,7 @@ import TitleProperty from './steps/Title';
 import BookingRules from './steps/BookingRules';
 import PricingSection from './steps/PricingSection';
 import PropertyFeatures from './steps/PropertyFeatures';
-import { AuthContext } from '../../../../contextApi/AuthContext';
+import { AuthContext } from '../../../../contexts/AuthContext';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { createProperty } from '../../../../Lib/api';
@@ -140,7 +140,7 @@ const AddProperty = () => {
       if (res.status === 200) {
         showNotification("Property created successfully!", "success");
         // localStorage.removeItem(STORAGE_KEY);
-        window.location.href = '/host/properties';
+        window.location.href = '/host/properties/listining';
       }
     } catch (error) {
       console.error('Error submitting property:', error);
@@ -165,7 +165,7 @@ const AddProperty = () => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(propertyData));
       showNotification("Progress saved successfully", "success");
-      window.location.href = '/host/properties';
+      window.location.href = '/host/properties/listining';
     } catch (err) {
       showNotification("Failed to save progress", "error");
     }

@@ -1,15 +1,19 @@
 import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../../contextApi/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { LuCircleArrowLeft } from "react-icons/lu";
+import { LuCircleArrowLeft, LuEye, LuEyeOff } from "react-icons/lu";
 import { login } from "../../Lib/api";
+import { useTranslation } from "react-i18next";
 const AuthForm = () => {
+  const { t, i18n } = useTranslation();
+    const isRTL = i18n.dir() === 'rtl';
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
   const { state, dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if the user is already logged in
   useEffect(() => {
@@ -50,16 +54,19 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-cover bg-center bg-black bg-opacity-60 fixed inset-0 z-50 " >
+    <div className="h-screen w-full bg-cover bg-center bg-black bg-opacity-60 fixed inset-0 z-50 "  style={{
+      backgroundImage:
+          "url('https://img.freepik.com/photos-premium/effets-lumineux-brillants-bleu-picton-sombre-conception-fond-abstraite_851755-198657.jpg?w=996')",
+  }}>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full md:w-2/5  md:h-4/5  shadow-2xl">
        
           <div className="bg-indigo-800 flex flex-col h-full">
             <button
               onClick={() => navigate('/')}
-              className="bg-blue hover:bg-blue/80 p-2 rounded-full w-24 gap-2 ms-2 mt-2 flex"
+              className={`bg-blue hover:bg-blue/80 p-2 rounded-full w-24 gap-2 ms-2 mt-2 flex `}
             >
-              <LuCircleArrowLeft className="w-6 h-6 text-white" />
-              Back
+              <LuCircleArrowLeft className={`w-6 h-6 text-white ${isRTL ? 'rotate-180' : ''}`} />
+              {t('general.back')}
             </button>
 
             <div className="flex flex-col items-center mt-10">
@@ -69,7 +76,7 @@ const AuthForm = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mt-2">Sign In</h1>
+              <h1 className="text-2xl font-bold text-white mt-2">{t('auth.login')}</h1>
             </div>
 
             {state.error && (
@@ -88,40 +95,41 @@ const AuthForm = () => {
                   type="text"
                   value={credentials.username}
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder={t('auth.username')}
                   className="w-full px-4 py-2 bg-indigo-700 text-white rounded-md placeholder-indigo-300 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   required
+                  dir="ltr"
+
                 />
               </div>
 
-              <div>
+              <div className="relative">
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={credentials.password}
                   onChange={handleChange}
-                  placeholder="Password"
+                  placeholder={t('auth.password')}
                   className="w-full px-4 py-2 bg-indigo-700 text-white rounded-md placeholder-indigo-300 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   required
+                  dir="ltr"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-2 text-indigo-300 hover:text-white"
+                >
+                  {showPassword ? <LuEyeOff /> : <LuEye />}
+                </button>
               </div>
 
               <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <input
-                    id="remember"
-                    type="checkbox"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="remember" className="ml-2 block text-sm text-indigo-200">
-                    Remember me
-                  </label>
-                </div>
+                 
                 <span
                   onClick={() => navigate('/Forgetpass')}
                   className="text-sm text-indigo-200 hover:text-white cursor-pointer"
                 >
-                  Forgot password?
+                  {t('auth.forgotPassword')}
                 </span>
               </div>
 
@@ -131,18 +139,18 @@ const AuthForm = () => {
                   className="w-full px-4 py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
                   disabled={state.loading}
                 >
-                  {state.loading ? "Loading..." : "Sign in"}
+                  {state.loading ? t('auth.loading') : t('auth.signIn')}
                 </button>
               </div>
 
               <div className="text-center mt-4">
                 <p className="text-indigo-200">
-                  Not registered yet?{" "}
+                {t('auth.notRegisteredYet')}{" "} 
                   <span
                     onClick={() => navigate('/Register')}
                     className="text-indigo-300 hover:text-white cursor-pointer"
                   >
-                    Create an Account
+                    {t('auth.createAccount')}
                   </span>
                 </p>
               </div>

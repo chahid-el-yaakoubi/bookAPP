@@ -7,7 +7,7 @@ import { Navbar } from './Navbar';
 import { Header } from './Header';
 import { ChangePassword } from './ChangePassword';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contextApi/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import useFetch from '../hooks/useFetch';
 import { LuCircleArrowLeft } from 'react-icons/lu';
 import { getUserById, updateUser } from '../Lib/api';

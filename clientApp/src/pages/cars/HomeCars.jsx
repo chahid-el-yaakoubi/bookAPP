@@ -4,6 +4,7 @@ import Footer from '../../components/footer'
 import CarCard from './components/CarCard'
 import CarHeader from './components/CarHeader'
 import axios from 'axios'
+import { Header } from '../../components/Header'
 
 export const HomeCars = () => {
   const [cars, setCars] = useState([]);
@@ -91,7 +92,8 @@ export const HomeCars = () => {
     return (
     <div className="min-h-screen bg-gray-50">
             <Navbar />
-      <CarHeader onSearch={handleSearch} onAdvancedSearch={handleAdvancedSearch} />
+            <Header type = {"location"}  />
+
       <div className="container mx-auto px-4 py-8 mt-16">
         <h1 className="text-3xl font-bold mb-6 text-center">Available Cars</h1>
         {loading ? (

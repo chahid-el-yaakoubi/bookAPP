@@ -4,10 +4,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import HostLayout from '../../ComponentHost/HostLayout';
 import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
-import 'react-toastify/dist/ReactToastify.css';
 
 import { getProperties, getPropertiesAdmin, deleteProperty } from '../../../../Lib/api';
-import { AuthContext } from '../../../../contextApi/AuthContext';
+import { AuthContext } from '../../../../contexts/AuthContext';
 import { FaHouse } from 'react-icons/fa6';
 
 const HotelsHost = ({ setHousesType, setHotelsType, ListType }) => {

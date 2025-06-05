@@ -6,7 +6,7 @@ import TopNavHost from '../../ComponentHost/TopNavHost';
 import moment from 'moment';
 
 import { deleteProperty, getProperties, getPropertiesAdmin, updateProperty } from '../../../../Lib/api';
-import { AuthContext } from '../../../../contextApi/AuthContext';
+import { AuthContext } from '../../../../contexts/AuthContext';
 import { FaFaceSmile, FaHouse } from 'react-icons/fa6';
 import { Edit2, EyeIcon, Trash2 } from 'lucide-react';
 
@@ -19,6 +19,8 @@ const PropertiesHost = ({ setHotelsType, setHousesType, ListType }) => {
         adminId = id
     }
     const location = useLocation();
+    const pathname = location.pathname;
+    localStorage.setItem('lastVisitedPage', pathname);
     const queryParams = new URLSearchParams(location.search);
     const partner = queryParams.get('partner');
 

@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { useContext, useEffect } from 'react';
-import { TransContext } from './contextApi/TransContext';
+import { TransContext } from './contexts/TransContext';
 import en from './translations/en.json';
 import en2 from './pages/Hosting/catHost/houseRental/translations/en2.json';
 import ar2 from './pages/Hosting/catHost/houseRental/translations/ar2.json';

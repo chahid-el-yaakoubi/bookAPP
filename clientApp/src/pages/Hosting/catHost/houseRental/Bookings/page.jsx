@@ -6,6 +6,7 @@ import useFetch from "../../../../../hooks/useFetch";
 import { FaUser, FaMoneyBillWave, FaCalendarAlt, FaCheckCircle, FaEnvelope, FaHotel } from 'react-icons/fa';
 import BookingPreview from "./BookingPdf/components/booking-preview";
 import BookingConfirmation from "./BookingPdf/page";
+import { getBooking } from "../../../../../Lib/api";
 
 export default function BookingDetailsPage({ houses }) {
   const [booking, setBooking] = useState(null)
@@ -13,15 +14,35 @@ export default function BookingDetailsPage({ houses }) {
   const [loading, setLoading] = useState(true)
 
   const { id } = useParams()
+  const getData = async () => {
+    try {
+      const response = await getBooking(id);
+      console.log(response.data)
+      if (response.status === 200) {
+        setBooking(response.data);
+        setLoading(false);
+      } else {
+        console.error("Failed to fetch booking data:", response.statusText);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    getData();
+  }, [id])
+ 
   const { data, loading: fetchLoading, error, reFetch } = useFetch(`/api/bookings/${id}`);
   const navigate = useNavigate()
-  console.log(booking?.property_details)
-  useEffect(() => {
-    if (data) {
-      setBooking(data)
-      setLoading(false)
-    }
-  }, [data])
+  // console.log(booking?.property_details)
+  // useEffect(() => {
+  //   if (data) {
+  //     setBooking(data)
+  //     setLoading(false)
+  //   }
+  // }, [data])
 
   const handleUpdateBooking = (updatedBooking) => {
     setBooking(updatedBooking)
@@ -41,7 +62,7 @@ export default function BookingDetailsPage({ houses }) {
 
   if (!booking) {
     return (
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto py-10 bg-blue">
         <button onClick={() => {
           navigate('/host/properties/bookings')
         }} className="flex items-center text-blue-600 hover:text-blue-800 mb-6">
@@ -107,7 +128,8 @@ export default function BookingDetailsPage({ houses }) {
   })
 
   return (
-    <div className="container mx-auto py-10">
+   <div className="bg-blue/50">
+     <div className="container mx-auto py-10 ">
       <button onClick={() => {
         navigate('/host/properties/bookings')
       }} className="flex items-center text-blue-600 hover:text-blue-800 mb-6">
@@ -256,8 +278,8 @@ export default function BookingDetailsPage({ houses }) {
                 <p className="text-sm text-gray-500">{booking?.notes || "No notes provided."}</p>
               </div>
             </div>
-            <div className="flex justify-between p-6 border-t">
-              {/* <button
+            {/* <div className="flex justify-between p-6 border-t">
+              <button
                 onClick={() => setIsEditing(true)}
                 className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center"
               >
@@ -270,11 +292,11 @@ export default function BookingDetailsPage({ houses }) {
                   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                 </svg>
                 Edit Booking
-              </button> */}
+              </button>
               <button className="px-4 py-2 bg-red-600 rounded-md text-sm font-medium text-white hover:bg-red-700">
                 Cancel Booking
               </button>
-            </div>
+            </div> */}
           </div>
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -342,6 +364,47 @@ export default function BookingDetailsPage({ houses }) {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="bg- rounded-lg shadow-md overflow-hidden">
+            <div className="p-6 border-b">
+              <h3 className="text-lg font-medium">Property Information</h3>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="aspect-video overflow-hidden rounded-md">
+                  <img
+                    src={booking?.propertyId?.property_details?.photos[0]?.url}
+                    alt="Property"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Address</p>
+                  <p className="text-sm">{booking?.propertyId?.location?.neighborhood}</p>
+                  <p className="text-sm">{booking?.propertyId?.location?.city}, {booking?.propertyId?.location?.region}</p>
+                  <p className="text-sm">{booking?.propertyId?.location?.country}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Property Features</p>
+                  <div className="flex flex-wrap gap-2">
+                    {booking?.propertyId?.accessibility_features && Object.entries(booking?.propertyId?.accessibility_features)
+                      .filter(([_, value]) => value === true)
+                      .map(([key, _], index) => (
+                        <span key={index} className="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-xs">
+                          {key.split('_').map(word => word?.charAt(0).toUpperCase() + word?.slice(1)).join(' ')}
+                        </span>
+                      ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    window.open(`/hotel/${booking?.propertyId?._id}`, '_blank')
+                  }}
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  View Property Details
+                </button>
               </div>
             </div>
           </div>
@@ -422,54 +485,15 @@ export default function BookingDetailsPage({ houses }) {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6 border-b">
-              <h3 className="text-lg font-medium">Property Information</h3>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                <div className="aspect-video overflow-hidden rounded-md">
-                  <img
-                    src={booking?.propertyId?.property_details?.photos[0]?.url}
-                    alt="Property"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Address</p>
-                  <p className="text-sm">{booking?.propertyId?.location?.neighborhood}</p>
-                  <p className="text-sm">{booking?.propertyId?.location?.city}, {booking?.propertyId?.location?.region}</p>
-                  <p className="text-sm">{booking?.propertyId?.location?.country}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Property Features</p>
-                  <div className="flex flex-wrap gap-2">
-                    {booking?.propertyId?.accessibility_features && Object.entries(booking?.propertyId?.accessibility_features)
-                      .filter(([_, value]) => value === true)
-                      .map(([key, _], index) => (
-                        <span key={index} className="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-xs">
-                          {key.split('_').map(word => word?.charAt(0).toUpperCase() + word?.slice(1)).join(' ')}
-                        </span>
-                      ))}
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    window.open(`/hotel/${booking?.propertyId?._id}`, '_blank')
-                  }}
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  View Property Details
-                </button>
-              </div>
-            </div>
-          </div>
+         
         </div>
       </div>
 
       {isEditing && (
-        <BookingForm booking={booking} onSubmit={handleUpdateBooking} onCancel={() => setIsEditing(false)} />
+        <BookingForm booking={booking} onSubmit={handleUpdateBooking} onCancel={() => setIsEditing(false)}  />
       )}
     </div>
+   </div>
   )
 }
 

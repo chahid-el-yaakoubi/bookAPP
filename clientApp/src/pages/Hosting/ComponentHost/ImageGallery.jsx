@@ -7,7 +7,8 @@ import { deletePhotosProperty, updatePhotosProperty } from '../../../Lib/api';
 
 const ImageGallery = () => {
   const { id } = useParams();
-  const { data, loading, error, reFetch } = useFetch(`/api/hotels/${id}/photos`);
+  const { data, loading, error, reFetch } = useFetch(`/api/hotels/${id}/photos/m`);
+  console.log("ImageGallery data:", data);
 
   const [images, setImages] = useState([]);
   const [filteredImages, setFilteredImages] = useState([]);

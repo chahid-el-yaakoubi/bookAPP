@@ -35,7 +35,7 @@ const OptimizedPartnersTable = () => {
 
 
     const handleView = (id, name) => {
-        navigate(`/iAmAdmin/partners/${id}?partner=${name}`)
+        navigate(`/iAmAdmin/partners/${id}/listining?partner=${name}`)
     };
 
     const handleAddNew = () => {

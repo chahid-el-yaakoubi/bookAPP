@@ -48,7 +48,7 @@ const Details = ({ sectionPath, job }) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [showSidebar, setShowSidebar] = useState(true);
     const [showContent, setShowContent] = useState(false);
-    
+    const lastVisitedPage = localStorage.getItem('lastVisitedPage') || '/host/properties/listining';
     // Map route paths to section IDs
     const pathToSectionMap = {
         'photo-tour': { tab: 'your-space', section: 'photo-tour' },
@@ -269,16 +269,16 @@ const Details = ({ sectionPath, job }) => {
 
     // Desktop version remains mostly unchanged
     return (
-        <HostLayout>
-            <TopNavHost category={"properties"} />
-            <div className="flex min-h-screen bg-gray-50 pt-16">
+        <>
+            {/* <TopNavHost category={"properties"} /> */}
+            <div className="flex min-h-screen bg-gray-50 pt-0">
                 {/* Sidebar - Now responsive */}
-                <div className={`${!showContent ? 'block' : 'hidden'} ${showSidebar ? 'block' : 'hidden'} lg:w-[400px] bg-white border-r border-gray-200 fixed top-20 bottom-0 overflow-y-auto z-40 w-full md:w-auto`}>
+                <div className={`${!showContent ? 'block' : 'hidden'} ${showSidebar ? 'block' : 'hidden'} lg:w-[400px] bg-white border-r border-gray-200 fixed top-0 bottom-0 overflow-y-auto z-40 w-full md:w-auto`}>
                     <div className="p-4">
                         {/* Back button */}
                         <div className="flex items-center gap-4 mx-4 md:mx-20 my-6">
                             <button 
-                                onClick={() => navigate(`/host/properties`)}
+                                onClick={() => navigate(lastVisitedPage)}
                                 className="bg-gray-600 hover:bg-gray-400 p-2 rounded-full"
                             >
                                 <LuCircleArrowLeft className="w-6 h-6 text-white" />
@@ -363,7 +363,7 @@ const Details = ({ sectionPath, job }) => {
                     )}
                 </div>
             </div>
-        </HostLayout>
+        </>
     );
 };
 

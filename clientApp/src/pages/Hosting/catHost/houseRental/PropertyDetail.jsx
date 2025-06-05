@@ -506,7 +506,7 @@ const PropertyDetail = () => {
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => navigate('/host/properties')}
+                                onClick={() => navigate('/host/properties/listining')}
                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             >
                                 <FaArrowLeft className="w-5 h-5 text-gray-600" />

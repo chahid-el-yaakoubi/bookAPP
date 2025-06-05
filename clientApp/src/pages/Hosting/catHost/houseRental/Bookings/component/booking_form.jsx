@@ -15,7 +15,6 @@ import {
 import { getPropertiesRooms } from "../../../../../../Lib/api"
 
 export function BookingForm({ booking, onSubmit, onCancel, houses, created_by }) {
-  console.log(booking?.propertyId?._id)
   // Form state
   const [formData, setFormData] = useState(
     booking
@@ -23,7 +22,7 @@ export function BookingForm({ booking, onSubmit, onCancel, houses, created_by })
         guestName: booking.guestName,
         guestPhone: booking.guestPhone || "", // Added guest phone field
         propertyId: booking?.propertyId?._id,
-        roomType: booking.roomId._id || "", // Changed from roomType to roomId
+        roomType: booking?.roomId?._id || "", // Changed from roomType to roomId
         dateRange: {
           from: new Date(booking.startDate),
           to: new Date(booking.endDate),

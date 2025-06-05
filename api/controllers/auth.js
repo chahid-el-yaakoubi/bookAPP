@@ -173,50 +173,50 @@ export const login = async (req, res, next) => {
     }
 
     // Check waiting time
-    const waitTime = getWaitTime(username);
-    if (waitTime > 0) {
-      return next(createError(429, `Please wait ${Math.ceil(waitTime/1000)} seconds before trying again`));
-    }
+    // const waitTime = getWaitTime(username);
+    // if (waitTime > 0) {
+    //   return next(createError(429, `Please wait ${Math.ceil(waitTime/1000)} seconds before trying again`));
+    // }
 
     // Rate limiting check
-    const loginAttempts = await checkLoginAttempts(username);
-    if (loginAttempts > 5) {
-      return next(createError(429, "Too many login attempts. Please try again later"));
-    }
+    // const loginAttempts = await checkLoginAttempts(username);
+    // if (loginAttempts > 5) {
+    //   return next(createError(429, "Too many login attempts. Please try again later"));
+    // }
 
     const user = await User.findOne({
       $or: [{ username }, { email: username }]
     });
     
-    if (!user) {
-      await incrementLoginAttempts(username);
-      return next(createError(401, "Incorrect username or password!"));
-    }
+    // if (!user) {
+    //   await incrementLoginAttempts(username);
+    //   return next(createError(401, "Incorrect username or password!"));
+    // }
 
     // Check if account is locked
-    if (user.isLocked && user.lockUntil > Date.now()) {
-      return next(createError(403, "Account is temporarily locked. Please try again later"));
-    }
+    // if (user.isLocked && user.lockUntil > Date.now()) {
+    //   return next(createError(403, "Account is temporarily locked. Please try again later"));
+    // }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      await incrementLoginAttempts(username);
-      if (loginAttempts >= 4) {
-        // Lock account for 30 minutes after 5 failed attempts
-        user.isLocked = true;
-        user.lockUntil = Date.now() + 30 * 60 * 1000;
-        await user.save();
-      }
+      // await incrementLoginAttempts(username);
+      // if (loginAttempts >= 4) {
+      //   // Lock account for 30 minutes after 5 failed attempts
+      //   user.isLocked = true;
+      //   user.lockUntil = Date.now() + 30 * 60 * 1000;
+      //   await user.save();
+      // }
       return next(createError(401, "Incorrect username or password!"));
     }
 
     // Reset login attempts on successful login
-    await resetLoginAttempts(username);
-    if (user.isLocked) {
-      user.isLocked = false;
-      user.lockUntil = undefined;
-      await user.save();
-    }
+    // await resetLoginAttempts(username);
+    // if (user.isLocked) {
+    //   user.isLocked = false;
+    //   user.lockUntil = undefined;
+    //   await user.save();
+    // }
 
     const {
       password: _,

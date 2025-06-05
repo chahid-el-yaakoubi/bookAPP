@@ -4,7 +4,7 @@ import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
 import { Listitem } from './listItem/Listitem';
 import BlurListItem from './listItem/BlurListItem';
-import { SearchContext } from '../../contextApi/SearchContext';
+import { SearchContext } from '../../contexts/SearchContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDownWideShort,

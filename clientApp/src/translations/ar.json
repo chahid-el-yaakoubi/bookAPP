@@ -3,7 +3,9 @@
   "general": {
     "from": "من",
     "to": "إلى",
-    "at": "في"
+    "at": "في",
+    "close": "إغلاق",
+    "back": "رجوع"
   },
   "header": {
     "menu": {
@@ -599,6 +601,37 @@
     "loginRequired": "تسجيل الدخول مطلوب",
     "loginToReview": "يرجى تسجيل الدخول لترك تعليق",
     "login": "تسجيل الدخول الآن",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "signIn": "تسجيل الدخول",
+    "invalidResponse": "استجابة غير صالحة من الخادم",
+    "loading": "جارٍ التحميل...",
+    "createAccount": "إنشاء حساب",
+    "notRegisteredYet": "لم تسجل بعد؟",
+    "registerTitle": "إنشاء حساب",
+    "registerSubtitle": "انضم إلينا وابدأ رحلتك",
+    "email": "عنوان البريد الإلكتروني",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "registerButton": "إنشاء حساب",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "loginHere": "تسجيل الدخول هنا",
+    "passwordMismatch": "كلمات المرور غير متطابقة!",
+    "errorRegistering": "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "verificationCodeRequired": "رمز التحقق مطلوب",
+    "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+    "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+    "verificationCodeSent": "تم إرسال رمز التحقق إلى عنوان بريدك الإلكتروني",
+    "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح! يتم إعادة التوجيه إلى صفحة تسجيل الدخول...",
+    "sendVerificationCode": "إرسال رمز التحقق",
+    "enterVerificationCode": "أدخل رمز التحقق",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "passwordRequirements": "متطلبات كلمة المرور",
+    "codeNotReceived": "لم يتم استلام الرمز؟ أعد الإرسال",
+    "backToLogin": "العودة إلى تسجيل الدخول"
   }
 }

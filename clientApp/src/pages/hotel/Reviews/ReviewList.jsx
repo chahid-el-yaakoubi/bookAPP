@@ -1,19 +1,36 @@
-// ReviewList.jsx
 import React from 'react';
+import { Heart, Star, Info, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const ReviewList = ({ reviews, onLike, currentUserId }) => {
-    const { t, i18n } = useTranslation(); // Initialize translation function
-    const isRTL = i18n.dir() === 'rtl'; // Check if the language is RTL
+// Mock translation function for demo
+const mockTranslation = {
+    'reviews.review.firstReviewPrompt': 'Be the first to share your experience',
+    'reviews.review.feedbackMatters': 'Your feedback helps others make informed decisions',
+    'reviews.review.writeAReview': 'Write a Review',
+    'reviews.feedbackMatters': 'Help others by sharing your honest experience and feedback',
+    'reviews.anonymous': 'Anonymous User',
+    'reviews.person': 'person',
+    'reviews.people': 'people',
+    'reviews.foundHelpful': 'found this helpful'
+};
+
+const ReviewList = ({ reviews = [], onLike = () => { }, currentUserId = "user1" }) => {
+    const { t, i18n } = useTranslation();
+    const isRTL = i18n.language === "ar";
 
     if (!reviews || reviews.length === 0) {
         return (
-            <div className="text-center py-8  px-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-medium text-gray-800 mb-2">{t('reviews.review.firstReviewPrompt')}</h3>
-                <p className="text-gray-600 mb-4">{t('reviews.review.feedbackMatters')}</p>
-                <button className="bg-blue hover:bg-blue text-white font-medium py-2 px-4 rounded transition duration-200">
-                    {t('reviews.review.writeAReview')}
-                </button>
+            <div className="min-h-[400px] flex items-center justify-center">
+                <div className="text-center py-12 px-8 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200 shadow-sm max-w-md mx-auto">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <MessageSquare className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-800 mb-3">{t('reviews.review.firstReviewPrompt')}</h3>
+                    <p className="text-slate-600 mb-6 leading-relaxed">{t('reviews.review.feedbackMatters')}</p>
+                    <button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        {t('reviews.review.writeAReview')}
+                    </button>
+                </div>
             </div>
         );
     }
@@ -24,85 +41,145 @@ const ReviewList = ({ reviews, onLike, currentUserId }) => {
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+    // Generate star rating display
+    const renderStars = (rating) => {
+        return Array.from({ length: 5 }, (_, i) => (
+            <Star
+                key={i}
+                className={`w-4 h-4 ${i < rating ? 'text-amber-400 fill-current' : 'text-slate-300'}`}
+            />
+        ));
+    };
+
+    // Mock data for demo
+    const mockReviews = reviews.length > 0 ? reviews : [
+        {
+            _id: '1',
+            userId: { username: 'Sarah Johnson' },
+            rating: 5,
+            comment: 'Absolutely fantastic experience! The service exceeded my expectations and I would definitely recommend this to anyone looking for quality and reliability.',
+            createdAt: '2024-01-15',
+            likedBy: ['user2', 'user3', 'user4']
+        },
+        {
+            _id: '2',
+            userId: { username: 'Michael Chen' },
+            rating: 4,
+            comment: 'Great overall experience with minor room for improvement in delivery time.',
+            createdAt: '2024-01-10',
+            likedBy: ['user1', 'user2']
+        },
+        {
+            _id: '3',
+            userId: { username: 'Emma Davis' },
+            rating: 5,
+            comment: 'Outstanding quality and customer service. Will definitely be coming back!',
+            createdAt: '2024-01-08',
+            likedBy: ['user1']
+        },
+        {
+            _id: '4',
+            userId: { username: 'Alex Rodriguez' },
+            rating: 4,
+            comment: 'Very satisfied with the purchase. Good value for money and quick delivery.',
+            createdAt: '2024-01-05',
+            likedBy: ['user2', 'user3']
+        }
+    ];
+
+    const displayReviews = reviews.length > 0 ? reviews : mockReviews;
+
     return (
-        <div className={`space-y-6 overflow-y-auto max-h-[70vh]  p-4 md:p-0  `} dir='ltr'>
-            <div className="flex justify-between items-center mb-4">
-
-            </div>
-
-            <div className={`bg-orange-500 border rounded-t-lg p-4 mb-4 `} dir={isRTL ? 'rtl' : 'ltr'}>
-                <div className="flex items-start">
-                    <div className="text-blue mx-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
+        <div className="max-w-6xl mx-auto p-6" dir={isRTL ? 'rtl' : 'ltr'}>
+            {/* Header Info Banner */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8 shadow-sm">
+                <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                            <Info className="w-5 h-5 text-white" />
+                        </div>
                     </div>
-                    <div >
-                        <p className="text-sm md:text-lg text-black">{t('reviews.feedbackMatters')}</p>
+                    <div className="flex-1">
+                        <p className="text-slate-700 font-medium leading-relaxed">{t('reviews.feedbackMatters')}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {reviews.map((review, index) => {
+            {/* Reviews Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {displayReviews.map((review, index) => {
                     const isLikedByUser = review.likedBy?.includes(currentUserId);
-                    const isLastOdd = index === reviews.length - 1 && reviews.length % 2 === 1;
                     const isFirstReview = index === 0;
 
                     return (
                         <div
                             key={review._id}
-                            className={`border rounded-lg p-4 bg-blue/10 shadow-sm hover:shadow-md transition-shadow duration-300 ${isFirstReview ? 'md:col-span-2' : ''} `}
+                            className={`group bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${isFirstReview ? 'lg:col-span-2 bg-gradient-to-br from-slate-50 to-white border-slate-300' : ''
+                                }`}
                         >
-                            <div className="flex justify-between">
-                                <div className="flex items-center">
-                                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center font-semibold text-slate-700 shadow-inner">
                                         {review.userId?.username?.charAt(0) || 'U'}
                                     </div>
                                     <div>
-                                        <h3 className="font-medium">{review.userId?.username || t('reviews.anonymous')}</h3>
-                                        <p className="text-xs text-gray-500">{formatDate(review.createdAt)}</p>
+                                        <h3 className="font-semibold text-slate-800">{review.userId?.username || t('reviews.anonymous')}</h3>
+                                        <p className="text-sm text-slate-500">{formatDate(review.createdAt)}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center">
-                                    <div className="bg-blue text-white px-2 py-1 rounded text-sm">
-                                        {review.rating} ★
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
+                                        {renderStars(review.rating)}
                                     </div>
+                                    <span className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        {review.rating}.0
+                                    </span>
                                 </div>
                             </div>
 
-                            <p className="mt-3 text-gray-700">{review.comment}</p>
+                            {/* Comment */}
+                            <div className="mb-6">
+                                <p className="text-slate-700 leading-relaxed">{review.comment}</p>
+                            </div>
 
-                            <div className="mt-4 flex items-center justify-between">
+                            {/* Actions */}
+                            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                                 <button
                                     onClick={() => onLike(review._id)}
-                                    className={`flex items-center text-sm ${isLikedByUser ? 'text-blue' : 'text-gray-500'} hover:text-blue`}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 ${isLikedByUser
+                                            ? 'bg-red-50 text-red-600 border border-red-200'
+                                            : 'text-slate-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200'
+                                        }`}
                                     disabled={!currentUserId}
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 mr-1"
-                                        viewBox="0 0 20 20"
-                                        fill={isLikedByUser ? "currentColor" : "none"}
-                                        stroke="currentColor"
-                                        strokeWidth={isLikedByUser ? "0" : "1.5"}
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    <span>
+                                    <Heart
+                                        className={`w-4 h-4 transition-all duration-200 ${isLikedByUser ? 'fill-current' : ''
+                                            }`}
+                                    />
+                                    <span className="text-sm font-medium">
                                         {review.likedBy?.length || 0} {review.likedBy?.length === 1 ? t('reviews.person') : t('reviews.people')} {t('reviews.foundHelpful')}
                                     </span>
                                 </button>
+
+                                <div className="text-sm text-slate-400">
+                                    Helpful review
+                                </div>
                             </div>
                         </div>
                     );
                 })}
             </div>
+
+            {/* Load More Button */}
+            {displayReviews.length > 4 && (
+                <div className="text-center mt-8">
+                    <button className="bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
+                        Load More Reviews
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

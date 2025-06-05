@@ -86,6 +86,8 @@ export const addPhotosProperty = async (id,type, formdata) => {
       'Content-Type': 'multipart/form-data',
     }
   });
+  console.log(response)
+
   return response;
 };
 
@@ -151,8 +153,12 @@ export const getBookings = async () => {
   const response = await api.get('/api/bookings');
   return response;
 };
+export const getBookingsPatner = async (partnerId) => {
+  const response = await api.get('/api/bookings/' + partnerId);
+  return response;
+};
 export const getBooking = async (id) => {
-  const response = await api.get(`/api/bookings${id}`);
+  const response = await api.get(`/api/bookings/${id}/single`);
   return response;
 };
 

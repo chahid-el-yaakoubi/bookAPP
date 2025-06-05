@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contextApi/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faMultiply, faGlobe, faSearch, faHeart, 
@@ -8,7 +8,7 @@ import {
   faHouseUser, faSignOutAlt, faArrowLeft, faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { TransContext } from '../contextApi/TransContext';
+import { TransContext } from '../contexts/TransContext';
 
 // Logo Component
  
@@ -376,12 +376,12 @@ export const NavbarMobel = () => {
                 className={`fixed md:hidden bottom-0 left-0 right-0 w-full bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 transition-transform duration-300 z-50 
                     ${showMobileNav ? 'translate-y-0' : 'translate-y-full'} shadow-lg`}
             >
-                <div className="flex items-center justify-around py-3 px-4 safe-area-bottom ">
+                <div className="flex items-center gap-2 justify-around py-3 px-4 safe-area-bottom ">
                     {/* Search Tab */}
                     <Link
                         to="/"
                         className={`flex gap-2 items-center justify-center h-12 w-full rounded-full ${
-                            activeTab === 'search' ? 'text-white bg-blue' : 'text-gray-100'
+                            activeTab === 'search' ? 'text-white bg-blue' : 'text-gray-100 border border-blue'
                         } hover:bg-blue-100 transition-all`}
                         onClick={() => {
                             setActiveTab('search');
@@ -399,7 +399,7 @@ export const NavbarMobel = () => {
                     {/* Language Tab */}
                     <div
                         className={`flex gap-2 items-center justify-center h-12 w-full rounded-full  ${
-                            activeTab === 'language' ? 'text-white bg-blue' : 'text-gray-100'
+                            activeTab === 'language' ? 'text-white bg-blue' : 'text-gray-100 border border-blue'
                         } hover:bg-blue-100 transition-all`}
                         onClick={toggleLanguageDropdown}
                     >
@@ -430,7 +430,7 @@ export const NavbarMobel = () => {
                             <Link
                                 to="/saved"
                                 className={`flex gap-2 items-center justify-center h-12 w-full  rounded-full  ${
-                                    activeTab === 'saved' ? 'text-white bg-blue' : 'text-gray-100'
+                                    activeTab === 'saved' ? 'text-white bg-blue' : 'text-gray-100 border border-blue'
                                 } hover:bg-blue-100 transition-all`}
                                 onClick={() => {
                                     setActiveTab('saved');
@@ -448,7 +448,7 @@ export const NavbarMobel = () => {
                             {/* Profile Tab */}
                             <div
                                 className={`flex gap-2 items-center justify-center h-12 w-full  rounded-full profile-dropdown-trigger ${
-                                    activeTab === 'profile' ? 'text-white bg-blue' : 'text-gray-100'
+                                    activeTab === 'profile' ? 'text-white bg-blue' : 'text-gray-100 border border-blue'
                                 } hover:bg-blue-100 transition-all`}
                                 onClick={toggleProfileDropdown}
                             >

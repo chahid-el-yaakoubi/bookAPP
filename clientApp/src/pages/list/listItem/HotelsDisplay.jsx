@@ -3,18 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMapMarkerAlt, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
-import { setHotels } from "../../../redux/hotelsSlice";
-import useFetch from "../../../hooks/useFetch";
+import {  faStar } from "@fortawesome/free-solid-svg-icons";
 
-// Remove the router configuration if routes are defined elsewhere
-// const router = createBrowserRouter([
-//   // your routes
-// ], {
-//   future: {
-//     v7_relativeSplatPath: true,
-//   }
-// });
+ 
 
 
 
@@ -24,6 +15,8 @@ const HotelsDisplay = () => {
 
 
   const hotels = useSelector(state => state.hotels.filteredHotels);
+  console.log('hotels fetched successfully:', hotels.length);
+
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);

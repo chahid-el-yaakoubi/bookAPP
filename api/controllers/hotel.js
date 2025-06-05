@@ -267,6 +267,8 @@ export const getHotels = async (req, res, next) => {
     }
 
     res.status(200).json(listings);
+    console.log('Admin hotels fetched successfully:', listings.length);
+
   } catch (err) {
     next(err);
   }
@@ -511,6 +513,7 @@ export const removeImgs = async (req, res, next) => {
 
 
 export const getHotelPhotos = async (req, res, next) => {
+  console.log('getHotelPhotos called with ID:', req.params.id);
   try {
     const hotel = await Hotel.findById(req.params.id);
     if (hotel && hotel.property_details?.photos) {

@@ -15,8 +15,8 @@ import { Profile } from './components/Profile';
 import { ChangePassword } from './components/ChangePassword';
 import { SavedRentalsPage } from './components/SaveClient';
 
-import { TransContextProvider } from './contextApi/TransContext';
-import { AuthContext } from './contextApi/AuthContext';
+import { TransContextProvider } from './contexts/TransContext';
+import { AuthContext } from './contexts/AuthContext';
 
 import WelcomePage from './pages/Hosting/pagesHost/welcomePage';
 import HomeHost from './pages/Hosting/pagesHost/HomeHost';
@@ -41,6 +41,7 @@ import  Partner from './pages/Hosting/catHost/partners/homePage';
 import User from './pages/admin/users/homePage';
 import SingleUserPage from './pages/admin/users/components/SingleUser';
 import CarDetails from './pages/cars/pages/CarDetails';
+import BookingDetailsPage from './pages/Hosting/catHost/houseRental/Bookings/page';
 
 function App() {
   const { t } = useTranslation();
@@ -91,7 +92,8 @@ function App() {
 
               {/* partner */}
               <Route path="/iAmAdmin/partners" element={<Partner />} />
-              <Route path="/iAmAdmin/partners/:id" element={<HomePrperty />} />
+              <Route path="/iAmAdmin/partners/:id/listining" element={<HomePrperty />} />
+              <Route path="/iAmAdmin/partners/:id/bookings" element={<BookingsPage />} />
 
                {/* users */}
                <Route path="/iAmAdmin/users" element={<User type={'table'} />} />
@@ -106,13 +108,13 @@ function App() {
 
               {/* bookings */}
               <Route path="/host/properties/bookings" element={<BookingsPage />} />
-              <Route path="/host/properties/bookings/:id" element={<BookingsPage type={'detail'} />} />
+              <Route path="/host/properties/bookings/:id" element={<BookingDetailsPage   />} />
               <Route path="/bookings" element={<BookingConfirmation />} />
 
 
 
               {/* Properties */}
-              <Route path="/host/properties" element={<HomePrperty />} />
+              <Route path="/host/properties/listining" element={<HomePrperty />} />
               <Route path="/host/properties/welcome" element={<Welcome />} />
               <Route path="/host/properties/add" element={<AddProperty />} />
               <Route path="/host/properties/:id" element={<PropertyDetail />} />

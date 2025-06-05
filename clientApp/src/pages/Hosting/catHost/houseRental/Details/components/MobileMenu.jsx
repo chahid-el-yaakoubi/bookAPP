@@ -60,7 +60,7 @@ const MobileMenuPage = () => {
                 <div className="sticky top-16 z-10 bg-white p-4 shadow">
                     <div className="flex items-center gap-4">
                         <button 
-                            onClick={() => navigate(`/host/properties`)}
+                            onClick={() => navigate(`/host/properties/listining`)}
                             className="bg-gray-600 hover:bg-gray-400 p-2 rounded-full"
                         >
                             <LuCircleArrowLeft className="w-6 h-6 text-blue" />

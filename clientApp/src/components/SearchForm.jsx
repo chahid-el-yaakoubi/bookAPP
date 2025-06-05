@@ -4,7 +4,7 @@ import { faCalendarDay, faPerson, faSearch, faMagnifyingGlassLocation } from '@f
 import { DateRange } from 'react-date-range';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { SearchContext } from '../contextApi/SearchContext';
+import { SearchContext } from '../contexts/SearchContext';
 import { useTranslation } from 'react-i18next';
 import { getRegions } from '../Lib/api';
 

@@ -1,129 +1,628 @@
 {
-    "dir": "ltr",
-    "general": {
-      "from": "ⵣⴳ",
-      "to": "ⵖⵔ"
-    },
-    "header": {
-      "menu": {
-        "home": "ⵜⴰⴷⴷⴰⵔⵜ",
-        "explore": "ⵙⵉⴳⴳⵍ",
-        "location": "ⴽⵔⴰ ⵏ ⵜⴰⵏⴰⵎⴰⵙⵜ",
-        "taxi": "ⵜⴰⴽⵙⵉ"
-      }
-    },
-    "navbar": {
-      "search": "ⵔⵣⵓ",
-      "currency": "ⴰⵣⵔⴼ",
-      "language": "ⵜⵓⵜⵍⴰⵢⵜ",
-      "login": "ⴽⵛⵎ",
-      "register": "ⵣⵎⵎⵎ",
-      "profile": "ⴰⵎⵍⵢ",
-      "logout": "ⴼⴼⵖ",
-      "saved": "ⵙⵙⵙ",
-      "partner": "ⵙⵙⵙ",
-      "confirmLogout": "ⵙⵏⵜⵎ ⵜⵓⴼⴼⵖⴰ",
-      "logoutMessage": "ⵉⵙ ⵜⵅⵙⴷ ⴰⴷ ⵜⴼⴼⵖⴷ?",
-      "cancel": "ⵙⵔ",
-      "count": "ⴰⵎⵉⴷⴰⵏ"
-    },
-    "search": {
-      "whereTo": "ⵎⴰⵏⵉ ⵜⵔⵉⴷ ⴰⴷ ⵜⴷⴷⵓⴷ?",
-      "adults": "ⵉⵎⵇⵔⴰⵏⵏ",
-      "children": "ⵉⵎⵣⵢⴰⵏⵏ",
-      "rooms": "ⵉⵅⴰⵎⵏ",
-      "search": "ⵔⵣⵓ",
-      "selectDates": "ⴼⵔⵏ ⴰⵙⴰⴽⵓⴷ",
-      "ageText": {
-        "adults": "13 ⵉⵙⴳⴳⵯⴰⵙⵏ ⴷ ⵓⴳⴳⴰⵔ",
-        "children": "2 ⴰⵔ 12 ⵉⵙⴳⴳⵯⴰⵙⵏ"
-      },
-      "alertMessage": "ⵎⴽ ⵜⵅⵙⴷ ⴰⴷ ⵜⵔⵣⵓⴷ, ⴼⵔⵏ ⴰⵏⵙⴰ.",
-      "plural": {
-        "adult": ["ⴰⵎⵇⵔⴰⵏ", "ⵉⵎⵇⵔⴰⵏⵏ"],
-        "child": ["ⴰⵎⵣⵢⴰⵏ", "ⵉⵎⵣⵢⴰⵏⵏ"],
-        "room": ["ⴰⵅⴰⵎ", "ⵉⵅⴰⵎⵏ"]
-      }
-    },
-    "featured": {
-      "title": "ⵜⵉⵎⵙⵙⵓⵎⴰⵏⵉⵏ ⵢⵓⴼⵏⵉⵏ",
-      "welcomeDiscount": "ⴰⵣⵎⵣⵍ ⵏ ⵜⴰⵔⵃⵃⴰⴱⵜ",
-      "weekendSpecial": "ⴰⵎⵢⴰⵡⴰⴷ ⵏ ⵜⴰⴳⴰⵔⴰ ⵏ ⵉⵎⴰⵍⴰⵙⵙ",
-      "nightOwlSpecial": "ⴰⵎⵢⴰⵡⴰⴷ ⵏ ⵢⵉⴷ",
-      "specialOffer": "ⴰⵎⵢⴰⵡⴰⴷ ⵓⵣⵉⴼⵏ",
-      "endsIn": "ⴰⴷ ⵉⴽⵎⵎⵍ ⴷⵉ",
-      "firstTimeVisitor": "ⴰⵎⵙⵜⴳⴳⴰ ⴰⵎⴰⵢⵏⵓ!",
-      "bookNow": "ⵃⵊⵣ ⴷⵖⵢⴰ"
-    },
-    "properties": {
-      "properties": "ⵜⵉⴳⵎⵎⴰⵢ",
-      "viewAll": "ⵣⵔ ⵎⴰⵔⵔⴰ",
-      "hotels": {
-        "title": "ⵉⵀⵓⵜⵉⵍⵏ",
-        "description": "ⵉⵀⵓⵜⵉⵍⵏ ⵉⵎⴰⵢⵏⵓⵜⵏ ⴷⵉ ⵜⵎⴷⵉⵏⵜ ⵏ ⵏⵏⴰⴷⵓⵔ ⴷ ⵜⴰⵎⴰ ⵏ ⵜⴰⴳⵓⵜ ⵏ ⵎⴰⵔⵛⵉⴽⴰ"
-      },
-      "apartments": {
-        "title": "ⵜⴰⵏⵣⵣⴰⵖⵉⵏ",
-        "description": "ⵉⵅⵅⴰⵎⵏ ⵏ ⵜⵎⵇⴱⵔⵜ ⵙ ⵜⵎⵓⵖⵍⵉ ⵏ ⵢⵉⵍⵍ ⴰⴳⵔⴰⴽⴰⵍ ⴷⴳ ⵏⴰⴷⵓⵔ"
-      },
-      "BeachResorts": {
-        "title": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⴰⴼⵜⵉⵙⵜ",
-        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⴰⴼⵜⵉⵙⵜ ⵖⵔ ⵜⴰⵎⴰ ⵏ ⵜⴰⴼⵜⵉⵙⵉⵏ ⵏ ⵏⵏⴰⴷⵓⵔ"
-      },
-      "Riads": {
-        "title": "ⵔⵔⵢⴰⴷ",
-        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵜⵉⵎⵖⵔⵉⴱⵉⵢⵉⵏ ⵜⵉⵇⴱⵓⵔⵉⵏ ⵙ ⵓⵔⵜⵉ ⴷⵉ ⵜⵎⴷⵉⵏⵜ ⵜⴰⵇⴱⵓⵔⵜ ⵏ ⵏⵏⴰⴷⵓⵔ"
-      },
-      "VacationHomes": {
-        "title": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⵙⵜⵔⵉⵜ",
-        "description": "ⵜⵉⴳⵎⵎⴰⵢ ⵏ ⵜⵙⵜⵔⵉⵜ ⵖⵓⵙⵍⵉⴳⵉⵏ ⴷⵉ ⵏⵏⴰⴷⵓⵔ"
-      }
-    },
-    "homeTitle": {
-      "DiscoverNador": "ⵙⵏⵓⴱⴳ ⵏⵏⴰⴷⵓⵔ",
-      "BrowseByPropertyType": "ⵔⵣⵓ ⵙ ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⴳⵎⵎⴰ",
-      "HomesGuestsLove": "ⵜⵉⴳⵎⵎⴰⵢ ⵅⴼ ⵜⵜⵅⵙⵏⵜ ⵏⵊⵊⵉⵡⵏ"
-    },
-    "FeaturedProperties": {
-      "perNight": "ⵉ ⵢⵉⴷ",
-      "ratings": {
-        "exceptional": "ⵉⴼⵓⵍⴽⵉ ⴰⵜⵜⴰⵙ",
-        "excellent": "ⵉⴼⵓⵍⴽⵉ",
-        "veryGood": "ⵉⵀⵍⴰ ⴱⵣⵣⴰⴼ",
-        "good": "ⵉⵀⵍⴰ"
-      },
-      "reviews": "{{count}} ⵜⵉⵣⵎⵉⵎⵉⵏ",
-      "city": "ⵏⵏⴰⴷⵓⵔ",
-      "bookNow": "ⵃⵊⵣ ⴷⵖⵢⴰ"
-    },
-    "footer": {
-      "contactUs": "ⵜⵓⵙⵜⵓⵙⵉ",
-      "companyName": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ ⵏ ⵉⵍⵍⴰⵙⵙⵉⵜ",
-      "phone": "ⵜⴰⵙⵔⵉⵙ: {{phone}}",
-      "email": "ⵉⵙⵙⵓⵙ: {{email}}",
-      "ourServices": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ",
-      "services": {
-        "hotelBookings": "ⵜⵉⵃⵊⵓⵔⵉⵏ ⵏ ⵉⵀⵓⵜⵉⵍⵏ",
-        "vacationRentals": "ⵜⵉⴽⵔⵡⴰⵜⵉⵏ ⵏ ⵜⵙⵜⵔⵉⵜ",
-        "carRentals": "ⵜⵉⴽⵔⵡⴰⵜⵉⵏ ⵏ ⵜⴽⵉⵔⵔⵓⵙⵜ",
-        "propertySales": "ⵜⵉⵣⵏⵣⴰ ⵏ ⵜⵉⴳⵎⵎⴰⵢ",
-        "businessTravel": "ⵉⵎⵓⴷⴷⴰ ⵏ ⵜⵓⵔⵉ"
-      },
-      "company": {
-        "companyName": "ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ",
-        "aboutUs": "ⵅⴼ ⵏⵏⵔ",
-        "terms": "ⵜⵉⵙⵖⴰⵍ ⵏ ⵓⵙⵎⵔⵙ",
-        "privacy": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵜⵓⵙⵍⵉⴳⵜ",
-        "partner": "ⵜⴰⵎⵓⵏⵜ ⴰⴽⴷⵏⵖ"
-      },
-      "social": {
-        "facebook": "ⴼⴰⵢⵙⴱⵓⴽ",
-        "instagram": "ⵉⵏⵙⵜⴰⴳⵔⴰⵎ",
-        "tiktok": "ⵜⵉⴽⵜⵓⴽ"
-      },
-      "copyright": "© {{year}} ⵜⵎⵙⵉⵍⵜ ⵏ ⵜⵅⵙⵏⵜ. ⵜⵉⴽⵍ ⵏ ⵜⵉⵙⵉⵍⵜ."
+  "dir": "ltr",
+  "general": {
+    "from": "ⵙⴳ",
+    "to": "ⵖⵔ",
+    "at": "ⴳ",
+    "back": "ⵓⵖⵓⵍ"
+  },
+  "header": {
+    "menu": {
+      "home": "ⴰⴽⵔⴰ ⵏ ⵜⴳⵎⵎⵉ",
+      "explore": "ⴰⵎⵓⵔ ⵏ ⵜⴽⵔⴰⵢⵉⵏ",
+      "location": "ⴰⴽⵔⴰ ⵏ ⵜⵎⵓⴱⵉⵍⵉⵏ",
+      "taxi": "ⵜⴰⴽⵙⵉ"
     }
-    
+  },
+  "navbar": {
+    "search": "ⴰⵔⵣⵣⵓ",
+    "currency": "ⴰⴷⵔⵉⵎ",
+    "language": "ⵜⵓⵜⵍⴰⵢⵜ",
+    "login": "ⴰⴽⵛⵛⵓⵎ",
+    "register": "ⴰⵙⵙⴽⵍⵙ",
+    "profile": "ⴰⵎⴰⵖⵏⵓ",
+    "logout": "ⴰⴼⴼⵓⵖ",
+    "saved": "ⵉⵜⵜⵓⵃⴹⴰⵏ",
+    "partner": "ⴰⵎⴷⴷⴰⴽⵯⵍ",
+    "confirmLogout": "ⵙⵙⵏⵜⵎ ⴰⴼⴼⵓⵖ",
+    "logoutMessage": "ⵜⵔⵉⴷⴷ ⴰⴼⴼⵓⵖ?",
+    "cancel": "ⵙⵙⵏⵓⵍ",
+    "count": "ⴰⵙⵉⴹⵏ"
+  },
+  "search": {
+    "whereTo": "ⵎⴰⵏⵉ ⴰⵔⴰ ⵜⵔⵓⵃⴷ?",
+    "adults": "ⵉⵎⵖⴰⵔⵏ",
+    "children": "ⴰⵔⵔⴰⵡ",
+    "rooms": "ⵜⵉⵖⵔⴼⵉⵏ",
+    "search": "ⴰⵔⵣⵣⵓ",
+    "selectDates": "ⵙⵜⵢ ⵓⵙⵙⴰⵏ",
+    "ageText": {
+      "adults": "13 ⵉⵙⴳⴳⵯⴰⵙⵏ ⴷ ⵓⴳⴳⴰⵔ",
+      "children": "ⵉⵙⴳⴳⵯⴰⵙⵏ 2-12"
+    },
+    "alertMessage": "ⵙⴽⵛⵎ ⴰⵎⴽⴰⵏ ⵉ ⵓⵙⵙⵏⵜⵉ ⵏ ⵓⵔⵣⵣⵓ.",
+    "plural": {
+      "adult": ["ⴰⵎⵖⴰⵔ", "ⵉⵎⵖⴰⵔⵏ"],
+      "child": ["ⴰⵔⵔⴰⵡ", "ⴰⵔⵔⴰⵡ"],
+      "room": ["ⵜⴰⵖⵔⴼⵜ", "ⵜⵉⵖⵔⴼⵉⵏ"]
+    }
+  },
+  "featured": {
+    "title": "ⵉⴼⵔⵙⵏ ⵉⴼⴰⵣⵏ",
+    "welcomeDiscount": "ⴰⵙⵙⵉⵔⵎ ⵏ ⵓⵙⵓⴷⴷⵓ",
+    "weekendSpecial": "ⴰⵎⵥⵍⴰⵢ ⵏ ⵜⵎⴰⵍⴰⵙⵜ",
+    "nightOwlSpecial": "ⴰⵎⵥⵍⴰⵢ ⵏ ⵉⴹ",
+    "specialOffer": "ⴰⴼⵔⵙ ⴰⵎⵥⵍⴰⵢ",
+    "endsIn": "ⴰⵔ ⵉⵜⵜⵎⵎⴰⵍ ⴳ",
+    "firstTimeVisitor": "ⴰⵎⵓⵔⴰⵔ ⴰⵎⵣⵡⴰⵔⵓ!",
+    "bookNow": "ⵙⵙⵓⵜⵔ ⴷⵖⵉ"
+  },
+  "properties": {
+    "properties": "ⵜⵉⴽⵔⴰⵢⵉⵏ",
+    "viewAll": "ⵥⵕ ⴰⴽⴽⵯ",
+    "hotels": {
+      "title": "ⵉⵀⵓⵜⵉⵍⵏ",
+      "description": "ⵉⵀⵓⵜⵉⵍⵏ ⵉⵜⵔⴰⵔⵏ ⴳ ⵡⴰⵎⵎⴰⵙ ⵏ ⵏⴰⴷⵓⵔ ⴷ ⵜⴰⵎⴰ ⵏ ⵜⴰⵖⵣⵓⵜ ⵎⴰⵔⵛⵉⴽⴰ"
+    },
+    "apartments": {
+      "title": "ⵉⵙⴰⵍⴰⵏ",
+      "description": "ⵉⵙⴰⵍⴰⵏ ⵉⵙⵙⵓⴷⵙⵏ ⵙ ⵜⵓⵏⵏⵉⵏ ⵏ ⵢⵉⵍⵍ ⴰⵎⵍⵍⴰⵍ ⴳ ⵏⴰⴷⵓⵔ"
+    },
+    "BeachResorts": {
+      "title": "ⵉⵎⴰⵍⵏ ⵏ ⵜⵖⵔⵎⵉⵏ",
+      "description": "ⵉⵎⴰⵍⵏ ⵏ ⵜⵖⵔⵎⵉⵏ ⵜⴰⵎⴰ ⵏ ⵜⵖⵔⵎⵉⵏ ⵏ ⵏⴰⴷⵓⵔ"
+    },
+    "Riads": {
+      "title": "ⵔⵢⴰⴷⵏ",
+      "description": "ⵜⵉⴳⵎⵎⵉ ⵜⵉⵎⴰⵣⵉⵖⵉⵏ ⵙ ⵉⵖⵔⵙⵏ ⴰⴳⵏⵙⴰⵏ ⴳ ⵎⴷⵉⵏⵜ ⵏ ⵏⴰⴷⵓⵔ"
+    },
+    "VacationHomes": {
+      "title": "ⵜⵉⴳⵎⵎⵉ ⵏ ⵓⵙⵎⵓⵜⵜⵉ",
+      "description": "ⵜⵉⴳⵎⵎⵉ ⵏ ⵓⵙⵎⵓⵜⵜⵉ ⵜⵉⵎⵥⵍⴰⵢⵉⵏ ⴳ ⵏⴰⴷⵓⵔ"
+    }
+  },
+  "homeTitle": {
+    "DiscoverNador": "ⴰⴼ ⵏⴰⴷⵓⵔ",
+    "BrowseByPropertyType": "ⵔⵣⵓ ⵙ ⵡⴰⵏⴰⵡ ⵏ ⵜⴽⵔⴰⵢⵉⵏ",
+    "HomesGuestsLove": "ⵜⵉⴳⵎⵎⵉ ⵏⵏⴰ ⵉⵔⴰⵏ ⵉⵎⵓⵔⴰⵔ"
+  },
+  "footer": {
+    "contactUs": "ⵎⵢⴰⵡⴰⴹ ⴷⵉⴷⵏⵖ",
+    "companyName": "ⵜⴰⵎⴰⵙⵙⴰ ⵏ ⵓⵙⵓⵜⵔ ⵜⴰⵣⵔⴼⴰⵏⵜ",
+    "phone": "ⴰⵜⵉⵍⵉⴼⵓⵏ: {{phone}}",
+    "email": "ⵉⵎⴰⵢⵍ: {{email}}",
+    "ourServices": "ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏⵏⵖ",
+    "services": {
+      "hotelBookings": "ⵓⵙⵓⵜⵔ ⵏ ⵉⵀⵓⵜⵉⵍⵏ",
+      "vacationRentals": "ⴰⴽⵔⴰ ⵏ ⵓⵙⵎⵓⵜⵜⵉ",
+      "carRentals": "ⴰⴽⵔⴰ ⵏ ⵜⵎⵓⴱⵉⵍⵉⵏ",
+      "propertySales": "ⴰⵣⵏⵣⵉ ⵏ ⵜⴽⵔⴰⵢⵉⵏ",
+      "businessTravel": "ⵉⵎⵓⴷⴷⵓⵜⵏ ⵏ ⵜⵙⵖⵏⵜ"
+    },
+    "company": {
+      "companyName": "ⵜⴰⵎⴰⵙⵙⴰ ⵏ ⵓⵙⵓⵜⵔ ⵜⴰⵣⵔⴼⴰⵏⵜ",
+      "aboutUs": "ⵖⴼ ⵏⵏⵖ",
+      "terms": "ⵜⵉⵎⵓⵔⴰⵙ ⴷ ⵜⵏⵓⴱⴳⵉⵏ",
+      "privacy": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵜⵓⴷⵔⵜ",
+      "partner": "ⴰⵎⴷⴷⴰⴽⵯⵍ ⴷⵉⴷⵏⵖ"
+    },
+    "social": {
+      "facebook": "ⴼⵉⵙⴱⵓⴽ",
+      "instagram": "ⵉⵏⵙⵜⴰⴳⵔⴰⵎ",
+      "tiktok": "ⵜⵉⴽⵜⵓⴽ"
+    },
+    "copyright": "© {{year}} ⵜⴰⵎⴰⵙⵙⴰ ⵏ ⵓⵙⵓⵜⵔ ⵜⴰⵣⵔⴼⴰⵏⵜ. ⴰⴽⴽⵯ ⵉⵣⵔⴼⴰⵏ ⵉⵜⵜⵓⵃⴹⴰⵏ."
+  },
+  "hotel": {
+    "HotelNavMenu": {
+      "overview": "ⴰⵙⵎⵓⵜⵜⵉ",
+      "info": "ⵉⵏⵖⵎⵉⵙⵏ ⴷ ⵡⴰⵔⴰⴳⵏ",
+      "area": "ⴰⵎⴽⴰⵏ",
+      "facilities": "ⵜⵉⵏⵓⵍⴼⵉⵏ",
+      "rules": "ⵉⵍⵓⴳⴰⵏ",
+      "print": "ⵜⵉⵏⵖⵎⵉⵙⵉⵏ"
+    },
+    "FeaturedAmenities": {
+      "pool": "ⴰⵙⴰⵍⴰⵙ ⵏ ⵓⵙⵉⵔⵉ",
+      "parking": "ⴰⵙⴱⴷⴷ ⵉⵍⵍⵓⵍⵏ",
+      "restaurant": "ⴰⵔⵉⵙⵜⵓⵔⴰⵏ",
+      "wifi": "ⵡⵉⴼⵉ ⵉⵍⵍⵓⵍⵏ",
+      "spa": "ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏ ⵓⵙⵎⵓⵜⵜⵉ",
+      "bar": "ⴱⴰⵔ",
+      "roomService": "ⵜⴰⵏⵓⵍⴼⴰ ⵏ ⵜⵖⵔⴼⵜ",
+      "ac": "ⴰⵙⵙⵉⵔⵉ ⵏ ⵓⴷⵓ"
+    },
+    "HotelBookingBox": {
+      "ratingText": "ⵉⴼⴰⵣ",
+      "reviews": "ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ {{count}}",
+      "price": "ⴰⵔⴰⴳ ⵉ {{nights}} ⵉⴹⵓⵙⵏ",
+      "priceValue": "MAD {{price}}",
+      "includes": "ⵉⵙⵎⵓⵏ ⵜⵉⵔⵔⴰⵜⵉⵏ ⴷ ⵜⵎⵓⵏⵉⵏ",
+      "checkIn": "ⴰⴽⵛⵛⵓⵎ",
+      "checkOut": "ⴰⴼⴼⵓⵖ",
+      "guests": "ⵉⵎⵓⵔⴰⵔ",
+      "reserveNow": "ⵙⵙⵓⵜⵔ ⴷⵖⵉ"
+    },
+    "AreaInfo": {
+      "title": "ⵉⵏⵖⵎⵉⵙⵏ ⵏ ⵓⵎⴽⴰⵏ",
+      "bestRates": "ⵡⴰⵔⴰⴳⵏ ⵉⴼⴰⵣⵏ ⵉⵜⵜⵓⵙⵏⵜⵎⵏ - ⵙⵙⵓⵜⵔ ⵙⵔⵙ ⴷⵉⴷⵏⵖ!",
+      "bookNow": "ⵙⵙⵓⵜⵔ ⴷⵖⵉ",
+      "location": "ⴰⵎⴽⴰⵏ ⵉⴼⴰⵣ – ⵙⴽⵏ ⵜⴰⴽⴰⵔⴹⴰ",
+      "whatsNearby": "ⵎⴰⴷ ⵉⵍⵍⴰⵏ ⵜⴰⵎⴰ",
+      "forbesMuseum": "ⴰⵙⴰⵔⴰⴳ ⴼⵓⵔⴱⵙ ⵏ ⵟⴰⵏⵊⴰ",
+      "jardinMendoubia": "ⵉⵖⵔⵙ ⵎⵏⴷⵓⴱⵢⴰ",
+      "darElMakhzen": "ⴷⴰⵔ ⵍⵎⴰⵅⵣⵏ",
+      "kasbahMuseum": "ⴰⵙⴰⵔⴰⴳ ⵏ ⵜⵇⴰⵚⴱⴰ",
+      "americanLegationMuseum": "ⴰⵙⴰⵔⴰⴳ ⵏ ⵜⵏⵏⴰⴱⴰⴹⵜ ⵜⴰⵎⵉⵔⵉⴽⴰⵏⵉⵢⵜ",
+      "placeAinKtiouet": "ⴰⵙⴰⵔⴰⴳ ⵄⵉⵏ ⴽⵜⵉⵡⵜ",
+      "parcPerdicaris": "ⵉⵖⵔⵙ ⴱⵉⵔⴷⵉⴽⴰⵔⵉⵙ",
+      "capeMalabata": "ⴰⴼ ⵎⴰⵍⴰⴱⴰⵟⴰ",
+      "cafeDeParque": "ⴰⵇⴰⵀⵡⴰ ⴷⵓ ⴱⴰⵔⴽ",
+      "cafeHanafta": "ⴰⵇⴰⵀⵡⴰ ⵃⴰⵏⴰⴼⵜⴰ",
+      "salonDeThe": "ⵙⴰⵍⵓⵏ ⵏ ⵓⵜⴰⵢ",
+      "tangerVille": "ⵟⴰⵏⵊⴰ ⵎⴷⵉⵏⵜ",
+      "tgvDepot": "ⴰⵙⴱⴷⴷ TGV",
+      "tangierMunicipalBeach": "ⵜⴰⵖⵔⵎⵜ ⵜⴰⵏⴰⴱⴰⵟⵜ ⵏ ⵟⴰⵏⵊⴰ",
+      "beachesNeighborhood": "ⵜⵉⵖⵔⵎⵉⵏ ⴳ ⵜⵎⵏⴰⴹⵜ",
+      "malabata": "ⵎⴰⵍⴰⴱⴰⵟⴰ",
+      "plageGhandouri": "ⵜⴰⵖⵔⵎⵜ ⵖⴰⵏⴷⵓⵔⵉ",
+      "plageMrisat": "ⵜⴰⵖⵔⵎⵜ ⵎⵔⵉⵙⴰⵜ",
+      "closestAirports": "ⵉⵎⴰⵍⵏ ⵏ ⵓⴼⵓⵍⴽⵉ ⵉⵇⵔⵉⴱⵏ",
+      "tangierIbnBattutaAirport": "ⴰⵎⴰⵍ ⵏ ⵓⴼⵓⵍⴽⵉ ⵟⴰⵏⵊⴰ ⵉⴱⵏ ⴱⴰⵟⵟⵓⵟⴰ",
+      "saniaRamelAirport": "ⴰⵎⴰⵍ ⵏ ⵓⴼⵓⵍⴽⵉ ⵙⴰⵏⵢⴰ ⵔⴰⵎⵍ",
+      "ceutaHeliport": "ⴰⵎⴰⵍ ⵏ ⵉⵀⵉⵍⵉⴽⵓⴱⵜⵉⵔⵏ ⵙⴱⵜⴰ",
+      "shortestDistances": "ⵜⵉⵔⵓⵃⵉⵏ ⵜⵉⵎⵥⵥⵢⴰⵏⵉⵏ ⵜⵉⵇⵔⵉⴱⵉⵏ ⵉⵜⵜⵓⵙⴽⴰⵏⵏ. ⵜⵉⵔⵓⵃⵉⵏ ⵜⵉⵎⵉⴷⴷⵉⵏ ⵖⵉⵏ ⴰⴷ ⵎⵣⴰⵔⴰⵢⵏⵜ."
+    }
+  },
+  "HotelFacilities": {
+    "title": "ⵉⵙⵎⵓⵏⵏ ⵉⵎⵖⴰⵔⵏ",
+    "nonSmokingRooms": "ⵜⵉⵖⵔⴼⵉⵏ ⵓⵔ ⵉⵜⵜⵓⵙⵙⵓⵏ",
+    "fitnessCenter": "ⴰⵎⵎⴰⵙ ⵏ ⵓⵙⵎⵓⵜⵜⵉ",
+    "floorService": "ⵜⴰⵏⵓⵍⴼⴰ ⵏ ⵓⵙⵡⵉⵔ",
+    "disabilityEquipment": "ⴰⵎⴰⵜⵜⴰⵢ ⵉ ⵉⵎⵓⴷⴷⴰⵔ",
+    "restaurant": "ⴰⵔⵉⵙⵜⵓⵔⴰⵏ",
+    "freeParking": "ⴰⵙⴱⴷⴷ ⵉⵍⵍⵓⵍⵏ",
+    "beachFront": "ⴰⴷⴰⵔ ⵏ ⵜⵖⵔⵎⵜ",
+    "bouilloire": "ⴰⵎⵙⵙⵉ ⴳ ⴰⴽⴽⵯ ⵉⵙⴰⵍⴰⵏ",
+    "bar": "ⴱⴰⵔ",
+    "breakfast": "ⵉⵎⵏⵙⵉ ⵉⴼⴰⵣ",
+    "idealForYourStay": "ⵉⴼⴰⵣ ⵉ ⵓⵣⴷⴰⵖ ⵏⵏⵓⵏ",
+    "beach": "ⵜⴰⵖⵔⵎⵜ",
+    "wifi": "ⵡⵉⴼⵉ ⵉⵍⵍⵓⵍⵏ",
+    "airConditioning": "ⴰⵙⵙⵉⵔⵉ ⵏ ⵓⴷⵓ",
+    "parking": "ⴰⵙⴱⴷⴷ",
+    "shuttleService": "ⵜⴰⵏⵓⵍⴼⴰ ⵏ ⵓⵙⵏⵓⵇⵍ",
+    "familyRooms": "ⵜⵉⵖⵔⴼⵉⵏ ⵏ ⵜⵡⴰⵛⵜ",
+    "bathroom": "ⴰⵎⴽⴰⵏ ⵏ ⵓⵙⵙⵉⵔⵉ",
+    "articlesToilette": "ⵉⴼⵔⴷⵉⵙⵏ ⵏ ⵓⵙⵙⵉⵔⵉ ⵉⵍⵍⵓⵍⵏ",
+    "hairDryer": "ⴰⵎⵙⵙⵉ ⵏ ⵓⵇⵇⵔⵓ",
+    "kitchen": "ⵜⴰⵇⵇⵓⵊⵜ",
+    "refrigerator": "ⴰⵎⵙⵙⴰⵔⵉ",
+    "petsAllowed": "ⵉⵎⵓⴷⴰⵔ ⵉⵜⵜⵓⵙⵉⵔⵉⵃⵏ (ⵖⵉⵏ ⴰⴷ ⵉⵍⵉⵏⵜ ⵜⵎⵓⵏⵜ)",
+    "activities": "ⵜⵉⵎⵙⴽⵔⵉⵏ",
+    "highTech": "ⵜⵉⵜⵉⴽⵏⵓⵍⵓⵊⵉⵢⵜ ⵜⴰⵏⴰⵡⴰⵢⵜ",
+    "flatScreenTV": "ⵜⵉⵍⵉⴼⵉⵣⵢⵓⵏ ⴰⵎⵍⴰⵍ",
+    "phone": "ⴰⵜⵉⵍⵉⴼⵓⵏ",
+    "tv": "ⵜⵉⵍⵉⴼⵉⵣⵢⵓⵏ",
+    "wine": "ⵛⴰⵎⴱⴰⵏⵢⴰ/ⵡⴰⵢⵏ",
+    "childrenMenu": "ⵓⵎⵓⵖ ⵏ ⵡⴰⵔⵔⴰⵡ",
+    "snackBar": "ⴱⴰⵔ ⵏ ⵉⵎⵙⴽⵔⵏ",
+    "wifiAvailable": "ⵡⵉⴼⵉ ⵉⵍⵍⵓⵍⵏ ⵉⵍⵍⴰ ⴳ ⴰⴽⴽⵯ ⴰⵎⴽⴰⵏ",
+    "reception": "ⴰⵙⵓⴷⴷⵓ",
+    "baggage": "ⴰⵃⴹⵓ ⵏ ⵉⴼⵔⴷⵉⵙⵏ",
+    "reception24h24": "ⴰⵙⵓⴷⴷⵓ 24 ⵏ ⵜⵙⵔⴰⴳⵉⵏ",
+    "dryCleaning": "ⴰⵙⵙⵉⵔⵉ ⴰⵇⵇⵔⴰⵏ",
+    "laundry": "ⴰⵙⵙⵉⵔⵉ",
+    "businessServices": "ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏ ⵜⵙⵖⵏⵜ",
+    "fax": "ⴼⴰⴽⵙ/ⵜⵉⵏⵖⵎⵉⵙⵉⵏ",
+    "meetingRooms": "ⵜⵉⵖⵔⴼⵉⵏ ⵏ ⵉⵎⵢⴰⵡⴰⴹⵏ",
+    "security": "ⴰⵙⴳⴳⵯⵔ",
+    "extinguishers": "ⵉⵎⵙⵙⵉⵏ ⵏ ⵜⵎⵙⵙⵉ",
+    "surveillance": "ⵜⵉⴽⴰⵎⵉⵔⴰⵜⵉⵏ ⵏ ⵓⵙⴳⴳⵯⵔ ⴱⵕⵕⴰ",
+    "smokeDetectors": "ⵉⵎⵙⵙⵉⵏ ⵏ ⵓⴷⵅⴰⵏ",
+    "securityAlarm": "ⴰⵙⴳⴳⵯⵔ ⵏ ⵓⵙⴳⴳⵯⵔ",
+    "accessCards": "ⵜⵉⴽⴰⵔⴹⵉⵏ ⵏ ⵓⴽⵛⵛⵓⵎ",
+    "accessKeys": "ⵜⵉⵙⴰⵔⵓⵜⵉⵏ ⵏ ⵓⴽⵛⵛⵓⵎ",
+    "security24h24": "ⴰⵙⴳⴳⵯⵔ 24 ⵏ ⵜⵙⵔⴰⴳⵉⵏ",
+    "safe": "ⴰⵙⴰⵏⴷⵓⵇ ⴰⵎⴳⴳⴰⵔⵓ",
+    "general": "ⴰⵎⴰⵜⴰ",
+    "supermarket": "ⴰⵎⴰⵀⵣⵏ ⴳ ⵓⵎⴽⴰⵏ",
+    "smokingArea": "ⴰⵎⴽⴰⵏ ⵏ ⵓⵙⵙⵓⵏ",
+    "heating": "ⴰⵙⵅⵓⵏ",
+    "elevator": "ⴰⵙⵙⴰⵍⵉ",
+    "laundryService": "ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏ ⵓⵙⵙⵉⵔⵉ",
+    "toiletWithHandrails": "ⴰⵎⴽⴰⵏ ⵏ ⵓⵙⵙⵉⵔⵉ ⵙ ⵉⴼⴰⵙⵙⵏ",
+    "wheelchairAccessible": "ⵉⵜⵜⵓⴽⵛⵛⵓⵎ ⵙ ⵓⴽⵓⵔⵙⵉ ⵏ ⵉⵎⵓⴷⴷⴰⵔ",
+    "wellness": "ⴰⵙⵎⵓⵜⵜⵉ",
+    "fitness": "ⴰⵙⵎⵓⵜⵜⵉ ⵏ ⵜⴼⴳⴰ",
+    "languages": "ⵜⵓⵜⵍⴰⵢⵉⵏ ⵉⵜⵜⵓⵙⴰⵡⴰⵍⵏ",
+    "arabic": "ⵜⴰⵄⵔⴰⴱⵜ",
+    "english": "ⵜⴰⵏⴳⵍⵉⵣⵜ",
+    "spanish": "ⵜⴰⵙⴱⴰⵏⵢⵓⵍⵜ",
+    "french": "ⵜⴰⴼⵔⴰⵏⵙⵉⵙⵜ",
+    "missingInformation": "ⵉⵏⵖⵎⵉⵙⵏ ⵉⵜⵜⵓⵃⴹⴰⵏ?"
+  },
+  "FAQ": {
+    "missingInformation": "ⵉⵏⵖⵎⵉⵙⵏ ⵉⵜⵜⵓⵃⴹⴰⵏ?",
+    "yes": "ⵢⴰⵀ",
+    "no": "ⵓⵀⵓ"
+  },
+  "experiences": {
+    "marchica": {
+      "title": "ⵜⴰⵖⵣⵓⵜ ⵎⴰⵔⵛⵉⴽⴰ",
+      "description": "ⵔⵣⵓ ⵢⴰⵜ ⵙⴳ ⵜⵖⵣⵓⵜⵉⵏ ⵜⵉⵎⵇⵇⵔⴰⵏⵉⵏ ⴳ ⵢⵉⵍⵍ ⴰⵎⵍⵍⴰⵍ",
+      "price": "ⵙⴳ $40"
+    },
+    "charrana": {
+      "title": "ⵜⴰⵖⵔⵎⵜ ⵛⴰⵔⴰⵏⴰ",
+      "description": "ⵙⵎⵓⵜⵜⵉ ⵙ ⵡⴰⵎⴰⵏ ⵉⵣⴷⴷⵉⴳⵏ ⵏ ⵜⵖⵔⵎⵜ ⴰⴷ ⵉⵊⵎⵍⵏ",
+      "price": "ⵙⴳ $25"
+    },
+    "gurugu": {
+      "title": "ⵜⵉⵔⵔⴰ ⵏ ⴰⴷⵔⴰⵔ ⴳⵓⵔⵓⴳⵓ",
+      "description": "ⴰⵍⵉ ⴰⴷⵔⴰⵔ ⴰⵎⵖⴰⵔ ⵙ ⵜⵓⵏⵏⵉⵏ ⵏ ⵏⴰⴷⵓⵔ",
+      "price": "ⵙⴳ $35"
+    },
+    "souk": {
+      "title": "ⵜⵉⵔⵔⴰ ⵏ ⵓⵙⵓⵇ ⴰⵇⴱⵓⵔ",
+      "description": "ⵙⵙⵏ ⴰⵙⵓⵇ ⴰⴷⵖⴰⵔⴰⵏ ⴷ ⵜⴷⵍⵙⴰ ⵜⴰⵔⵉⴼⵉⵜ",
+      "price": "ⵙⴳ $20"
+    },
+    "forks": {
+      "title": "ⴰⴼ ⴽⵔⴰⴹ ⵉⴼⵓⵔⴽⵏ",
+      "description": "ⵔⵣⵓ ⴰⵎⵏⴰⵔ ⴰⵎⵣⵔⵓⵢ ⴷ ⵓⴳⵏⵙⵓ ⴰⵊⵎⵉⵍ",
+      "price": "ⵙⴳ $30"
+    },
+    "seafood": {
+      "title": "ⵜⵉⵔⵎⵉⵜⵉⵏ ⵏ ⵢⵉⵍⵍ ⴰⵎⵍⵍⴰⵍ",
+      "description": "ⴷⵓⵇ ⵜⵉⵔⵎⵉⵜⵉⵏ ⵜⵉⵎⴰⵢⵏⵓⵜⵉⵏ ⴳ ⵉⵔⵉⵙⵜⵓⵔⴰⵏⵏ ⵉⴷⵖⴰⵔⴰⵏ",
+      "price": "ⵙⴳ $45"
+    }
+  },
+  "FeaturedProperties": {
+    "propertyDetails": "ⵜⵉⵏⵖⵎⵉⵙⵉⵏ ⵏ ⵜⴽⵔⴰⵢⵜ",
+    "totalReviews": "ⴰⵙⵎⵓⵏ ⵏ ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "rating": "ⴰⵙⵎⵓⵜⵜⵉ",
+    "ratings": {
+      "exceptional": "ⴰⵎⵥⵍⴰⵢ",
+      "excellent": "ⵉⴼⴰⵣ",
+      "veryGood": "ⵉⴼⴰⵣ ⴰⵟⵟⴰⵙ",
+      "good": "ⵉⴼⴰⵣ"
+    },
+    "perNight": "ⵉ ⵢⴰⵏ ⵉⴹ",
+    "bookNow": "ⵙⵙⵓⵜⵔ ⴷⵖⵉ",
+    "showLess": "ⵙⴽⵏ ⴷⵔⵓⵙ"
+  },
+  "favorites": {
+    "title": "ⵜⵉⴳⵎⵎⵉ ⵏⵏⴰ ⵉⵔⴰⵏ ⵉⵎⵓⵔⴰⵔ",
+    "location": "ⴰⵎⴽⴰⵏ",
+    "rating": "ⴰⵙⵎⵓⵜⵜⵉ",
+    "reviews": "ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "startingFrom": "ⵉⵙⵙⵏⵜⵉ ⵙⴳ"
+  },
+  "mailList": {
+    "title": "ⵙⵙⴽⵍⵙ ⴳ ⵜⵖⵔⵉ ⵏⵏⵖ",
+    "subtitle": "ⴰⵎⵥ ⵉⵏⵖⵎⵉⵙⵏ ⵉⵎⴰⵢⵏⵓⵜⵏ",
+    "placeholder": "ⵙⴽⵛⵎ ⵉⵎⴰⵢⵍ ⵏⵏⵓⵏ",
+    "subscribe": "ⵙⵙⴽⵍⵙ",
+    "successTitle": "ⵉⴼⴰⵣ",
+    "successMessage": "ⵉⵎⴰⵢⵍ ⵏⵏⵓⵏ ⵉⵜⵜⵓⵙⵙⴽⵍⵙ ⵙ ⵜⵎⴰⵎⵜ.",
+    "errorTitle": "ⴰⵣⴳⵍ",
+    "errorMessage": "ⵙⴽⵛⵎ ⵉⵎⴰⵢⵍ ⵉⵎⴳⵉ."
+  },
+  "currency": {
+    "USD": "ⴰⴷⵓⵍⴰⵔ ⴰⵎⵉⵔⵉⴽⴰⵏⵉ",
+    "MAD": "ⴰⴷⵔⵀⵎ ⴰⵎⵖⵔⵉⴱⵉ",
+    "EUR": "ⵓⵔⵓ",
+    "GBP": "ⴰⵊⵏⵉⵀ ⴰⴱⵔⵉⵟⴰⵏⵉ",
+    "JPY": "ⵢⵉⵏ ⴰⵊⴰⴱⴰⵏⵉ"
+  },
+  "partnerWelcome": {
+    "hero": {
+      "title": "ⵙⵙⵉⵎⵖⵓⵔ ⵜⴰⵙⵖⵏⵜ ⵏⵏⵓⵏ ⴷ ⴰⴽⵙⵉⵙⵜⴰⵢ",
+      "subtitle": "ⴷⴷⵓ ⵖⵔ ⵓⵙⵓⵇ ⵏⵏⵖ ⴰⵔ ⵜⴰⵡⴹⴷ ⵉⵎⵙⵙⵏⵜⴰⵢⵏ ⵉⵔⵣⵣⵓⵏ ⵜⵉⴽⵔⴰⵢⵉⵏ, ⵜⵎⵓⴱⵉⵍⵉⵏ, ⵉⵎⴰⵀⵣⵏ ⴷ ⵜⵉⵏⵓⵍⴼⵉⵏ",
+      "becomePartner": "ⴰⵖ ⴰⵎⴷⴷⴰⴽⵯⵍ"
+    },
+    "categories": {
+      "title": "ⵎⴰⴷ ⵜⵔⵉⴷⴷ ⴰⴷ ⵜⵙⴷⵔⴳⴷ?",
+      "realEstate": {
+        "title": "ⴰⵎⵓⵔ ⵏ ⵜⴽⵔⴰⵢⵉⵏ",
+        "description": "ⵣⵏⵣ ⵏⵖ ⴽⵔⵉ ⵜⵉⴽⵔⴰⵢⵉⵏ"
+      },
+      "rentalHomes": {
+        "title": "ⵜⵉⴳⵎⵎⵉ ⵏ ⵓⴽⵔⴰ",
+        "description": "ⵙⴷⵔⴳ ⵜⵉⴳⵎⵎⵉ ⵏ ⵓⵙⵎⵓⵜⵜⵉ"
+      },
+      "carRental": {
+        "title": "ⴰⴽⵔⴰ ⵏ ⵜⵎⵓⴱⵉⵍⵉⵏ",
+        "description": "ⴽⵔⵉ ⵜⵎⵓⴱⵉⵍⵉⵏ"
+      },
+      "shops": {
+        "title": "ⵉⵎⴰⵀⵣⵏ",
+        "description": "ⵙⴷⵔⴳ ⵉⵎⴰⵀⵣⵏ"
+      },
+      "homeServices": {
+        "title": "ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏ ⵜⴳⵎⵎⵉ",
+        "description": "ⴰⴽⵙ ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏ ⵓⵙⵙⵓⴷⵙ"
+      }
+    },
+    "benefits": {
+      "title": "ⵎⴰⵖⵉ ⴰⵎⴷⴷⴰⴽⵯⵍ ⴷⵉⴷⵏⵖ?",
+      "platform": {
+        "title": "ⵜⴰⵏⴰⴱⴰⴹⵜ ⵢⴰⵜ",
+        "description": "ⵙⵙⵓⴷⵓⵙ ⵜⴰⵙⵖⵏⵜ ⵏⵏⵓⵏ ⵙⴳ ⵢⴰⵏ ⵓⵙⵏⵓⵍ"
+      },
+      "customers": {
+        "title": "ⵉⵎⵙⵙⵏⵜⴰⵢⵏ ⴱⴰⵀⵔⴰ",
+        "description": "ⴰⵡⴹ ⵉⴼⴷⴰⵏ ⵏ ⵉⵎⵙⵙⵏⵜⴰⵢⵏ"
+      },
+      "payments": {
+        "title": "ⵜⵎⵓⵏⵉⵏ ⵜⵉⵎⴳⴳⴰⵔⵉⵏ",
+        "description": "ⴰⵙⵙⴼⵔⵓ ⵏ ⵜⵎⵓⵏⵉⵏ ⵉⵜⵜⵓⴼⵍⵏ"
+      },
+      "growth": {
+        "title": "ⵉⵎⴰⵙⵙⵏ ⵏ ⵓⵙⵉⵎⵖⵓⵔ",
+        "description": "ⵜⵉⵙⵍⵉⵡⵉⵏ ⴷ ⵓⵙⵙⵓⴷⵓ ⵏ ⵓⵙⵡⵉⵇ"
+      }
+    },
+    "getStarted": {
+      "title": "ⵉⵀⵔⴰ ⴰⴷ ⵜⵙⵙⵏⵜⵉⴷ?",
+      "subtitle": "ⴷⴷⵓ ⵖⵔ ⵉⴼⴷⴰⵏ ⵏ ⵉⵎⴷⴷⴰⴽⵯⵍⵏ ⵉⵎⵓⴼⴰⵔⵏ ⴳ ⴰⴽⵙⵉⵙⵜⴰⵢ ⴰⵔ ⵜⵙⵙⵏⵜⵉⴷ ⴰⵙⵉⵎⵖⵓⵔ ⵏ ⵜⴰⵙⵖⵏⵜ ⵏⵏⵓⵏ ⴰⵙⵙⴰ",
+      "createListing": "ⵙⵏⵓⵍⴼⵓ ⵜⴰⵍⵉⵙⵜⴰ ⵏⵏⵓⵏ"
+    }
+  },
+  "singleProperty": {
+    "location": "ⴰⵎⴽⴰⵏ",
+    "availableRooms": "ⵜⵉⵖⵔⴼⵉⵏ ⵉⵍⵍⴰⵏ",
+    "viewAll": "ⵥⵕ ⴰⴽⴽⵯ ⵜⵓⵏⵖⵉⵏ",
+    "share": "ⴱⴹⵓ",
+    "save": "ⵃⴹⵓ",
+    "usaved": "ⴽⴽⵙ ⵙⴳ ⵉⵜⵜⵓⵃⴹⴰⵏ",
+    "aboutThisPlace": "ⵖⴼ ⵓⵎⴽⴰⵏ ⴰⴷ",
+    "nearbyPlaces": "ⵉⵎⴽⴰⵏ ⵉⵇⵔⵉⴱⵏ",
+    "showAll": "ⵙⴽⵏ ⴰⴽⴽⵯ",
+    "kilometers": "ⴽⵎ",
+    "categories": {
+      "walkingRoutes": "ⵜⵉⴱⵔⵉⴷⵉⵏ ⵏ ⵓⴷⴷⵓⵔ",
+      "bookingPlaces": "ⵉⵎⴽⴰⵏ ⵏ ⵓⵙⵓⵜⵔ",
+      "beaches": "ⵜⵉⵖⵔⵎⵉⵏ",
+      "restaurants": "ⵉⵔⵉⵙⵜⵓⵔⴰⵏⵏ",
+      "publicTransit": "ⴰⵙⵏⵓⵇⵍ ⴰⴳⴷⵓⴷⴰⵏ",
+      "airports": "ⵉⵎⴰⵍⵏ ⵏ ⵓⴼⵓⵍⴽⵉ",
+      "attractions": "ⵉⵎⴽⴰⵏ ⵉⵊⵎⵍⵏ"
+    },
+    "hotelDetails": "ⵜⵉⵏⵖⵎⵉⵙⵉⵏ ⵏ ⵓⵙⴰⵍⴰ",
+    "offersTitle": "ⵎⴰⴷ ⵉⴽⵙ ⵓⵎⴽⴰⵏ ⴰⴷ",
+    "amenities": "ⵜⵉⵏⵓⵍⴼⵉⵏ",
+    "features": "ⵜⵉⵎⵉⵣⵉⵏ",
+    "back": "ⵓⵖⵓⵍ"
+  },
+  "hotelsList": {
+    "showAll": "ⵙⴽⵏ ⴰⴽⴽⵯ",
+    "refreshing": "ⴰⵙⵎⴰⵢⵏⵓ ⵏ ⵜⵍⵉⵙⵜⴰ ⵏ ⵉⵀⵓⵜⵉⵍⵏ...",
+    "loading": "ⴰⵙⴰⵍⵉ ⵏ ⵜⵍⵉⵙⵜⴰ ⵏ ⵉⵀⵓⵜⵉⵍⵏ...",
+    "filters": "ⵉⵎⵙⴼⵉⵢⵏ",
+    "propertyTypes": {
+      "house": "ⵜⴰⴳⵎⵎⵉ",
+      "guesthouse": "ⴰⵙⴰⵍⴰ ⵏ ⵉⵎⵓⵔⴰⵔ",
+      "apartment": "ⴰⵙⴰⵍⴰ",
+      "hotel": "ⵀⵓⵜⵉⵍ",
+      "villa": "ⴼⵉⵍⴰ"
+    },
+    "backToTop": "ⵓⵖⵓⵍ ⵖⵔ ⵓⴼⵍⵍⴰ"
+  },
+  "hotelsDisplay": {
+    "noLocation": "ⵓⵔ ⵉⵍⵍⵉ ⵓⵎⴽⴰⵏ",
+    "untitledHotel": "ⵀⵓⵜⵉⵍ ⵓⵔ ⵉⵙⵄⴰⵏ ⵉⵙⵎ",
+    "previousImage": "ⵜⴰⵡⵍⴰⴼⵜ ⵉⵣⵔⵉⵏ",
+    "nextImage": "ⵜⴰⵡⵍⴰⴼⵜ ⴷ ⵉⵜⵜⴰⵢⵏ",   
+    "previousImage": "ⵜⴰⵡⵍⴰⴼⵜ ⵉⵣⵔⵉⵏ",
+    "nextImage": "ⵜⴰⵡⵍⴰⴼⵜ ⴷ ⵉⵜⵜⴰⵢⵏ",
+    "rooms": "{{count}} ⵜⵉⵖⵔⴼⵉⵏ",
+    "bathrooms": "{{count}} ⵉⵎⴽⴰⵏ ⵏ ⵓⵙⵙⵉⵔⵉ",
+    "pricePerNight": "{{price}} MAD / ⵉⴹ",
+    "listingTypes": {
+      "hotel": "ⵀⵓⵜⵉⵍ",
+      "apartment": "ⴰⵙⴰⵍⴰ",
+      "house": "ⵜⴰⴳⵎⵎⵉ",
+      "villa": "ⴼⵉⵍⴰ",
+      "guesthouse": "ⴰⵙⴰⵍⴰ ⵏ ⵉⵎⵓⵔⴰⵔ"
+    },
+    "beds": "ⵉⵎⵙⵙⵏ"
+  },
+  "FilterModule": {
+    "common": {
+      "close": "ⵔⴳⵍ"
+    },
+    "filters": {
+      "title": "ⵉⵎⵙⴼⵉⵢⵏ",
+      "propertyType": "ⴰⵏⴰⵡ ⵏ ⵜⴽⵔⴰⵢⵜ",
+      "priceRange": "ⴰⵙⵎⵎ ⵏ ⵡⴰⵔⴰⴳⵏ",
+      "to": "ⵖⵔ",
+      "minPrice": "ⴰⵔⴰⴳ ⴰⴷⵔⵓⵙ",
+      "maxPrice": "ⴰⵔⴰⴳ ⴰⵏⴰⵎⵓⵔ",
+      "sortByPrice": "ⵙⵙⵓⴷⵓⵙ ⵙ ⵡⴰⵔⴰⴳ",
+      "clearAll": "ⵙⴼⴹ ⴰⴽⴽⵯ",
+      "showProperties": "ⵙⴽⵏ {{count}} ⵜⵉⴽⵔⴰⵢⵉⵏ",
+      "recommended": "ⵉⵜⵜⵓⵙⵙⵏⵎⵍⵏ",
+      "priceLowToHigh": "ⴰⵔⴰⴳ: ⴰⴷⵔⵓⵙ ⵖⵔ ⴰⵏⴰⵎⵓⵔ",
+      "priceHighToLow": "ⴰⵔⴰⴳ: ⴰⵏⴰⵎⵓⵔ ⵖⵔ ⴰⴷⵔⵓⵙ"
+    },
+    "propertyTypes": {
+      "hotel": "ⵀⵓⵜⵉⵍ",
+      "apartment": "ⴰⵙⴰⵍⴰ",
+      "villa": "ⴼⵉⵍⴰ",
+      "house": "ⵜⴰⴳⵎⵎⵉ",
+      "guesthouse": "ⴰⵙⴰⵍⴰ ⵏ ⵉⵎⵓⵔⴰⵔ"
+    },
+    "amenities": {
+      "popular": "ⵉⵜⵜⵓⵙⵙⴰⵏ",
+      "essentials": "ⵉⵙⵙⴰⵔⴰⵏ",
+      "features": "ⵜⵉⵎⵉⵣⵉⵏ",
+      "security": "ⴰⵙⴳⴳⵯⵔ",
+      "wifi": "ⵡⵉⴼⵉ / ⵉⵏⵜⵉⵔⵏⵉⵜ",
+      "tv": "ⵜⵉⵍⵉⴼⵉⵣⵢⵓⵏ",
+      "ac": "ⴰⵙⵙⵉⵔⵉ ⵏ ⵓⴷⵓ",
+      "heating": "ⴰⵙⵅⵓⵏ",
+      "hotWater": "ⴰⵎⴰⵏ ⵉⵅⵓⵏⵏ",
+      "parking": "ⴰⵙⴱⴷⴷ / ⴳⴰⵔⴰⵊ",
+      "kitchen": "ⵜⴰⵇⵇⵓⵊⵜ",
+      "washer": "ⴰⵎⵙⵙⵉ",
+      "workspace": "ⴰⵎⴽⴰⵏ ⵏ ⵜⵡⵓⵔⵉ",
+      "elevator": "ⴰⵙⵙⴰⵍⵉ",
+      "garden": "ⵉⵖⵔⵙ",
+      "pool": "ⴰⵙⴰⵍⴰⵙ ⵏ ⵓⵙⵉⵔⵉ",
+      "terrace": "ⴰⵙⵜⴰⵀ",
+      "jacuzzi": "ⵊⴰⴽⵓⵣⵉ",
+      "bbq": "ⴰⵛⵡⴰⵢ",
+      "breakfast": "ⵉⵎⵏⵙⵉ",
+      "smokeDetector": "ⴰⵎⵙⵙⵉ ⵏ ⵓⴷⵅⴰⵏ",
+      "carbonDetector": "ⴰⵎⵙⵙⵉ ⵏ ⵓⴽⴰⵔⴱⵓⵏ",
+      "security24": "ⴰⵙⴳⴳⵯⵔ 24/7",
+      "camera": "ⵜⴰⴽⴰⵎⵉⵔⴰ ⵏ ⵓⵙⴳⴳⵯⵔ"
+    }
+  },
+  "rules": {
+    "thingsToKnow": "ⵉⵏⵖⵎⵉⵙⵏ ⵉⵙⵙⴰⵔⴰⵏ",
+    "houseRules": "ⵉⵍⵓⴳⴰⵏ ⵏ ⵜⴳⵎⵎⵉ",
+    "safetyAndProperty": "ⴰⵙⴳⴳⵯⵔ ⴷ ⵜⵉⵏⵖⵎⵉⵙⵉⵏ ⵏ ⵜⴽⵔⴰⵢⵜ",
+    "cancellationPolicy": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵓⵙⵙⵏⵓⵍ",
+    "checkIn": "ⴰⴽⵛⵛⵓⵎ",
+    "checkoutBefore": "ⴰⴼⴼⵓⵖ ⴷⴰⵜ",
+    "maximumGuests": "ⴰⵙⵎⵓⵏ ⴰⵏⴰⵎⵓⵔ ⵏ ⵉⵎⵓⵔⴰⵔ",
+    "pets": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵉⵎⵓⴷⴰⵔ",
+    "partiesOrEvents": "ⵜⵉⵎⵙⴽⵔⵉⵏ ⴷ ⵉⵎⵢⴰⵡⴰⴹⵏ",
+    "smoking": "ⵜⴰⵙⵔⵜⵉⵜ ⵏ ⵓⵙⵙⵓⵏ",
+    "carbonMonoxideAlarm": "ⴰⵎⵙⵙⵉ ⵏ ⵓⴽⴰⵔⴱⵓⵏ ⵎⵓⵏⵓⴽⵙⵉⴷ",
+    "smokeAlarm": "ⴰⵎⵙⵙⵉ ⵏ ⵓⴷⵅⴰⵏ",
+    "securityCamera": "ⵜⵉⴽⴰⵎⵉⵔⴰⵜⵉⵏ ⵏ ⵓⵙⴳⴳⵯⵔ",
+    "poolHotTub": "ⴰⵙⴰⵍⴰⵙ / ⴰⵎⴰⵏ ⵉⵅⵓⵏⵏ",
+    "heights": "ⵉⵎⴽⴰⵏ ⵉⵏⴰⴼⵍⵍⴰⵏ ⵓⵔ ⵉⵜⵜⵓⵙⴳⴳⵯⵔⵏ",
+    "freeCancellationBefore": "ⴰⵙⵙⵏⵓⵍ ⵉⵍⵍⵓⵍⵏ ⴰⵔ",
+    "reviewThePolicy": "ⵥⵕ ⵜⴰⵙⵔⵜⵉⵜ ⵜⴰⵎⵎⴰⵎⵜ",
+    "notSuitableForInfants": "ⵓⵔ ⵉⵎⴳⵉ ⵉ ⵡⴰⵔⵔⴰⵡ ⵉⵎⵥⵥⵢⴰⵏ",
+    "damageProtection": "ⴰⵙⴳⴳⵯⵔ ⵙⴳ ⵓⵙⵅⵙⵔ ⵉⵜⵜⵓⵙⵔⴰⵏ",
+    "fireExtinguisher": "ⴰⵎⵙⵙⵉ ⵏ ⵜⵎⵙⵙⵉ ⵉⵍⵍⴰ",
+    "emergencyExit": "ⵜⵉⴱⵔⵉⴷⵉⵏ ⵏ ⵓⴼⴼⵓⵖ ⵏ ⵓⵔⵎⵉⵍ",
+    "notSpecified": "ⵓⵔ ⵉⵜⵜⵓⵙⵙⴰⵏ",
+    "allowed": "ⵉⵜⵜⵓⵙⵉⵔⵉⵃ",
+    "notAllowed": "ⵓⵔ ⵉⵜⵜⵓⵙⵉⵔⵉⵃ",
+    "notReported": "ⵓⵔ ⵉⵜⵜⵓⵏⵏⴰ",
+    "noneReported": "ⵓⵔ ⵉⵍⵍⵉⵏ ⵓⴳⵓⵔⵏ",
+    "noBarriers": "ⵓⵔ ⵉⵍⵍⵉⵏ ⵉⵙⴳⴳⵯⵔⵏ",
+    "noProtection": "ⵓⵔ ⵉⵍⵍⵉⵏ ⵉⵙⴳⴳⵯⵔⵏ",
+    "available": "ⵉⵍⵍⴰ",
+    "notAvailable": "ⵓⵔ ⵉⵍⵍⵉ",
+    "hours": "ⵜⵙⵔⴰⴳⵉⵏ",
+    "days": "ⵓⵙⵙⴰⵏ",
+    "viewDetails": "ⵥⵕ ⵜⵉⵏⵖⵎⵉⵙⵉⵏ",
+    "under2Years": "ⴰⵔⵔⴰⵡ ⴷⴷⴰⵡ 2 ⵉⵙⴳⴳⵯⴰⵙⵏ",
+    "required": "ⵉⵜⵜⵓⵙⵔⴰ",
+    "guestsMaximum": "ⴰⵙⵎⵓⵏ ⴰⵏⴰⵎⵓⵔ ⵏ ⵉⵎⵓⵔⴰⵔ"
+  },
+  "roomCard": {
+    "night": "ⵉⴹ",
+    "guests": "ⵉⵎⵓⵔⴰⵔ",
+    "view_details": "ⵥⵕ ⵜⵉⵏⵖⵎⵉⵙⵉⵏ",
+    "double_bed": "ⴰⵎⵙⵙⵏ ⴰⵎⵣⴷⵓⵊ",
+    "single_bed": "ⴰⵎⵙⵙⵏ ⴰⵢⵢⴰⵡ",
+    "queen_bed": "ⴰⵎⵙⵙⵏ ⵏ ⵜⴳⵍⵍⵉⴷⵜ",
+    "king_bed": "ⴰⵎⵙⵙⵏ ⵏ ⵓⴳⵍⵍⵉⴷ",
+    "bunk_bed": "ⴰⵎⵙⵙⵏ ⴰⵎⵙⵙⴰⵔ",
+    "sofa_bed": "ⴰⵎⵙⵙⵏ ⵏ ⵓⴽⵓⵔⵙⵉ",
+    "floor_mattress": "ⴰⵎⵙⵙⵏ ⵏ ⵡⴰⴽⴰⵍ",
+    "crib": "ⴰⵎⵙⵙⵏ ⵏ ⵓⵔⵔⴰⵡ",
+    "city_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵜⵎⴷⵉⵏⵜ",
+    "sea_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵢⵉⵍⵍ",
+    "garden_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵉⵖⵔⵙ",
+    "desert_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵓⵏⵣⵔⵓⴼ",
+    "medina_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵎⴷⵉⵏⵜ",
+    "mountain_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵉⴷⵔⴰⵔⵏ",
+    "riad_courtyard_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵓⴳⵏⵙⵓ ⵏ ⵔⵢⴰⴷ",
+    "atlas_mountains_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵉⴷⵔⴰⵔⵏ ⵏ ⵡⴰⵟⵍⴰⵙ",
+    "ocean_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵓⴳⴰⵔⴰⵡ",
+    "pool_view": "ⵜⴰⵏⵏⴰⵢⵜ ⵏ ⵓⵙⴰⵍⴰⵙ",
+    "entertainment": "ⴰⵙⵎⵓⵜⵜⵉ",
+    "moroccan_features": "ⵜⵉⵎⵉⵣⵉⵏ ⵜⵉⵎⵖⵔⵉⴱⵉⵏ",
+    "workspace": "ⴰⵎⴽⴰⵏ ⵏ ⵜⵡⵓⵔⵉ",
+    "kitchen_&_dining": "ⵜⴰⵇⵇⵓⵊⵜ ⴷ ⵓⵎⵓⵖ",
+    "technology": "ⵜⵉⵜⵉⴽⵏⵓⵍⵓⵊⵉⵢⵜ"
+  },
+  "deluxe_room": "ⵜⴰⵖⵔⴼⵜ ⵜⴰⵏⴰⵡⴰⵢⵜ",
+  "premium_location": "ⴰⵎⴽⴰⵏ ⴰⵏⴰⵡⴰⵢ",
+  "sq_m": "ⵎ²",
+  "guests": "ⵉⵎⵓⵔⴰⵔ",
+  "bathrooms": "ⵉⵎⴽⴰⵏ ⵏ ⵓⵙⵙⵉⵔⵉ",
+  "reviews": {
+    "guestReviews": "ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ ⵏ ⵉⵎⵓⵔⴰⵔ",
+    "backToPreview": "ⵓⵖⵓⵍ ⵖⵔ ⵓⵙⵎⵓⵜⵜⵉ",
+    "writeReview": "ⴰⵔⵓ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "editReview": "ⵙⵏⴼⵍ ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ",
+    "loginToReview": "ⴽⵛⵎ ⵉ ⵓⴽⵛⵛⵓⵎ ⵉ ⵓⴰⵔⵓ ⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "loginToLike": "ⴽⵛⵎ ⵉ ⵓⴽⵛⵛⵓⵎ ⵉ ⵓⵔⴰⵏ ⵏ ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "loginToDelete": "ⴽⵛⵎ ⵉ ⵓⴽⵛⵛⵓⵎ ⵉ ⵓⴽⴽⵙ ⵏ ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "loadReviewsFailed": "ⵓⵔ ⵉⵣⵎⵔ ⴰⴷ ⵉⴰⵙⴰⵍ ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ. ⴰⵔⵎ ⴰⵔⵎ.",
+    "failedToProcessReview": "ⵓⵔ ⵉⵣⵎⵔ ⴰⴷ ⵉⵙⵙⴼⵔⵓ ⵜⴰⵎⵓⵖⵍⵉⵜ. ⴰⵔⵎ ⴰⵔⵎ.",
+    "errorProcessingReview": "ⵉⵍⵍⴰ ⵓⵣⴳⵍ ⴳ ⵓⵙⵙⴼⵔⵓ ⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ.",
+    "failedToLike": "ⵓⵔ ⵉⵣⵎⵔ ⴰⴷ ⵉⵔⴰⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ. ⴰⵔⵎ ⴰⵔⵎ.",
+    "errorLikingReview": "ⵉⵍⵍⴰ ⵓⵣⴳⵍ ⴳ ⵓⵔⴰⵏ ⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ.",
+    "confirmDelete": "ⵜⵔⵉⴷⴷ ⴰⴷ ⵜⴽⴽⵙⴷ ⵜⴰⵎⵓⵖⵍⵉⵜ ⴰⴷ? ⵓⵔ ⵉⵣⵎⵔ ⴰⴷ ⵜⵜⵓⵖⵓⵍ.",
+    "failedToDelete": "ⵓⵔ ⵉⵣⵎⵔ ⴰⴷ ⵉⴽⴽⵙ ⵜⴰⵎⵓⵖⵍⵉⵜ. ⴰⵔⵎ ⴰⵔⵎ.",
+    "errorDeletingReview": "ⵉⵍⵍⴰ ⵓⵣⴳⵍ ⴳ ⵓⴽⴽⵙ ⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ.",
+    "cancel": "ⵙⵙⵏⵓⵍ",
+    "removeReview": "ⴽⴽⵙ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "submitReview": "ⴰⵣⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "updateReview": "ⵙⵎⴰⵢⵏⵓ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "reviewMinLength": "ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ ⵉⵇⵇⴰⵏ ⴰⴷ ⵜⵙⵄⵓ 10 ⵉⵙⴽⴽⵉⵍⵏ ⵅⴼ ⵜⵔⵏⵏⴰ.",
+    "reviewPlaceholder": "ⴰⵔⵓ ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ ⴷⴰ...",
+    "leaveAReview": "ⴰⵊⵊ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "reviews": "ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "noReviews": "ⵓⵔ ⵉⵍⵍⵉⵏ ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ ⵎⴰⵣⴰⵍ",
+    "viewAllReviews": "ⵥⵕ ⴰⴽⴽⵯ {{count}} ⵜⵉⵎⵓⵖⵍⵉⵡⵉⵏ",
+    "beFirstToReview": "ⴰⵖ ⴰⵎⵣⵡⴰⵔⵓ ⴰⴷ ⵉⴱⴹⵓⵏ ⵜⵉⵔⵎⵉⵜ ⵏⵏⵙ!",
+    "reviewHelp": "ⴰⵔⴰⵢ ⵏⵏⵓⵏ ⴰⵔ ⵉⵄⴰⵡⴰⵏ ⵡⵉⵢⵢⴰⴹ ⴰⴷ ⵙⵙⵏⵏⵏ ⵜⵉⵔⵎⵉⵜⵉⵏ ⵉⵎⴳⵉⵏ ⴰⵔ ⵉⵄⴰⵡⴰⵏ ⴰⵏⵖ ⴰⴷ ⵏⵙⵙⵉⵏ ⵜⵉⵏⵓⵍⴼⵉⵏ ⵏⵏⵖ.",
+    "feedbackMatters": "ⴰⵔⴰⵢ ⵏⵏⵓⵏ ⵉⵙⵙⴰⵔⴰ! ⴱⴹⵓ ⵜⵉⵔⵎⵉⵜ ⵏⵏⵓⵏ ⴰⵔ ⵜⵄⴰⵡⴰⵏⴷ ⴰⵏⵖ ⴰⴷ ⵏⵅⴷⵎⴽⵎ ⵙ ⵜⵎⴰⵎⵜ. ⴽⵓ ⵜⴰⵎⵓⵖⵍⵉⵜ ⴰⵔ ⵜⵄⴰⵡⴰⵏ ⵉⵎⵙⵙⵏⵜⴰⵢⵏ ⵏ ⴷⴰⵜ ⴰⴷ ⵙⵙⵏⵏⵏ ⵜⵉⵔⵎⵉⵜⵉⵏ ⵉⵎⴳⵉⵏ.",
+    "anonymous": "ⵓⵔ ⵉⵙⵄⴰⵏ ⵉⵙⵎ",
+    "foundHelpful": "ⵉⵓⴼⴰ ⵎⵓⴼⵉⴷ",
+    "person": "ⴰⵎⴷⴰⵏ",
+    "showur": "ⵥⵕ ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ",
+    "befirstadd": "ⴰⵣⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ ⵏⵏⵓⵏ"
+  },
+  "auth": {
+    "loginRequired": "ⴰⴽⵛⵛⵓⵎ ⵉⵜⵜⵓⵙⵔⴰ",
+    "loginToReview": "ⴽⵛⵎ ⵉ ⵓⴽⵛⵛⵓⵎ ⵉ ⵓⴰⵔⵓ ⵏ ⵜⴰⵎⵓⵖⵍⵉⵜ",
+    "login": "ⴽⵛⵎ ⴷⵖⵉ",
+    "cancel": "ⵙⵙⵏⵓⵍ",
+    "username": "ⵉⵙⵎ ⵏ ⵓⵙⵙⵎⵔⵙ",
+    "password": "ⴰⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ",
+    "rememberMe": "ⵃⴹⵓⵢⵉⴷ",
+    "forgotPassword": "ⵜⵜⵓⴷ ⴰⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ?",
+    "signIn": "ⴽⵛⵎ",
+    "invalidResponse": "ⵜⵉⵔⴰⵔⵜ ⵓⵔ ⵉⵎⴳⵉⵏ ⵙⴳ ⵓⵎⴰⴽⴽⴰⵢ",
+    "loading": "ⴰⵙⴰⵍⵉ...",
+    "createAccount": "ⵙⵏⵓⵍⴼⵓ ⴰⵎⵉⴹⴰⵏ",
+    "notRegisteredYet": "ⵓⵔ ⵜⵙⵙⴽⵍⵙⴷ ⵎⴰⵣⴰⵍ?",
+    "registerTitle": "ⵙⵏⵓⵍⴼⵓ ⴰⵎⵉⴹⴰⵏ",
+    "registerSubtitle": "ⴷⴷⵓ ⵖⵔⵏⵖ ⴰⵔ ⵜⵙⵙⵏⵜⵉⴷ ⵜⵓⵔⵓⴳⵜ ⵏⵏⵓⵏ",
+    "email": "ⵜⴰⵏⵙⴰ ⵏ ⵉⵎⴰⵢⵍ",
+    "confirmPassword": "ⵙⵙⵏⵜⵎ ⴰⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ",
+    "registerButton": "ⵙⵙⴽⵍⵙ",
+    "alreadyHaveAccount": "ⵖⵓⵔⴽ ⴰⵎⵉⴹⴰⵏ?",
+    "loginHere": "ⴽⵛⵎ ⴷⴰ",
+    "passwordMismatch": "ⵡⴰⵡⴰⵍⵏ ⵏ ⵓⵣⵔⴰⵢ ⵓⵔ ⵎⵎⴰⵙⴰⵡⴰⵏ!",
+    "errorRegistering": "ⴰⵣⴳⵍ ⴳ ⵓⵙⵙⴽⵍⵙ ⵏ ⵓⵙⵙⵎⵔⵙ. ⴰⵔⵎ ⴰⵔⵎ.",
+    "resetPassword": "ⴰⵍⵙ ⴰⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ ⵏⵏⵓⵏ",
+    "verificationCodeRequired": "ⴰⵙⴰⴳⵍ ⵏ ⵓⵙⵏⵜⵎ ⵉⵜⵜⵓⵙⵔⴰ",
+    "newPasswordRequired": "ⴰⵡⴰⵍ ⴰⵎⴰⵢⵏⵓ ⵏ ⵓⵣⵔⴰⵢ ⵉⵜⵜⵓⵙⵔⴰ",
+    "passwordsDoNotMatch": "ⵡⴰⵡⴰⵍⵏ ⵏ ⵓⵣⵔⴰⵢ ⵓⵔ ⵎⵎⴰⵙⴰⵡⴰⵏ",
+    "verificationCodeSent": "ⴰⵙⴰⴳⵍ ⵏ ⵓⵙⵏⵜⵎ ⵉⵜⵜⵓⵣⵏ ⵖⵔ ⵉⵎⴰⵢⵍ ⵏⵏⵓⵏ",
+    "passwordResetSuccess": "ⴰⵍⵙ ⵏ ⵓⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ ⵉⴼⴰⵣ! ⴰⵙⵏⵓⵇⵍ ⵖⵔ ⵓⴽⵛⵛⵓⵎ...",
+    "sendVerificationCode": "ⴰⵣⵏ ⴰⵙⴰⴳⵍ ⵏ ⵓⵙⵏⵜⵎ",
+    "enterVerificationCode": "ⵙⴽⵛⵎ ⴰⵙⴰⴳⵍ ⵏ ⵓⵙⵏⵜⵎ",
+    "newPassword": "ⴰⵡⴰⵍ ⴰⵎⴰⵢⵏⵓ ⵏ ⵓⵣⵔⴰⵢ",
+    "confirmNewPassword": "ⵙⵙⵏⵜⵎ ⴰⵡⴰⵍ ⴰⵎⴰⵢⵏⵓ ⵏ ⵓⵣⵔⴰⵢ",
+    "passwordRequirements": "ⵜⵉⵙⵔⵜⵉⵏ ⵏ ⵓⵡⴰⵍ ⵏ ⵓⵣⵔⴰⵢ",
+    "codeNotReceived": "ⵓⵔ ⵜⴰⵎⵥⴷ ⴰⵙⴰⴳⵍ? ⴰⵣⵏ ⴰⵔⵎ",
+    "backToLogin": "ⵓⵖⵓⵍ ⵖⵔ ⵓⴽⵛⵛⵓⵎ"
   }
-  
-  
+}

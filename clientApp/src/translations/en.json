@@ -3,7 +3,9 @@
   "general": {
     "from": "From",
     "to": "To",
-    "at": "At"
+    "at": "At",
+    "back" : "Back"
+
   },
   "header": {
     "menu": {
@@ -408,7 +410,7 @@
   "hotelsList": {
     "showAll": "Show All",
     "refreshing": "Refreshing hotel list...",
-    "loading": "جارٍ تحميل قائمة الفنادق...",
+    "loading": "Loading hotel list...",
     "filters": "Filters",
     "propertyTypes": {
       "house": "House",
@@ -438,8 +440,7 @@
   },
   "FilterModule": {
     "common": {
-      "close": "Close"
-    },
+      "close": "Close"    },
     "filters": {
       "title": "Filters",
       "propertyType": "Property Type",
@@ -732,6 +733,37 @@
     "loginRequired": "Login Required",
     "loginToReview": "Please login to leave a review",
     "login": "Login Now",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "signIn": "Sign In",
+    "invalidResponse": "Invalid response from server",
+    "loading": "Loading...",
+    "createAccount": "Create an Account",
+    "notRegisteredYet": "Not registered yet?",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Join us and start your journey",
+    "email": "Email Address",
+    "confirmPassword": "Confirm Password",
+    "registerButton": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "passwordMismatch": "Passwords do not match!",
+    "errorRegistering": "Error registering user. Try again.",
+    "resetPassword": "Reset Your Password",
+    "verificationCodeRequired": "Verification code is required",
+    "newPasswordRequired": "New password is required",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "verificationCodeSent": "Verification code sent to your email address",
+    "passwordResetSuccess": "Password reset successful! Redirecting to login page...",
+    "sendVerificationCode": "Send Verification Code",
+    "enterVerificationCode": "Enter verification code",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordRequirements": "Password Requirements",
+    "codeNotReceived": "Code not received? Send again",
+    "backToLogin": "Back to Login"
   }
 }

@@ -1,9 +1,10 @@
 
 import { useContext, useEffect, useState } from "react"
 import { BookingForm } from "./booking_form"
-import { createBooking, deleteBooking, getBookings, getProperties, updateBooking } from "../../../../../../Lib/api"
-import { AuthContext } from "../../../../../../contextApi/AuthContext"
+import { createBooking, deleteBooking, getBookings, getBookingsPatner, getProperties, getPropertiesAdmin, updateBooking } from "../../../../../../Lib/api"
+import { AuthContext } from "../../../../../../contexts/AuthContext"
 import BookingConfirmation from "../BookingPdf/page"
+import { useParams } from "react-router-dom"
 
 export function BookingsList() {
   const [data, setData] = useState([])
@@ -18,13 +19,17 @@ export function BookingsList() {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
 
   const { state } = useContext(AuthContext);
-  const created_by = state.user?.id;
+  let created_by = state.user?.id;
+  const { id } = useParams();
 
+  if (id) {
+    created_by = id
+  }
   const [houses, setHouses] = useState([]);
 
   const getData = async () => {
     try {
-      const response = await getProperties();
+      const response = await getPropertiesAdmin(created_by);
       const data = response.data.map(hotel => ({
         id: hotel._id,
         name: hotel.title,
@@ -33,7 +38,7 @@ export function BookingsList() {
         price: hotel.pricing.nightly_rate
       }));
       setHouses(data);
-      const res = await getBookings();
+      const res = await getBookingsPatner(created_by);
       setData(res.data)
 
     } catch (error) {
@@ -150,12 +155,7 @@ export function BookingsList() {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
-
-  // Get property name by ID
-  const getPropertyName = (propertyId) => {
-    const property = houses.find(house => house.id === propertyId);
-    return property ? property.name : "Unknown Property";
-  }
+ 
 
   return (
     <div className="space-y-4">
@@ -320,15 +320,7 @@ export function BookingsList() {
                       >
                         View
                       </button>
-                      <button
-                        onClick={() => {
-                          setShowPDFModal(true);
-                          setSelectedBooking(booking);
-                        }}
-                        className="text-orange-600 hover:text-orange-900"
-                      >
-                        PDF
-                      </button>
+                      
                     </div>
                   </td>
                 </tr>

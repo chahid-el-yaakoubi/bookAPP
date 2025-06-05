@@ -16,13 +16,7 @@ const carSchema = new mongoose.Schema({
         plateNumber: { 
             type: String, 
              
-            // validate: {
-            //     validator: function(v) {
-            //         // Basic validation for Moroccan plate numbers (e.g., A 12345 or 12345 A)
-            //         return /^[A-Za-z]?\s?\d{1,5}\s?[A-Za-z]?$/.test(v);
-            //     },
-            //     message: props => `${props.value} is not a valid Moroccan plate number!`
-            // }
+            
         }
     },
     specifications: {

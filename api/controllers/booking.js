@@ -65,9 +65,11 @@ export const getBooking = async (req, res) => {
   try {
     const { idBK } = req.params;
 
-    const booking = await Booking.findById(idBK).populate('created_by propertyId roomId');
+    const booking = await Booking.findById(idBK)
+      .populate('created_by')
+      .populate('propertyId')
+      .populate('roomId');
     
-    // Check if booking was found
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
@@ -77,6 +79,19 @@ export const getBooking = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+//   Get all bookings partner
+export const getAllBookingsPartner = async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const bookings = await Booking.find({ 'created_by': partnerId }).populate('created_by propertyId roomId');
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 // Check availability
 export const checkAvailability = async (req, res) => {

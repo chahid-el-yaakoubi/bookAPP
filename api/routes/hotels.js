@@ -34,7 +34,7 @@ router.put('/:id/update_photo', verifyAdmin, updatePhotoType);
 
 // REMOVE IMAGES
 router.delete('/:hotelId/delete_photos', verifyAdmin, removeImgs);
-router.get('/:id/photos', getHotelPhotos);
+router.get('/:id/photos/m', getHotelPhotos);
 
  
 

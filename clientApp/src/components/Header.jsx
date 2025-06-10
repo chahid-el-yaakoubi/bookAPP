@@ -142,7 +142,7 @@ export const Header = ({ type }) => {
       <div className="container-fluid px-4 lg:px-16 xl:px-40 flex flex-col justify-center items-center w-full md:ps-20">
         <div className="w-full p-2 text-center rounded-b-lg overflow-x-auto">
           <div className="flex items-center justify-center gap-2 md:gap-10 mx-auto min-w-max">
-            <Link to={'/'} className="min-w-[70px] md:min-w-[80px]">
+            {/* <Link to={'/'} className="min-w-[70px] md:min-w-[80px]">
               <div className={getMenuItemClass("house_rental")}>
                 <div className="text-lg md:text-2xl h-6 md:h-7 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-150">
 
@@ -153,7 +153,7 @@ export const Header = ({ type }) => {
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full transition-opacity duration-300"></div>
                 )}
               </div>
-            </Link>
+            </Link> */}
 
             {/* <div className="min-w-[70px] md:min-w-[100px]">
               <div className={getMenuItemClass("explore")}>
@@ -167,7 +167,7 @@ export const Header = ({ type }) => {
               </div>
             </div> */}
 
-            <Link to={'/cars'} className="min-w-[70px] md:min-w-[80px]">
+            {/* <Link to={'/cars'} className="min-w-[70px] md:min-w-[80px]">
 
               <div className="min-w-[70px] md:min-w-[100px]">
                 <div className={getMenuItemClass("location")}>
@@ -180,7 +180,7 @@ export const Header = ({ type }) => {
                   )}
                 </div>
               </div>
-            </Link>
+            </Link> */}
 
 
             {/* <div className="min-w-[70px] md:min-w-[100px]">

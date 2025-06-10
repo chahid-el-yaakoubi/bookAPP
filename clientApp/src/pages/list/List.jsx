@@ -51,24 +51,14 @@ export const List = () => {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  // Handle errors
-  // if (error) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <div className="p-6 bg-red-50 rounded-lg border border-red-200">
-  //         <h2 className="text-xl font-semibold text-red-600">Error loading data</h2>
-  //         <p className="text-red-500">{error.message}</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+ 
 
   return (
     <div className="bg-blue/30 min-h-screen">
       <Navbar />
       <Header type="house_rental" />
       <div className="flex flex-col items-center justify-center w-full mt-20 ">
-        <div className="mt-10 md:mt-0 container mad:px-10 shadow-xl rounded-lg border border-gray-300">
+        {/* <div className="mt-10 md:mt-0 container mad:px-10 shadow-xl rounded-lg border border-gray-300">
           <div className="flex flex-col md:flex-row w-full">
             <div className="w-full md:w-1/2 mt-10 md:mt-0 md:p-10 " 
             dir='ltr'
@@ -86,7 +76,7 @@ export const List = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
         <HotelsList city={City} />
 
         <div className="container w-full px-2 sm:px-4 mt-10">

@@ -2,7 +2,7 @@ import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { ImageGallery } from './componentHotel/ImageGallery';
 import { BookingCard } from './componentHotel/BookingCard';
 import { ThingsToKnow } from './componentHotel/ThingsToKnow';
-import { Share, Heart } from 'lucide-react';
+import { Share, Heart, X } from 'lucide-react';
 import { BookingProvider } from '../../contexts/BookingContext';
 import { Navbar } from '../../components/Navbar';
 import { Header } from '../../components/Header';
@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
 import PropertyFeatures from './componentHotel/Features.jsx';
 import { LayoutRoom } from './rooms/LayoutRoom.jsx';
+import { ContactOwnersModule } from '../../components/ContactOwnersModule.jsx';
 
 // Lazy load LayoutReviews component
 const LayoutReviews = lazy(() => import('./Reviews/LayoutReviews.jsx'));
@@ -47,7 +48,6 @@ const MapIframe = () => {
 
 // New HotelDetailsTabs Component
 const HotelDetailsTabs = ({ proximities, propertyFeatures, propertyAmenities, typePrperty }) => {
-  console.log(typePrperty)
   const [activeTab, setActiveTab] = useState('nearby');
   const { t } = useTranslation();
 
@@ -166,7 +166,6 @@ export function Hotel() {
   const { data: hotel, error, loading } = useFetch(`api/hotels/find/${id}`);
   const { data: roomsData, loading: roomsLoading } = useFetch(`/api/rooms/${id}/find`);
 
-  console.log(roomsData)
 
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState({});
@@ -178,6 +177,11 @@ export function Hotel() {
   const [accessibilityFeatures, setAccessibilityFeatures] = useState({});
   const [safetyFeatures, setSafetyFeatures] = useState({});
   const [propertyData, setPropertyData] = useState({});
+
+  const [showBookingCard, setShowBookingCard] = useState(false);
+  const onCloseBookingCard = () => {
+    setShowBookingCard(false);
+  };
 
   const [cancellationPolicy, setCancellationPolicy] = useState({});
 
@@ -267,6 +271,10 @@ export function Hotel() {
     }
   }, [roomsData]);
 
+  const [showBookingCardMobile, setShowBookingCardMobile] = useState(false);
+  // Only show booking button/modal for these types
+  const showMobileBooking = ["apartment", "villa", "house"].includes((type.type || "").toLowerCase());
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -279,7 +287,9 @@ export function Hotel() {
   return (
     <div className=''>
       <div className=''>
-        <Navbar />
+        <div className="hidden md:block">
+          <Navbar />
+        </div>
         <div className="hidden md:block">
           <Header type={"house_rental"} />
 
@@ -329,8 +339,8 @@ export function Hotel() {
 
             <ImageGallery images={images} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-6 md:mt-10">
-              <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-6 md:mt-10 ">
+              <div className={`lg:col-span-${type.type === 'hotel' || type.type === 'guesthouse' ? '3' : '2'} space-y-6`}>
                 <h1 className="text-2xl font-semibold mb-1 md:hidden">{hotel?.title}</h1>
 
                 <div className="flex justify-between pb-6 border-b">
@@ -349,27 +359,48 @@ export function Hotel() {
                     {description || 'No description available.'}
                   </p>
                 </div>
+                <div className="py-6 border-b">
+                  <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.availableRooms')}</h2>
+                  {roomsLoading ? (
+                    <div className="flex justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <LayoutRoom rooms={rooms} type={type?.type} />
+
+
+                    </>
+                  )}
+                </div>
               </div>
 
-              {/* <div className="lg:col-start-3">
-                <BookingCard
-                  pricePerNight={hotel?.price || 0}
-                  rating={hotel?.rating || 0}
-                  reviewCount={hotel?.reviewCount || 0}
-                />
-              </div> */}
+              {
+                type.type === 'hotel' || type.type === 'guesthouse' ? null : <div className="lg:col-span-1 hidden md:block">
+                  <BookingCard
+                    hotel={hotel}
+                    room={null}
+                    type={type}
+                    policies={policies}
+                    accessibilityFeatures={accessibilityFeatures}
+                    safetyFeatures={safetyFeatures}
+                    cancellationPolicy={cancellationPolicy}
+                    onShowBookingCard={() => setShowBookingCard(true)}
+                  />
+                </div>
+              }
+              {/* <button
+              className='bg-blue text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-colors w-full lg:w-auto'
+              onClick={() =>{ setShowBookingCard(!showBookingCard);}} >
+                booKing Now
+              </button> */}
+              {
+                showBookingCard && <ContactOwnersModule property={hotel} onClose={onCloseBookingCard} />
+              }
+
             </div>
 
-            <div className="py-6 border-b">
-              <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.availableRooms')}</h2>
-              {roomsLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
-              ) : (
-                <><LayoutRoom rooms={rooms} type={type?.type} /></>
-              )}
-            </div>
+
 
             {/* REPLACED: Nearby Places Section with Tabbed Interface */}
             <HotelDetailsTabs
@@ -396,12 +427,46 @@ export function Hotel() {
             </div>
 
           </div>
+          {/* Book Now Button for mobile (fixed at bottom) - only for apartment/villa/house */}
+          {showMobileBooking && (
+            <div className="md:hidden">
+              <div className="fixed left-0 right-0 bottom-0 z-10 px-2 pb-2 pointer-events-none">
+                <button
+                  className="w-full bg-blue text-white py-3 rounded-full font-semibold shadow-lg pointer-events-auto text-lg"
+                  onClick={() => setShowBookingCardMobile(true)}
+                >
+                  Book Now
+                </button>
+              </div>
+            </div>
+          )}
+          {/* BookingCard Modal for mobile - only for apartment/villa/house */}
+          {showMobileBooking && showBookingCardMobile && (
+            <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/60 md:hidden">
+              <div className="relative w-full max-w-md mx-auto p-4">
+                <button
+                  className="top-2 right-2 z-30 p-2 bg-white rounded-full shadow hover:bg-gray-100 "
+                  onClick={() => setShowBookingCardMobile(false)}
+                  aria-label="Close Booking Card"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+                <BookingCard
+                  pricePerNight={hotel?.price}
+                  rating={hotel?.rating}
+                  reviewCount={hotel?.reviewCount}
+                  hotel={hotel}
+                  room={null}
+                />
+              </div>
+            </div>
+          )}
         </div>
-      </BookingProvider>
+      </BookingProvider >
 
 
 
       <Footer />
-    </div>
+    </div >
   );
 }

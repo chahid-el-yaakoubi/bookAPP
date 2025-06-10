@@ -35,7 +35,21 @@ const AddUserPage = () => {
 
     useEffect(() => {
         if (data) {
-            setFormData(data)
+            setFormData({
+                username: data.username || "",
+                fullName: data.fullName || "",
+                email: data.email || "",
+                password: "", // Don't populate password for editing
+                phone: data.phone || "",
+                city: data.city || "",
+                isAdmin: data.isAdmin || false,
+                isVerified: data.isVerified || false,
+                adminUsers: data.adminUsers || false,
+                adminCars: data.adminCars || false,
+                adminHotels: data.adminHotels || false,
+                adminHouses: data.adminHouses || false,
+                adminShops: data.adminShops || false
+            });
         }
     }, [data])
 
@@ -56,22 +70,47 @@ const AddUserPage = () => {
         setLoading(true);
         setError(null);
 
+        // Validate required fields
+        if (!formData.username.trim()) {
+            setError("Username is required");
+            setLoading(false);
+            return;
+        }
+        
+        if (!formData.email.trim()) {
+            setError("Email is required");
+            setLoading(false);
+            return;
+        }
+
+        if (!id && !formData.password.trim()) {
+            setError("Password is required for new users");
+            setLoading(false);
+            return;
+        }
+
         if (id) {
+            // Update existing user
             try {
-
-                const response = await updateUser(id, formData)
-
-                if (!response.status === 200) {
-                    const errorData = await response.error;
-                    throw new Error(errorData.message || "Failed to create user");
+                // Remove password from update if it's empty
+                const updateData = { ...formData };
+                if (!updateData.password.trim()) {
+                    delete updateData.password;
                 }
 
-                const data = await response.data;
+                const response = await updateUser(id, updateData);
+
+                if (response.status !== 200) {
+                    const errorData = response.error;
+                    throw new Error(errorData?.message || "Failed to update user");
+                }
+
+                const userData = response.data;
                 setSuccess(true);
 
-                // Redirect to the new user's page after 2 seconds
+                // Redirect to the user's page after 2 seconds
                 setTimeout(() => {
-                    navigate(`/iAmAdmin/users/${data._id}`);
+                    navigate(`/iAmAdmin/users/${userData._id || id}`);
                 }, 2000);
 
             } catch (err) {
@@ -80,12 +119,17 @@ const AddUserPage = () => {
                 setLoading(false);
             }
         } else {
+            // Create new user
             try {
+                console.log("Creating user with data:", formData);
 
-                const response = await fetch("/api/auth/register", {
+                // For creating a new user, use a different endpoint or ensure the register endpoint handles admin fields
+                const response = await fetch("/api/auth/register", { // Changed from /api/auth/register to /api/users
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        // Add authorization header if needed
+                        // "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify(formData),
                 });
@@ -95,15 +139,16 @@ const AddUserPage = () => {
                     throw new Error(errorData.message || "Failed to create user");
                 }
 
-                const data = await response.json();
+                const userData = await response.json();
                 setSuccess(true);
 
                 // Redirect to the new user's page after 2 seconds
                 setTimeout(() => {
-                    navigate(`/iAmAdmin/users/${data.userId}`);
+                    navigate(`/iAmAdmin/users/${userData._id || userData.userId}`);
                 }, 2000);
 
             } catch (err) {
+                console.error("Error creating user:", err);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -116,7 +161,7 @@ const AddUserPage = () => {
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-blue/20">
                 <div className="flex flex-col items-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue mb-4"></div>
-                    <p className="text-gray-600 font-medium">Creating new user...</p>
+                    <p className="text-gray-600 font-medium">{id ? 'Updating user...' : 'Creating new user...'}</p>
                 </div>
             </div>
         );
@@ -129,7 +174,9 @@ const AddUserPage = () => {
                     <div className="flex items-center justify-center text-green mb-4">
                         <FaCheckCircle className="w-16 h-16" />
                     </div>
-                    <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">{id? 'User Updated Successfully!' : 'User Created Successfully!'} </h1>
+                    <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+                        {id ? 'User Updated Successfully!' : 'User Created Successfully!'}
+                    </h1>
                     <p className="text-gray-600 text-center mb-6">Redirecting to user profile...</p>
                 </div>
             </div>
@@ -155,8 +202,12 @@ const AddUserPage = () => {
                                 <FaUser className="text-3xl text-blue" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-white">Add New User</h1>
-                                <p className="text-gray-800">Create a new user account</p>
+                                <h1 className="text-2xl font-bold text-white">
+                                    {id ? 'Edit User' : 'Add New User'}
+                                </h1>
+                                <p className="text-gray-800">
+                                    {id ? 'Update user account details' : 'Create a new user account'}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -184,7 +235,9 @@ const AddUserPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {/* Username */}
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium text-gray-700">Username <span className="text-red">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Username <span className="text-red">*</span>
+                                        </label>
                                         <div className="flex">
                                             <div className="bg-blue/20 p-3 rounded-l-lg">
                                                 <FaUser className="text-blue" />
@@ -221,7 +274,9 @@ const AddUserPage = () => {
 
                                     {/* Email */}
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium text-gray-700">Email <span className="text-red">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Email <span className="text-red">*</span>
+                                        </label>
                                         <div className="flex">
                                             <div className="bg-purple-100 p-3 rounded-l-lg">
                                                 <FaEnvelope className="text-purple" />
@@ -240,7 +295,10 @@ const AddUserPage = () => {
 
                                     {/* Password */}
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium text-gray-700">Password <span className="text-red">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Password {!id && <span className="text-red">*</span>}
+                                            {id && <span className="text-gray-500 text-xs">(leave blank to keep current)</span>}
+                                        </label>
                                         <div className="flex">
                                             <div className="bg-gray-100 p-3 rounded-l-lg">
                                                 <FaLock className="text-gray" />
@@ -250,9 +308,9 @@ const AddUserPage = () => {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
-                                                required
+                                                required={!id}
                                                 className="flex-1 border border-gray-300 p-2 rounded-r-lg focus:ring-blue focus:border-blue"
-                                                placeholder="Enter password"
+                                                placeholder={id ? "Enter new password (optional)" : "Enter password"}
                                             />
                                         </div>
                                     </div>
@@ -360,7 +418,7 @@ const AddUserPage = () => {
                                             <div className="bg-blue/20 p-2 rounded-lg mr-3">
                                                 <FaUsers className="text-blue" />
                                             </div>
-                                            <span className="text-gray-700">Admin Users</span>
+                                            <span className="text-gray-700"> Users</span>
                                         </div>
                                         <div>
                                             <label className="inline-flex items-center">
@@ -381,7 +439,7 @@ const AddUserPage = () => {
                                             <div className="bg-blue/20 p-2 rounded-lg mr-3">
                                                 <FaCar className="text-blue" />
                                             </div>
-                                            <span className="text-gray-700">Admin Cars</span>
+                                            <span className="text-gray-700">Cars</span>
                                         </div>
                                         <div>
                                             <label className="inline-flex items-center">
@@ -402,7 +460,7 @@ const AddUserPage = () => {
                                             <div className="bg-blue/20 p-2 rounded-lg mr-3">
                                                 <FaHotel className="text-blue" />
                                             </div>
-                                            <span className="text-gray-700">Admin Hotels</span>
+                                            <span className="text-gray-700"> Hotels</span>
                                         </div>
                                         <div>
                                             <label className="inline-flex items-center">
@@ -418,7 +476,7 @@ const AddUserPage = () => {
                                     </div>
 
                                     {/* Admin Houses */}
-                                    <div className="flex items-center justify-between">
+                                    {/* <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <div className="bg-blue/20 p-2 rounded-lg mr-3">
                                                 <FaHome className="text-blue" />
@@ -436,10 +494,10 @@ const AddUserPage = () => {
                                                 />
                                             </label>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     {/* Admin Shops */}
-                                    <div className="flex items-center justify-between">
+                                    {/* <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <div className="bg-blue/20 p-2 rounded-lg mr-3">
                                                 <FaStore className="text-blue" />
@@ -457,16 +515,18 @@ const AddUserPage = () => {
                                                 />
                                             </label>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
 
                             {/* Submit button */}
                             <button
                                 type="submit"
-                                className="w-full py-3 bg-blue/90 text-white font-medium rounded-lg hover:bg-blue/80 transition-colors shadow-md flex items-center justify-center"
+                                disabled={loading}
+                                className="w-full py-3 bg-blue/90 text-white font-medium rounded-lg hover:bg-blue/80 transition-colors shadow-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <FaSave className="mr-2" /> {id ? 'Update User' : 'Create User'}
+                                <FaSave className="mr-2" /> 
+                                {loading ? (id ? 'Updating...' : 'Creating...') : (id ? 'Update User' : 'Create User')}
                             </button>
                         </div>
                     </div>

@@ -53,7 +53,7 @@ const getWaitTime = (username) => {
 
 export const register = async (req, res, next) => {
   try {
-    const { username, email, password, fullName } = req.body;
+    const { username, email, password, fullName, isVerified, isAdmin, adminCars, adminHotels, adminHouses, adminShops, adminUsers } = req.body;
 
     // Check if username exists
     const existingUsername = await User.findOne({ username });
@@ -75,9 +75,16 @@ export const register = async (req, res, next) => {
     const newUser = new User({
       fullName,
       username,
+      isAdmin ,
+      adminCars,
+      adminHotels,
+      adminHouses,
+      adminShops,
+      adminUsers,
       email,
       password: hashPass,
-      isVerified: true, // No verification process needed
+      isVerified: isVerified || true, // No verification process needed
+
     });
 
     await newUser.save();

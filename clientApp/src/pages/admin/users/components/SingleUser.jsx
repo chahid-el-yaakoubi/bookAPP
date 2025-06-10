@@ -288,7 +288,7 @@ const SingleUserPage = () => {
                     <div className="bg-blue/20 p-2 rounded-lg mr-3">
                       <FaUsers className="text-blue0" />
                     </div>
-                    <span className="text-gray-700">Admin Users</span>
+                    <span className="text-gray-700">Users</span>
                   </div>
                   <div>
                     {user.adminUsers ? (
@@ -309,7 +309,7 @@ const SingleUserPage = () => {
                     <div className="bg-blue/20 p-2 rounded-lg mr-3">
                       <FaCar className="text-blue0" />
                     </div>
-                    <span className="text-gray-700">Admin Cars</span>
+                    <span className="text-gray-700">Cars</span>
                   </div>
                   <div>
                     {user.adminCars ? (
@@ -330,7 +330,7 @@ const SingleUserPage = () => {
                     <div className="bg-blue/20 p-2 rounded-lg mr-3">
                       <FaHotel className="text-blue0" />
                     </div>
-                    <span className="text-gray-700">Admin Hotels</span>
+                    <span className="text-gray-700">Hotels</span>
                   </div>
                   <div>
                     {user.adminHotels ? (
@@ -346,7 +346,7 @@ const SingleUserPage = () => {
                 </div>
 
                 {/* Admin Houses */}
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="bg-blue/20 p-2 rounded-lg mr-3">
                       <FaHome className="text-blue0" />
@@ -364,10 +364,10 @@ const SingleUserPage = () => {
                       </span>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Admin Shops */}
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="bg-blue/20 p-2 rounded-lg mr-3">
                       <FaStore className="text-blue0" />
@@ -385,7 +385,7 @@ const SingleUserPage = () => {
                       </span>
                     )}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

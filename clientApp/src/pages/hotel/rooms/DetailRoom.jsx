@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { BookingCard } from "../componentHotel/BookingCard";
 
 // Main RoomDetail component
 function RoomDetail({ room, onClose }) {
@@ -22,6 +23,7 @@ function RoomDetail({ room, onClose }) {
     const [activeTab, setActiveTab] = useState("overview");
     const [current, setCurrent] = useState(0);
     const [expandedBathrooms, setExpandedBathrooms] = useState({});
+    const [showBookingCardMobile, setShowBookingCardMobile] = useState(false);
 
     const total = room.photos.length;
 
@@ -67,8 +69,8 @@ function RoomDetail({ room, onClose }) {
     };
 
     return (
-        <div className={`fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4`}>
-            <div className="bg-white rounded-lg w-full  h-full overflow-hidden flex flex-col">
+        <div className={`fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 `}>
+            <div className="bg-white rounded-lg w-full  h-full overflow-hidden flex flex-col pb-20 md:pb-0">
                 {/* Header with close button */}
                 <div className={`flex justify-between items-center p-4 border-b`}>
                     <h2 className={`text-xl font-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h2>
@@ -82,44 +84,75 @@ function RoomDetail({ room, onClose }) {
                 </div>
 
                 {/* Scrollable content */}
-                <div className="overflow-y-auto p-4 md:p-6">
+                <div className={`flex-1 overflow-y-auto p-4 md:p-6 flex flex-col md:flex-row gap-8 h-full`}>
                     {/* Room Images */}
-                    <div className="relative rounded-xl overflow-hidden mb-6 flex items-center justify-center">
-                        <img
-                            src={room.photos[current].url}
-                            alt={`${room.type} ${current + 1}`}
-                            className="w-auto max-h-[40vh] h-full object-cover transition-all duration-500"
-                        />
-
-                        {/* Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                            <div className={`text-sm text-white/80`}>
-                                {room.type}
+                    <div className="relative w-full md:w-2/5">
+                        <div className="relative w-full rounded-xl overflow-hidden mb-6 flex items-center justify-center">
+                            <img
+                                src={room.photos[current].url}
+                                alt={`${room.type} ${current + 1}`}
+                                className="w-auto max-h-[40vh] h-full object-cover transition-all duration-500"
+                            />
+                            {/* Overlay */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div className={`text-sm text-white/80`}>
+                                    {room.type}
+                                </div>
+                                <h1 className={`text-xl md:text-2xl font-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h1>
+                                <div className={`flex items-center mt-2 }`}>
+                                    <MapPin className={`h-4 w-4 text-white ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                                    <span className="text-white/90 text-sm">{t('premium_location')}</span>
+                                </div>
                             </div>
-                            <h1 className={`text-xl md:text-2xl font-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h1>
-                            <div className={`flex items-center mt-2 }`}>
-                                <MapPin className={`h-4 w-4 text-white ${isRTL ? 'ml-1' : 'mr-1'}`} />
-                                <span className="text-white/90 text-sm">{t('premium_location')}</span>
+                            {/* Navigation Buttons */}
+                            <button
+                                onClick={prevSlide}
+                                className={`absolute top-1/2 ${isRTL ? 'right-4' : 'left-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
+                            >
+                                {'❮'}
+                            </button>
+                            <button
+                                onClick={nextSlide}
+                                className={`absolute top-1/2 ${isRTL ? 'left-4' : 'right-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
+                            >
+                                {'❯'}
+                            </button>
+                        </div>
+                        {/* Book Now Button for mobile (fixed at bottom) */}
+                        <div className="md:hidden">
+                            <div className="fixed left-0 right-0 bottom-0 z-10 px-2 pb-2 pointer-events-none">
+                                <button
+                                    className="w-full bg-blue text-white py-3 rounded-full font-semibold shadow-lg pointer-events-auto text-lg"
+                                    onClick={() => setShowBookingCardMobile(true)}
+                                >
+                                    Book Now
+                                </button>
                             </div>
                         </div>
-
-                        {/* Navigation Buttons */}
-                        <button
-                            onClick={prevSlide}
-                            className={`absolute top-1/2 ${isRTL ? 'right-4' : 'left-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
-                        >
-                            {'❮'}
-                        </button>
-                        <button
-                            onClick={nextSlide}
-                            className={`absolute top-1/2 ${isRTL ? 'left-4' : 'right-4'} transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black`}
-                        >
-                          {'❯'}
-                        </button>
+                        {/* BookingCard Modal for mobile */}
+                        {showBookingCardMobile && (
+                            <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/60 md:hidden">
+                                <div className="relative w-full max-w-md mx-auto p-4">
+                                    <button
+                                        className="top-2 right-2 z-30 p-2 bg-white rounded-full shadow hover:bg-gray-100"
+                                        onClick={() => setShowBookingCardMobile(false)}
+                                        aria-label="Close Booking Card"
+                                    >
+                                        <X className="h-6 w-6" />
+                                    </button>
+                                    <BookingCard
+                                        pricePerNight={room.price}
+                                        rating={room.rating}
+                                        reviewCount={room.reviewCount}
+                                        hotel={null}
+                                        room={room}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
-
-                    {/* Room Details Tabs */}
-                    <div className="w-full mb-6">
+                    {/* Room Details Tabs and BookingCard for desktop */}
+                    <div className="w-full md:w-2/3 mb-6 flex flex-col gap-6">
                         <div className="grid grid-cols-3 bg-gray-100 rounded-lg overflow-hidden">
                             <button
                                 className={`py-2 px-4 text-sm font-medium ${activeTab === "overview" ? "bg-blue text-white" : "text-gray-900"}`}
@@ -140,7 +173,6 @@ function RoomDetail({ room, onClose }) {
                                 {t('features')}
                             </button>
                         </div>
-
                         {/* Overview Tab */}
                         {activeTab === "overview" && (
                             <div className="pt-6">
@@ -158,7 +190,7 @@ function RoomDetail({ room, onClose }) {
                                         <div className="flex flex-col items-center justify-center p-4">
                                             <Maximize className="h-8 w-8 mb-2 text-gray-900" />
                                             <span className="text-sm font-medium text-gray-900">
-                                                {room.size?.value } {room.size?.unit || "m²"}
+                                                {room.size?.value} {room.size?.unit || "m²"}
                                             </span>
                                         </div>
                                     </div>
@@ -199,7 +231,6 @@ function RoomDetail({ room, onClose }) {
                                 </div>
                             </div>
                         )}
-
                         {/* Amenities Tab */}
                         {activeTab === "amenities" && (
                             <div className="pt-6">
@@ -235,7 +266,6 @@ function RoomDetail({ room, onClose }) {
                                 </div>
                             </div>
                         )}
-
                         {/* Features Tab */}
                         {activeTab === "features" && (
                             <div className="pt-6">
@@ -243,7 +273,7 @@ function RoomDetail({ room, onClose }) {
                                     <div>
                                         <h3 className={`text-xl font-semibold text-gray-900 mb-4 `}>{t('room_features')}</h3>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                            {(room.roomFeatures || [ ]).map((feature, index) => (
+                                            {(room.roomFeatures || []).map((feature, index) => (
                                                 <div key={index} className={`flex items-center`}>
                                                     <div className={`h-2 w-2 rounded-full bg-blue ${isRTL ? 'ml-3' : 'mr-3'}`}></div>
                                                     <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(feature)}</span>
@@ -257,7 +287,7 @@ function RoomDetail({ room, onClose }) {
                                     <div>
                                         <h3 className={`text-xl font-semibold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>{t('bathroom_amenities')}</h3>
 
-                                        {(room.bathrooms ).map((bathroom, index) => (
+                                        {(room.bathrooms).map((bathroom, index) => (
                                             <div key={index} className="mb-6">
                                                 <div className={`flex items-center mb-3`}>
                                                     <ShowerHead className={`h-5 w-5 text-gray-900 ${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -296,6 +326,16 @@ function RoomDetail({ room, onClose }) {
                                 </div>
                             </div>
                         )}
+                        {/* BookingCard for desktop (sidebar) */}
+                        <div className="hidden md:block mt-6">
+                            <BookingCard
+                                pricePerNight={room.price}
+                                rating={room.rating}
+                                reviewCount={room.reviewCount}
+                                hotel={null}
+                                room={room}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

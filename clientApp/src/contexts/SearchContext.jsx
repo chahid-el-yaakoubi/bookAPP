@@ -4,7 +4,7 @@ import React, { createContext, useReducer, useEffect } from "react";
 const INITIAL_STATE = {
   city: "",
   dates: [],
-  options: {
+  options: localStorage.getItem("options") || {
     adult: 1,
     children: 0,
     rooms: 1,
@@ -47,6 +47,7 @@ export const SearchContextProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(SearchReducer, initialState);
 
+
   // Save state to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("city", JSON.stringify(state.city));
@@ -60,6 +61,7 @@ export const SearchContextProvider = ({ children }) => {
         city: state.city,
         dates: state.dates,
         options: state.options,
+        guests: state.options.adult + state.options.children,
         dispatch,
       }}
     >

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
     FaEye, FaTrash, FaEdit, FaChevronLeft, FaChevronRight,
     FaSort, FaSortUp, FaSortDown, FaSearch, FaUsers, FaPlus,
-    FaCheckCircle
+    FaCheckCircle, FaEnvelope
 } from "react-icons/fa";
 import useFetch from "../../../../hooks/useFetch";
 import { deleteUser } from "../../../../Lib/api";
@@ -31,13 +31,13 @@ const OptimizedUsersTable = () => {
                 fullName: user.fullName || '',
                 city: user.city || '',
                 phone: user.phone || '',
-                isAdmin: user.isAdmin || false,
-                adminCars: user.adminCars || false,
-                adminUsers: user.adminUsers || false,
-                adminHotels: user.adminHotels || false,
-                adminHouses: user.adminHouses || false,
-                adminShops: user.adminShops || false,
-                isVerified: user.isVerified || false,
+                isAdmin: Boolean(user.isAdmin),
+                adminCars: Boolean(user.adminCars),
+                adminUsers: Boolean(user.adminUsers),
+                adminHotels: Boolean(user.adminHotels),
+                adminHouses: Boolean(user.adminHouses),
+                adminShops: Boolean(user.adminShops),
+                isVerified: Boolean(user.isVerified),
                 createdAt: user.createdAt || '',
             }));
             setUsers(formattedData);
@@ -104,10 +104,11 @@ const OptimizedUsersTable = () => {
         // Existing search and sort logic
         if (searchTerm) {
             usersToDisplay = usersToDisplay.filter(user =>
-                user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (user.fullName && user.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                (user.city && user.city.toLowerCase().includes(searchTerm.toLowerCase()))
+                user._id.includes(searchTerm?.toLowerCase()) ||
+                user.username?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                user.email?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                (user.fullName && user.fullName?.toLowerCase().includes(searchTerm?.toLowerCase())) ||
+                (user.city && user.city?.toLowerCase().includes(searchTerm?.toLowerCase()))
             );
         }
 
@@ -143,6 +144,74 @@ const OptimizedUsersTable = () => {
     const adminHotelsCount = users.filter(user => user.adminHotels).length;
     const adminUsersCount = users.filter(user => user.adminUsers).length;
 
+    // Add sendToGmail function
+    const sendToGmail = ({ to, subject, body }) => {
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(gmailUrl, '_blank');
+    };
+
+    // Extract UserRow subcomponent
+    const UserRow = ({ user, index, selected, onView, onEdit, onDelete }) => (
+        <div
+            key={user._id}
+            className={`border-b border-gray-100 hover:bg-blue/10 transition-colors ${selected ? 'bg-blue/20' : index % 2 === 0 ? 'bg-gray-50' : ''}`}
+        >
+            <div className="grid grid-cols-12 gap-4 items-center py-4 px-6">
+                <div className="col-span-2 font-medium text-gray-800">{user.username}</div>
+                <div className="col-span-2 text-gray-600">{user.email}</div>
+                <div className="col-span-2 text-gray-600">{user.fullName}</div>
+                <div className="col-span-1 text-center">{user.city}</div>
+                <div className="col-span-1 flex justify-center">
+                    <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full ${user.isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600'}`}>{user.isAdmin ? 'Yes' : 'No'}</span>
+                </div>
+                <div className="col-span-1 flex justify-center">
+                    <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full ${user.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>{user.isVerified ? 'Yes' : 'No'}</span>
+                </div>
+                <div className="col-span-1 text-center text-sm text-gray-500">{new Date(user.createdAt).toLocaleDateString()}</div>
+                <div className="col-span-2">
+                    <div className="flex justify-center space-x-3">
+                        <button
+                            aria-label="View user"
+                            title="View user"
+                            onClick={() => onView(user._id, user.username)}
+                            className="p-2 bg-blue/20 text-blue rounded-lg hover:bg-blue/40 transition-colors"
+                        >
+                            <FaEye />
+                        </button>
+                        <button
+                            aria-label="Edit user"
+                            title="Edit user"
+                            onClick={() => onEdit(user._id)}
+                            className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                        >
+                            <FaEdit />
+                        </button>
+                        <button
+                            aria-label="Delete user"
+                            title="Delete user"
+                            onClick={() => onDelete(user._id)}
+                            className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                        >
+                            <FaTrash />
+                        </button>
+                        <button
+                            aria-label="Send Gmail"
+                            title="Send Gmail"
+                            onClick={() => sendToGmail({
+                                to: user.email,
+                                subject: `Hello ${user.username}`,
+                                body: `Hi ${user.username},\n\nThis is an automated message from BookApp.`
+                            })}
+                            className="p-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors"
+                        >
+                            <FaEnvelope />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue/50 p-6">
             <div className="px-10 mx-auto">
@@ -171,9 +240,9 @@ const OptimizedUsersTable = () => {
                             <FaCheckCircle className="w-16 h-16" />
                         </div>
                         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">User Deleted Successfully! </h1>
-                        <p className="text-gray-600 text-center mb-6">Refreching data...</p>
+                        <p className="text-gray-600 text-center mb-6">Refreshing data...</p>
                     </div>
-                </div> : ''}
+                </div> : null}
 
                 {/* Stats cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -276,12 +345,12 @@ const OptimizedUsersTable = () => {
                             >
                                 Show Admins
                             </button>
-                            <button 
+                            {/* <button 
                                 onClick={() => handleFilterSelect('verified')} 
                                 className={`p-2 ${filterType === 'verified' ? 'bg-blue' : 'bg-green-500 text-white'} rounded`}
                             >
                                 Show Verified
-                            </button>
+                            </button> */}
                             <button 
                                 onClick={() => handleFilterSelect(null)} 
                                 className={`p-2 ${filterType === null ? 'bg-blue' : 'bg-gray-500 text-white'} rounded`}
@@ -309,135 +378,77 @@ const OptimizedUsersTable = () => {
 
 
                 {/* Main table */}
-                <div className="bg-white rounded-xl shadow-xl  overflow-x-scroll ">
-                    {/* Table header */}
-                    <div className="bg-gradient-to-r from-blue/50 to-blue text-white py-4 px-6 min-w-[1100px]">
-                        <div className="grid grid-cols-12 gap-4 items-center">
-                            <div
-                                className="col-span-2 flex items-center cursor-pointer"
-                                onClick={() => requestSort('username')}
-                            >
-                                <span className="font-medium">Username</span>
-                                {getSortIcon('username')}
-                            </div>
-                            <div
-                                className="col-span-2 flex items-center cursor-pointer"
-                                onClick={() => requestSort('email')}
-                            >
-                                <span className="font-medium">Email</span>
-                                {getSortIcon('email')}
-                            </div>
-                            <div
-                                className="col-span-2 flex items-center cursor-pointer"
-                                onClick={() => requestSort('fullName')}
-                            >
-                                <span className="font-medium">Full Name</span>
-                                {getSortIcon('fullName')}
-                            </div>
-                            <div
-                                className="col-span-1 text-center flex items-center justify-center cursor-pointer"
-                                onClick={() => requestSort('city')}
-                            >
-                                <span className="font-medium">City</span>
-                                {getSortIcon('city')}
-                            </div>
-                            <div
-                                className="col-span-1 text-center flex items-center justify-center cursor-pointer"
-                                onClick={() => requestSort('isAdmin')}
-                            >
-                                <span className="font-medium">Admin</span>
-                                {getSortIcon('isAdmin')}
-                            </div>
-                            <div
-                                className="col-span-1 text-center flex items-center justify-center cursor-pointer"
-                                onClick={() => requestSort('isVerified')}
-                            >
-                                <span className="font-medium">Verified</span>
-                                {getSortIcon('isVerified')}
-                            </div>
-                            <div
-                                className="col-span-1 text-center flex items-center justify-center cursor-pointer"
-                                onClick={() => requestSort('createdAt')}
-                            >
-                                <span className="font-medium">Created</span>
-                                {getSortIcon('createdAt')}
-                            </div>
-                            <div className="col-span-2 text-center">
-                                <span className="font-medium">Actions</span>
+                <div className="bg-white rounded-xl shadow-xl overflow-x-auto w-full">
+                    <div className="min-w-[1100px]">
+                        {/* Table header */}
+                        <div className="bg-gradient-to-r from-blue/50 to-blue text-white py-4 px-6">
+                            <div className="grid grid-cols-12 gap-4 items-center">
+                                <div className="col-span-2 flex items-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('username')}>
+                                    <span className="font-medium">Username</span>
+                                    {getSortIcon('username')}
+                                </div>
+                                <div className="col-span-2 flex items-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('email')}>
+                                    <span className="font-medium">Email</span>
+                                    {getSortIcon('email')}
+                                </div>
+                                <div className="col-span-2 flex items-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('fullName')}>
+                                    <span className="font-medium">Full Name</span>
+                                    {getSortIcon('fullName')}
+                                </div>
+                                <div className="col-span-1 text-center flex items-center justify-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('city')}>
+                                    <span className="font-medium">City</span>
+                                    {getSortIcon('city')}
+                                </div>
+                                <div className="col-span-1 text-center flex items-center justify-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('isAdmin')}>
+                                    <span className="font-medium">Admin</span>
+                                    {getSortIcon('isAdmin')}
+                                </div>
+                                <div className="col-span-1 text-center flex items-center justify-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('isVerified')}>
+                                    <span className="font-medium">Verified</span>
+                                    {getSortIcon('isVerified')}
+                                </div>
+                                <div className="col-span-1 text-center flex items-center justify-center cursor-pointer" role="columnheader" tabIndex={0} onClick={() => requestSort('createdAt')}>
+                                    <span className="font-medium">Created</span>
+                                    {getSortIcon('createdAt')}
+                                </div>
+                                <div className="col-span-2 text-center">
+                                    <span className="font-medium">Actions</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Table body */}
-                    <div className="min-w-[1100px]">
-                        {loading ? (
-                            <div className="py-20 text-center">
-                                <div className="flex justify-center mb-4">
-                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
-                                </div>
-                                <p className="text-gray-500 font-medium">Loading users data...</p>
-                            </div>
-                        ) : filteredUsers.length === 0 ? (
-                            <div className="py-20 text-center">
-                                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p className="mt-4 text-gray-500 font-medium">No users found</p>
-                                <p className="text-gray-400">Try adjusting your search criteria</p>
-                            </div>
-                        ) : (
-                            filteredUsers.map((user, index) => (
-                                <div
-                                    key={user._id}
-                                    className={`border-b border-gray-100 hover:bg-blue/10 transition-colors ${selectedUsers.includes(user._id) ? 'bg-blue/20' : index % 2 === 0 ? 'bg-gray-50' : ''}`}
-                                >
-                                    <div className="grid grid-cols-12 gap-4 items-center py-4 px-6">
-                                        <div className="col-span-2 font-medium text-gray-800">{user.username}</div>
-                                        <div className="col-span-2 text-gray-600">{user.email}</div>
-                                        <div className="col-span-2 text-gray-600">{user.fullName}</div>
-                                        <div className="col-span-1 text-center">{user.city}</div>
-                                        <div className="col-span-1 flex justify-center">
-                                            <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full ${user.isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600'}`}>
-                                                {user.isAdmin ? 'Yes' : 'No'}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-1 flex justify-center">
-                                            <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full ${user.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                                {user.isVerified ? 'Yes' : 'No'}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-1 text-center text-sm text-gray-500">
-                                            {new Date(user.createdAt).toLocaleDateString()}
-                                        </div>
-                                        <div className="col-span-2">
-                                            <div className="flex justify-center space-x-3">
-                                                <button
-                                                    onClick={() => handleView(user._id, user.username)}
-                                                    className="p-2 bg-blue/20 text-blue rounded-lg hover:bg-blue/40 transition-colors"
-                                                >
-                                                    <FaEye />
-                                                </button>
-                                                <button
-                                                    onClick={() => { handleEdit(user._id) }}
-                                                    className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => { handleDelete(user._id) }}
-                                                    className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </div>
-                                        </div>
+                        {/* Table body */}
+                        <div>
+                            {loading ? (
+                                <div className="py-20 text-center">
+                                    <div className="flex justify-center mb-4">
+                                        <div className="animate-pulse rounded-full h-12 w-12 bg-blue/20"></div>
                                     </div>
+                                    <p className="text-gray-500 font-medium">Loading users data...</p>
                                 </div>
-                            ))
-                        )}
+                            ) : filteredUsers.length === 0 ? (
+                                <div className="py-20 text-center">
+                                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p className="mt-4 text-gray-500 font-medium">No users found</p>
+                                    <p className="text-gray-400">Try adjusting your search criteria</p>
+                                </div>
+                            ) : (
+                                currentUsers.map((user, index) => (
+                                    <UserRow
+                                        key={user._id}
+                                        user={user}
+                                        index={indexOfFirstItem + index}
+                                        selected={selectedUsers.includes(user._id)}
+                                        onView={handleView}
+                                        onEdit={handleEdit}
+                                        onDelete={handleDelete}
+                                    />
+                                ))
+                            )}
+                        </div>
                     </div>
-
-                    {/* Pagination */}
+                    {/* Pagination (leave outside min-w wrapper) */}
                     <div className="bg-gray-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center border-t border-gray-200">
                         <div className="text-sm text-gray-600 mb-4 md:mb-0">
                             Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredUsers.length)} of {filteredUsers.length} entries
@@ -455,32 +466,50 @@ const OptimizedUsersTable = () => {
                                 <FaChevronLeft className="text-sm" />
                             </button>
 
-                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                // Logic to show pages around current page
-                                let pageToShow;
-                                if (totalPages <= 5) {
-                                    pageToShow = i + 1;
-                                } else if (currentPage <= 3) {
-                                    pageToShow = i + 1;
-                                } else if (currentPage >= totalPages - 2) {
-                                    pageToShow = totalPages - 4 + i;
+                            {/* Professional Pagination Logic */}
+                            {(() => {
+                                const pages = [];
+                                if (totalPages <= 7) {
+                                    for (let i = 1; i <= totalPages; i++) {
+                                        pages.push(i);
+                                    }
                                 } else {
-                                    pageToShow = currentPage - 2 + i;
+                                    pages.push(1);
+                                    if (currentPage > 4) pages.push('start-ellipsis');
+                                    let start = Math.max(2, currentPage - 1);
+                                    let end = Math.min(totalPages - 1, currentPage + 1);
+                                    if (currentPage <= 4) {
+                                        start = 2;
+                                        end = 4;
+                                    }
+                                    if (currentPage >= totalPages - 3) {
+                                        start = totalPages - 3;
+                                        end = totalPages - 1;
+                                    }
+                                    for (let i = start; i <= end; i++) {
+                                        pages.push(i);
+                                    }
+                                    if (currentPage < totalPages - 3) pages.push('end-ellipsis');
+                                    pages.push(totalPages);
                                 }
-
-                                return (
-                                    <button
-                                        key={pageToShow}
-                                        onClick={() => setCurrentPage(pageToShow)}
-                                        className={`px-4 py-2 rounded-md ${currentPage === pageToShow
-                                            ? 'bg-blue text-white font-medium shadow-sm'
-                                            : 'bg-white text-gray-700 hover:bg-blue/10 border border-gray-200 shadow-sm'
-                                            }`}
-                                    >
-                                        {pageToShow}
-                                    </button>
-                                );
-                            })}
+                                return pages.map((page, idx) => {
+                                    if (page === 'start-ellipsis' || page === 'end-ellipsis') {
+                                        return <span key={page + idx} className="px-2">...</span>;
+                                    }
+                                    return (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            className={`px-4 py-2 rounded-md ${currentPage === page
+                                                ? 'bg-blue text-white font-medium shadow-sm'
+                                                : 'bg-white text-gray-700 hover:bg-blue/10 border border-gray-200 shadow-sm'
+                                                }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                });
+                            })()}
 
                             <button
                                 onClick={() => setCurrentPage(page => Math.min(page + 1, totalPages))}

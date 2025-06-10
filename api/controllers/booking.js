@@ -9,7 +9,7 @@ export const createBooking = async (req, res) => {
     try {
       const newBooking = new Booking(req.body);
       await newBooking.save();
-      res.status(201).json(newBooking);
+      res.status(200).json(newBooking);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -84,12 +84,22 @@ export const getBooking = async (req, res) => {
 export const getAllBookingsPartner = async (req, res) => {
   try {
     const { partnerId } = req.params;
-    const bookings = await Booking.find({ 'created_by': partnerId }).populate('created_by propertyId roomId');
-    res.json(bookings);
+    const bookings = await Booking.find().populate('created_by propertyId roomId');
+
+    const newBookings = bookings.filter(
+      booking => booking.propertyId?.created_by?.toString() === partnerId
+    );
+
+  
+
+    res.json(newBookings);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
   }
 };
+
 
 
 

@@ -203,7 +203,7 @@ const HotelsList = ({ city, }) => {
         <div
           className={`
             shadow-md transition-all duration-300 mx-auto z-50 md:z-20
-            fixed top-[61px] left-0 right-0 w-[96%] rounded-b-md bg-white 
+            fixed top-[14px] left-0 right-0 w-[96%] rounded-b-md bg-white 
             md:w-full
             ${isAtTop
               ? "md:relative md:top-0 md:mt-0 shadow-lg"

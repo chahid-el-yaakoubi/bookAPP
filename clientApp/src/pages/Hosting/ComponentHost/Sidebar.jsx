@@ -60,7 +60,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, isMobile }) => {
                                     <NavItem icon={<FaPeopleLine />} text="Users" showText={isSidebarOpen} active={isActivePath('/iAmAdmin/users')} onClick={() => handleNavigation('/iAmAdmin/users')} />
                                 )
                             }
-                            {
+                            {/* {
                                 (isAdmin.isAdmin && isAdmin.roles.cars) && (
                                     <NavItem icon={<FaCar />} text="Vehicles" showText={isSidebarOpen} active={isActivePath('/host/cars')} onClick={() => handleNavigation('/host/cars')} />
                                 )
@@ -74,7 +74,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, isMobile }) => {
                                 (isAdmin.isAdmin && isAdmin.roles.shops) && (
                                     <NavItem icon={<FaStore />} text="Shops" showText={isSidebarOpen} active={isActivePath('/host/shops')} onClick={() => handleNavigation('/host/shops')} />
                                 )
-                            }
+                            } */}
                             {
                                 (isAdmin.isAdmin && isAdmin.roles.users) && (
                                     <NavItem icon={<FaCity />} text="Cities" showText={isSidebarOpen} active={isActivePath('/host/cities')} onClick={() => handleNavigation('/host/cities')} />
@@ -124,11 +124,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, isMobile }) => {
                         <NavItem icon={<FaHome />} text="Properties" showText={isSidebarOpen} active={isActivePath('/host/properties')} onClick={() => handleNavigation('/host/properties/listining')} />
                     )
                 }
-                {
+                {/* {
                     (isAdmin.isAdmin && isAdmin.roles.cars) && (
                         <NavItem icon={<FaCar />} text="Vehicles" showText={isSidebarOpen} active={isActivePath('/host/cars')} onClick={() => handleNavigation('/host/cars')} />
                     )
-                }
+                } */}
                 {/* {
                     (isAdmin.isAdmin && isAdmin.roles.cars) && (
                         <NavItem icon={<FaTools />} text="Services" showText={isSidebarOpen} active={isActivePath('/host/services')} onClick={() => handleNavigation('/host/services')} />

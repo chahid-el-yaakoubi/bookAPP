@@ -86,23 +86,19 @@ function RoomDetail({ room, onClose }) {
                 {/* Scrollable content */}
                 <div className={`flex-1 overflow-y-auto p-4 md:p-6 flex flex-col md:flex-row gap-8 h-full`}>
                     {/* Room Images */}
-                    <div className="relative w-full md:w-2/5">
+                   <div className="flex flex-col md:flex-col gap-4 w-full md:w-2/5">
+                   <div className="relative w-full md:w-full">
                         <div className="relative w-full rounded-xl overflow-hidden mb-6 flex items-center justify-center">
                             <img
                                 src={room.photos[current].url}
                                 alt={`${room.type} ${current + 1}`}
-                                className="w-auto max-h-[40vh] h-full object-cover transition-all duration-500"
+                                className="w-auto h-[30vh] md:max-h-[40vh] md:h-full object-cover transition-all duration-500"
                             />
                             {/* Overlay */}
                             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div className={`text-sm text-white/80`}>
-                                    {room.type}
-                                </div>
+                             
                                 <h1 className={`text-xl md:text-2xl font-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>{room.type}</h1>
-                                <div className={`flex items-center mt-2 }`}>
-                                    <MapPin className={`h-4 w-4 text-white ${isRTL ? 'ml-1' : 'mr-1'}`} />
-                                    <span className="text-white/90 text-sm">{t('premium_location')}</span>
-                                </div>
+                             
                             </div>
                             {/* Navigation Buttons */}
                             <button
@@ -145,15 +141,25 @@ function RoomDetail({ room, onClose }) {
                                         rating={room.rating}
                                         reviewCount={room.reviewCount}
                                         hotel={null}
-                                        room={room}
+                                        roomId={room._id}
                                     />
                                 </div>
                             </div>
                         )}
                     </div>
+                     {/* BookingCard for desktop (sidebar) */}
+                     <div className="hidden md:block mt-6">
+                            <BookingCard
+                                pricePerNight={room.price}
+                                rating={room.rating}
+                                reviewCount={room.reviewCount}
+                                hotel={null}
+                                roomId={room._id}
+                            />
+                        </div></div>
                     {/* Room Details Tabs and BookingCard for desktop */}
-                    <div className="w-full md:w-2/3 mb-6 flex flex-col gap-6">
-                        <div className="grid grid-cols-3 bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="w-full md:w-2/3 mb-6 flex flex-col gap-6   overflow-y-scroll">
+                        <div className="grid grid-cols-3 bg-gray-900 rounded-lg overflow-hidden mt-40 ">
                             <button
                                 className={`py-2 px-4 text-sm font-medium ${activeTab === "overview" ? "bg-blue text-white" : "text-gray-900"}`}
                                 onClick={() => setActiveTab("overview")}
@@ -295,7 +301,6 @@ function RoomDetail({ room, onClose }) {
                                                         {t('bathroom')} {index + 1} - {t(bathroom.type.toLowerCase())}
                                                     </h4>
                                                 </div>
-
                                                 <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 ${isRTL ? 'pr-7' : 'pl-7'}`}>
                                                     {Object.entries(bathroom.amenities)
                                                         .filter(([_, value]) => value === true)
@@ -306,7 +311,6 @@ function RoomDetail({ room, onClose }) {
                                                                 <span className={`text-sm text-gray-700 capitalize ${isRTL ? 'text-right' : 'text-left'}`}>{t(key)}</span>
                                                             </div>
                                                         ))}
-
                                                     {Object.entries(bathroom.amenities).filter(([_, value]) => value === true).length > 9 && (
                                                         <button
                                                             onClick={() => toggleBathroomExpansion(index)}
@@ -316,7 +320,6 @@ function RoomDetail({ room, onClose }) {
                                                         </button>
                                                     )}
                                                 </div>
-
                                                 {index < (room.bathrooms || []).length - 1 && (
                                                     <div className="my-4 h-px bg-gray-200" />
                                                 )}
@@ -326,16 +329,6 @@ function RoomDetail({ room, onClose }) {
                                 </div>
                             </div>
                         )}
-                        {/* BookingCard for desktop (sidebar) */}
-                        <div className="hidden md:block mt-6">
-                            <BookingCard
-                                pricePerNight={room.price}
-                                rating={room.rating}
-                                reviewCount={room.reviewCount}
-                                hotel={null}
-                                room={room}
-                            />
-                        </div>
                     </div>
                 </div>
             </div>

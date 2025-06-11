@@ -1,16 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { DateRange } from 'react-date-range';
 import { format, differenceInDays } from 'date-fns';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Calendar, Users, Star } from 'lucide-react';
 import { SearchContext } from '../../../contexts/SearchContext';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { ContactOwnersModule } from '../../../components/ContactOwnersModule';
+import ContactOwnersModule from '../../../components/ContactOwnersModule';
 
 // Load saved dates from localStorage and convert to Date objects
 function getStoredDates() {
-
-
   const stored = localStorage.getItem('dates');
   if (!stored) return null;
 
@@ -26,7 +24,7 @@ function getStoredDates() {
   }
 }
 
-export function BookingCard({ pricePerNight, rating, reviewCount, hotel, room = null }) {
+export function BookingCard({ pricePerNight, rating, reviewCount, hotel, roomId  }) {
   const { dates, options, dispatch, city } = useContext(SearchContext);
 
   const [showBookingCard, setShowBookingCard] = useState(false);
@@ -71,61 +69,60 @@ export function BookingCard({ pricePerNight, rating, reviewCount, hotel, room = 
     dispatch({ type: "UPDATE_DATES", payload: newDates });
   };
 
-
-
   const nights = Math.max(1, differenceInDays(new Date(endDate), new Date(startDate)));
   const totalPrice = nights * pricePerNight;
   const serviceFee = 0;
   const grandTotal = totalPrice + serviceFee;
 
   return (
-    <div className="border rounded-xl p-6 shadow-lg sticky top-24 bg-white z-30 ">
+    <div className="border border-gray-200 rounded-2xl p-5 shadow-xl bg-white max-w-md mx-auto w-full relative">
       {/* Price & rating */}
-      <div className="flex justify-between items-start mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
         <div>
-          <span className="text-2xl font-semibold">MAD {pricePerNight}</span>
-          <span className="text-gray-500"> night</span>
+          <span className="text-3xl font-bold text-blue-700">MAD {pricePerNight}</span>
+          <span className="text-gray-500 ml-1">/night</span>
         </div>
-        <div className="text-sm">
-          <span className="font-semibold">★ {rating}</span>
-          <span className="text-gray-500"> · {reviewCount} reviews</span>
-        </div>
+        {/* <div className="flex items-center gap-2 mt-2 sm:mt-0">
+          <span className="flex items-center bg-blue text-blue-700 px-2 py-1 rounded-full text-sm font-semibold">
+            <Star size={16} className="mr-1" /> {rating}
+          </span>
+          <span className="text-gray-500 text-sm">({reviewCount} reviews)</span>
+        </div> */}
       </div>
 
       {/* Date & guests */}
-      <div className="border rounded-t-lg">
+      <div className="border border-gray-200 rounded-xl overflow-hidden mb-4">
         <div className="grid grid-cols-2 divide-x">
           {[{
-            label: 'CHECK-IN',
+            label: 'Check-in',
             date: startDate,
           }, {
-            label: 'CHECKOUT',
+            label: 'Check-out',
             date: endDate,
           }].map((item, i) => (
             <button
               key={i}
-              className="p-3 text-left"
+              className="flex flex-col items-start p-4 hover:bg-blue transition text-left"
               onClick={() => setShowDatePicker(!showDatePicker)}
             >
-              <div className="text-xs font-semibold">{item.label}</div>
-              <div>{format(item.date, 'MMM d, yyyy')}</div>
+              <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
+                <Calendar size={14} /> {item.label}
+              </span>
+              <span className="text-base font-medium mt-1">{format(item.date, 'MMM d, yyyy')}</span>
             </button>
           ))}
         </div>
-
-        <div className="border-t p-3">
-          <div className="text-xs font-semibold">GUESTS</div>
-          <div className="flex justify-between items-center">
-
-            <div>{guests} guest{(guests) > 1 ? 's' : ''}</div>
-            <ChevronDown size={16} />
-          </div>
+        <div className="border-t p-4 flex items-center justify-between">
+          <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
+            <Users size={14} /> Guests
+          </span>
+          <span className="font-medium">{guests} guest{guests > 1 ? 's' : ''}</span>
         </div>
       </div>
 
       {/* Date picker */}
       {showDatePicker && (
-        <div className="absolute right-0  z-50 bg-white shadow-2xl rounded-lg p-4 border mt-2">
+        <div className="absolute right-0 -left-3 top-40 z-50 bg-white shadow-2xl rounded-xl p-4 border mt-2">
           <DateRange
             editableDateInputs={true}
             onChange={handleDateChange}
@@ -141,9 +138,8 @@ export function BookingCard({ pricePerNight, rating, reviewCount, hotel, room = 
 
       {/* Reserve button */}
       <button
-        className="w-full bg-[#38f8f8] text-black py-3 rounded-lg font-semibold mt-4 hover:bg-[#32e2e2] transition"
-        onClick={() =>
-        {
+        className="w-full bg-blue text-white py-3 rounded-xl font-bold text-lg mt-4 shadow-md hover:bg-blue transition"
+        onClick={() => {
           dispatch({
             type: 'NEW_SEARCH',
             payload: {
@@ -151,35 +147,30 @@ export function BookingCard({ pricePerNight, rating, reviewCount, hotel, room = 
               dates: [{ startDate, endDate, key: 'selection' }],
               options,
             },
-          }); 
+          });
           setShowBookingCard(true);
-        }
-        }
+        }}
       >
         Reserve
       </button>
 
       {/* Price breakdown */}
-      <div className="mt-4 space-y-4">
-        <div className="flex justify-between">
-          <div className="underline">
-            MAD {pricePerNight} × {nights} night{nights > 1 ? 's' : ''}
-          </div>
-          <div>MAD {totalPrice}</div>
+      <div className="mt-6 bg-gray-50 rounded-xl p-5 space-y-4">
+        <div className="flex justify-between text-sm">
+          <span className="underline">MAD {pricePerNight} × {nights} night{nights > 1 ? 's' : ''}</span>
+          <span className="font-medium">MAD {totalPrice}</span>
         </div>
-        <div className="flex justify-between">
-          <div className="underline">Service fee</div>
-          <div>MAD {serviceFee}</div>
+        <div className="flex justify-between text-sm">
+          <span className="underline">Service fee</span>
+          <span>MAD {serviceFee}</span>
         </div>
-        <div className="border-t pt-4 flex justify-between font-semibold">
-          <div>Total</div>
-          <div>MAD {grandTotal}</div>
+        <div className="border-t pt-4 flex justify-between font-bold text-lg">
+          <span>Total</span>
+          <span className="text-blue-700">MAD {grandTotal}</span>
         </div>
       </div>
 
-      {
-        showBookingCard && <ContactOwnersModule hotel={hotel} room={room} onClose={onCloseBookingCard}  />
-      }
+      {showBookingCard && <ContactOwnersModule hotel={hotel} roomId={roomId} onClose={onCloseBookingCard} />}
     </div>
   );
 }

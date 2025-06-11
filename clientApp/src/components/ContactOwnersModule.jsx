@@ -1,25 +1,15 @@
 "use client"
 
 import { useContext, useEffect, useState } from "react"
-import {
-  Phone,
-  Mail,
-  MessageCircle,
-  X,
-  CreditCard,
-  Calendar,
-  MapPin,
-  Users,
-  CheckCircle,
-  Lock,
-  User,
-  MailIcon,
-} from "lucide-react"
+import { Phone, Mail, MessageCircle, X, CreditCard, Calendar, MapPin, Users, CheckCircle, Lock, User, MailIcon } from 'lucide-react'
 import { SearchContext } from "../contexts/SearchContext";
+import { useParams } from "react-router-dom";
+import { getProperty } from "../Lib/api";
+import { is } from "date-fns/locale";
+
+
 
 function getStoredDates() {
-
-
   const stored = localStorage.getItem('dates');
   if (!stored) return null;
 
@@ -34,7 +24,44 @@ function getStoredDates() {
     return null;
   }
 }
-export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", onClose }) => {
+
+// Utility: get booking price and type/name based on property type and roomId
+function getBookingDetails(property, selectedRoom) {
+  if (!property) return { price: 0, type: '', name: '' };
+
+  if (selectedRoom) {
+    return {
+      price: selectedRoom?.price ?? 0,
+      type: selectedRoom?.type ?? '',
+      name: selectedRoom?.type ?? ''
+    };
+  }
+
+  return {
+    price: property?.pricing?.nightly_rate ?? 0,
+    type: property?.type?.type ?? '',
+    name: property?.title ?? ''
+  };
+}
+
+const ContactOwnersModule = ({ hotel = {}, roomId, className = "", onClose }) => {
+  const [property, setProperty] = useState(null);
+  const { id } = useParams();
+
+  const getPropertyData = async () => {
+    try {
+      const response = await getProperty(id);
+      if (response && response.data) {
+        setProperty(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching property data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getPropertyData();
+  }, []);
   const { dates, options, dispatch, city } = useContext(SearchContext);
 
   let guests = 1; // Default value if parsing fails
@@ -47,6 +74,31 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
       console.error("Failed to parse options from localStorage", error);
     }
   }
+
+
+  // Add selectedRoomId state for hotels/guesthouses
+  const isHotel = ["hotel", "guesthouse"].includes(property?.type?.type?.toLowerCase() ?? "");
+
+  isHotel && console.log("Selected Room ID:", roomId, "Property Rooms:", property?.rooms);
+  const [selectedRoomId, setSelectedRoomId] = useState(() => {
+    if (isHotel && Array.isArray(property?.rooms) && property.rooms.length > 0) {
+      return roomId || property.rooms[0]._id;
+    }
+    return null;
+  });
+
+  // Keep selectedRoomId in sync with roomId prop if it changes
+  useEffect(() => {
+    if (isHotel && roomId && Array.isArray(property?.rooms)) {
+      setSelectedRoomId(roomId);
+    }
+  }, [isHotel, roomId, property]);
+
+  // Find the selected room object
+  const selectedRoom = isHotel && Array.isArray(property?.rooms)
+    ? property.rooms.find(r => r?._id === selectedRoomId)
+    : null;
+
 
   const storedDates = getStoredDates();
   const initialStart = storedDates?.[0]?.startDate || dates?.[0]?.startDate || new Date();
@@ -93,45 +145,25 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
     email: "reservations@luxuryhotel.com",
   }
 
-  // Room/Property types
-  const PROPERTY_TYPES = [
-    {
-      id: "standard",
-      name: "Standard Room",
-      price: 120,
-      description: "Comfortable room with essential amenities",
-      maxGuests: 2,
-    },
-    {
-      id: "deluxe",
-      name: "Deluxe Room",
-      price: 180,
-      description: "Spacious room with premium amenities",
-      maxGuests: 3,
-    },
-    {
-      id: "suite",
-      name: "Executive Suite",
-      price: 280,
-      description: "Luxury suite with separate living area",
-      maxGuests: 4,
-    },
-    { id: "villa", name: "Private Villa", price: 450, description: "Exclusive villa with private pool", maxGuests: 6 },
-    {
-      id: "apartment",
-      name: "Family Apartment",
-      price: 220,
-      description: "Perfect for families with kitchen",
-      maxGuests: 5,
-    },
-  ]
+  // WhatsApp client name input state
+  const [whatsAppName, setWhatsAppName] = useState("");
+
+
+
 
   // Universal property/room logic
-  const propertyName = hotel?.name || hotel?.title || "Property";
-  const propertyCity = hotel?.city || hotel?.location || "Unknown City";
-  const roomName = room?.type || room?.name || null;
-  const price = room?.price || hotel?.price || PROPERTY_TYPES.find((type) => type.id === bookingData.roomType)?.price || 0;
-  const bookingType = roomName ? roomName : hotel?.type || "Property";
+  const propertyName = property?.title || "Property";
+  const propertyCity = property?.location?.city || "Unknown City";
+  const roomName = selectedRoom?.type || null;
+  const bookingType = roomName ? roomName : property?.type?.type || "Property";
+
+
+
+
+
+  // In the component, get booking details:
+  const bookingDetails = getBookingDetails(property, selectedRoom);
+  // Use bookingDetails.price, bookingDetails.type, bookingDetails.name in all booking flows and summaries
 
   // Utility functions
   const handleInputChange = (field, value) => {
@@ -152,9 +184,9 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
   const calculatePricing = () => {
     const nights = calculateNights()
-    const subtotal = nights * price
-    const taxes = subtotal * 0.15 // 15% tax
-    const serviceFee = subtotal * 0.05 // 5% service fee
+    const subtotal = nights * bookingDetails.price
+    const taxes = subtotal * 0 // 15% tax
+    const serviceFee = subtotal * 0 // 5% service fee
     const total = subtotal + taxes + serviceFee
 
     return {
@@ -163,8 +195,8 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
       serviceFee,
       total,
       nights,
-      price,
-      bookingType,
+      price: bookingDetails.price,
+      bookingType: bookingDetails.type,
     }
   }
 
@@ -197,83 +229,61 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
   // Phone interaction handler
   const handlePhoneCall = (event) => {
     if (event.detail === 2) {
-      window.location.href = `tel:${CONTACT_INFO.phone}`
-    } else if (showPhoneTooltip) {
-      navigator.clipboard.writeText(CONTACT_INFO.phone)
-      setTimeout(() => setShowPhoneTooltip(false), 2000)
+      // Double click: call direct
+      window.location.href = `tel:${CONTACT_INFO.phone}`;
     } else {
-      setShowPhoneTooltip(true)
-      setTimeout(() => setShowPhoneTooltip(false), 3000)
+      // Single click: copy to clipboard and show tooltip
+      navigator.clipboard.writeText(CONTACT_INFO.phone);
+      setShowPhoneTooltip(true);
+      setTimeout(() => setShowPhoneTooltip(false), 2000);
     }
-  }
-
-  // WhatsApp booking handler
-  const handleWhatsAppBooking = () => {
-    const nights = calculateNights();
-    const subtotal = nights * price;
-    const taxes = subtotal * 0.15;
-    const serviceFee = subtotal * 0.05;
-    const total = subtotal + taxes + serviceFee;
-    const message = encodeURIComponent(
-      `🏨 BOOKING REQUEST\n\n` +
-      `👤 Guest: ${bookingData.guestName || "Not provided"}\n` +
-      `📱 Phone: ${bookingData.guestPhone || "Not provided"}\n` +
-      `📧 Email: ${bookingData.guestEmail || "Not provided"}\n\n` +
-      `🏨 Property: ${propertyName}${roomName ? ` (Room: ${roomName})` : ""}\n` +
-      `📍 Location: ${propertyCity}\n\n` +
-      `📅 Check-in: ${bookingData.startDate}\n` +
-      `📅 Check-out: ${bookingData.endDate}\n` +
-      `🌙 Nights: ${nights}\n` +
-      `👥 Guests: ${bookingData.guests}\n` +
-      `🛏️ Type: ${bookingType}\n\n` +
-      `💰 PRICING:\n` +
-      `Rate: $${price}/night\n` +
-      `Subtotal: $${subtotal.toFixed(2)}\n` +
-      `Taxes (15%): $${taxes.toFixed(2)}\n` +
-      `Service Fee (5%): $${serviceFee.toFixed(2)}\n` +
-      `TOTAL: $${total.toFixed(2)}\n\n` +
-      `${bookingData.notes ? `📝 Notes: ${bookingData.notes}\n\n` : ""}` +
-      `Please confirm availability and provide payment instructions. Thank you! 🙏`,
-    );
-    window.location.href = `https://wa.me/${CONTACT_INFO.whatsapp}?text=${message}`;
   };
 
-  // Email booking handler
-  const handleEmailBooking = () => {
-    const nights = calculateNights();
-    const subtotal = nights * price;
+  // WhatsApp booking handler (test data + input name + constant dates)
+  const handleWhatsAppBooking = () => {
+    const guestName = whatsAppName || "Guest";
+    // Add one day to check-in and check-out dates
+    let checkInDateObj = initialStart instanceof Date ? new Date(initialStart) : new Date(initialStart);
+    let checkOutDateObj = initialEnd instanceof Date ? new Date(initialEnd) : new Date(initialEnd);
+    checkInDateObj.setDate(checkInDateObj.getDate() + 1);
+    checkOutDateObj.setDate(checkOutDateObj.getDate() + 1);
+    const checkInDate = checkInDateObj.toISOString().split("T")[0];
+    const checkOutDate = checkOutDateObj.toISOString().split("T")[0];
+    // Calculate nights
+    let nights = 2;
+    if (initialStart && initialEnd) {
+      const start = new Date(initialStart);
+      const end = new Date(initialEnd);
+      nights = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+    }
+    const subtotal = nights * bookingDetails.price;
     const taxes = subtotal * 0.15;
     const serviceFee = subtotal * 0.05;
     const total = subtotal + taxes + serviceFee;
-    const subject = encodeURIComponent(
-      `Booking Request - ${propertyName} - ${bookingData.guestName || "Guest"}`,
+
+    // Add special notes if present
+    const specialNotes = bookingData.notes?.trim() ? bookingData.notes.trim() : "This is a test booking via WhatsApp.";
+
+    const message = encodeURIComponent(
+      `BOOKING REQUEST\n\n` +
+      `Guest: ${guestName}\n` +
+      `Property: ${bookingDetails.name}${selectedRoom ? ` (Room: ${selectedRoom.type})` : ""}\n` +
+      `Location: ${property?.location?.city || "Unknown City"}\n\n` +
+      `Check-in: ${checkInDate}\n` +
+      `Check-out: ${checkOutDate}\n` +
+      `Nights: ${nights}\n` +
+      `Guests: ${guests}\n` +
+      `Type: ${bookingDetails.type}\n\n` +
+      `PRICING:\n` +
+      `Rate: ${bookingDetails.price} MAD/night\n` +
+      `Subtotal: ${subtotal.toFixed(2)} MAD\n` +
+      `Taxes (0%): ${taxes.toFixed(2)} MAD\n` +
+      `Service Fee (0%): ${serviceFee.toFixed(2)} MAD\n` +
+      `TOTAL: ${total.toFixed(2)} MAD\n\n` +
+      `Notes: ${specialNotes}\n\n` +
+      `Please confirm availability and provide payment instructions. Thank you!`
     );
-    const body = encodeURIComponent(
-      `Dear Reservations Team,\n\n` +
-      `I would like to make a booking with the following details:\n\n` +
-      `GUEST INFORMATION:\n` +
-      `Name: ${bookingData.guestName || "Not provided"}\n` +
-      `Phone: ${bookingData.guestPhone || "Not provided"}\n` +
-      `Email: ${bookingData.guestEmail || "Not provided"}\n\n` +
-      `BOOKING DETAILS:\n` +
-      `Property: ${propertyName}${roomName ? ` (Room: ${roomName})` : ""}\n` +
-      `Location: ${propertyCity}\n` +
-      `Check-in Date: ${bookingData.startDate}\n` +
-      `Check-out Date: ${bookingData.endDate}\n` +
-      `Number of Nights: ${nights}\n` +
-      `Number of Guests: ${bookingData.guests}\n` +
-      `Type: ${bookingType}\n\n` +
-      `PRICING BREAKDOWN:\n` +
-      `Rate: $${price} per night\n` +
-      `Subtotal (${nights} nights): $${subtotal.toFixed(2)}\n` +
-      `Taxes (15%): $${taxes.toFixed(2)}\n` +
-      `Service Fee (5%): $${serviceFee.toFixed(2)}\n` +
-      `TOTAL AMOUNT: $${total.toFixed(2)}\n\n` +
-      `${bookingData.notes ? `SPECIAL NOTES:\n${bookingData.notes}\n\n` : ""}` +
-      `Please confirm availability and provide payment instructions.\n\n` +
-      `Best regards,\n${bookingData.guestName || "Guest"}`,
-    );
-    window.location.href = `mailto:${CONTACT_INFO.email}?subject=${subject}&body=${body}`;
+    window.location.href = `https://wa.me/${CONTACT_INFO.whatsapp}?text=${message}`;
   };
 
   // Process online payment
@@ -354,43 +364,43 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full min-w-[50vw] max-h-[95vh] overflow-y-auto border border-gray-200">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute top-4 right-4 text-gray-400 hover:text-blue transition-colors z-10 bg-white rounded-full p-2 shadow-md border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue"
+          aria-label="Close"
         >
-          <X size={24} />
+          <X size={22} />
         </button>
 
-        <div className="p-6">
+        <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Book Your Stay</h2>
-            <div className="flex items-center justify-center gap-2 text-gray-600 mb-4">
+            <h2 className="text-3xl font-extrabold text-blue mb-1">Book Your Stay</h2>
+            <div className="flex items-center justify-center gap-2 text-gray-600 mb-2">
               <MapPin size={16} />
-              <span className="text-sm">
+              <span className="text-sm font-medium">
                 {propertyName} • {propertyCity}
               </span>
             </div>
+            <div className="border-b border-gray-200 mt-4" />
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex border-b border-gray-200 mb-6">
+          <div className="flex gap-2 bg-gray-50 rounded-xl p-1 mb-8 w-full max-w-md mx-auto">
             <button
               onClick={() => setActiveTab("contact")}
-              className={`px-6 py-3 font-medium text-sm transition-colors ${activeTab === "contact"
-                  ? "border-b-2 border-blue text-blue"
-                  : "text-gray-500 hover:text-gray-700"
-                }`}
+              className={`flex-1 px-4 py-2 rounded-xl font-semibold text-sm transition-colors focus:outline-none ${activeTab === "contact"
+                ? " text-blue shadow"
+                : "text-gray-500 hover:text-blue "}`}
             >
               Quick Contact
             </button>
             <button
               onClick={() => setActiveTab("booking")}
-              className={`px-6 py-3 font-medium text-sm transition-colors ${activeTab === "booking"
-                  ? "border-b-2 border-blue text-blue"
-                  : "text-gray-500 hover:text-gray-700"
-                }`}
+              className={`flex-1 px-4 py-2 rounded-xl font-semibold text-sm transition-colors focus:outline-none ${activeTab === "booking"
+                ? " text-blue shadow"
+                : "text-gray-500 hover:text-blue "}`}
             >
               Online Booking
             </button>
@@ -398,19 +408,21 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
           {/* Quick Contact Tab */}
           {activeTab === "contact" && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Phone */}
                 <div className="group">
                   <button
                     onClick={handlePhoneCall}
-                    className="w-full flex items-center gap-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="w-full flex items-center gap-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 h-20"
                   >
                     <Phone size={20} />
                     <div className="flex-1 text-left">
-                      <span className="block font-semibold">{showPhoneTooltip ? "Number Copied!" : "Call Direct"}</span>
-                      <span className="block text-sm opacity-90">
-                        {showPhoneTooltip ? CONTACT_INFO.phone : "Instant support"}
+                      <span className="block font-semibold">
+                        {showPhoneTooltip ? "Number Copied! Double click to call direct" : "Copy Number"}
+                      </span>
+                      <span className="block text-xs opacity-90">
+                        {showPhoneTooltip ? CONTACT_INFO.phone : "Single click to copy, double click to call"}
                       </span>
                     </div>
                   </button>
@@ -424,50 +436,37 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                       setPaymentMethod("whatsapp")
                       setBookingStep(1)
                     }}
-                    className="w-full flex items-center gap-4 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="w-full flex items-center gap-4 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-green-400 h-20"
                   >
                     <MessageCircle size={20} />
                     <div className="flex-1 text-left">
-                      <span className="block font-semibold">WhatsApp</span>
-                      <span className="block text-sm opacity-90">Quick booking</span>
+                      <span className="block font-semibold">WhatsApp  </span>
+                      <span className="block text-xs opacity-90">Quick booking</span>
                     </div>
                   </button>
                 </div>
-
-                {/* Email */}
+                {/* credit card */}
                 <div className="group">
-                  <button
-                    onClick={() => {
-                      setActiveTab("booking")
-                      setPaymentMethod("email")
-                      setBookingStep(1)
-                    }}
-                    className="w-full flex items-center gap-4 bg-blue hover:bg-blue text-white px-6 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-                  >
-                    <Mail size={20} />
-                    <div className="flex-1 text-left">
-                      <span className="block font-semibold">Email</span>
-                      <span className="block text-sm opacity-90">Detailed inquiry</span>
-                    </div>
-                  </button>
+                  
+                    <button
+                      onClick={() => {
+                        setActiveTab("booking")
+                        setPaymentMethod("card")
+                        setBookingStep(1)
+                      }}
+                    className="w-full flex items-center gap-4 bg-teal-500 hover:bg-teal-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 h-20"
+
+                      // className="inline-flex items-center gap-3 bg-blue text-white px-8 py-4 rounded-xl font-bold transition-all duration-200 shadow-lg hover:bg-blue focus:outline-none focus:ring-2 focus:ring-blue"
+                    >
+                      <CreditCard size={20} />
+                      <span>Pay with Credit Card</span>
+                    </button>
                 </div>
               </div>
 
-              <div className="text-center">
-                <button
-                  onClick={() => {
-                    setActiveTab("booking")
-                    setPaymentMethod("card")
-                    setBookingStep(1)
-                  }}
-                  className="inline-flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  <CreditCard size={20} />
-                  <span>Pay with Credit Card</span>
-                </button>
-              </div>
 
-              <div className="bg-gradient-to-r from-blue to-purple-50 rounded-lg p-6 text-center">
+
+              <div className="bg-gradient-to-r from-blue to-purple-50 rounded-xl p-6 text-center border border-blue">
                 <h3 className="font-semibold text-gray-900 mb-2">24/7 Professional Service</h3>
                 <p className="text-sm text-gray-600">
                   Our dedicated reservation team is available around the clock to assist with your booking needs.
@@ -481,62 +480,40 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
             <div>
               {/* Step 1: Booking Details (for WhatsApp/Email) or Contact Info (for Credit Card) */}
               {bookingStep === 1 && (paymentMethod === "whatsapp" || paymentMethod === "email") && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-8 h-8 bg-blue text-white rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
-                    <h3 className="text-xl font-semibold">Choose Your Dates & Guests</h3>
+                    <h3 className="text-xl font-bold">Your Name</h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Calendar size={16} className="inline mr-1" />
-                        Check-in Date *
-                      </label>
-                      <input
-                        type="date"
-                        value={bookingData.startDate}
-                        onChange={(e) => handleInputChange("startDate", e.target.value)}
-                        min={new Date().toISOString().split("T")[0]}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Calendar size={16} className="inline mr-1" />
-                        Check-out Date *
-                      </label>
-                      <input
-                        type="date"
-                        value={bookingData.endDate}
-                        onChange={(e) => handleInputChange("endDate", e.target.value)}
-                        min={bookingData.startDate || new Date().toISOString().split("T")[0]}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Users size={16} className="inline mr-1" />
-                        Guests
-                      </label>
+                  {isHotel && Array.isArray(property?.rooms) && property.rooms.length > 0 && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Select Room</label>
                       <select
-                        value={bookingData.guests}
-                        onChange={(e) => handleInputChange("guests", Number.parseInt(e.target.value))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue focus:border-transparent"
+                        value={selectedRoomId}
+                        onChange={e => setSelectedRoomId(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                       >
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                          <option key={num} value={num}>
-                            {num} Guest{num > 1 ? "s" : ""}
-                          </option>
+                        {property.rooms.map(room => (
+                          <option key={room._id} value={room._id}>{room.type} - {room.price} MAD</option>
                         ))}
                       </select>
                     </div>
-                  </div>
- 
+                  )}
+
+                  {paymentMethod === 'whatsapp' && (
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
+                        placeholder="Enter your name for WhatsApp booking"
+                        value={whatsAppName}
+                        onChange={e => setWhatsAppName(e.target.value)}
+                      />
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes (Optional)</label>
@@ -551,7 +528,7 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
                   {/* Booking Summary */}
                   {isBookingDetailsValid() && (
-                    <div className="bg-gray-50 rounded-lg p-6">
+                    <div className="bg-gray-50 rounded-xl p-5 mt-4 border border-gray-100">
                       <h4 className="font-semibold text-gray-900 mb-4">Booking Summary</h4>
                       {(() => {
                         const { subtotal, taxes, serviceFee, total, nights, bookingType } = calculatePricing()
@@ -561,19 +538,19 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                               <span>
                                 {bookingType} × {nights} nights
                               </span>
-                              <span>${subtotal.toFixed(2)}</span>
+                              <span>{subtotal.toFixed(2)} MAD</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Taxes & Fees (15%)</span>
-                              <span>${taxes.toFixed(2)}</span>
+                              <span>Taxes & Fees (0%)</span>
+                              <span>{taxes.toFixed(2)} MAD</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Service Fee (5%)</span>
-                              <span>${serviceFee.toFixed(2)}</span>
+                              <span>Service Fee (0%)</span>
+                              <span>{serviceFee.toFixed(2)} MAD</span>
                             </div>
-                            <div className="border-t pt-2 flex justify-between font-semibold text-lg">
+                            <div className="border-t pt-2 flex justify-between font-bold text-lg">
                               <span>Total Amount</span>
-                              <span className="text-blue">${total.toFixed(2)}</span>
+                              <span className="text-blue">{total.toFixed(2)} MAD</span>
                             </div>
                           </div>
                         )
@@ -581,24 +558,24 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                     </div>
                   )}
 
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2 mt-4">
                     <button
                       onClick={() => {
                         setActiveTab("contact")
                         setPaymentMethod("")
                       }}
-                      className="px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="px-6 py-3 font-bold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={paymentMethod === "whatsapp" ? handleWhatsAppBooking : handleEmailBooking}
                       disabled={!isBookingDetailsValid()}
-                      className={`px-8 py-3 font-medium rounded-lg transition-colors flex items-center gap-2 ${isBookingDetailsValid()
-                          ? paymentMethod === "whatsapp"
-                            ? "bg-green-600 hover:bg-green-700 text-white"
-                            : "bg-blue hover:bg-blue text-white"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      className={`px-8 py-3 font-bold rounded-xl transition-colors flex items-center gap-2 ${isBookingDetailsValid()
+                        ? paymentMethod === "whatsapp"
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-blue text-white hover:bg-blue"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >
                       {paymentMethod === "whatsapp" ? (
@@ -619,12 +596,12 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
               {/* Step 1: Contact Information (for Credit Card) */}
               {bookingStep === 1 && paymentMethod === "card" && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-8 h-8 bg-blue text-white rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
-                    <h3 className="text-xl font-semibold">Contact Information</h3>
+                    <h3 className="text-xl font-bold">Contact Information</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -687,27 +664,26 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
                   <div className="bg-blue border border-blue rounded-lg p-4">
                     <p className="text-sm text-blue">
-                      <strong>Note:</strong> Please provide either a phone number or email address (at least one is
-                      required for contact purposes).
+                      <strong>Note:</strong> Please provide either a phone number or email address (at least one is required for contact purposes).
                     </p>
                   </div>
 
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2 mt-4">
                     <button
                       onClick={() => {
                         setActiveTab("contact")
                         setPaymentMethod("")
                       }}
-                      className="px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="px-6 py-3 font-bold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={() => setBookingStep(2)}
                       disabled={!isPaymentContactValid()}
-                      className={`px-6 py-3 font-medium rounded-lg transition-colors ${isPaymentContactValid()
-                          ? "bg-blue hover:bg-blue text-white"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      className={`px-6 py-3 font-bold rounded-xl transition-colors ${isPaymentContactValid()
+                        ? "bg-blue text-white hover:bg-blue"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >
                       Next: Booking Details
@@ -718,12 +694,12 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
               {/* Step 2: Booking Details (for Credit Card) */}
               {bookingStep === 2 && paymentMethod === "card" && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-8 h-8 bg-blue text-white rounded-full flex items-center justify-center text-sm font-bold">
                       2
                     </div>
-                    <h3 className="text-xl font-semibold">Booking Details</h3>
+                    <h3 className="text-xl font-bold">Booking Details</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -775,29 +751,6 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-4">Select Accommodation Type</label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {PROPERTY_TYPES.map((type) => (
-                        <div
-                          key={type.id}
-                          onClick={() => handleInputChange("roomType", type.id)}
-                          className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${bookingData.roomType === type.id
-                              ? "border-blue bg-blue shadow-md"
-                              : "border-gray-200 hover:border-gray-300"
-                            }`}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-semibold text-gray-900">{type.name}</h4>
-                            <span className="text-blue font-bold">${type.price}/night</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">{type.description}</p>
-                          <p className="text-xs text-gray-500">Max {type.maxGuests} guests</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Special Notes (Optional)</label>
                     <textarea
                       value={bookingData.notes}
@@ -810,7 +763,7 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
                   {/* Booking Summary */}
                   {isBookingDetailsValid() && (
-                    <div className="bg-gray-50 rounded-lg p-6">
+                    <div className="bg-gray-50 rounded-xl p-5 mt-4 border border-gray-100">
                       <h4 className="font-semibold text-gray-900 mb-4">Booking Summary</h4>
                       {(() => {
                         const { subtotal, taxes, serviceFee, total, nights, bookingType } = calculatePricing()
@@ -820,19 +773,19 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                               <span>
                                 {bookingType} × {nights} nights
                               </span>
-                              <span>${subtotal.toFixed(2)}</span>
+                              <span>{subtotal.toFixed(2)} MAD</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Taxes & Fees (15%)</span>
-                              <span>${taxes.toFixed(2)}</span>
+                              <span>Taxes & Fees (0%)</span>
+                              <span>{taxes.toFixed(2)} MAD</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Service Fee (5%)</span>
-                              <span>${serviceFee.toFixed(2)}</span>
+                              <span>Service Fee (0%)</span>
+                              <span>{serviceFee.toFixed(2)} MAD</span>
                             </div>
-                            <div className="border-t pt-2 flex justify-between font-semibold text-lg">
+                            <div className="border-t pt-2 flex justify-between font-bold text-lg">
                               <span>Total Amount</span>
-                              <span className="text-blue">${total.toFixed(2)}</span>
+                              <span className="text-blue">{total.toFixed(2)} MAD</span>
                             </div>
                           </div>
                         )
@@ -840,19 +793,19 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                     </div>
                   )}
 
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2 mt-4">
                     <button
                       onClick={() => setBookingStep(1)}
-                      className="px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="px-6 py-3 font-bold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={() => setBookingStep(3)}
                       disabled={!isBookingDetailsValid()}
-                      className={`px-6 py-3 font-medium rounded-lg transition-colors ${isBookingDetailsValid()
-                          ? "bg-blue hover:bg-blue text-white"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      className={`px-6 py-3 font-bold rounded-xl transition-colors ${isBookingDetailsValid()
+                        ? "bg-blue text-white hover:bg-blue"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >
                       Next: Payment Information
@@ -863,10 +816,10 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
               {/* Step 3: Credit Card Information */}
               {bookingStep === 3 && paymentMethod === "card" && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="flex items-center gap-3 mb-6">
                     <Lock size={20} className="text-green-600" />
-                    <h4 className="text-lg font-semibold">Secure Card Information</h4>
+                    <h4 className="text-lg font-bold">Secure Card Information</h4>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -944,19 +897,19 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                     </p>
                   </div>
 
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2 mt-4">
                     <button
                       onClick={() => setBookingStep(2)}
-                      className="px-6 py-3 font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="px-6 py-3 font-bold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
                     >
                       Back
                     </button>
                     <button
                       onClick={processPayment}
                       disabled={!isPaymentInfoValid() || isLoading}
-                      className={`px-8 py-3 font-medium rounded-lg transition-colors flex items-center gap-2 ${isPaymentInfoValid() && !isLoading
-                          ? "bg-green-600 hover:bg-green-700 text-white"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      className={`px-8 py-3 font-bold rounded-xl transition-colors flex items-center gap-2 ${isPaymentInfoValid() && !isLoading
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >
                       {isLoading ? (
@@ -977,17 +930,17 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
 
               {/* Step 4: Booking Success */}
               {bookingStep === 4 && (
-                <div className="text-center space-y-6">
+                <div className="text-center space-y-8">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle size={32} className="text-green-600" />
                   </div>
 
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Validated!</h3>
+                    <h3 className="text-2xl font-extrabold text-green-900 mb-2">Payment Validated!</h3>
                     <p className="text-gray-600">Your booking has been confirmed and payment processed successfully.</p>
                   </div>
 
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-left max-w-md mx-auto">
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-left max-w-md mx-auto">
                     <h4 className="font-semibold text-green-900 mb-3">Booking Details</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -1007,7 +960,6 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                       <div className="flex justify-between">
                         <span className="text-green-700">Room:</span>
                         <span className="text-green-900 font-medium">
-                          {PROPERTY_TYPES.find((t) => t.id === bookingData.roomType)?.name}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -1016,21 +968,21 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
                       </div>
                       <div className="border-t border-green-200 pt-2 flex justify-between">
                         <span className="text-green-700 font-medium">Total Paid:</span>
-                        <span className="text-green-900 font-bold">${bookingData.totalPrice.toFixed(2)}</span>
+                        <span className="text-green-900 font-bold">{bookingData.totalPrice.toFixed(2)} MAD</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-4 justify-center">
+                  <div className="flex gap-4 justify-center mt-4">
                     <button
                       onClick={resetBooking}
-                      className="px-6 py-3 font-medium text-blue bg-blue rounded-lg hover:bg-blue transition-colors"
+                      className="px-6 py-3 font-bold text-blue bg-blue rounded-xl hover:bg-blue transition-colors"
                     >
                       Make Another Booking
                     </button>
                     <button
                       onClick={onClose}
-                      className="px-6 py-3 font-medium text-white bg-blue rounded-lg hover:bg-blue transition-colors"
+                      className="px-6 py-3 font-bold text-white bg-blue rounded-xl hover:bg-blue transition-colors"
                     >
                       Close
                     </button>
@@ -1044,3 +996,6 @@ export const ContactOwnersModule = ({ hotel = {}, room = null, className = "", o
     </div>
   )
 }
+
+
+export default ContactOwnersModule;

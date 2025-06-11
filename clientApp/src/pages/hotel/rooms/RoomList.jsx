@@ -25,8 +25,9 @@ export default function RoomList({ rooms }) {
         <div
             className={`container mx-auto py-6 px-4 `}
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2  w-full">
                 {rooms.map((room) => (
+                    <> 
                     <div
                         key={room._id}
                         className="rounded-lg overflow-hidden shadow border border-blue-100 group hover:shadow-lg transition-shadow duration-300"
@@ -48,7 +49,7 @@ export default function RoomList({ rooms }) {
 
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-3">
-                                <h3 className="text-xl font-bold text-blue-800">{room.type}</h3>
+                                <h3 className="text-xl font-bold text-blue-800">{room.type?.toUpperCase()}</h3>
                             </div>
 
                             <div
@@ -89,7 +90,7 @@ export default function RoomList({ rooms }) {
                                 className={`flex flex-wrap gap-2 mb-6  `}
                             >
                                 {Object.keys(room.categorizedAmenities || {})
-                                    .slice(0, 2)
+                                    .slice(0, 1)
                                     .map((category, index) => (
                                         <span
                                             key={index}
@@ -118,6 +119,9 @@ export default function RoomList({ rooms }) {
                             </button>
                         </div>
                     </div>
+                    </>
+                    
+                    
                 ))}
             </div>
 

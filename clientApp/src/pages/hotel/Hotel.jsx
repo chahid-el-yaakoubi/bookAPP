@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import PropertyAmenities from './componentHotel/PropertyAmenities.jsx';
 import PropertyFeatures from './componentHotel/Features.jsx';
 import { LayoutRoom } from './rooms/LayoutRoom.jsx';
-import { ContactOwnersModule } from '../../components/ContactOwnersModule.jsx';
+import ContactOwnersModule from '../../components/ContactOwnersModule.jsx';
 
 // Lazy load LayoutReviews component
 const LayoutReviews = lazy(() => import('./Reviews/LayoutReviews.jsx'));
@@ -259,8 +259,8 @@ export function Hotel() {
         setPropertyAmenities(hotel.property_details.amenities);
       }
 
-      if (hotel.property_details?.description) {
-        setDescription(hotel.property_details.description);
+      if (hotel?.description) {
+        setDescription(hotel.description.listingDescription);
       }
     }
   }, [hotel]);
@@ -282,6 +282,8 @@ export function Hotel() {
       </div>
     );
   }
+
+  console.log("descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription", description);
 
 
   return (
@@ -339,8 +341,8 @@ export function Hotel() {
 
             <ImageGallery images={images} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-6 md:mt-10 ">
-              <div className={`lg:col-span-${type.type === 'hotel' || type.type === 'guesthouse' ? '3' : '2'} space-y-6`}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-6 md:mt-10   w-full">
+              <div className={`lg:col-span-${type.type === 'hotel' || type.type === 'guesthouse' ? '3' : '2'} space-y-6 w-full `}>
                 <h1 className="text-2xl font-semibold mb-1 md:hidden">{hotel?.title}</h1>
 
                 <div className="flex justify-between pb-6 border-b">
@@ -359,7 +361,7 @@ export function Hotel() {
                     {description || 'No description available.'}
                   </p>
                 </div>
-                <div className="py-6 border-b">
+                <div className="py-6 border-b  w-full">
                   <h2 className="text-2xl font-semibold mb-6">{t('singleProperty.availableRooms')}</h2>
                   {roomsLoading ? (
                     <div className="flex justify-center py-8">
@@ -381,11 +383,9 @@ export function Hotel() {
                     hotel={hotel}
                     room={null}
                     type={type}
-                    policies={policies}
-                    accessibilityFeatures={accessibilityFeatures}
-                    safetyFeatures={safetyFeatures}
                     cancellationPolicy={cancellationPolicy}
                     onShowBookingCard={() => setShowBookingCard(true)}
+                    pricePerNight={hotel?.pricing?.nightly_rate}
                   />
                 </div>
               }
@@ -395,7 +395,7 @@ export function Hotel() {
                 booKing Now
               </button> */}
               {
-                showBookingCard && <ContactOwnersModule property={hotel} onClose={onCloseBookingCard} />
+                showBookingCard && <ContactOwnersModule onClose={onCloseBookingCard}  />
               }
 
             </div>

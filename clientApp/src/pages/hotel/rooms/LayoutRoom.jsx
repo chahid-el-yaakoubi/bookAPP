@@ -15,11 +15,11 @@ export const LayoutRoom = ({ rooms, type }) => {
         (type === 'hotel' || type ==='guesthouse') ? 
 
 
-        <>
+        < div className="w-full  ">
         
         <RoomList rooms={roomms} />
         
-        </>
+        </div>
         
         
         

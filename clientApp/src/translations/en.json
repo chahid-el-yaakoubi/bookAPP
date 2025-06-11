@@ -382,6 +382,7 @@
     }
   },
   "singleProperty": {
+    "copyLink": "Copy Link",
     "location": "Location",
     "availableRooms": "Available Rooms",
     "viewAll": "View All Photos",

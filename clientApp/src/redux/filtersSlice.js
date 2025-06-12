@@ -26,7 +26,7 @@ const saveToLocalStorage = (key, value) => {
 };
 
 const initialState = {
-  priceRange: { min: 200, max: 2000 },
+  priceRange: { min: 0, max: 5000 },
   amenities: {},
   safety_features: {},
   bookingOptions: {},
@@ -85,7 +85,7 @@ const filtersSlice = createSlice({
       saveToLocalStorage("filters", state);
     },
     clearFilters: (state) => {
-      state.priceRange = { min: 100, max: 2000 };
+      state.priceRange = { min: 0, max: 5000 };
       state.amenities = {};
       state.safety_features = {};
       state.bookingOptions = {};

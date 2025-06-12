@@ -30,7 +30,7 @@ export const FilterModule = ({ onClose }) => {
   const dispatch = useDispatch();
 
   const filters = useSelector((state) => state.filters) || {
-    priceRange: { min: 200, max: 2000 },
+    priceRange: { min: 200, max: 5000 },
     amenities: {},
     safety_features: {},
     bookingOptions: {},
@@ -92,11 +92,11 @@ export const FilterModule = ({ onClose }) => {
     if (type === 'min') {
       newPriceRange = {
         min: newValue,
-        max: Math.max(filters.priceRange?.max || 2000, newValue)
+        max: Math.max(filters.priceRange?.max || 5000, newValue)
       };
     } else {
       newPriceRange = {
-        min: Math.min(filters.priceRange?.min || 100, newValue),
+        min: Math.min(filters.priceRange?.min || 0, newValue),
         max: newValue
       };
     }
@@ -168,7 +168,7 @@ export const FilterModule = ({ onClose }) => {
     const safetyFeaturesActive = filters.safety_features && Object.values(filters.safety_features).some(value => value);
     const bookingOptionsActive = filters.bookingOptions && Object.values(filters.bookingOptions).some(value => value);
     const exceptionalPropertiesActive = filters.exceptionalProperties && Object.values(filters.exceptionalProperties).some(value => value);
-    const priceRangeActive = filters.priceRange?.min !== 100 || filters.priceRange?.max !== 2000;
+    const priceRangeActive = filters.priceRange?.min !== 0 || filters.priceRange?.max !== 5000;
     const sortActive = filters.sortByPrice !== 'default';
 
     return propertyTypesActive || amenitiesActive || safetyFeaturesActive ||
@@ -238,9 +238,9 @@ export const FilterModule = ({ onClose }) => {
             <div className="space-y-6">
               {/* Display current price range */}
               <div className="flex justify-between items-center px-2">
-                <span className="font-medium text-lg">MAD {filters.priceRange?.min || 100}</span>
+                <span className="font-medium text-lg">MAD {filters.priceRange?.min || 0}</span>
                 <span className="text-gray-500">{t('FilterModule.filters.to')}</span>
-                <span className="font-medium text-lg">MAD {filters.priceRange?.max || 2000}</span>
+                <span className="font-medium text-lg">MAD {filters.priceRange?.max || 5000}</span>
               </div>
 
               {/* Min price slider */}
@@ -249,7 +249,7 @@ export const FilterModule = ({ onClose }) => {
                 <input
                   type="range"
                   min="0"
-                  max="2000"
+                  max="5000"
                   step="50"
                   value={filters.priceRange?.min || 200}
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
@@ -263,9 +263,9 @@ export const FilterModule = ({ onClose }) => {
                 <input
                   type="range"
                   min="0"
-                  max="2000"
+                  max="5000"
                   step="50"
-                  value={filters.priceRange?.max || 2000}
+                  value={filters.priceRange?.max || 5000}
                   onChange={(e) => handlePriceRangeChange('max', e.target.value)}
                   className="w-full cursor-pointer"
                 />

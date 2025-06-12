@@ -289,7 +289,7 @@ const HotelsList = ({ city, }) => {
               >
                 <FontAwesomeIcon icon={faSliders} />
                 <span>{t('hotelsList.filters')}</span>
-                {itemapplied - 3}
+                {itemapplied - 2}
 
               </button>
 
